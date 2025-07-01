@@ -15,7 +15,7 @@
     }
     h1 {
       color: #ff3333;
-      margin-top: 20px;
+      margin-top: 10px;
     }
     .teams {
       display: flex;
@@ -105,6 +105,16 @@
       color: #fff;
       cursor: pointer;
     }
+    a.back-button {
+      display: inline-block;
+      margin-bottom: 15px;
+      background: #ff3333;
+      color: #fff;
+      padding: 8px 15px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 18px;
+    }
     .current-player {
       font-size: 20px;
       margin: 10px 0;
@@ -155,7 +165,17 @@
 </head>
 <body>
 
+  <a href="index.html" class="back-button">⬅️ العودة للقائمة الرئيسية</a>
+
   <h1>🖼️ لعبة اكشف الصورة</h1>
+
+  <p style="background-color:#222; padding:15px; border-radius:10px; border:1px solid #ff3333; font-size:18px; margin:20px auto; width:80%;">
+    🎯 <strong>شرح اللعبة:</strong><br>
+    يتم عرض صورة مخفية على شكل مربعات مرقمة.<br>
+    يمكنك الضغط على المربعات لكشف أجزاء من الصورة.<br>
+    على الستريمر تغطية مربع <strong>الإجابة الظاهرة أسفل الشاشة</strong> حتى لا يراها اللاعبون.<br>
+    بعد أن يخمن اللاعبون عشان تبدأ اللعبه اضغط التالي وللذهاب للاعب التالي ايضا اضغط التالي ، اضغط زر ✅ تأكيد لتسجيل النتيجة.
+  </p>
 
   <div class="teams">
     <div class="team">
