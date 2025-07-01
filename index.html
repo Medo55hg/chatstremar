@@ -5,42 +5,37 @@
   <title>🎮 ستريمر توب - الألعاب</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
-  <script>
-    function openLogin() {
-      document.getElementById("loginModal").style.display = "block";
+  <style>
+    .login-btn {
+      padding: 8px 15px;
+      font-size: 18px;
+      margin: 5px;
+      border-radius: 8px;
+      border: none;
+      color: #fff;
+      cursor: default;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
-
-    function closeLogin() {
-      document.getElementById("loginModal").style.display = "none";
+    .twitch-btn {
+      background-color: #9146FF;
     }
-
-    function saveEmail() {
-      const email = document.getElementById("emailInput").value;
-      if (email.trim() !== "") {
-        localStorage.setItem("streamerEmail", email);
-        alert("✅ تم حفظ الإيميل بنجاح!");
-        closeLogin();
-      } else {
-        alert("❌ الرجاء إدخال إيميل صحيح");
-      }
+    .kick-btn {
+      background-color: #00D800;
     }
-
-    window.onload = function () {
-      const email = localStorage.getItem("streamerEmail");
-      if (email) {
-        document.getElementById("emailDisplay").innerText = `📧 ${email}`;
-        document.getElementById("emailDisplay").style.display = "block";
-      }
-    }
-  </script>
+  </style>
 </head>
 <body>
 
   <!-- أزرار تسجيل الدخول -->
   <div class="top-right">
-    <span id="emailDisplay" style="display:none;"></span>
-    <button class="login-btn" onclick="openLogin()">📧 تسجيل دخول بالإيميل</button>
-    <button class="login-btn" disabled title="قريباً">🎮 تسجيل دخول بتويتش (قريباً)</button>
+    <button class="login-btn twitch-btn" disabled title="قريباً">
+      🎮 تويتش
+    </button>
+    <button class="login-btn kick-btn" disabled title="قريباً">
+      🟢 كيك
+    </button>
   </div>
 
   <h1>🎮 أهلاً بك في ستريمر توب</h1>
@@ -65,17 +60,6 @@
       <button class="start-btn" disabled>قريباً</button>
     </div>
 
-  </div>
-
-  <!-- مودال تسجيل الدخول -->
-  <div id="loginModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeLogin()">&times;</span>
-      <h2>📧 تسجيل الدخول</h2>
-      <input type="email" id="emailInput" placeholder="example@email.com">
-      <br>
-      <button onclick="saveEmail()">🎮 احفظ وسجّل دخول</button>
-    </div>
   </div>
 
 </body>
