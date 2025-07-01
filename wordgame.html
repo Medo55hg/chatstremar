@@ -4,11 +4,12 @@
   <meta charset="UTF-8">
   <title>🎮 لعبة الكلمات المبعثرة</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
   <style>
     body {
       background-color: #111;
       color: #fff;
-      font-family: Arial, sans-serif;
+      font-family: 'Amiri', serif;
       text-align: center;
       padding: 20px;
     }
@@ -31,6 +32,7 @@
       margin: 5px;
       border-radius: 8px;
       border: none;
+      font-family: 'Amiri', serif;
     }
     button {
       background-color: #ff3333;
@@ -79,54 +81,33 @@
       position: fixed;
       bottom: 20px;
       left: 20px;
-      width: 250px;
-      height: 100px;
-      background-color: #333;
-      border: 2px solid #ff3333;
-      border-radius: 10px;
       text-align: center;
-      padding: 10px;
       font-size: 20px;
+      color: #fff;
       z-index: 100;
+      background: none;
+      border: none;
     }
-    .answer-cover {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.9);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      cursor: pointer;
+    .winner-box {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #008000;
+      border: 2px solid #fff;
       border-radius: 10px;
-    }
-    a.back-button {
-      display: inline-block;
-      margin-bottom: 15px;
-      background: #ff3333;
-      color: #fff;
-      padding: 8px 15px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-size: 18px;
+      font-size: 20px;
+      display: none;
     }
   </style>
 </head>
 <body>
-
-  <a href="index.html" class="back-button">⬅️ العودة للقائمة الرئيسية</a>
 
   <h1>🎯 لعبة الكلمات المبعثرة</h1>
 
   <p style="background-color:#222; padding:15px; border-radius:10px; border:1px solid #ff3333; font-size:18px; margin:20px auto; width:80%;">
     🎯 <strong>شرح اللعبة:</strong><br>
     ستظهر كلمة مبعثرة يجب على اللاعبين إعادة ترتيبها بشكل صحيح.<br>
-    على الستريمر تغطية مربع <strong>الإجابة الظاهرة أسفل الشاشة</strong> حتى لا يراها اللاعبون.<br>
-    بعد أن يخمن اللاعب، اضغط زر ✅ تأكيد لتسجيل النتيجة.
+    عند الخطأ أو الإجابة الصحيحة، ينتقل الدور تلقائيًا للفريق الآخر.<br>
+    أول فريق يصل 12 نقطة يفوز تلقائياً.
   </p>
 
   <div class="teams">
@@ -146,34 +127,36 @@
   </div>
 
   <div class="game-area">
+    <button onclick="startGame()">🎮 ابدأ اللعبة</button>
     <div id="currentPlayer" class="current-player">⬇️ اللاعب الحالي سيظهر هنا</div>
     <div id="scrambledWord">🔤 الكلمة هنا</div>
     <input type="text" id="guessInput" placeholder="اكتب الإجابة هنا">
     <button onclick="submitGuess()">✅ تأكيد</button>
-    <div id="guessResult" class="guess-result"></div>
-    <br>
     <button onclick="nextTurn()">⏭️ التالي</button>
+    <div id="guessResult" class="guess-result"></div>
 
     <div class="scoreboard">
       🔵 الفريق الأزرق: <span id="blueScore">0</span> نقطة<br>
       🔴 الفريق الأحمر: <span id="redScore">0</span> نقطة
     </div>
+
+    <div id="winnerBox" class="winner-box"></div>
   </div>
 
   <div class="answer-box">
-    <div id="answerText">❓</div>
-    <div class="answer-cover">هنا تظهر الإجابة - غطها</div>
+    ⚠️ الإجابة: <span id="answerText">❓</span>
   </div>
 
   <script>
-  const bluePlayers = [];
-  const redPlayers = [];
-  let turnIndex = 0;
-  let currentTeam = 'blue';
-  let answeringTeam = 'blue';
-  let currentAnswer = "";
-  let blueScore = 0;
-  let redScore = 0;
+    const bluePlayers = [];
+    const redPlayers = [];
+    let turnIndex = 0;
+    let currentTeam = 'blue';
+    let answeringTeam = 'blue';
+    let currentAnswer = "";
+    let blueScore = 0;
+    let redScore = 0;
+    let gameEnded = false;
 
     const words = [
 "إسراء","أحمد","أرز","بسمة","بسام","ببغاء","بصل","تسنيم","تامر","تين",
@@ -241,76 +224,109 @@
 "بخيل","كعب","مطب","محطة","ازرق","صيدلية","الخميس","رمضان","جاكوزي","قلم",
 "طوب","انذار","كنترولر","نفق","فنيلة","مكياج","عقال","فورت","ببجي",
 "دعاء","حركة","رياضة","حديد","قمار","مسافة","سلسلة","سنارة","فتح","ضيق",
-"جدة","فلتر","لابتوب","ورقة","منشطات","طرق","هلال","احد","مساحة","شركة"
+"جدة","فلتر","لابتوب","ورقة","منشطات","طرق","هلال","احد","مساحة",  "استراتيجية","ميكانيكية","استثنائية","الاستحواذ","البيروقراطية","التشظي","الترميز","السرمدي",
+  "الثريا","الانبثاق","التسويف","التدشين","الجاذبية","المتلازمة","الاحتواء","الشغف",
+  "التقليدية","الجدلية","الطوباوية","الدوغمائية","اللامتناهي","الديالكتيك","الميتافيزيقا","الأسطوغرافيا",
+  "المونولوج","الأرثوذكسية","الهيروغليفية","السريالية","الأبستمولوجيا","الأنتروبولوجيا","الباراسيكولوجي","الهولوجرام",
+  "الديماغوجية","الطوبوغرافيا","التبادلية","الانتروبوسين","الفيزيوقراط","الباثولوجيا","الايكولوجيا","الأورثوبيديا"
 ];
 
- 
-   function shuffleWord(word) {
-    let arr = word.split('');
-    let shuffled;
-    do {
-      shuffled = arr.slice();
-      for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-      }
-    } while (shuffled.join('') === word);
-    return shuffled.join(' ');
-  }
-
-  function addPlayer(team) {
-    const inputId = team === 'blue' ? "bluePlayerInput" : "redPlayerInput";
-    const listId = team === 'blue' ? "bluePlayers" : "redPlayers";
-    const name = document.getElementById(inputId).value.trim();
-    if (name === "") return alert("❌ الرجاء كتابة اسم اللاعب");
-    if (team === 'blue') bluePlayers.push(name);
-    else redPlayers.push(name);
-    document.getElementById(listId).innerHTML = (team === 'blue' ? bluePlayers : redPlayers)
-      .map(player => `• ${player}`).join("<br>");
-    document.getElementById(inputId).value = "";
-  }
-
-  function nextTurn() {
-    if (bluePlayers.length === 0 || redPlayers.length === 0) {
-      alert("❌ الرجاء إضافة لاعبين في كلا الفريقين أولاً.");
-      return;
+  function shuffleWord(word) {
+      let arr = word.split('');
+      let shuffled;
+      do {
+        shuffled = arr.slice();
+        for (let i = shuffled.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+      } while (shuffled.join('') === word);
+      return shuffled.join(' ');
     }
-    let player;
-    if (currentTeam === 'blue') {
-      player = bluePlayers[turnIndex % bluePlayers.length];
-      answeringTeam = 'blue';
-      currentTeam = 'red';
-    } else {
-      player = redPlayers[turnIndex % redPlayers.length];
-      answeringTeam = 'red';
+
+    function addPlayer(team) {
+      const inputId = team === 'blue' ? "bluePlayerInput" : "redPlayerInput";
+      const listId = team === 'blue' ? "bluePlayers" : "redPlayers";
+      const name = document.getElementById(inputId).value.trim();
+      if (name === "") return alert("❌ الرجاء كتابة اسم اللاعب");
+      if (team === 'blue') bluePlayers.push(name);
+      else redPlayers.push(name);
+      document.getElementById(listId).innerHTML = (team === 'blue' ? bluePlayers : redPlayers)
+        .map(player => `• ${player}`).join("<br>");
+      document.getElementById(inputId).value = "";
+    }
+
+    function startGame() {
+      turnIndex = 0;
       currentTeam = 'blue';
-      turnIndex++;
-    }
-    document.getElementById("currentPlayer").innerText = `🎮 الدور الآن: ${player}`;
-    const randomWord = words[Math.floor(Math.random() * words.length)];
-    currentAnswer = randomWord;
-    document.getElementById("scrambledWord").innerText = shuffleWord(randomWord);
-    document.getElementById("answerText").innerText = randomWord;
-    document.getElementById("guessInput").value = "";
-    document.getElementById("guessResult").innerText = "";
-  }
-
-  function submitGuess() {
-    const guess = document.getElementById("guessInput").value.trim();
-    if (guess === "") {
-      alert("❌ الرجاء كتابة تخمين.");
-      return;
-    }
-    if (guess === currentAnswer) {
-      document.getElementById("guessResult").innerHTML = `✅ إجابة صحيحة!`;
-      if (answeringTeam === 'red') redScore++;
-      else blueScore++;
-      document.getElementById("redScore").innerText = redScore;
+      answeringTeam = 'blue';
+      blueScore = 0;
+      redScore = 0;
+      gameEnded = false;
       document.getElementById("blueScore").innerText = blueScore;
-    } else {
-      document.getElementById("guessResult").innerHTML = `❌ إجابة خاطئة!`;
+      document.getElementById("redScore").innerText = redScore;
+      document.getElementById("winnerBox").style.display = "none";
+      nextTurn();
     }
-  }
-</script>
+
+    function nextTurn() {
+      if (gameEnded) return;
+
+      if (bluePlayers.length === 0 || redPlayers.length === 0) {
+        alert("❌ الرجاء إضافة لاعبين في كلا الفريقين أولاً.");
+        return;
+      }
+      let player;
+      if (currentTeam === 'blue') {
+        player = bluePlayers[turnIndex % bluePlayers.length];
+        answeringTeam = 'blue';
+        currentTeam = 'red';
+      } else {
+        player = redPlayers[turnIndex % redPlayers.length];
+        answeringTeam = 'red';
+        currentTeam = 'blue';
+        turnIndex++;
+      }
+      document.getElementById("currentPlayer").innerText = `🎮 الدور الآن: ${player}`;
+      const randomWord = words[Math.floor(Math.random() * words.length)];
+      currentAnswer = randomWord;
+      document.getElementById("scrambledWord").innerText = shuffleWord(randomWord);
+      document.getElementById("answerText").innerText = randomWord;
+      document.getElementById("guessInput").value = "";
+      document.getElementById("guessResult").innerText = "";
+    }
+
+    function submitGuess() {
+      if (gameEnded) return;
+
+      const guess = document.getElementById("guessInput").value.trim();
+      if (guess === "") {
+        alert("❌ الرجاء كتابة تخمين.");
+        return;
+      }
+      if (guess === currentAnswer) {
+        document.getElementById("guessResult").innerHTML = `✅ إجابة صحيحة!`;
+        if (answeringTeam === 'red') redScore++;
+        else blueScore++;
+        document.getElementById("redScore").innerText = redScore;
+        document.getElementById("blueScore").innerText = blueScore;
+
+        if (blueScore >= 12) {
+          document.getElementById("winnerBox").innerText = "🏆 الفريق الأزرق هو الفائز!";
+          document.getElementById("winnerBox").style.display = "block";
+          gameEnded = true;
+        } else if (redScore >= 12) {
+          document.getElementById("winnerBox").innerText = "🏆 الفريق الأحمر هو الفائز!";
+          document.getElementById("winnerBox").style.display = "block";
+          gameEnded = true;
+        } else {
+          nextTurn(); // ينتقل للدور التالي بعد الإجابة الصحيحة
+        }
+      } else {
+        document.getElementById("guessResult").innerHTML = `❌ إجابة خاطئة!`;
+        nextTurn(); // ينتقل للدور التالي بعد الخطأ
+      }
+    }
+  </script>
 </body>
 </html>
