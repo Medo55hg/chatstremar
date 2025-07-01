@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>🎮 لعبة اكشف الصورة</title>
+  <title>🖼️ لعبة اكشف الصورة</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
   <style>
@@ -15,7 +15,7 @@
     }
     h1 {
       color: #ff3333;
-      margin-top: 10px;
+      margin-top: 20px;
     }
     .teams {
       display: flex;
@@ -30,6 +30,7 @@
       padding: 20px;
       border: 2px solid #ff3333;
       border-radius: 15px;
+      text-align: center;
     }
     .team h3 {
       margin-bottom: 10px;
@@ -86,6 +87,7 @@
       justify-content: center;
       cursor: pointer;
       transition: background-color 0.3s, color 0.3s;
+      font-family: 'Amiri', serif;
     }
     .cell.revealed {
       background-color: transparent;
@@ -105,20 +107,11 @@
       color: #fff;
       cursor: pointer;
     }
-    a.back-button {
-      display: inline-block;
-      margin-bottom: 15px;
-      background: #ff3333;
-      color: #fff;
-      padding: 8px 15px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-size: 18px;
-    }
     .current-player {
       font-size: 20px;
       margin: 10px 0;
       color: #00ffcc;
+      font-family: 'Amiri', serif;
     }
     .errors-list {
       margin-top: 10px;
@@ -127,54 +120,39 @@
       border-radius: 8px;
       min-height: 40px;
       text-align: right;
+      font-family: 'Amiri', serif;
     }
     .scoreboard {
       margin-top: 10px;
       font-size: 18px;
+      font-family: 'Amiri', serif;
     }
     .answer-box {
       position: fixed;
       bottom: 20px;
       left: 20px;
-      width: 250px;
-      height: 100px;
-      background-color: #333;
-      border: 2px solid #ff3333;
-      border-radius: 10px;
       text-align: center;
-      padding: 10px;
       font-size: 20px;
-      z-index: 100;
-    }
-    .answer-cover {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.9);
       color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      cursor: pointer;
-      border-radius: 10px;
+      z-index: 100;
+      background: none;
+      border: none;
+      font-family: 'Amiri', serif;
     }
   </style>
 </head>
 <body>
 
-  <a href="index.html" class="back-button">⬅️ العودة للقائمة الرئيسية</a>
-
   <h1>🖼️ لعبة اكشف الصورة</h1>
 
   <p style="background-color:#222; padding:15px; border-radius:10px; border:1px solid #ff3333; font-size:18px; margin:20px auto; width:80%;">
-    🎯 <strong>شرح اللعبة:</strong><br>
-    يتم عرض صورة مخفية على شكل مربعات مرقمة.<br>
-    يمكنك الضغط على المربعات لكشف أجزاء من الصورة.<br>
-    على الستريمر تغطية مربع <strong>الإجابة الظاهرة أسفل الشاشة</strong> حتى لا يراها اللاعبون.<br>
-    بعد أن يخمن اللاعبون عشان تبدأ اللعبه اضغط التالي وللذهاب للاعب التالي ايضا اضغط التالي ، اضغط زر ✅ تأكيد لتسجيل النتيجة.
+    🖼️ <strong>شرح اللعبة:</strong><br>
+    ستظهر صورة مخفية مقسمة إلى مربعات.<br>
+    عند ضغط اللاعب على رقم، يفتح المربع.<br>
+    بعد ذلك يكتب التخمين ويضغط تأكيد.<br>
+    إذا كانت الإجابة صحيحة: تنكشف الصورة وتظهر زر <strong>الصورة التالية</strong>.<br>
+    إذا كانت خطأ: ينتقل الدور للفريق التالي.<br>
+    ⚠️ تأكد تغطي مكان <strong>الإجابة الظاهرة أسفل الشاشة</strong>.
   </p>
 
   <div class="teams">
@@ -193,16 +171,16 @@
   </div>
 
   <div class="game-area">
+    <button onclick="startGame()">🎮 ابدأ اللعبة</button>
     <div id="currentPlayer" class="current-player">⬇️ اللاعب الحالي سيظهر هنا</div>
 
     <div class="image-container">
-      <img id="gameImage" src="" alt="صورة اللعبة">
+      <img id="gameImage" src="https://i.postimg.cc/kXtCZXLX/F3-HFd-HW0-AEa1g7.jpg" alt="صورة اللعبة">
       <div class="grid" id="grid"></div>
     </div>
 
     <input type="text" id="guessInput" placeholder="اكتب التخمين هنا">
     <button onclick="submitGuess()">✅ تأكيد</button>
-    <button onclick="nextTurn()">🔄 التالي</button>
     <button id="nextImageButton" onclick="loadRandomImage()" style="display:none;">🖼️ الصورة التالية</button>
 
     <div id="guessResult" class="errors-list"></div>
@@ -214,8 +192,7 @@
   </div>
 
   <div class="answer-box">
-    <div id="answerText"></div>
-    <div class="answer-cover">هنا تظهر الإجابة - غطها</div>
+    ⚠️ الإجابة: <span id="answerText">❓</span>
   </div>
 
   <script>
@@ -236,15 +213,15 @@
       { url: "https://i.postimg.cc/yx63tWzp/on-a-perfect-blue-sky.jpg", answer: "القدس" }
     ];
 
-    const bluePlayers = [];
+   const bluePlayers = [];
     const redPlayers = [];
     let turnIndex = 0;
     let currentTeam = 'blue';
     let answeringTeam = 'blue';
-    let currentAnswer = "";
+    let currentAnswer = images[0].answer;
     let blueScore = 0;
     let redScore = 0;
-    let lastImageIndex = -1;
+    let lastImageIndex = 0;
 
     function createGrid() {
       const grid = document.getElementById("grid");
@@ -271,9 +248,9 @@
       document.getElementById("gameImage").src = images[index].url;
       currentAnswer = images[index].answer;
       document.getElementById("answerText").innerText = currentAnswer;
-      document.getElementById("nextImageButton").style.display = "none";
       createGrid();
       document.getElementById("guessResult").innerText = "";
+      document.getElementById("nextImageButton").style.display = "none";
     }
 
     function addPlayer(team) {
@@ -286,6 +263,16 @@
       document.getElementById(listId).innerHTML = (team === 'blue' ? bluePlayers : redPlayers)
         .map(player => `• ${player}`).join("<br>");
       document.getElementById(inputId).value = "";
+    }
+
+    function startGame() {
+      turnIndex = 0;
+      currentTeam = 'blue';
+      answeringTeam = 'blue';
+      blueScore = 0;
+      redScore = 0;
+      loadRandomImage();
+      nextTurn();
     }
 
     function nextTurn() {
@@ -321,21 +308,21 @@
         document.querySelectorAll(".cell").forEach(cell => {
           cell.classList.add("revealed");
         });
-        document.getElementById("nextImageButton").style.display = "inline-block";
         if (answeringTeam === 'blue') blueScore++;
         else redScore++;
         document.getElementById("redScore").innerText = redScore;
         document.getElementById("blueScore").innerText = blueScore;
+        document.getElementById("nextImageButton").style.display = "inline-block";
       } else {
         resultDiv.innerHTML += `❌ خطأ: ${guess}<br>`;
+        nextTurn();
       }
       document.getElementById("guessInput").value = "";
     }
 
     window.onload = () => {
       createGrid();
-      loadRandomImage();
-    };
+    }
   </script>
 </body>
 </html>
