@@ -166,14 +166,14 @@
   </div>
 
   <script>
-    const bluePlayers = [];
-    const redPlayers = [];
-    let turnIndex = 0;
-    let currentTeam = 'blue';
-    let currentAnswer = "";
-    let blueScore = 0;
-    let redScore = 0;
-
+  const bluePlayers = [];
+  const redPlayers = [];
+  let turnIndex = 0;
+  let currentTeam = 'blue';
+  let answeringTeam = 'blue';
+  let currentAnswer = "";
+  let blueScore = 0;
+  let redScore = 0;
 
     const words = [
 "إسراء","أحمد","أرز","بسمة","بسام","ببغاء","بصل","تسنيم","تامر","تين",
@@ -245,70 +245,72 @@
 ];
 
  
-    function shuffleWord(word) {
-      let arr = word.split('');
-      let shuffled;
-      do {
-        shuffled = arr.slice();
-        for (let i = shuffled.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-        }
-      } while (shuffled.join('') === word);
-      return shuffled.join(' ');
-    }
+   function shuffleWord(word) {
+    let arr = word.split('');
+    let shuffled;
+    do {
+      shuffled = arr.slice();
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+    } while (shuffled.join('') === word);
+    return shuffled.join(' ');
+  }
 
-    function addPlayer(team) {
-      const inputId = team === 'blue' ? "bluePlayerInput" : "redPlayerInput";
-      const listId = team === 'blue' ? "bluePlayers" : "redPlayers";
-      const name = document.getElementById(inputId).value.trim();
-      if (name === "") return alert("❌ الرجاء كتابة اسم اللاعب");
-      if (team === 'blue') bluePlayers.push(name);
-      else redPlayers.push(name);
-      document.getElementById(listId).innerHTML = (team === 'blue' ? bluePlayers : redPlayers)
-        .map(player => `• ${player}`).join("<br>");
-      document.getElementById(inputId).value = "";
-    }
+  function addPlayer(team) {
+    const inputId = team === 'blue' ? "bluePlayerInput" : "redPlayerInput";
+    const listId = team === 'blue' ? "bluePlayers" : "redPlayers";
+    const name = document.getElementById(inputId).value.trim();
+    if (name === "") return alert("❌ الرجاء كتابة اسم اللاعب");
+    if (team === 'blue') bluePlayers.push(name);
+    else redPlayers.push(name);
+    document.getElementById(listId).innerHTML = (team === 'blue' ? bluePlayers : redPlayers)
+      .map(player => `• ${player}`).join("<br>");
+    document.getElementById(inputId).value = "";
+  }
 
-    function nextTurn() {
-      if (bluePlayers.length === 0 || redPlayers.length === 0) {
-        alert("❌ الرجاء إضافة لاعبين في كلا الفريقين أولاً.");
-        return;
-      }
-      let player;
-      if (currentTeam === 'blue') {
-        player = bluePlayers[turnIndex % bluePlayers.length];
-        currentTeam = 'red';
-      } else {
-        player = redPlayers[turnIndex % redPlayers.length];
-        currentTeam = 'blue';
-        turnIndex++;
-      }
-      document.getElementById("currentPlayer").innerText = `🎮 الدور الآن: ${player}`;
-      const randomWord = words[Math.floor(Math.random() * words.length)];
-      currentAnswer = randomWord;
-      document.getElementById("scrambledWord").innerText = shuffleWord(randomWord);
-      document.getElementById("answerText").innerText = randomWord;
-      document.getElementById("guessInput").value = "";
-      document.getElementById("guessResult").innerText = "";
+  function nextTurn() {
+    if (bluePlayers.length === 0 || redPlayers.length === 0) {
+      alert("❌ الرجاء إضافة لاعبين في كلا الفريقين أولاً.");
+      return;
     }
+    let player;
+    if (currentTeam === 'blue') {
+      player = bluePlayers[turnIndex % bluePlayers.length];
+      answeringTeam = 'blue';
+      currentTeam = 'red';
+    } else {
+      player = redPlayers[turnIndex % redPlayers.length];
+      answeringTeam = 'red';
+      currentTeam = 'blue';
+      turnIndex++;
+    }
+    document.getElementById("currentPlayer").innerText = `🎮 الدور الآن: ${player}`;
+    const randomWord = words[Math.floor(Math.random() * words.length)];
+    currentAnswer = randomWord;
+    document.getElementById("scrambledWord").innerText = shuffleWord(randomWord);
+    document.getElementById("answerText").innerText = randomWord;
+    document.getElementById("guessInput").value = "";
+    document.getElementById("guessResult").innerText = "";
+  }
 
-    function submitGuess() {
-      const guess = document.getElementById("guessInput").value.trim();
-      if (guess === "") {
-        alert("❌ الرجاء كتابة تخمين.");
-        return;
-      }
-      if (guess === currentAnswer) {
-        document.getElementById("guessResult").innerHTML = `✅ إجابة صحيحة!`;
-        if (currentTeam === 'red') redScore++;
-        else blueScore++;
-        document.getElementById("redScore").innerText = redScore;
-        document.getElementById("blueScore").innerText = blueScore;
-      } else {
-        document.getElementById("guessResult").innerHTML = `❌ إجابة خاطئة!`;
-      }
+  function submitGuess() {
+    const guess = document.getElementById("guessInput").value.trim();
+    if (guess === "") {
+      alert("❌ الرجاء كتابة تخمين.");
+      return;
     }
-  </script>
+    if (guess === currentAnswer) {
+      document.getElementById("guessResult").innerHTML = `✅ إجابة صحيحة!`;
+      if (answeringTeam === 'red') redScore++;
+      else blueScore++;
+      document.getElementById("redScore").innerText = redScore;
+      document.getElementById("blueScore").innerText = blueScore;
+    } else {
+      document.getElementById("guessResult").innerHTML = `❌ إجابة خاطئة!`;
+    }
+  }
+</script>
 </body>
 </html>
