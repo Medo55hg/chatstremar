@@ -150,7 +150,7 @@
     ستظهر صورة مخفية مقسمة إلى مربعات.<br>
     عند ضغط اللاعب على رقم، يفتح المربع.<br>
     بعد ذلك يكتب التخمين ويضغط تأكيد.<br>
-    إذا كانت الإجابة صحيحة: تنكشف الصورة وتظهر زر <strong>الصورة التالية</strong>.<br>
+    إذا كانت الإجابة صحيحة: تنكشف الصورة ويحصل الفريق على عدد نقاط بعدد المربعات التي لم تُكشف.<br>
     إذا كانت خطأ: ينتقل الدور للفريق التالي.<br>
     ⚠️ تأكد تغطي مكان <strong>الإجابة الظاهرة أسفل الشاشة</strong>.
   </p>
@@ -213,7 +213,7 @@
       { url: "https://i.postimg.cc/yx63tWzp/on-a-perfect-blue-sky.jpg", answer: "القدس" }
     ];
 
-   const bluePlayers = [];
+    const bluePlayers = [];
     const redPlayers = [];
     let turnIndex = 0;
     let currentTeam = 'blue';
@@ -304,12 +304,16 @@
       }
       const resultDiv = document.getElementById("guessResult");
       if (guess === currentAnswer) {
-        resultDiv.innerHTML += `✅ إجابة صحيحة!<br>`;
+        // احسب كم مربع باقي
+        const unrevealed = document.querySelectorAll(".cell:not(.revealed)").length;
+        const pointsEarned = unrevealed;
+
+        resultDiv.innerHTML += `✅ إجابة صحيحة! حصل الفريق ${pointsEarned} نقطة<br>`;
         document.querySelectorAll(".cell").forEach(cell => {
           cell.classList.add("revealed");
         });
-        if (answeringTeam === 'blue') blueScore++;
-        else redScore++;
+        if (answeringTeam === 'blue') blueScore += pointsEarned;
+        else redScore += pointsEarned;
         document.getElementById("redScore").innerText = redScore;
         document.getElementById("blueScore").innerText = blueScore;
         document.getElementById("nextImageButton").style.display = "inline-block";
