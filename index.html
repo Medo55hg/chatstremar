@@ -6,6 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
   <style>
+    body {
+      background-color: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
     .login-btn {
       padding: 8px 15px;
       font-size: 18px;
@@ -24,6 +31,54 @@
     .kick-btn {
       background-color: #00D800;
     }
+    .contact-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #000;
+      color: #fff;
+      padding: 10px 15px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 16px;
+      border: 2px solid #fff;
+      z-index: 1000;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .contact-button:hover {
+      background-color: #222;
+    }
+    .row {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 50px;
+    }
+    .game-card {
+      background-color: #222;
+      border: 2px solid #ff3333;
+      border-radius: 10px;
+      padding: 20px;
+      width: 250px;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+    .game-card.blur::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      backdrop-filter: blur(5px);
+      background: rgba(0,0,0,0.6);
+      z-index: 1;
+    }
+    .game-card.blur button {
+      position: relative;
+      z-index: 2;
+    }
   </style>
 </head>
 <body>
@@ -40,8 +95,8 @@
 
   <h1>🎮 أهلاً بك في ستريمر توب</h1>
 
-  <div class="game-list">
-
+  <!-- الصف الأول -->
+  <div class="row">
     <div class="game-card">
       <h2>🔤 الكلمات المبعثرة</h2>
       <p>رتب الحروف بشكل صحيح في أسرع وقت!</p>
@@ -53,14 +108,27 @@
       <p>شوف الصورة وخمّن الكلمة التي تعبر عنها!</p>
       <a href="guessimage.html" class="start-btn">ابدأ اللعب</a>
     </div>
+  </div>
 
-    <div class="game-card">
-      <h2>🧠 لعبة الذاكرة</h2>
+  <!-- الصف الثاني -->
+  <div class="row">
+    <div class="game-card blur">
+      <h2>🧠 لعبة تحدي الصور</h2>
       <p>اختبر ذاكرتك في تحدي الصور!</p>
       <button class="start-btn" disabled>قريباً</button>
     </div>
 
+    <div class="game-card blur">
+      <h2>🎯 التركيز</h2>
+      <p>اختبر قوة تركيزك!</p>
+      <button class="start-btn" disabled>قريباً</button>
+    </div>
   </div>
+
+  <!-- زر روابط التواصل -->
+  <a href="https://linktr.ee/medo_dv" target="_blank" class="contact-button">
+    🗂️ روابط التواصل
+  </a>
 
 </body>
 </html>
