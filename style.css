@@ -1,0 +1,205 @@
+body {
+  margin: 0;
+  background-color: #111;
+  color: #fff;
+  font-family: 'Arial', sans-serif;
+  text-align: center;
+  padding: 20px;
+}
+
+h1 {
+  color: #ff3333;
+  font-size: 36px;
+  margin-top: 60px;
+}
+
+.game-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+.game-card {
+  background-color: #222;
+  border: 2px solid #ff3333;
+  border-radius: 15px;
+  padding: 20px;
+  width: 320px;
+  text-align: center;
+}
+
+.game-card h2 {
+  margin-bottom: 10px;
+}
+
+.start-btn {
+  padding: 10px 20px;
+  font-size: 18px;
+  background-color: #ff3333;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.start-btn:disabled {
+  background-color: gray;
+  cursor: not-allowed;
+}
+
+/* زر تسجيل الدخول */
+.top-right {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+.login-btn {
+  background-color: #ff3333;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* مودال الخلفية */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  z-index: 999;
+  backdrop-filter: blur(2px);
+}
+
+/* محتوى المودال */
+.modal-content {
+  background-color: #1a1a1a;
+  border: 2px solid #ff3333;
+  border-radius: 15px;
+  padding: 30px;
+  width: 300px;
+  margin: 100px auto;
+  text-align: center;
+  color: white;
+  box-shadow: 0 0 20px #ff3333;
+}
+
+/* العنوان */
+.modal-content h2 {
+  color: #ff3333;
+  margin-bottom: 10px;
+}
+
+/* حقل الإيميل */
+.modal-content input {
+  padding: 10px;
+  width: 90%;
+  border-radius: 8px;
+  border: none;
+  background-color: #333;
+  color: white;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+/* زر الحفظ */
+.modal-content button {
+  padding: 10px 20px;
+  background-color: #ff3333;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+/* زر إغلاق */
+.close {
+  position: absolute;
+  top: 10px;
+  left: 15px;
+  font-size: 22px;
+  color: #aaa;
+  cursor: pointer;
+}
+.top-bar {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.top-bar input {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: none;
+  background-color: #222;
+  color: white;
+  border: 1px solid #ff3333;
+}
+
+.twitch-btn {
+  background-color: #ff3333;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.game-title {
+  margin-top: 80px;
+  font-size: 34px;
+  color: #ff3333;
+}
+
+.start-btn.big {
+  font-size: 22px;
+  padding: 15px 30px;
+  margin-top: 20px;
+}
+
+.big-word-box {
+  font-size: 40px;
+  margin: 30px auto;
+  background-color: #222;
+  padding: 30px;
+  width: 350px;
+  border-radius: 20px;
+  border: 3px solid #ff3333;
+  color: #fff;
+}
+
+.leaderboard-frame {
+  margin-top: 40px;
+  background-color: #222;
+  padding: 20px;
+  border-radius: 15px;
+  width: 350px;
+  margin-left: auto;
+  margin-right: auto;
+  border: 2px solid #ff3333;
+}
+
+.leaderboard-frame h2 {
+  margin-bottom: 10px;
+}
+
+.leaderboard-frame ul {
+  list-style: none;
+  padding: 0;
+  color: white;
+}
+
+.leaderboard-frame li {
+  margin: 5px 0;
+  font-size: 16px;
+}

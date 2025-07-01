@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>🎮 لعبة اكشف الصورة</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #111;
+      color: #fff;
+      font-family: 'Amiri', serif;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #ff3333;
+      margin-top: 20px;
+    }
+    .teams {
+      display: flex;
+      justify-content: space-between;
+      margin: 20px auto;
+      width: 90%;
+      gap: 20px;
+    }
+    .team {
+      width: 45%;
+      background-color: #222;
+      padding: 20px;
+      border: 2px solid #ff3333;
+      border-radius: 15px;
+    }
+    .team h3 {
+      margin-bottom: 10px;
+    }
+    .players-list {
+      background-color: #333;
+      padding: 10px;
+      border-radius: 8px;
+      min-height: 50px;
+      font-size: 20px;
+    }
+    .game-area {
+      font-size: 20px;
+      margin: 20px auto;
+      background-color: #222;
+      padding: 20px;
+      border-radius: 15px;
+      width: 700px;
+      border: 2px solid #ff3333;
+      position: relative;
+    }
+    .image-container {
+      position: relative;
+      width: 100%;
+      padding-top: 66.66%;
+      margin: 10px 0;
+      background: #000;
+      border: 2px solid #444;
+    }
+    .image-container img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: grid;
+      width: 100%;
+      height: 100%;
+      grid-template-columns: repeat(6, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+    }
+    .cell {
+      background-color: #222;
+      color: #fff;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    .cell.revealed {
+      background-color: transparent;
+      color: transparent;
+      cursor: default;
+    }
+    input, button {
+      padding: 8px;
+      font-size: 16px;
+      margin: 5px;
+      border-radius: 8px;
+      border: none;
+      font-family: 'Amiri', serif;
+    }
+    button {
+      background-color: #ff3333;
+      color: #fff;
+      cursor: pointer;
+    }
+    .current-player {
+      font-size: 20px;
+      margin: 10px 0;
+      color: #00ffcc;
+    }
+    .errors-list {
+      margin-top: 10px;
+      background-color: #333;
+      padding: 10px;
+      border-radius: 8px;
+      min-height: 40px;
+      text-align: right;
+    }
+    .scoreboard {
+      margin-top: 10px;
+      font-size: 18px;
+    }
+    .answer-box {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      width: 250px;
+      height: 100px;
+      background-color: #333;
+      border: 2px solid #ff3333;
+      border-radius: 10px;
+      text-align: center;
+      padding: 10px;
+      font-size: 20px;
+      z-index: 100;
+    }
+    .answer-cover {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.9);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🖼️ لعبة اكشف الصورة</h1>
+
+  <div class="teams">
+    <div class="team">
+      <h3>🔴 الفريق الأحمر</h3>
+      <input type="text" id="redPlayerInput" placeholder="اسم اللاعب">
+      <button onclick="addPlayer('red')">➕ إضافة</button>
+      <div id="redPlayers" class="players-list"></div>
+    </div>
+    <div class="team">
+      <h3>🔵 الفريق الأزرق</h3>
+      <input type="text" id="bluePlayerInput" placeholder="اسم اللاعب">
+      <button onclick="addPlayer('blue')">➕ إضافة</button>
+      <div id="bluePlayers" class="players-list"></div>
+    </div>
+  </div>
+
+  <div class="game-area">
+    <div id="currentPlayer" class="current-player">⬇️ اللاعب الحالي سيظهر هنا</div>
+
+    <div class="image-container">
+      <img id="gameImage" src="" alt="صورة اللعبة">
+      <div class="grid" id="grid"></div>
+    </div>
+
+    <input type="text" id="guessInput" placeholder="اكتب التخمين هنا">
+    <button onclick="submitGuess()">✅ تأكيد</button>
+    <button onclick="nextTurn()">🔄 التالي</button>
+    <button id="nextImageButton" onclick="loadRandomImage()" style="display:none;">🖼️ الصورة التالية</button>
+
+    <div id="guessResult" class="errors-list"></div>
+
+    <div class="scoreboard">
+      🔵 الفريق الأزرق: <span id="blueScore">0</span> نقطة<br>
+      🔴 الفريق الأحمر: <span id="redScore">0</span> نقطة
+    </div>
+  </div>
+
+  <div class="answer-box">
+    <div id="answerText"></div>
+    <div class="answer-cover">هنا تظهر الإجابة - غطها</div>
+  </div>
+
+  <script>
+    const images = [
+      { url: "https://i.postimg.cc/kXtCZXLX/F3-HFd-HW0-AEa1g7.jpg", answer: "رايد مشواح" },
+      { url: "https://i.postimg.cc/rsty2vqv/hq720.jpg", answer: "شونق بونق" },
+      { url: "https://i.postimg.cc/ydhxDMMc/Gb-TRa-Ng-Wg-AAd-ma.jpg", answer: "بندريتا" },
+      { url: "https://i.postimg.cc/3J1XJCcf/Uf-JSd-QMW-400x400.jpg", answer: "كونان" },
+      { url: "https://i.postimg.cc/G2zDhbM8/AAAABdf-Go9-D-Dve-XMM8-KK8-Kspcy-Jfgdsf-Uu-Nz4r-Fn-SVZ24-Gtq1g-BPI-v-UGRBn3q-SZc0-VQo-Jab-PCEctz-Mcp-ULKkw-zq5-Vs-ZFfv-UI.jpg", answer: "سبايدرمان" },
+      { url: "https://i.postimg.cc/SQf4RJ7t/1831a0d7cfb3101098b4b986d1e43d07.jpg", answer: "ياسر مخ" },
+      { url: "https://i.postimg.cc/W34GZDq6/4e381384cff59a012179eba0df30a717.jpg", answer: "فيصل يجي" },
+      { url: "https://i.postimg.cc/hjJsXCY1/Minecraft-2024.jpg", answer: "ماين كرافت" },
+      { url: "https://i.postimg.cc/W4cTWKGh/image.jpg", answer: "هيرو براين" },
+      { url: "https://i.postimg.cc/JnG8GLmY/image.jpg", answer: "برج المملكة" },
+      { url: "https://i.postimg.cc/8z5Z8PbY/259f0650-094e-11eb-8bfb-60e78dcd1af0.jpg", answer: "فول قايز" },
+      { url: "https://i.postimg.cc/HWFMWWHK/intense-and-fearless-leon-s-kennedy-in-action-1wmdmawmnhjdpy5v-1024x575.jpg", answer: "ليون كينيدي" },
+      { url: "https://i.postimg.cc/434Pv4YP/Zx-PLg-7-N-400x400.jpg", answer: "كراش" },
+      { url: "https://i.postimg.cc/yx63tWzp/on-a-perfect-blue-sky.jpg", answer: "القدس" }
+    ];
+
+    const bluePlayers = [];
+    const redPlayers = [];
+    let turnIndex = 0;
+    let currentTeam = 'blue';
+    let answeringTeam = 'blue';
+    let currentAnswer = "";
+    let blueScore = 0;
+    let redScore = 0;
+    let lastImageIndex = -1;
+
+    function createGrid() {
+      const grid = document.getElementById("grid");
+      grid.innerHTML = "";
+      for (let i = 0; i < 24; i++) {
+        const cell = document.createElement("div");
+        cell.className = "cell";
+        cell.textContent = i + 1;
+        cell.onclick = () => {
+          cell.classList.add("revealed");
+          cell.onclick = null;
+        };
+        grid.appendChild(cell);
+      }
+    }
+
+    function loadRandomImage() {
+      let index;
+      do {
+        index = Math.floor(Math.random() * images.length);
+      } while (index === lastImageIndex && images.length > 1);
+
+      lastImageIndex = index;
+      document.getElementById("gameImage").src = images[index].url;
+      currentAnswer = images[index].answer;
+      document.getElementById("answerText").innerText = currentAnswer;
+      document.getElementById("nextImageButton").style.display = "none";
+      createGrid();
+      document.getElementById("guessResult").innerText = "";
+    }
+
+    function addPlayer(team) {
+      const inputId = team === 'blue' ? "bluePlayerInput" : "redPlayerInput";
+      const listId = team === 'blue' ? "bluePlayers" : "redPlayers";
+      const name = document.getElementById(inputId).value.trim();
+      if (name === "") return alert("❌ الرجاء كتابة اسم اللاعب");
+      if (team === 'blue') bluePlayers.push(name);
+      else redPlayers.push(name);
+      document.getElementById(listId).innerHTML = (team === 'blue' ? bluePlayers : redPlayers)
+        .map(player => `• ${player}`).join("<br>");
+      document.getElementById(inputId).value = "";
+    }
+
+    function nextTurn() {
+      if (bluePlayers.length === 0 || redPlayers.length === 0) {
+        alert("❌ الرجاء إضافة لاعبين في كلا الفريقين أولاً.");
+        return;
+      }
+      let player;
+      if (currentTeam === 'blue') {
+        player = bluePlayers[turnIndex % bluePlayers.length];
+        answeringTeam = 'blue';
+        currentTeam = 'red';
+      } else {
+        player = redPlayers[turnIndex % redPlayers.length];
+        answeringTeam = 'red';
+        currentTeam = 'blue';
+        turnIndex++;
+      }
+      document.getElementById("currentPlayer").innerText = `🎮 الدور الآن: ${player}`;
+      document.getElementById("guessInput").value = "";
+      document.getElementById("guessResult").innerText = "";
+    }
+
+    function submitGuess() {
+      const guess = document.getElementById("guessInput").value.trim();
+      if (guess === "") {
+        alert("❌ الرجاء كتابة تخمين.");
+        return;
+      }
+      const resultDiv = document.getElementById("guessResult");
+      if (guess === currentAnswer) {
+        resultDiv.innerHTML += `✅ إجابة صحيحة!<br>`;
+        document.querySelectorAll(".cell").forEach(cell => {
+          cell.classList.add("revealed");
+        });
+        document.getElementById("nextImageButton").style.display = "inline-block";
+        if (answeringTeam === 'blue') blueScore++;
+        else redScore++;
+        document.getElementById("redScore").innerText = redScore;
+        document.getElementById("blueScore").innerText = blueScore;
+      } else {
+        resultDiv.innerHTML += `❌ خطأ: ${guess}<br>`;
+      }
+      document.getElementById("guessInput").value = "";
+    }
+
+    window.onload = () => {
+      createGrid();
+      loadRandomImage();
+    };
+  </script>
+</body>
+</html>

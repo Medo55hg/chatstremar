@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>🎮 ستريمر توب - الألعاب</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    function openLogin() {
+      document.getElementById("loginModal").style.display = "block";
+    }
+
+    function closeLogin() {
+      document.getElementById("loginModal").style.display = "none";
+    }
+
+    function saveEmail() {
+      const email = document.getElementById("emailInput").value;
+      if (email.trim() !== "") {
+        localStorage.setItem("streamerEmail", email);
+        alert("✅ تم حفظ الإيميل بنجاح!");
+        closeLogin();
+      } else {
+        alert("❌ الرجاء إدخال إيميل صحيح");
+      }
+    }
+
+    window.onload = function () {
+      const email = localStorage.getItem("streamerEmail");
+      if (email) {
+        document.getElementById("emailDisplay").innerText = `📧 ${email}`;
+        document.getElementById("emailDisplay").style.display = "block";
+      }
+    }
+  </script>
+</head>
+<body>
+
+  <!-- أزرار تسجيل الدخول -->
+  <div class="top-right">
+    <span id="emailDisplay" style="display:none;"></span>
+    <button class="login-btn" onclick="openLogin()">📧 تسجيل دخول بالإيميل</button>
+    <button class="login-btn" disabled title="قريباً">🎮 تسجيل دخول بتويتش (قريباً)</button>
+  </div>
+
+  <h1>🎮 أهلاً بك في ستريمر توب</h1>
+
+  <div class="game-list">
+
+    <div class="game-card">
+      <h2>🔤 الكلمات المبعثرة</h2>
+      <p>رتب الحروف بشكل صحيح في أسرع وقت!</p>
+      <a href="wordgame.html" class="start-btn">ابدأ اللعب</a>
+    </div>
+
+    <div class="game-card">
+      <h2>🖼️ اكشف الصورة</h2>
+      <p>شوف الصورة وخمّن الكلمة التي تعبر عنها!</p>
+      <a href="guessimage.html" class="start-btn">ابدأ اللعب</a>
+    </div>
+
+    <div class="game-card">
+      <h2>🧠 لعبة الذاكرة</h2>
+      <p>اختبر ذاكرتك في تحدي الصور!</p>
+      <button class="start-btn" disabled>قريباً</button>
+    </div>
+
+  </div>
+
+  <!-- مودال تسجيل الدخول -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeLogin()">&times;</span>
+      <h2>📧 تسجيل الدخول</h2>
+      <input type="email" id="emailInput" placeholder="example@email.com">
+      <br>
+      <button onclick="saveEmail()">🎮 احفظ وسجّل دخول</button>
+    </div>
+  </div>
+
+</body>
+</html>
