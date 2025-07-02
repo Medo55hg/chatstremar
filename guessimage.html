@@ -223,22 +223,49 @@
 </div>
 
 <script>
- const images = [
-      { url: "https://i.postimg.cc/kXtCZXLX/F3-HFd-HW0-AEa1g7.jpg", answer: "رايد مشواح" },
-      { url: "https://i.postimg.cc/rsty2vqv/hq720.jpg", answer: "شونق بونق" },
-      { url: "https://i.postimg.cc/ydhxDMMc/Gb-TRa-Ng-Wg-AAd-ma.jpg", answer: "بندريتا" },
-      { url: "https://i.postimg.cc/3J1XJCcf/Uf-JSd-QMW-400x400.jpg", answer: "كونان" },
-      { url: "https://i.postimg.cc/G2zDhbM8/AAAABdf-Go9-D-Dve-XMM8-KK8-Kspcy-Jfgdsf-Uu-Nz4r-Fn-SVZ24-Gtq1g-BPI-v-UGRBn3q-SZc0-VQo-Jab-PCEctz-Mcp-ULKkw-zq5-Vs-ZFfv-UI.jpg", answer: "سبايدرمان" },
-      { url: "https://i.postimg.cc/SQf4RJ7t/1831a0d7cfb3101098b4b986d1e43d07.jpg", answer: "ياسر مخ" },
-      { url: "https://i.postimg.cc/W34GZDq6/4e381384cff59a012179eba0df30a717.jpg", answer: "فيصل يجي" },
-      { url: "https://i.postimg.cc/hjJsXCY1/Minecraft-2024.jpg", answer: "ماين كرافت" },
-      { url: "https://i.postimg.cc/W4cTWKGh/image.jpg", answer: "هيرو براين" },
-      { url: "https://i.postimg.cc/JnG8GLmY/image.jpg", answer: "برج المملكة" },
-      { url: "https://i.postimg.cc/8z5Z8PbY/259f0650-094e-11eb-8bfb-60e78dcd1af0.jpg", answer: "فول قايز" },
-      { url: "https://i.postimg.cc/HWFMWWHK/intense-and-fearless-leon-s-kennedy-in-action-1wmdmawmnhjdpy5v-1024x575.jpg", answer: "ليون كينيدي" },
-      { url: "https://i.postimg.cc/434Pv4YP/Zx-PLg-7-N-400x400.jpg", answer: "كراش" },
-      { url: "https://i.postimg.cc/yx63tWzp/on-a-perfect-blue-sky.jpg", answer: "القدس" }
-    ];
+const images = [
+  { url: "https://i.postimg.cc/kXtCZXLX/F3-HFd-HW0-AEa1g7.jpg", answer: "رايد مشواح" },
+  { url: "https://i.postimg.cc/rsty2vqv/hq720.jpg", answer: "شونق بونق" },
+  { url: "https://i.postimg.cc/ydhxDMMc/Gb-TRa-Ng-Wg-AAd-ma.jpg", answer: "بندريتا" },
+  { url: "https://i.postimg.cc/3J1XJCcf/Uf-JSd-QMW-400x400.jpg", answer: "كونان" },
+  { url: "https://i.postimg.cc/G2zDhbM8/AAAABdf-Go9-D-Dve-XMM8-KK8-Kspcy-Jfgdsf-Uu-Nz4r-Fn-SVZ24-Gtq1g-BPI-v-UGRBn3q-SZc0-VQo-Jab-PCEctz-Mcp-ULKkw-zq5-Vs-ZFfv-UI.jpg", answer: "سبايدرمان" },
+  { url: "https://i.postimg.cc/SQf4RJ7t/1831a0d7cfb3101098b4b986d1e43d07.jpg", answer: "ياسر مخ" },
+  { url: "https://i.postimg.cc/W34GZDq6/4e381384cff59a012179eba0df30a717.jpg", answer: "فيصل يجي" },
+  { url: "https://i.postimg.cc/hjJsXCY1/Minecraft-2024.jpg", answer: "ماين كرافت" },
+  { url: "https://i.postimg.cc/W4cTWKGh/image.jpg", answer: "هيرو براين" },
+  { url: "https://i.postimg.cc/JnG8GLmY/image.jpg", answer: "برج المملكة" },
+  { url: "https://i.postimg.cc/8z5Z8PbY/259f0650-094e-11eb-8bfb-60e78dcd1af0.jpg", answer: "فول قايز" },
+  { url: "https://i.postimg.cc/HWFMWWHK/intense-and-fearless-leon-s-kennedy-in-action-1wmdmawmnhjdpy5v-1024x575.jpg", answer: "ليون كينيدي" },
+  { url: "https://i.postimg.cc/434Pv4YP/Zx-PLg-7-N-400x400.jpg", answer: "كراش" },
+  { url: "https://i.postimg.cc/yx63tWzp/on-a-perfect-blue-sky.jpg", answer: "القدس" },
+  { url: "https://i.postimg.cc/s2TTdyKG/2c86dea1b05c4f57ed7b3632898bf2ba.jpg", answer: "للي" },
+  { url: "https://i.postimg.cc/7P9tS3Sn/3-89.jpg", answer: "مساعد الدوسري" },
+  { url: "https://i.postimg.cc/02p4rTcr/598fbb0e2432fbc3c902803e7a120ac9.jpg", answer: "محمد اودين" },
+  { url: "https://i.postimg.cc/xdSM8Zpj/91274f359d57cfc0f2460bfdcd7e1f1c.jpg", answer: "محمد المكسيكي" },
+  { url: "https://i.postimg.cc/qqd2h5vx/144441917.jpg", answer: "كرستيانو رونالدو" },
+  { url: "https://i.postimg.cc/KjvBDgt1/artworks-000230624217-ihfshc-t240x240.jpg", answer: "ابو حمدان" },
+  { url: "https://i.postimg.cc/SsKcWM6J/channels4-profile.jpg", answer: "عزيز" },
+  { url: "https://i.postimg.cc/RZX872yd/El9-Su-U3-Wo-AMZRYb.jpg", answer: "خلودي 25" },
+  { url: "https://i.postimg.cc/BbzbPhsn/f3d1f3bc-f86e-4995-92e3-5311e61a0b7c.jpg", answer: "برج ايفل" },
+  { url: "https://i.postimg.cc/PJ1Zhs1k/f7b391905842a05a643eedb1344ac102cf356788-00.jpg", answer: "مجرم قيمز" },
+  { url: "https://i.postimg.cc/qRcrs1TG/GFu9-QT9-Xc-AAMggb.jpg", answer: "عادل" },
+  { url: "https://i.postimg.cc/gk2DPrnz/images-1.jpg", answer: "صالح اوبلز" },
+  { url: "https://i.postimg.cc/C5bLPbqF/images-2.jpg", answer: "ابو عمر" },
+  { url: "https://i.postimg.cc/3wZqBNRP/images-2-jpg.jpg", answer: "دربحه" },
+  { url: "https://i.postimg.cc/y8KxgpSv/images-3.jpg", answer: "خشب" },
+  { url: "https://i.postimg.cc/FzZrjNSp/images-4.jpg", answer: "سعد سوبفكس" },
+  { url: "https://i.postimg.cc/K8Z2n6cp/images-5.jpg", answer: "نويصر" },
+  { url: "https://i.postimg.cc/KjHMnPBJ/images-6.jpg", answer: "توبز" },
+  { url: "https://i.postimg.cc/8ztjWBGW/images.jpg", answer: "فواز" },
+  { url: "https://i.postimg.cc/9fZKK1fw/p0d7n21l.jpg", answer: "كريم بنزيما" },
+  { url: "https://i.postimg.cc/Jzvs73WQ/shutterstock-editorial-15379570v.jpg", answer: "ميسي" },
+  { url: "https://i.postimg.cc/hGGRY6Yy/The-Great-Wall-of-China-at-Jinshanling-edit.jpg", answer: "سور الصين" },
+  { url: "https://i.postimg.cc/QttNpHsM/image.jpg", answer: "البتراء" },
+  { url: "https://i.postimg.cc/CLtv0tdr/image.jpg", answer: "برج خليفه" },
+  { url: "https://i.postimg.cc/Gh8p98h3/image.jpg", answer: "الاهرامات" },
+  { url: "https://i.postimg.cc/G2zhZv3r/image.jpg", answer: "مودي الاسمر" }
+];
+
 
 let remainingImages = [...images];
 
