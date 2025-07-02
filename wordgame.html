@@ -370,12 +370,22 @@ function nextTurn() {
 function connectChat() {
   const platform = document.getElementById("platformSelect").value;
   const channel = document.getElementById("channelInput").value.trim();
+
+  if (!channel) {
+    alert("❌ الرجاء كتابة اسم القناة");
+    return;
+  }
+
   if (platform === "twitch") {
+    // Twitch Chat Connection
     twitchClient = new tmi.Client({ channels: [channel] });
-    twitchClient.connect();
+    twitchClient.connect().then(() => {
+      document.getElementById("chatStatus").innerText = `✅ تم الاتصال بـ Twitch (${channel})`;
+    });
     twitchClient.on('message', (channel, tags, message, self) => {
       const username = tags['display-name'];
       const content = message.trim();
+
       if (content === "!ازرق") {
         if (!bluePlayers.includes(username)) {
           bluePlayers.push(username);
@@ -399,9 +409,69 @@ function connectChat() {
         }
       }
     });
-    document.getElementById("chatStatus").innerText = "✅ تم الاتصال بـ Twitch!";
+  } else if (platform === "kick") {
+    // Kick Chat Connection
+    (async function(){
+      try {
+        const res = await fetch(`https://kick.com/api/v2/channels/${channel}`);
+        const data = await res.json();
+        const roomId = data.chatroom.id;
+
+        kickSocket = new WebSocket("wss://ws-us2.pusher.com/app/32cbd69e4b950bf97679?protocol=7&client=js&version=8.4.0-rc2&flash=false");
+        kickSocket.onopen = () => {
+          kickSocket.send(JSON.stringify({
+            event: "pusher:subscribe",
+            data: {
+              auth: "",
+              channel: `chatrooms.${roomId}.v2`
+            }
+          }));
+          document.getElementById("chatStatus").innerText = `✅ تم الاتصال بـ Kick (${channel})`;
+          setInterval(() => {
+            if (kickSocket.readyState === WebSocket.OPEN) {
+              kickSocket.send(JSON.stringify({ event: "pusher:ping", data: {} }));
+            }
+          }, 12000);
+        };
+        kickSocket.onmessage = e => {
+          const parsed = JSON.parse(e.data);
+          if (parsed.event === "App\\Events\\ChatMessageEvent") {
+            const msg = JSON.parse(parsed.data);
+            const username = msg.sender.username;
+            const content = msg.content.trim();
+
+            if (content === "!ازرق") {
+              if (!bluePlayers.includes(username)) {
+                bluePlayers.push(username);
+                updatePlayerList("blue");
+              }
+            } else if (content === "!احمر") {
+              if (!redPlayers.includes(username)) {
+                redPlayers.push(username);
+                updatePlayerList("red");
+              }
+            } else if (content === currentAnswer && username === currentPlayerName) {
+              document.getElementById("guessResult").innerHTML = `✅ ${username} أجاب بشكل صحيح!`;
+              if (answeringTeam === 'red') {
+                redScore++;
+                document.getElementById("redScore").innerText = redScore;
+                if (redScore >= 15) alert("🏆 الفريق الأحمر فاز!");
+              } else {
+                blueScore++;
+                document.getElementById("blueScore").innerText = blueScore;
+                if (blueScore >= 15) alert("🏆 الفريق الأزرق فاز!");
+              }
+            }
+          }
+        };
+      } catch (err) {
+        console.error("Kick connection error:", err);
+        document.getElementById("chatStatus").innerText = "❌ فشل الاتصال بـ Kick!";
+      }
+    })();
   }
 }
+
 </script>
 </body>
 </html>
