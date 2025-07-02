@@ -15,40 +15,70 @@
     }
     h1 {
       color: #ff3333;
-      margin-top: 20px;
+      margin-top: 10px;
     }
-    .teams {
+    .teams-container {
       display: flex;
       justify-content: space-between;
+      align-items: flex-start;
       margin: 20px auto;
       width: 90%;
       gap: 20px;
+      flex-wrap: wrap;
     }
     .team {
-      width: 45%;
-      background-color: #222;
-      padding: 20px;
-      border: 2px solid #ff3333;
+      width: 20%;
+      padding: 15px;
       border-radius: 15px;
       text-align: center;
     }
-    .team h3 {
-      margin-bottom: 10px;
+    .team-blue {
+      background-color: rgba(0,0,255,0.1);
+      border: 2px solid #0099ff;
+    }
+    .team-red {
+      background-color: rgba(255,0,0,0.1);
+      border: 2px solid #ff3333;
     }
     .players-list {
       background-color: #333;
       padding: 10px;
       border-radius: 8px;
       min-height: 50px;
-      font-size: 20px;
+      font-size: 18px;
+      text-align: right;
+    }
+    .player-entry {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 2px 0;
+    }
+    .player-entry button {
+      background: #900;
+      font-size: 14px;
+      padding: 2px 6px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .game-description {
+      width: 50%;
+      background-color: #222;
+      border: 1px solid #555;
+      border-radius: 10px;
+      padding: 15px;
+      font-size: 18px;
+      line-height: 1.6;
     }
     .game-area {
-      font-size: 20px;
+      font-size: 24px;
       margin: 20px auto;
       background-color: #222;
       padding: 20px;
       border-radius: 15px;
-      width: 700px;
+      width: 90%;
+      max-width: 1000px;
       border: 2px solid #ff3333;
       position: relative;
     }
@@ -87,7 +117,6 @@
       justify-content: center;
       cursor: pointer;
       transition: background-color 0.3s, color 0.3s;
-      font-family: 'Amiri', serif;
     }
     .cell.revealed {
       background-color: transparent;
@@ -95,12 +124,16 @@
       cursor: default;
     }
     input, button {
-      padding: 8px;
-      font-size: 16px;
+      padding: 10px;
+      font-size: 18px;
       margin: 5px;
       border-radius: 8px;
       border: none;
       font-family: 'Amiri', serif;
+    }
+    input.player-input {
+      width: 100%;
+      box-sizing: border-box;
     }
     button {
       background-color: #ff3333;
@@ -108,10 +141,9 @@
       cursor: pointer;
     }
     .current-player {
-      font-size: 20px;
+      font-size: 22px;
       margin: 10px 0;
       color: #00ffcc;
-      font-family: 'Amiri', serif;
     }
     .errors-list {
       margin-top: 10px;
@@ -120,12 +152,10 @@
       border-radius: 8px;
       min-height: 40px;
       text-align: right;
-      font-family: 'Amiri', serif;
     }
     .scoreboard {
-      margin-top: 10px;
-      font-size: 18px;
-      font-family: 'Amiri', serif;
+      margin-top: 15px;
+      font-size: 20px;
     }
     .answer-box {
       position: fixed;
@@ -135,68 +165,65 @@
       font-size: 20px;
       color: #fff;
       z-index: 100;
-      background: none;
-      border: none;
-      font-family: 'Amiri', serif;
     }
   </style>
 </head>
 <body>
 
-  <h1>🖼️ لعبة اكشف الصورة</h1>
+<h1>🖼️ لعبة اكشف الصورة</h1>
 
-  <p style="background-color:#222; padding:15px; border-radius:10px; border:1px solid #ff3333; font-size:18px; margin:20px auto; width:80%;">
-    🖼️ <strong>شرح اللعبة:</strong><br>
-    ستظهر صورة مخفية مقسمة إلى مربعات.<br>
-    عند ضغط اللاعب على رقم، يفتح المربع.<br>
-    بعد ذلك يكتب التخمين ويضغط تأكيد.<br>
-    إذا كانت الإجابة صحيحة: تنكشف الصورة ويحصل الفريق على عدد نقاط بعدد المربعات التي لم تُكشف.<br>
-    إذا كانت خطأ: ينتقل الدور للفريق التالي.<br>
-    ⚠️ تأكد تغطي مكان <strong>الإجابة الظاهرة أسفل الشاشة</strong>.
-  </p>
-
-  <div class="teams">
-    <div class="team">
-      <h3>🔴 الفريق الأحمر</h3>
-      <input type="text" id="redPlayerInput" placeholder="اسم اللاعب">
-      <button onclick="addPlayer('red')">➕ إضافة</button>
-      <div id="redPlayers" class="players-list"></div>
-    </div>
-    <div class="team">
-      <h3>🔵 الفريق الأزرق</h3>
-      <input type="text" id="bluePlayerInput" placeholder="اسم اللاعب">
-      <button onclick="addPlayer('blue')">➕ إضافة</button>
-      <div id="bluePlayers" class="players-list"></div>
-    </div>
+<div class="teams-container">
+  <div class="team team-blue">
+    <h3>🔵 الفريق الأزرق</h3>
+    <input type="text" id="bluePlayerInput" class="player-input" placeholder="اسم اللاعب">
+    <button onclick="addPlayer('blue')">➕ إضافة</button>
+    <div id="bluePlayers" class="players-list"></div>
   </div>
 
-  <div class="game-area">
-    <button onclick="startGame()">🎮 ابدأ اللعبة</button>
-    <div id="currentPlayer" class="current-player">⬇️ اللاعب الحالي سيظهر هنا</div>
-
-    <div class="image-container">
-      <img id="gameImage" src="https://i.postimg.cc/kXtCZXLX/F3-HFd-HW0-AEa1g7.jpg" alt="صورة اللعبة">
-      <div class="grid" id="grid"></div>
-    </div>
-
-    <input type="text" id="guessInput" placeholder="اكتب التخمين هنا">
-    <button onclick="submitGuess()">✅ تأكيد</button>
-    <button id="nextImageButton" onclick="loadRandomImage()" style="display:none;">🖼️ الصورة التالية</button>
-
-    <div id="guessResult" class="errors-list"></div>
-
-    <div class="scoreboard">
-      🔵 الفريق الأزرق: <span id="blueScore">0</span> نقطة<br>
-      🔴 الفريق الأحمر: <span id="redScore">0</span> نقطة
-    </div>
+  <div class="game-description">
+    ✅ <strong>شرح اللعبة:</strong><br>
+    ستظهر صورة مقسمة إلى مربعات.<br>
+    اللاعب يختار رقم لفتح المربع ثم يكتب التخمين.<br>
+    إذا كانت الإجابة صحيحة، تحسب نقاط بعدد المربعات الباقية.<br>
+    أول فريق يصل إلى 75 نقطة يفوز 🏆.
   </div>
 
-  <div class="answer-box">
-    ⚠️ الإجابة: <span id="answerText">❓</span>
+  <div class="team team-red">
+    <h3>🔴 الفريق الأحمر</h3>
+    <input type="text" id="redPlayerInput" class="player-input" placeholder="اسم اللاعب">
+    <button onclick="addPlayer('red')">➕ إضافة</button>
+    <div id="redPlayers" class="players-list"></div>
+  </div>
+</div>
+
+<div class="game-area">
+  <button id="startButton" onclick="startGame()">🎮 ابدأ اللعبة</button>
+  <div id="currentPlayer" class="current-player">⬇️ اللاعب الحالي سيظهر هنا</div>
+
+  <div class="image-container">
+    <img id="gameImage" src="https://i.postimg.cc/kXtCZXLX/F3-HFd-HW0-AEa1g7.jpg" alt="صورة اللعبة">
+    <div class="grid" id="grid"></div>
   </div>
 
-  <script>
-    const images = [
+  <input type="text" id="guessInput" placeholder="اكتب التخمين هنا">
+  <button onclick="submitGuess()">✅ تأكيد</button>
+  <button onclick="nextTurn()">⏭️ التالي</button>
+  <button id="nextImageButton" onclick="loadRandomImage()" style="display:none;">🖼️ الصورة التالية</button>
+
+  <div id="guessResult" class="errors-list"></div>
+
+  <div class="scoreboard">
+    🔵 الفريق الأزرق: <span id="blueScore">0</span> نقطة<br>
+    🔴 الفريق الأحمر: <span id="redScore">0</span> نقطة
+  </div>
+</div>
+
+<div class="answer-box">
+  ⚠️ الإجابة: <span id="answerText">❓</span>
+</div>
+
+<script>
+ const images = [
       { url: "https://i.postimg.cc/kXtCZXLX/F3-HFd-HW0-AEa1g7.jpg", answer: "رايد مشواح" },
       { url: "https://i.postimg.cc/rsty2vqv/hq720.jpg", answer: "شونق بونق" },
       { url: "https://i.postimg.cc/ydhxDMMc/Gb-TRa-Ng-Wg-AAd-ma.jpg", answer: "بندريتا" },
@@ -213,120 +240,165 @@
       { url: "https://i.postimg.cc/yx63tWzp/on-a-perfect-blue-sky.jpg", answer: "القدس" }
     ];
 
-    const bluePlayers = [];
-    const redPlayers = [];
-    let turnIndex = 0;
-    let currentTeam = 'blue';
-    let answeringTeam = 'blue';
-    let currentAnswer = images[0].answer;
-    let blueScore = 0;
-    let redScore = 0;
-    let lastImageIndex = 0;
+let remainingImages = [...images];
 
-    function createGrid() {
-      const grid = document.getElementById("grid");
-      grid.innerHTML = "";
-      for (let i = 0; i < 24; i++) {
-        const cell = document.createElement("div");
-        cell.className = "cell";
-        cell.textContent = i + 1;
-        cell.onclick = () => {
-          cell.classList.add("revealed");
-          cell.onclick = null;
-        };
-        grid.appendChild(cell);
+const bluePlayers = [];
+const redPlayers = [];
+let turnIndex = 0;
+let currentTeam = 'blue';
+let answeringTeam = 'blue';
+let currentAnswer = images[0].answer;
+let blueScore = 0;
+let redScore = 0;
+let timerInterval = null;
+
+function createGrid() {
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+  for (let i = 0; i < 24; i++) {
+    const cell = document.createElement("div");
+    cell.className = "cell";
+    cell.textContent = i + 1;
+    cell.onclick = () => {
+      cell.classList.add("revealed");
+      cell.onclick = null;
+      startTimer();
+    };
+    grid.appendChild(cell);
+  }
+}
+
+function addPlayer(team) {
+  const inputId = team === 'blue' ? "bluePlayerInput" : "redPlayerInput";
+  const name = document.getElementById(inputId).value.trim();
+  if (name === "") return alert("❌ الرجاء كتابة اسم اللاعب");
+  if (team === 'blue') bluePlayers.push(name);
+  else redPlayers.push(name);
+  updatePlayerList(team);
+  document.getElementById(inputId).value = "";
+}
+
+function updatePlayerList(team) {
+  const listId = team === 'blue' ? "bluePlayers" : "redPlayers";
+  const players = team === 'blue' ? bluePlayers : redPlayers;
+  document.getElementById(listId).innerHTML = players
+    .map((player, i) => `
+      <div class="player-entry">
+        <span>• ${player}</span>
+        <button onclick="removePlayer('${team}', ${i})">🗑️</button>
+      </div>
+    `).join("");
+}
+
+function removePlayer(team, index) {
+  if (team === 'blue') bluePlayers.splice(index, 1);
+  else redPlayers.splice(index, 1);
+  updatePlayerList(team);
+}
+
+function startGame() {
+  document.getElementById("startButton").style.display = "none";
+  document.getElementById("answerText").innerText = currentAnswer;
+  nextTurn();
+}
+
+function loadRandomImage() {
+  if (remainingImages.length === 0) {
+    remainingImages = [...images];
+  }
+  const index = Math.floor(Math.random() * remainingImages.length);
+  const selectedImage = remainingImages[index];
+  remainingImages.splice(index, 1);
+
+  document.getElementById("gameImage").src = selectedImage.url;
+  currentAnswer = selectedImage.answer;
+  document.getElementById("answerText").innerText = currentAnswer;
+  document.getElementById("nextImageButton").style.display = "none";
+  createGrid();
+  document.getElementById("guessResult").innerText = "";
+}
+
+function nextTurn() {
+  clearTimer();
+  if (bluePlayers.length === 0 || redPlayers.length === 0) {
+    alert("❌ الرجاء إضافة لاعبين في كلا الفريقين أولاً.");
+    return;
+  }
+  let player;
+  if (currentTeam === 'blue') {
+    player = bluePlayers[turnIndex % bluePlayers.length];
+    answeringTeam = 'blue';
+    currentTeam = 'red';
+  } else {
+    player = redPlayers[turnIndex % redPlayers.length];
+    answeringTeam = 'red';
+    currentTeam = 'blue';
+    turnIndex++;
+  }
+  document.getElementById("currentPlayer").innerText = `🎮 الدور الآن: ${player}`;
+  document.getElementById("answerText").innerText = currentAnswer;
+  document.getElementById("guessInput").value = "";
+  document.getElementById("guessResult").innerText = "";
+}
+
+function submitGuess() {
+  const guess = document.getElementById("guessInput").value.trim();
+  if (guess === "") {
+    alert("❌ الرجاء كتابة تخمين.");
+    return;
+  }
+  const resultDiv = document.getElementById("guessResult");
+  if (guess === currentAnswer) {
+    resultDiv.innerHTML += `✅ إجابة صحيحة!<br>`;
+    clearTimer();
+    const remainingCells = Array.from(document.querySelectorAll(".cell")).filter(c => !c.classList.contains("revealed")).length;
+    document.querySelectorAll(".cell").forEach(cell => {
+      cell.classList.add("revealed");
+    });
+    document.getElementById("nextImageButton").style.display = "inline-block";
+    if (answeringTeam === 'red') {
+      redScore += remainingCells;
+      document.getElementById("redScore").innerText = redScore;
+      if (redScore >= 75) {
+        alert("🏆 الفريق الأحمر فاز!");
+      }
+    } else {
+      blueScore += remainingCells;
+      document.getElementById("blueScore").innerText = blueScore;
+      if (blueScore >= 75) {
+        alert("🏆 الفريق الأزرق فاز!");
       }
     }
+  } else {
+    resultDiv.innerHTML += `❌ خطأ: ${guess}<br>`;
+  }
+  document.getElementById("guessInput").value = "";
+}
 
-    function loadRandomImage() {
-      let index;
-      do {
-        index = Math.floor(Math.random() * images.length);
-      } while (index === lastImageIndex && images.length > 1);
-
-      lastImageIndex = index;
-      document.getElementById("gameImage").src = images[index].url;
-      currentAnswer = images[index].answer;
-      document.getElementById("answerText").innerText = currentAnswer;
-      createGrid();
-      document.getElementById("guessResult").innerText = "";
-      document.getElementById("nextImageButton").style.display = "none";
+function startTimer() {
+  clearTimer();
+  let timeLeft = 30;
+  document.getElementById("currentPlayer").innerText += ` | ⏳ ${timeLeft} ثانية`;
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    document.getElementById("currentPlayer").innerText = document.getElementById("currentPlayer").innerText.split("|")[0].trim() + ` | ⏳ ${timeLeft} ثانية`;
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      alert("⏳ انتهى الوقت!");
     }
+  }, 1000);
+}
 
-    function addPlayer(team) {
-      const inputId = team === 'blue' ? "bluePlayerInput" : "redPlayerInput";
-      const listId = team === 'blue' ? "bluePlayers" : "redPlayers";
-      const name = document.getElementById(inputId).value.trim();
-      if (name === "") return alert("❌ الرجاء كتابة اسم اللاعب");
-      if (team === 'blue') bluePlayers.push(name);
-      else redPlayers.push(name);
-      document.getElementById(listId).innerHTML = (team === 'blue' ? bluePlayers : redPlayers)
-        .map(player => `• ${player}`).join("<br>");
-      document.getElementById(inputId).value = "";
-    }
+function clearTimer() {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+}
 
-    function startGame() {
-      turnIndex = 0;
-      currentTeam = 'blue';
-      answeringTeam = 'blue';
-      blueScore = 0;
-      redScore = 0;
-      loadRandomImage();
-      nextTurn();
-    }
-
-    function nextTurn() {
-      if (bluePlayers.length === 0 || redPlayers.length === 0) {
-        alert("❌ الرجاء إضافة لاعبين في كلا الفريقين أولاً.");
-        return;
-      }
-      let player;
-      if (currentTeam === 'blue') {
-        player = bluePlayers[turnIndex % bluePlayers.length];
-        answeringTeam = 'blue';
-        currentTeam = 'red';
-      } else {
-        player = redPlayers[turnIndex % redPlayers.length];
-        answeringTeam = 'red';
-        currentTeam = 'blue';
-        turnIndex++;
-      }
-      document.getElementById("currentPlayer").innerText = `🎮 الدور الآن: ${player}`;
-      document.getElementById("guessInput").value = "";
-      document.getElementById("guessResult").innerText = "";
-    }
-
-    function submitGuess() {
-      const guess = document.getElementById("guessInput").value.trim();
-      if (guess === "") {
-        alert("❌ الرجاء كتابة تخمين.");
-        return;
-      }
-      const resultDiv = document.getElementById("guessResult");
-      if (guess === currentAnswer) {
-        // احسب كم مربع باقي
-        const unrevealed = document.querySelectorAll(".cell:not(.revealed)").length;
-        const pointsEarned = unrevealed;
-
-        resultDiv.innerHTML += `✅ إجابة صحيحة! حصل الفريق ${pointsEarned} نقطة<br>`;
-        document.querySelectorAll(".cell").forEach(cell => {
-          cell.classList.add("revealed");
-        });
-        if (answeringTeam === 'blue') blueScore += pointsEarned;
-        else redScore += pointsEarned;
-        document.getElementById("redScore").innerText = redScore;
-        document.getElementById("blueScore").innerText = blueScore;
-        document.getElementById("nextImageButton").style.display = "inline-block";
-      } else {
-        resultDiv.innerHTML += `❌ خطأ: ${guess}<br>`;
-        nextTurn();
-      }
-      document.getElementById("guessInput").value = "";
-    }
-
-    window.onload = () => {
-      createGrid();
-    }
-  </script>
+window.onload = () => {
+  createGrid();
+}
+</script>
 </body>
 </html>
