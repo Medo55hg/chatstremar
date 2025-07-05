@@ -1,132 +1,65 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <title>🎯 لعبة خماسيات</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
-  <style>
-    body {
-      background-color: #111;
-      color: #fff;
-      font-family: 'Amiri', serif;
-      text-align: center;
-      padding: 20px;
-    }
-    h1 {
-      color: #ff3333;
-      margin-top: 10px;
-    }
-    .description {
-      background-color: #222;
-      border: 2px solid #555;
-      border-radius: 10px;
-      padding: 15px;
-      font-size: 18px;
-      line-height: 1.6;
-      width: 90%;
-      max-width: 800px;
-      margin: 20px auto;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(5, 60px);
-      grid-template-rows: repeat(8, 60px);
-      gap: 5px;
-      justify-content: center;
-      margin: 20px 0;
-    }
-    .cell {
-      width: 60px;
-      height: 60px;
-      background-color: #333;
-      border: 2px solid #555;
-      font-size: 32px;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .cell.correct { background-color: #4caf50; border-color: #4caf50; }
-    .cell.present { background-color: #f1c40f; border-color: #f1c40f; color: #000; }
-    .cell.absent { background-color: #555; border-color: #555; color: #aaa; }
-    .keyboard-container {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      max-width: 650px;
-      margin: auto;
-    }
-    .keyboard-row {
-      display: flex;
-      gap: 5px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    .key {
-      width: 50px;
-      height: 50px;
-      padding: 0;
-      font-size: 22px;
-      background-color: #222;
-      color: #fff;
-      border: 1px solid #555;
-      border-radius: 6px;
-      cursor: pointer;
-      text-align: center;
-      user-select: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .key.correct { background-color: #4caf50 !important; color: #fff; }
-    .key.present { background-color: #f1c40f !important; color: #000; }
-    .key.absent { background-color: #555 !important; color: #aaa; }
-    .key:hover { background-color: #444; }
-    .key-enter { background-color: #28a745 !important; color: #fff; }
-    .key-backspace { background-color: #c0392b !important; color: #fff; }
-    .message {
-      margin-top: 15px;
-      font-size: 18px;
-      color: #0f0;
-    }
-    .timer {
-      margin-top: 10px;
-      font-size: 16px;
-      color: #ccc;
-    }
-  </style>
+<meta charset="UTF-8" />
+<title>🎯 لعبة خماسيات</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
+<style>
+body { background-color: #111; color: #fff; font-family: 'Amiri', serif; text-align: center; padding: 20px; }
+h1 { color: #ff3333; margin-top: 10px; }
+.description { background-color: #222; border: 2px solid #555; border-radius: 10px; padding: 15px; font-size: 18px; line-height: 1.6; width: 90%; max-width: 800px; margin: 20px auto; }
+.grid { display: grid; grid-template-columns: repeat(5, 60px); grid-template-rows: repeat(8, 60px); gap: 5px; justify-content: center; margin: 20px 0; }
+.cell { width: 60px; height: 60px; background-color: #333; border: 2px solid #555; font-size: 32px; color: #fff; display: flex; align-items: center; justify-content: center; }
+.cell.correct { background-color: #4caf50; border-color: #4caf50; }
+.cell.present { background-color: #f1c40f; border-color: #f1c40f; color: #000; }
+.cell.absent { background-color: #555; border-color: #555; color: #aaa; }
+.keyboard-container { display: flex; flex-direction: column; gap: 5px; max-width: 650px; margin: auto; }
+.keyboard-row { display: flex; gap: 5px; justify-content: center; flex-wrap: wrap; }
+.key { width: 50px; height: 50px; padding: 0; font-size: 22px; background-color: #222; color: #fff; border: 1px solid #555; border-radius: 6px; cursor: pointer; text-align: center; user-select: none; display: flex; align-items: center; justify-content: center; }
+.key.correct { background-color: #4caf50 !important; color: #fff; }
+.key.present { background-color: #f1c40f !important; color: #000; }
+.key.absent { background-color: #555 !important; color: #aaa; }
+.key:hover { background-color: #444; }
+.key-enter { background-color: #28a745 !important; color: #fff; }
+.key-backspace { background-color: #c0392b !important; color: #fff; }
+.message { margin-top: 15px; font-size: 18px; color: #0f0; }
+.timer { margin-top: 10px; font-size: 16px; color: #ccc; }
+.summary { margin-top: 20px; }
+.summary-grid { display: inline-grid; grid-template-columns: repeat(5, 30px); grid-template-rows: repeat(8, 30px); gap: 2px; margin: 10px; }
+.summary-cell { width:30px; height:30px; font-size:18px; border:1px solid #555; display:flex; align-items:center; justify-content:center; }
+.summary-cell.correct { background-color:#4caf50; }
+.summary-cell.present { background-color:#f1c40f; color:#000; }
+.summary-cell.absent { background-color:#555; color:#aaa; }
+</style>
 </head>
 <body>
-  <h1>🎯 خماسيات</h1>
+<h1>🎯 خماسيات</h1>
+<div class="description">
+🧠 <strong>شرح اللعبة:</strong><br>
+كل يوم 3 كلمات جديدة مكونة من 5 حروف.<br>
+لديك 8 محاولات لكل كلمة باستخدام الكيبورد.<br>
+🟩 أخضر: الحرف صحيح وفي مكانه.<br>
+🟨 أصفر: الحرف موجود لكن في مكان خاطئ.<br>
+بعد حل الكلمات أو استنفاد المحاولات، تعرض محاولاتك كلها.<br>
+</div>
 
-  <div class="description">
-    🧠 <strong>شرح اللعبة:</strong><br>
-    كل يوم 3 كلمات جديدة مكونة من 5 حروف.<br>
-    لديك 8 محاولات لكل كلمة باستخدام الكيبورد.<br>
-    🟩 أخضر: الحرف صحيح وفي مكانه.<br>
-    🟨 أصفر: الحرف موجود لكن في مكان خاطئ.<br>
-    بعد حل الكلمات أو استنفاد المحاولات، لن تستطيع اللعب مرة أخرى إلا بعد 24 ساعة ⏳.
-  </div>
+<div id="summary" class="summary"></div>
 
-  <div class="game-container">
-    <div id="correctAnswer" class="message" style="color:#0ff; text-align:right;"></div>
-    <div id="grid" class="grid"></div>
-
-    <div class="keyboard-container">
-      <div class="keyboard-row" id="row1"></div>
-      <div class="keyboard-row" id="row2"></div>
-      <div class="keyboard-row" id="row3"></div>
-      <div class="keyboard-row">
-        <div class="key key-backspace" onclick="handleBackspace()">⌫</div>
-        <div class="key key-enter" onclick="handleEnter()">⏎</div>
-      </div>
-    </div>
-
-    <div class="message" id="messageBox"></div>
-    <div class="timer" id="countdown"></div>
-  </div>
-
+<div class="game-container">
+<div id="correctAnswer" class="message" style="color:#0ff; text-align:right;"></div>
+<div id="grid" class="grid"></div>
+<div class="keyboard-container">
+<div class="keyboard-row" id="row1"></div>
+<div class="keyboard-row" id="row2"></div>
+<div class="keyboard-row">
+<div class="key key-backspace" onclick="handleBackspace()">⌫</div>
+<div class="key key-enter" onclick="handleEnter()">⏎</div>
+</div>
+</div>
+<div class="message" id="messageBox"></div>
+<div class="timer" id="countdown"></div>
+</div>
 <script>
 const sixLetterWords = [
   "أزهار","أحداث","أصوات","أمثلة","أمانة","أشجار","إبصار","إعصار","إشارة","إقامة",
@@ -162,17 +95,18 @@ let currentWordIndex = 0;
 let currentRow = 0;
 let currentGuess = "";
 let isLocked = false;
+let savedGuesses = [[], [], []];
 
 const grid = document.getElementById("grid");
 const messageBox = document.getElementById("messageBox");
 const correctAnswerBox = document.getElementById("correctAnswer");
 const countdown = document.getElementById("countdown");
+const summary = document.getElementById("summary");
 
 function seedRandom(seed) {
   let x = Math.sin(seed) * 10000;
   return x - Math.floor(x);
 }
-
 function pickWordsBySeed(seed) {
   const chosen = new Set();
   while (chosen.size < 3) {
@@ -182,17 +116,56 @@ function pickWordsBySeed(seed) {
   }
   return Array.from(chosen);
 }
-
+function saveState() {
+  const state = {
+    currentWordIndex,
+    currentRow,
+    currentGuess,
+    isLocked,
+    savedGuesses,
+    correctHTML: correctAnswerBox.innerHTML,
+    date: new Date().toISOString().slice(0,10)
+  };
+  localStorage.setItem("khmasiyatState", JSON.stringify(state));
+}
+function loadState() {
+  const data = localStorage.getItem("khmasiyatState");
+  if (data) {
+    const state = JSON.parse(data);
+    const today = new Date().toISOString().slice(0,10);
+    if (state.date === today) {
+      currentWordIndex = state.currentWordIndex;
+      currentRow = state.currentRow;
+      currentGuess = state.currentGuess;
+      isLocked = state.isLocked;
+      savedGuesses = state.savedGuesses || [[],[],[]];
+      correctAnswerBox.innerHTML = state.correctHTML || "";
+      return true;
+    }
+  }
+  return false;
+}
 function initGame() {
   const today = new Date().toISOString().slice(0,10);
   const seed = parseInt(today.replace(/-/g,''));
   words = pickWordsBySeed(seed);
-  createGrid();
-  createKeyboard();
+  if (loadState()) {
+    if (currentWordIndex >= 3) {
+      isLocked = true;
+      showSummary();
+      return;
+    }
+    createGrid();
+    createKeyboard();
+    savedGuesses[currentWordIndex].forEach((g, i) => {currentRow = i;currentGuess = g.guess;renderGuess(g.result);});
+    currentGuess = "";
+  } else {
+    createGrid();
+    createKeyboard();
+  }
   updateCountdown();
   setInterval(updateCountdown, 1000);
 }
-
 function createGrid() {
   grid.innerHTML = "";
   for (let i=0; i<8; i++) {
@@ -204,96 +177,106 @@ function createGrid() {
     }
   }
 }
-
 function createKeyboard() {
-  const rows = [
-    "اأبتثجحخدذرزسشصضطظعغفقكلمنهوي",
-    "ءؤئىآإةى"
-  ];
-  rows.forEach((row, idx) => {
-    const rowDiv = document.getElementById(`row${idx+1}`);
-    rowDiv.innerHTML = "";
-    row.split("").forEach(k => {
-      const key = document.createElement("div");
+  const rows = ["اأبتثجحخدذرزسشصضطظعغفقكلمنهوي","ءؤئىآإةى"];
+  rows.forEach((row,idx)=>{
+    const rowDiv=document.getElementById(`row${idx+1}`);
+    rowDiv.innerHTML="";
+    row.split("").forEach(k=>{
+      const key=document.createElement("div");
       key.classList.add("key");
-      key.textContent = k;
-      key.onclick = () => handleKey(k);
+      key.textContent=k;
+      key.onclick=()=>handleKey(k);
       rowDiv.appendChild(key);
     });
   });
 }
-
 function handleKey(k) {
   if (isLocked || currentGuess.length >= 5) return;
   currentGuess += k;
   updateGrid();
+  saveState();
 }
 function handleBackspace() {
   if (isLocked || currentGuess.length === 0) return;
   currentGuess = currentGuess.slice(0, -1);
   updateGrid();
+  saveState();
 }
 function handleEnter() {
   if (isLocked || currentGuess.length < 5) return;
   const correct = words[currentWordIndex];
   const result = Array(5).fill("absent");
-  for (let i = 0; i < 5; i++) {
-    if (currentGuess[i] === correct[i]) result[i] = "correct";
-    else if (correct.includes(currentGuess[i])) result[i] = "present";
+  for (let i=0; i<5; i++) {
+    if (currentGuess[i] === correct[i]) result[i]="correct";
+    else if (correct.includes(currentGuess[i])) result[i]="present";
   }
-  for (let j = 0; j < 5; j++) {
-    const cell = document.getElementById(`cell-${currentWordIndex}-${currentRow}-${j}`);
-    cell.textContent = currentGuess[j];
-    cell.classList.add(result[j]);
-  }
+  renderGuess(result);
+  savedGuesses[currentWordIndex].push({guess:currentGuess, result});
   if (currentGuess === correct) {
     correctAnswerBox.innerHTML += `✅ الكلمة ${currentWordIndex+1}: ${correct}<br>`;
     currentWordIndex++;
-    if (currentWordIndex >= 3) {
-      showMessage("🎉 أنهيت كل الكلمات!");
-      isLocked = true;
-    } else {
-      showMessage("✅ صحيح! الكلمة التالية...");
-      resetForNextWord();
-    }
+    if (currentWordIndex >=3) {showMessage("🎉 أنهيت كل الكلمات!");isLocked=true;showSummary();}
+    else {showMessage("✅ صحيح! الكلمة التالية...");resetForNextWord();}
   } else {
     currentRow++;
-    if (currentRow >= 8) {
+    if (currentRow >=8) {
       correctAnswerBox.innerHTML += `❌ الكلمة ${currentWordIndex+1}: ${correct}<br>`;
       currentWordIndex++;
-      if (currentWordIndex >= 3) {
-        showMessage("✅ انتهت كل الكلمات.");
-        isLocked = true;
-      } else {
-        resetForNextWord();
-      }
+      if (currentWordIndex >=3) {showMessage("✅ انتهت كل الكلمات.");isLocked=true;showSummary();}
+      else {resetForNextWord();}
     }
   }
-  currentGuess = "";
+  currentGuess="";
+  saveState();
+}
+function renderGuess(result) {
+  for (let j=0; j<5; j++) {
+    const cell=document.getElementById(`cell-${currentWordIndex}-${currentRow}-${j}`);
+    cell.textContent=currentGuess[j];
+    cell.classList.add(result[j]);
+  }
 }
 function updateGrid() {
-  for (let i = 0; i < 5; i++) {
-    const cell = document.getElementById(`cell-${currentWordIndex}-${currentRow}-${i}`);
-    if (cell) cell.textContent = currentGuess[i] || "";
+  for (let i=0; i<5; i++) {
+    const cell=document.getElementById(`cell-${currentWordIndex}-${currentRow}-${i}`);
+    if (cell) cell.textContent=currentGuess[i]||"";
   }
 }
 function resetForNextWord() {
-  currentRow = 0;
-  currentGuess = "";
+  currentRow=0;
+  currentGuess="";
   createGrid();
+  saveState();
 }
-function showMessage(msg) { messageBox.textContent = msg; }
+function showMessage(msg){messageBox.textContent=msg;}
 function updateCountdown() {
-  const now = new Date();
-  const midnight = new Date();
-  midnight.setHours(24,0,0,0);
-  const diff = midnight - now;
-  const h = Math.floor(diff/3600000);
-  const m = Math.floor((diff%3600000)/60000);
-  const s = Math.floor((diff%60000)/1000);
-  countdown.textContent = `🕒 التحديث خلال: ${h}س ${m}د ${s}ث`;
+  const now=new Date();
+  const midnight=new Date();midnight.setHours(24,0,0,0);
+  const diff=midnight-now;
+  const h=Math.floor(diff/3600000);
+  const m=Math.floor((diff%3600000)/60000);
+  const s=Math.floor((diff%60000)/1000);
+  countdown.textContent=`🕒 التحديث خلال: ${h}س ${m}د ${s}ث`;
 }
-window.onload = initGame;
+function showSummary() {
+  summary.innerHTML="<h2>⭐ ملخص محاولاتك:</h2>";
+  for (let w=0;w<3;w++) {
+    const gridDiv=document.createElement("div");
+    gridDiv.className="summary-grid";
+    for (let r=0;r<8;r++) {
+      const guessObj=savedGuesses[w][r];
+      for (let c=0;c<5;c++) {
+        const cell=document.createElement("div");
+        cell.className="summary-cell";
+        if (guessObj){cell.textContent=guessObj.guess[c];cell.classList.add(guessObj.result[c]);}
+        gridDiv.appendChild(cell);
+      }
+    }
+    summary.appendChild(gridDiv);
+  }
+}
+window.onload=initGame;
 </script>
 </body>
 </html>
