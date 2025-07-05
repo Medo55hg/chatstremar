@@ -13,24 +13,10 @@
       text-align: center;
       padding: 20px;
     }
-    .contact-button {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background-color: #000;
-      color: #fff;
-      padding: 10px 15px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-size: 16px;
-      border: 2px solid #fff;
-      z-index: 1000;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .contact-button:hover {
-      background-color: #222;
+    h1 {
+      font-size: 36px;
+      color: #ff3333;
+      margin-bottom: 30px;
     }
     .row {
       display: flex;
@@ -48,6 +34,35 @@
       position: relative;
       overflow: hidden;
       text-align: center;
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.6);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .game-card:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 15px 25px rgba(0, 0, 0, 0.8);
+    }
+    .game-card.transitioning {
+      z-index: 999;
+      transform: scale(1.5) translateY(-50px);
+      transition: transform 0.6s ease;
+    }
+    .start-btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #00D86C;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+    .start-btn:hover {
+      background-color: #00ff80;
+      transform: scale(1.05);
     }
     .game-card.image-bg::before {
       content: "";
@@ -82,6 +97,18 @@
       position: relative;
       z-index: 1;
     }
+    .game-card.blur::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      backdrop-filter: blur(5px);
+      background: rgba(0,0,0,0.6);
+      z-index: 1;
+    }
+    .game-card.blur button {
+      position: relative;
+      z-index: 2;
+    }
     .note {
       margin-top: 40px;
       font-size: 18px;
@@ -100,46 +127,24 @@
       color: #00D800;
       font-weight: bold;
     }
-    .login-section {
-      margin: 30px auto;
-      max-width: 400px;
-      text-align: center;
-      border: 2px dashed #444;
-      padding: 15px;
-      border-radius: 10px;
-      position: relative;
-      overflow: hidden;
-    }
-    .login-section::after {
-      content: "🔒 التسجيل مغلق حالياً من الصفحة الرئيسية";
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.8);
+    .contact-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #000;
       color: #fff;
-      font-size: 18px;
-      display: flex;
+      padding: 10px 15px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 16px;
+      border: 2px solid #fff;
+      z-index: 1000;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      border-radius: 10px;
-      z-index: 5;
     }
-    .login-section select,
-    .login-section input,
-    .login-section button {
-      pointer-events: none;
-      opacity: 0.4;
-    }
-    .game-card.blur::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      backdrop-filter: blur(5px);
-      background: rgba(0,0,0,0.6);
-      z-index: 1;
-    }
-    .game-card.blur button {
-      position: relative;
-      z-index: 2;
+    .contact-button:hover {
+      background-color: #222;
     }
   </style>
 </head>
@@ -147,23 +152,12 @@
 
   <h1>🎮 أهلاً بك في ستريمر توب</h1>
 
-  <!-- نموذج تسجيل الدخول -->
-  <div class="login-section">
-    <select id="platformSelect">
-      <option value="twitch">Twitch</option>
-      <option value="kick">Kick</option>
-    </select>
-    <input type="text" id="channelInput" placeholder="🎮 اكتب اسم القناة">
-    <button onclick="saveChannel()">✅ تسجيل الدخول</button>
-    <div id="statusMessage"></div>
-  </div>
-
-  <!-- الصف الأول -->
   <div class="row">
     <div class="game-card image-bg">
       <h2>🔤 الكلمات المبعثرة</h2>
       <p>رتب الحروف بشكل صحيح في أسرع وقت!</p>
-      <div class="platforms">✅ يدعم:
+      <div class="platforms">
+        ✅ يدعم:
         <span class="twitch-text">🟣 تويتش</span> +
         <span class="kick-text">🟢 كيك</span>
       </div>
@@ -183,30 +177,42 @@
     </div>
   </div>
 
-  <!-- الصف الثاني -->
   <div class="row">
     <div class="game-card blur">
       <h2>🧠 لعبة تحدي الصور</h2>
       <p>اختبر ذاكرتك في تحدي الصور!</p>
-      <button class="start-btn" disabled>قريباً</button>
+      <button class="start-btn" disabled>قريبًا</button>
     </div>
 
     <div class="game-card blur">
       <h2>🎯 التركيز</h2>
       <p>اختبر قوة تركيزك!</p>
-      <button class="start-btn" disabled>قريباً</button>
+      <button class="start-btn" disabled>قريبًا</button>
     </div>
   </div>
 
-  <!-- الملاحظة -->
   <div class="note">
     💡 يمكنك ربط قناتك مع الشات داخل الألعاب فقط.
   </div>
 
-  <!-- زر روابط التواصل -->
   <a href="https://linktr.ee/medo_dv" target="_blank" class="contact-button">
     🗂️ روابط التواصل
   </a>
+
+  <script>
+    document.querySelectorAll('.start-btn').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        if (this.hasAttribute('disabled')) return;
+        e.preventDefault();
+        const card = this.closest('.game-card');
+        card.classList.add('transitioning');
+        const link = this.getAttribute('href');
+        setTimeout(() => {
+          window.location.href = link;
+        }, 600);
+      });
+    });
+  </script>
 
 </body>
 </html>
