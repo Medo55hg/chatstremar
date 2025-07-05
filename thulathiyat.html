@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>🎯 لعبة خماسيات</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #111;
+      color: #fff;
+      font-family: 'Amiri', serif;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #ff3333;
+      margin-top: 10px;
+    }
+    .description {
+      background-color: #222;
+      border: 2px solid #555;
+      border-radius: 10px;
+      padding: 15px;
+      font-size: 18px;
+      line-height: 1.6;
+      width: 90%;
+      max-width: 800px;
+      margin: 20px auto;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, 60px);
+      grid-template-rows: repeat(8, 60px);
+      gap: 5px;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    .cell {
+      width: 60px;
+      height: 60px;
+      background-color: #333;
+      border: 2px solid #555;
+      font-size: 32px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cell.correct { background-color: #4caf50; border-color: #4caf50; }
+    .cell.present { background-color: #f1c40f; border-color: #f1c40f; color: #000; }
+    .cell.absent { background-color: #555; border-color: #555; color: #aaa; }
+    .keyboard-container {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      max-width: 650px;
+      margin: auto;
+    }
+    .keyboard-row {
+      display: flex;
+      gap: 5px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .key {
+      width: 50px;
+      height: 50px;
+      padding: 0;
+      font-size: 22px;
+      background-color: #222;
+      color: #fff;
+      border: 1px solid #555;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .key.correct { background-color: #4caf50 !important; color: #fff; }
+    .key.present { background-color: #f1c40f !important; color: #000; }
+    .key.absent { background-color: #555 !important; color: #aaa; }
+    .key:hover { background-color: #444; }
+    .key-enter { background-color: #28a745 !important; color: #fff; }
+    .key-backspace { background-color: #c0392b !important; color: #fff; }
+    .message {
+      margin-top: 15px;
+      font-size: 18px;
+      color: #0f0;
+    }
+    .timer {
+      margin-top: 10px;
+      font-size: 16px;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎯 خماسيات</h1>
+
+  <div class="description">
+    🧠 <strong>شرح اللعبة:</strong><br>
+    كل يوم 3 كلمات جديدة مكونة من 5 حروف.<br>
+    لديك 8 محاولات لكل كلمة باستخدام الكيبورد.<br>
+    🟩 أخضر: الحرف صحيح وفي مكانه.<br>
+    🟨 أصفر: الحرف موجود لكن في مكان خاطئ.<br>
+    بعد حل الكلمات أو استنفاد المحاولات، لن تستطيع اللعب مرة أخرى إلا بعد 24 ساعة ⏳.
+  </div>
+
+  <div class="game-container">
+    <div id="correctAnswer" class="message" style="color:#0ff; text-align:right;"></div>
+    <div id="grid" class="grid"></div>
+
+    <div class="keyboard-container">
+      <div class="keyboard-row" id="row1"></div>
+      <div class="keyboard-row" id="row2"></div>
+      <div class="keyboard-row" id="row3"></div>
+      <div class="keyboard-row">
+        <div class="key key-backspace" onclick="handleBackspace()">⌫</div>
+        <div class="key key-enter" onclick="handleEnter()">⏎</div>
+      </div>
+    </div>
+
+    <div class="message" id="messageBox"></div>
+    <div class="timer" id="countdown"></div>
+  </div>
+
+<script>
+const sixLetterWords = [
+  "أزهار","أحداث","أصوات","أمثلة","أمانة","أشجار","إبصار","إعصار","إشارة","إقامة",
+  "بحرية","بلدية","بشارة","بطاقة","بوصلة","بذورك","بقاياك",
+  "تجارب","تحليق","تصميم","تقرير","توصية","ترتيب","تسليم","تدريب","تعايش","تبادل",
+  "جداول","جزيرة","جماعة","جميلة","جولات","جرائد","جوائز","جلوسك","جدولك","جمارك",
+  "حدائق","حكاية","حراسة","حقيقة","حسابك","حصيلة","حوافز","حقوقك","حاضرة",
+  "خادمة","خطوات","خيارات","خزانة","خاطرك","خلاصة","خريطة","خصائص","خطيرة","خيامك",
+  "دعوات","دروس","دليلك","دعاوى","دقيقة","دائرة","دعمكم","دفعات","دوافع",
+  "رحلات","رسالة","رغبات","روابط","رواية","رصيفك","رخصتك","رقائق",
+  "سفينة","سياسة","سعادة","سرائر","سلالة","سريعة","سجلات","ستائر","ساحات","سلمون",
+  "شهادة","شجاعة","شعائر","شواهد","شواطئ","شريعة","شظايا","شرائع","شطائر","شريكة",
+  "صداقة","صناعة","صراحة","صيانة","صواريخ","صيغات","صحائف","صحارى","صواعق",
+  "ضيافة","ضمانك","ضوابط","ضغائن","ضرائب","ضربات","ضياعك","ضحكات","ضبابي",
+  "طاحون","طموحك","طبيعي","طوائف","طرائف","طبقات","طوافة","طماطم","طلبات","طوالع",
+  "ظواهر","ظلالك","ظنونك","ظريفة","ظهورك","ظلمات","ظهيره","ظفائر",
+  "عوامل","عقارب","عناصر","عناية","عواطف","عادتك","عقائد","عواصف","عزائم","عذوبة",
+  "غنائم","غرامة","غطايا","غواية","غنيمة","غلافك","غسالة","غموضك","غرائب","غرفتك",
+  "فائدة","فضائل","فلاتر","فصولك","فواكه","فراشة","فريقك","فكاهة","فوترة","فصائل",
+  "قائمة","قبائل","قدوات","قوافل","قدرات","قصائد","قواسم","قراءة","قصصية",
+  "كرامة","كواكب","كراسة","كفالة","كلمات","كتيبة","كفوفك","كفاءة","كتائب","كنيسة",
+  "لوحات","لواحق","لوازم","لذائذ","لمحات","لحظات",
+  "مساعد","مكتبة","مدارس","مراسم","منازل","مشاعر","مفاتيح","مراحل","ممالك","مواسم",
+  "نماذج","نجاحك","نواحي","نقاشك","نهائية","نفايات","نجومك","نشاطك",
+  "هدايا","هتافة","هواجر","هواية","هواجس","هضابك","هداوه","جواهر",
+  "وثائق","ورقات","وراثة","وجبات","وظائف","ولادة","وقائع","وسائل","وحدات","وجوهك",
+  "يقظتك","يقينك","يمنية","يمامة","يمناك","يقظان","يوسفي"
+];
+
+
+let words = [];
+let currentWordIndex = 0;
+let currentRow = 0;
+let currentGuess = "";
+let isLocked = false;
+
+const grid = document.getElementById("grid");
+const messageBox = document.getElementById("messageBox");
+const correctAnswerBox = document.getElementById("correctAnswer");
+const countdown = document.getElementById("countdown");
+
+function seedRandom(seed) {
+  let x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
+
+function pickWordsBySeed(seed) {
+  const chosen = new Set();
+  while (chosen.size < 3) {
+    const index = Math.floor(seedRandom(seed + chosen.size) * sixLetterWords.length);
+    const word = sixLetterWords[index];
+    if (word && word.length === 5) chosen.add(word);
+  }
+  return Array.from(chosen);
+}
+
+function initGame() {
+  const today = new Date().toISOString().slice(0,10);
+  const seed = parseInt(today.replace(/-/g,''));
+  words = pickWordsBySeed(seed);
+  createGrid();
+  createKeyboard();
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+}
+
+function createGrid() {
+  grid.innerHTML = "";
+  for (let i=0; i<8; i++) {
+    for (let j=0; j<5; j++) {
+      const cell = document.createElement("div");
+      cell.classList.add("cell");
+      cell.id = `cell-${currentWordIndex}-${i}-${j}`;
+      grid.appendChild(cell);
+    }
+  }
+}
+
+function createKeyboard() {
+  const rows = [
+    "اأبتثجحخدذرزسشصضطظعغفقكلمنهوي",
+    "ءؤئىآإةى"
+  ];
+  rows.forEach((row, idx) => {
+    const rowDiv = document.getElementById(`row${idx+1}`);
+    rowDiv.innerHTML = "";
+    row.split("").forEach(k => {
+      const key = document.createElement("div");
+      key.classList.add("key");
+      key.textContent = k;
+      key.onclick = () => handleKey(k);
+      rowDiv.appendChild(key);
+    });
+  });
+}
+
+function handleKey(k) {
+  if (isLocked || currentGuess.length >= 5) return;
+  currentGuess += k;
+  updateGrid();
+}
+function handleBackspace() {
+  if (isLocked || currentGuess.length === 0) return;
+  currentGuess = currentGuess.slice(0, -1);
+  updateGrid();
+}
+function handleEnter() {
+  if (isLocked || currentGuess.length < 5) return;
+  const correct = words[currentWordIndex];
+  const result = Array(5).fill("absent");
+  for (let i = 0; i < 5; i++) {
+    if (currentGuess[i] === correct[i]) result[i] = "correct";
+    else if (correct.includes(currentGuess[i])) result[i] = "present";
+  }
+  for (let j = 0; j < 5; j++) {
+    const cell = document.getElementById(`cell-${currentWordIndex}-${currentRow}-${j}`);
+    cell.textContent = currentGuess[j];
+    cell.classList.add(result[j]);
+  }
+  if (currentGuess === correct) {
+    correctAnswerBox.innerHTML += `✅ الكلمة ${currentWordIndex+1}: ${correct}<br>`;
+    currentWordIndex++;
+    if (currentWordIndex >= 3) {
+      showMessage("🎉 أنهيت كل الكلمات!");
+      isLocked = true;
+    } else {
+      showMessage("✅ صحيح! الكلمة التالية...");
+      resetForNextWord();
+    }
+  } else {
+    currentRow++;
+    if (currentRow >= 8) {
+      correctAnswerBox.innerHTML += `❌ الكلمة ${currentWordIndex+1}: ${correct}<br>`;
+      currentWordIndex++;
+      if (currentWordIndex >= 3) {
+        showMessage("✅ انتهت كل الكلمات.");
+        isLocked = true;
+      } else {
+        resetForNextWord();
+      }
+    }
+  }
+  currentGuess = "";
+}
+function updateGrid() {
+  for (let i = 0; i < 5; i++) {
+    const cell = document.getElementById(`cell-${currentWordIndex}-${currentRow}-${i}`);
+    if (cell) cell.textContent = currentGuess[i] || "";
+  }
+}
+function resetForNextWord() {
+  currentRow = 0;
+  currentGuess = "";
+  createGrid();
+}
+function showMessage(msg) { messageBox.textContent = msg; }
+function updateCountdown() {
+  const now = new Date();
+  const midnight = new Date();
+  midnight.setHours(24,0,0,0);
+  const diff = midnight - now;
+  const h = Math.floor(diff/3600000);
+  const m = Math.floor((diff%3600000)/60000);
+  const s = Math.floor((diff%60000)/1000);
+  countdown.textContent = `🕒 التحديث خلال: ${h}س ${m}د ${s}ث`;
+}
+window.onload = initGame;
+</script>
+</body>
+</html>
