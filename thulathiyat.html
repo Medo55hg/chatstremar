@@ -24,7 +24,6 @@ h1 { color: #ff3333; margin-top: 10px; }
 .key-enter { background-color: #28a745 !important; color: #fff; }
 .key-backspace { background-color: #c0392b !important; color: #fff; }
 .message { margin-top: 15px; font-size: 18px; color: #0f0; }
-.timer { margin-top: 10px; font-size: 16px; color: #ccc; }
 .summary { margin-top: 20px; }
 .summary-grid { display: inline-grid; grid-template-columns: repeat(5, 30px); grid-template-rows: repeat(8, 30px); gap: 2px; margin: 10px; }
 .summary-cell { width:30px; height:30px; font-size:18px; border:1px solid #555; display:flex; align-items:center; justify-content:center; }
@@ -58,8 +57,8 @@ h1 { color: #ff3333; margin-top: 10px; }
 </div>
 </div>
 <div class="message" id="messageBox"></div>
-<div class="timer" id="countdown"></div>
 </div>
+
 <script>
 const sixLetterWords = [
   "أزهار","أحداث","أصوات","أمثلة","أمانة","أشجار","إبصار","إعصار","إشارة","إقامة",
@@ -100,7 +99,6 @@ let savedGuesses = [[], [], []];
 const grid = document.getElementById("grid");
 const messageBox = document.getElementById("messageBox");
 const correctAnswerBox = document.getElementById("correctAnswer");
-const countdown = document.getElementById("countdown");
 const summary = document.getElementById("summary");
 
 function seedRandom(seed) {
@@ -150,21 +148,20 @@ function initGame() {
   const seed = parseInt(today.replace(/-/g,''));
   words = pickWordsBySeed(seed);
   if (loadState()) {
-    if (currentWordIndex >= 3) {
-      isLocked = true;
-      showSummary();
-      return;
-    }
     createGrid();
     createKeyboard();
-    savedGuesses[currentWordIndex].forEach((g, i) => {currentRow = i;currentGuess = g.guess;renderGuess(g.result);});
+    savedGuesses[currentWordIndex].forEach((g, i) => {
+      currentRow = i;
+      currentGuess = g.guess;
+      renderGuess(g.result);
+      updateKeyboardColors(g.guess, g.result);
+    });
     currentGuess = "";
+    if (isLocked) showSummary();
   } else {
     createGrid();
     createKeyboard();
   }
-  updateCountdown();
-  setInterval(updateCountdown, 1000);
 }
 function createGrid() {
   grid.innerHTML = "";
@@ -212,23 +209,49 @@ function handleEnter() {
     else if (correct.includes(currentGuess[i])) result[i]="present";
   }
   renderGuess(result);
+  updateKeyboardColors(currentGuess, result);
   savedGuesses[currentWordIndex].push({guess:currentGuess, result});
   if (currentGuess === correct) {
     correctAnswerBox.innerHTML += `✅ الكلمة ${currentWordIndex+1}: ${correct}<br>`;
     currentWordIndex++;
-    if (currentWordIndex >=3) {showMessage("🎉 أنهيت كل الكلمات!");isLocked=true;showSummary();}
-    else {showMessage("✅ صحيح! الكلمة التالية...");resetForNextWord();}
+    if (currentWordIndex >=3) {isLocked=true;showSummary();}
+    else {resetForNextWord();}
   } else {
     currentRow++;
     if (currentRow >=8) {
       correctAnswerBox.innerHTML += `❌ الكلمة ${currentWordIndex+1}: ${correct}<br>`;
       currentWordIndex++;
-      if (currentWordIndex >=3) {showMessage("✅ انتهت كل الكلمات.");isLocked=true;showSummary();}
+      if (currentWordIndex >=3) {isLocked=true;showSummary();}
       else {resetForNextWord();}
     }
   }
   currentGuess="";
   saveState();
+}
+function updateKeyboardColors(guess, result) {
+  for (let i = 0; i < 5; i++) {
+    const letter = guess[i];
+    const keys = document.querySelectorAll(".key");
+    keys.forEach(key => {
+      if (key.textContent === letter) {
+        if (result[i] === "correct") {
+          key.classList.remove("present", "absent");
+          key.classList.add("correct");
+        } else if (result[i] === "present" && !key.classList.contains("correct")) {
+          key.classList.remove("absent");
+          key.classList.add("present");
+        } else if (!key.classList.contains("correct") && !key.classList.contains("present")) {
+          key.classList.add("absent");
+        }
+      }
+    });
+  }
+}
+function resetKeyboardColors() {
+  const keys=document.querySelectorAll(".key");
+  keys.forEach(key=>{
+    key.classList.remove("correct","present","absent");
+  });
 }
 function renderGuess(result) {
   for (let j=0; j<5; j++) {
@@ -247,17 +270,8 @@ function resetForNextWord() {
   currentRow=0;
   currentGuess="";
   createGrid();
+  resetKeyboardColors();
   saveState();
-}
-function showMessage(msg){messageBox.textContent=msg;}
-function updateCountdown() {
-  const now=new Date();
-  const midnight=new Date();midnight.setHours(24,0,0,0);
-  const diff=midnight-now;
-  const h=Math.floor(diff/3600000);
-  const m=Math.floor((diff%3600000)/60000);
-  const s=Math.floor((diff%60000)/1000);
-  countdown.textContent=`🕒 التحديث خلال: ${h}س ${m}د ${s}ث`;
 }
 function showSummary() {
   summary.innerHTML="<h2>⭐ ملخص محاولاتك:</h2>";
