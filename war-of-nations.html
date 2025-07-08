@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>🌍 حرب الدول</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
+<script src="tmi.min.js"></script>
+<style>
+  body {
+    margin:0;
+    background-color:#111;
+    color:#fff;
+    font-family:'Amiri', serif;
+    text-align:center;
+    padding:20px;
+  }
+  h1 { color:#ff3333;margin-bottom:20px; }
+  .container { display:flex; justify-content:space-between; flex-wrap:wrap; }
+  .wheel, .countries {
+    width:48%;
+    min-height:300px;
+    border:2px solid #fff;
+    border-radius:8px;
+    padding:10px;
+    overflow:auto;
+    position:relative;
+  }
+  .country {
+    display:inline-block;
+    margin:5px;
+    background:#222;
+    padding:5px;
+    border-radius:6px;
+  }
+  .country img {
+    width:80px;
+    display:block;
+    margin:auto;
+  }
+  .overlay {
+    position:fixed;
+    top:0;left:0;right:0;bottom:0;
+    background:rgba(0,0,0,0.8);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    font-size:24px;
+    z-index:999;
+  }
+  .eliminated {
+    background:#222;
+    border:2px solid #ff3333;
+    border-radius:8px;
+    padding:10px;
+    margin:5px auto;
+    width:95%;
+    font-size:18px;
+  }
+  button {
+    padding:10px 20px;
+    margin-top:15px;
+    background:#ff3333;
+    color:#fff;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-family:'Amiri', serif;
+  }
+</style>
+</head>
+<body>
+<h1>🌍 لعبة حرب الدول</h1>
+<p>اختر المنصة وأرسل "!دخول" في الشات للانضمام</p>
+<div class="container">
+  <div class="wheel" id="wheel">
+    <h3>👥 قائمة اللاعبين</h3>
+    <ul id="playerList"></ul>
+  </div>
+  <div class="countries" id="countries">
+    <h3>🌐 الدول</h3>
+    <div id="countryList"></div>
+  </div>
+</div>
+<div class="overlay" id="overlay"></div>
+
+<div style="margin-top:20px;">
+  <select id="platformSelect" style="padding:10px;font-size:18px;">
+    <option value="twitch">Twitch</option>
+    <option value="kick">Kick</option>
+  </select>
+  <input type="text" id="channelInput" placeholder="🎮 اكتب اسم القناة" style="padding:10px;font-size:18px;">
+  <button onclick="connectChat()" style="padding:10px;font-size:18px;background:#28a745;color:#fff;border:none;border-radius:6px;cursor:pointer;">
+    ✅ تسجيل الدخول
+  </button>
+  <div id="chatStatus" style="margin-top:10px;font-size:16px;color:#0f0;"></div>
+</div>
+
+<button onclick="startGame()">بدء اللعبة</button>
+<button onclick="nextTurn()">التالي</button>
+
+<h3 style="margin-top:30px;">🏴‍☠️ الدول المقصاة</h3>
+<div id="eliminatedList"></div>
+
+<script>
+const maxPlayers = 100;
+const players = [];
+const countriesPool = ["السعودية","الإمارات","قطر","مصر","الأردن","لبنان","العراق","الكويت","عمان","البحرين","تونس","الجزائر","المغرب","ليبيا","السودان","اليمن","سوريا","فلسطين","تركيا","إيران","ألمانيا","فرنسا","إيطاليا","إسبانيا","أمريكا","كندا","روسيا","الصين","اليابان","الهند"];
+let remainingCountries = [];
+let assignedCountries = {};
+let currentPlayer = "";
+let waitingForAttack = false;
+let twitchClient;
+let kickSocket;
+const overlay = document.getElementById("overlay");
+const eliminatedDiv = document.getElementById("eliminatedList");
+
+function getCountryCode(name){
+  const codes={
+    "السعودية":"sa","الإمارات":"ae","قطر":"qa","مصر":"eg","الأردن":"jo","لبنان":"lb","العراق":"iq","الكويت":"kw","عمان":"om","البحرين":"bh",
+    "تونس":"tn","الجزائر":"dz","المغرب":"ma","ليبيا":"ly","السودان":"sd","اليمن":"ye","سوريا":"sy","فلسطين":"ps","تركيا":"tr","إيران":"ir",
+    "ألمانيا":"de","فرنسا":"fr","إيطاليا":"it","إسبانيا":"es","أمريكا":"us","كندا":"ca","روسيا":"ru","الصين":"cn","اليابان":"jp","الهند":"in"
+  };
+  return codes[name] || "un";
+}
+
+function normalize(text){
+  return text.replace(/أ|إ|آ/g,"ا");
+}
+
+function addPlayer(name){
+  if(players.includes(name)||players.length>=maxPlayers)return;
+  players.push(name);
+  renderPlayers();
+}
+function renderPlayers(){
+  const list=document.getElementById("playerList");
+  list.innerHTML="";
+  players.forEach(p=>{
+    const li=document.createElement("li");
+    li.textContent=p;
+    list.appendChild(li);
+  });
+}
+function startGame(){
+  if(players.length<2){
+    alert("يجب إضافة لاعبين أولًا!");
+    return;
+  }
+  remainingCountries=[];
+  assignedCountries={};
+  eliminatedDiv.innerHTML="";
+  const shuffled=countriesPool.sort(()=>0.5-Math.random()).slice(0,players.length);
+  shuffled.forEach((country,i)=>{
+    assignedCountries[country]=players[i];
+    remainingCountries.push(country);
+  });
+  renderCountries();
+}
+function renderCountries(){
+  const container=document.getElementById("countryList");
+  container.innerHTML="";
+  remainingCountries.forEach(c=>{
+    const div=document.createElement("div");
+    div.className="country";
+    div.innerHTML=`<img src="https://flagcdn.com/w80/${getCountryCode(c)}.png"><br>${c}<br><small>؟</small>`;
+    container.appendChild(div);
+  });
+}
+function nextTurn(){
+  if(players.length<=1){
+    announceWinner();
+    return;
+  }
+  currentPlayer=players[Math.floor(Math.random()*players.length)];
+  overlay.textContent=`الدور على: ${currentPlayer}`;
+  overlay.style.display="flex";
+  setTimeout(()=>{overlay.style.display="none";waitingForAttack=true;},3000);
+}
+function announceWinner(){
+  const lastCountry=Object.keys(assignedCountries)[0];
+  const winner=assignedCountries[lastCountry];
+  overlay.textContent=`🎉 الدولة المسيطرة: ${lastCountry} ورئيسها ${winner}!`;
+  overlay.style.display="flex";
+}
+function handleAttack(target){
+  const normalizedTarget = normalize(target);
+  const normalizedCountries = remainingCountries.map(c=>normalize(c));
+  const index = normalizedCountries.indexOf(normalizedTarget);
+
+  if(index === -1){
+    alert("الدولة غير صحيحة.");
+    return;
+  }
+
+  waitingForAttack=false;
+  const realTarget = remainingCountries[index];
+  const eliminatedPlayer = assignedCountries[realTarget];
+  overlay.textContent=`${currentPlayer} هاجم ${realTarget}`;
+  overlay.style.display="flex";
+  setTimeout(()=>{
+    overlay.textContent=`تم إقصاء الدولة ${realTarget} ورئيسها ${eliminatedPlayer}`;
+
+    const div = document.createElement("div");
+    div.className="eliminated";
+    div.textContent=`الدولة ${realTarget} - الرئيس ${eliminatedPlayer}`;
+    eliminatedDiv.appendChild(div);
+
+    players.splice(players.indexOf(eliminatedPlayer),1);
+    remainingCountries.splice(index,1);
+    delete assignedCountries[realTarget];
+    renderPlayers();
+    renderCountries();
+    setTimeout(()=>{
+      overlay.style.display="none";
+      if(players.length<=1) announceWinner();
+    },3000);
+  },2000);
+}
+async function connectChat(){
+  const platform=document.getElementById("platformSelect").value;
+  const channel=document.getElementById("channelInput").value.trim();
+  if(platform==="twitch"){
+    twitchClient = new tmi.Client({ channels: [channel] });
+    twitchClient.connect();
+    twitchClient.on('message',(channel,tags,message,self)=>{
+      if(self)return;
+      const username=tags['display-name'];
+      const content=message.trim();
+      if(content==="!دخول"){ addPlayer(username); }
+      else if(waitingForAttack && username==currentPlayer){ handleAttack(content); }
+    });
+    document.getElementById("chatStatus").innerText="✅ تم الاتصال بـTwitch!";
+  } else if(platform==="kick"){
+    try {
+      let res = await fetch(`https://kick.com/api/v2/channels/${channel}`);
+      let data = await res.json();
+      let roomId = data.chatroom.id;
+      kickSocket = new WebSocket("wss://ws-us2.pusher.com/app/32cbd69e4b950bf97679?protocol=7&client=js&version=8.4.0-rc2&flash=false");
+      kickSocket.onopen = () => {
+        kickSocket.send(JSON.stringify({
+          event:"pusher:subscribe",
+          data:{auth:"",channel:`chatrooms.${roomId}.v2`}
+        }));
+        setInterval(()=>{
+          if(kickSocket.readyState===WebSocket.OPEN){
+            kickSocket.send(JSON.stringify({event:"pusher:ping",data:{}}));
+          }
+        },12000);
+      };
+      kickSocket.onmessage = e=>{
+        let t=JSON.parse(e.data);
+        if(t.event==="App\\Events\\ChatMessageEvent"){
+          let m=JSON.parse(t.data);
+          const username=m.sender.username;
+          const content=m.content.trim();
+          if(content==="!دخول"){ addPlayer(username); }
+          else if(waitingForAttack && username==currentPlayer){ handleAttack(content); }
+        }
+      };
+      document.getElementById("chatStatus").innerText="✅ تم الاتصال بـKick!";
+    } catch(err){
+      console.error("Kick connection error:",err);
+    }
+  }
+}
+</script>
+</body>
+</html>
