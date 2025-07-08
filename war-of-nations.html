@@ -98,6 +98,7 @@
 
 <button onclick="startGame()">بدء اللعبة</button>
 <button onclick="nextTurn()">التالي</button>
+<button onclick="removePlayer()">حذف لاعب</button>
 
 <h3 style="margin-top:30px;">🏴‍☠️ الدول المقصاة</h3>
 <div id="eliminatedList"></div>
@@ -216,6 +217,18 @@ function handleAttack(target){
       if(players.length<=1) announceWinner();
     },3000);
   },2000);
+}
+function removePlayer(){
+  const name = prompt("اكتب اسم اللاعب لحذفه:");
+  if(!name) return;
+  const index = players.indexOf(name.trim());
+  if(index !== -1){
+    players.splice(index,1);
+    renderPlayers();
+    alert("تم حذف اللاعب بنجاح.");
+  }else{
+    alert("اللاعب غير موجود.");
+  }
 }
 async function connectChat(){
   const platform=document.getElementById("platformSelect").value;
