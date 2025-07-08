@@ -64,50 +64,37 @@
       background-color: #00ff80;
       transform: scale(1.05);
     }
-    .game-card.image-bg::before {
+    .game-card.image-bg::before,
+    .game-card.image-bg2::before,
+    .game-card.image-bg3::before,
+    .game-card.image-bg4::before {
       content: "";
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: url('https://i.postimg.cc/ncVfrn3s/images.jpg') center/cover no-repeat;
+      background-size: cover;
+      background-position: center;
       filter: blur(2px);
       opacity: 0.4;
       z-index: 0;
+    }
+    .game-card.image-bg::before {
+      background-image: url('https://i.postimg.cc/ncVfrn3s/images.jpg');
     }
     .game-card.image-bg2::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: url('https://i.postimg.cc/rwB4CVZj/Screenshot-2.png') center/cover no-repeat;
-      filter: blur(2px);
-      opacity: 0.4;
-      z-index: 0;
+      background-image: url('https://i.postimg.cc/rwB4CVZj/Screenshot-2.png');
     }
     .game-card.image-bg3::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: url('https://i.postimg.cc/d1yZhzjX/Screenshot-3.png') center/cover no-repeat;
-      filter: blur(2px);
-      opacity: 0.4;
-      z-index: 0;
+      background-image: url('https://i.postimg.cc/d1yZhzjX/Screenshot-3.png');
+    }
+    .game-card.image-bg4::before {
+      background-image: url('https://i.postimg.cc/RFt8R96S/Screenshot-2025-07-08-055210.png');
     }
     .game-card.image-bg *,
     .game-card.image-bg2 *,
-    .game-card.image-bg3 * {
+    .game-card.image-bg3 *,
+    .game-card.image-bg4 * {
       position: relative;
       z-index: 1;
-    }
-    .game-card.blur::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      backdrop-filter: blur(5px);
-      background: rgba(0,0,0,0.6);
-      z-index: 1;
-    }
-    .game-card.blur button {
-      position: relative;
-      z-index: 2;
     }
     .note {
       margin-top: 40px;
@@ -167,13 +154,30 @@
     <div class="game-card image-bg2">
       <h2>🖼️ اكشف الصورة</h2>
       <p>شوف الصورة وخمّن الكلمة التي تعبر عنها!</p>
+      <div class="platforms">
+        ❌ لا يدعم تويتش وكيك
+      </div>
       <a href="guessimage.html" class="start-btn">ابدأ اللعب</a>
     </div>
 
     <div class="game-card image-bg3">
       <h2>🎯 خماسيات</h2>
       <p>جرب تخمين 3 كلمات جديدة كل يوم!</p>
+      <div class="platforms">
+        ❌ لا يدعم تويتش وكيك
+      </div>
       <a href="thulathiyat.html" class="start-btn">ابدأ اللعب</a>
+    </div>
+
+    <div class="game-card image-bg4">
+      <h2>🌍 حرب الدول</h2>
+      <p>تنافس للسيطرة على خريطة العالم!</p>
+      <div class="platforms">
+        ✅ يدعم:
+        <span class="twitch-text">🟣 تويتش</span> +
+        <span class="kick-text">🟢 كيك</span>
+      </div>
+      <a href="war-of-nations.html" class="start-btn">ابدأ اللعب</a>
     </div>
   </div>
 
