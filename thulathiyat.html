@@ -49,13 +49,15 @@ h1 { color: #ff3333; margin-top: 10px; }
 <div id="correctAnswer" class="message" style="color:#0ff; text-align:right;"></div>
 <div id="grid" class="grid"></div>
 <div class="keyboard-container">
-<div class="keyboard-row" id="row1"></div>
-<div class="keyboard-row" id="row2"></div>
-<div class="keyboard-row">
-<div class="key key-backspace" onclick="handleBackspace()">⌫</div>
-<div class="key key-enter" onclick="handleEnter()">⏎</div>
+  <div class="keyboard-row" id="row1"></div>
+  <div class="keyboard-row" id="row2"></div>
+  <div class="keyboard-row" id="row3"></div>
+  <div class="keyboard-row">
+    <div class="key key-backspace" onclick="handleBackspace()">⌫</div>
+    <div class="key key-enter" onclick="handleEnter()">⏎</div>
+  </div>
 </div>
-</div>
+
 <div class="message" id="messageBox"></div>
 </div>
 
@@ -174,20 +176,27 @@ function createGrid() {
     }
   }
 }
+// ✅ تعديل الكيبورد فقط
 function createKeyboard() {
-  const rows = ["اأبتثجحخدذرزسشصضطظعغفقكلمنهوي","ءؤئىآإةى"];
-  rows.forEach((row,idx)=>{
-    const rowDiv=document.getElementById(`row${idx+1}`);
-    rowDiv.innerHTML="";
-    row.split("").forEach(k=>{
-      const key=document.createElement("div");
+  const rows = [
+    "دجحخعغفقثصض",
+    "طكمنتلابيسش",
+    "هظزوةىرأإؤءذ"
+  ];
+
+  rows.forEach((row, idx) => {
+    const rowDiv = document.getElementById(`row${idx+1}`);
+    rowDiv.innerHTML = "";
+    row.split("").forEach(k => {
+      const key = document.createElement("div");
       key.classList.add("key");
-      key.textContent=k;
-      key.onclick=()=>handleKey(k);
+      key.textContent = k;
+      key.onclick = () => handleKey(k);
       rowDiv.appendChild(key);
     });
   });
 }
+
 function handleKey(k) {
   if (isLocked || currentGuess.length >= 5) return;
   currentGuess += k;
@@ -202,6 +211,7 @@ function handleBackspace() {
 }
 function handleEnter() {
   if (isLocked || currentGuess.length < 5) return;
+
   const correct = words[currentWordIndex];
   const result = Array(5).fill("absent");
   for (let i=0; i<5; i++) {
