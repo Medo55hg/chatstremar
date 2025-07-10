@@ -5,6 +5,7 @@
   <title>🖼️ لعبة اكشف الصورة</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tmi.js/1.8.5/tmi.min.js"></script>
   <style>
     body {
       background-color: #111;
@@ -105,8 +106,8 @@
       display: grid;
       width: 100%;
       height: 100%;
-      grid-template-columns: repeat(6, 1fr);
-      grid-template-rows: repeat(4, 1fr);
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: repeat(6, 1fr);
     }
     .cell {
       background-color: #222;
@@ -158,13 +159,8 @@
       font-size: 20px;
     }
     .answer-box {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      text-align: center;
+      margin-top: 15px;
       font-size: 20px;
-      color: #fff;
-      z-index: 100;
     }
   </style>
 </head>
@@ -184,8 +180,9 @@
     ✅ <strong>شرح اللعبة:</strong><br>
     ستظهر صورة مقسمة إلى مربعات.<br>
     اللاعب يختار رقم لفتح المربع ثم يكتب التخمين.<br>
-    إذا كانت الإجابة صحيحة، تحسب نقاط بعدد المربعات الباقية.<br>
-    أول فريق يصل إلى 75 نقطة يفوز 🏆.
+    إذا كانت الإجابة صحيحة، تُفتح الصورة وتحسب نقاط بعدد المربعات الباقية.<br>
+    أول فريق يصل إلى 150 نقطة يفوز 🏆.<br>
+    يمكنك إخفاء/إظهار الإجابة بزر التحكم.
   </div>
 
   <div class="team team-red">
@@ -199,16 +196,17 @@
 <div class="game-area">
   <button id="startButton" onclick="startGame()">🎮 ابدأ اللعبة</button>
   <div id="currentPlayer" class="current-player">⬇️ اللاعب الحالي سيظهر هنا</div>
+  <div id="timer" style="color:#ff0;font-size:20px;"></div>
 
   <div class="image-container">
-    <img id="gameImage" src="https://i.postimg.cc/kXtCZXLX/F3-HFd-HW0-AEa1g7.jpg" alt="صورة اللعبة">
+    <img id="gameImage" src="" alt="صورة اللعبة">
     <div class="grid" id="grid"></div>
   </div>
-
   <input type="text" id="guessInput" placeholder="اكتب التخمين هنا">
   <button onclick="submitGuess()">✅ تأكيد</button>
   <button onclick="nextTurn()">⏭️ التالي</button>
   <button id="nextImageButton" onclick="loadRandomImage()" style="display:none;">🖼️ الصورة التالية</button>
+  <button onclick="toggleAnswer()">👁️ إخفاء/إظهار الإجابة</button>
 
   <div id="guessResult" class="errors-list"></div>
 
@@ -216,11 +214,12 @@
     🔵 الفريق الأزرق: <span id="blueScore">0</span> نقطة<br>
     🔴 الفريق الأحمر: <span id="redScore">0</span> نقطة
   </div>
+
+  <div class="answer-box" id="answerBox">
+    ⚠️ الإجابة: <span id="answerText">❓</span>
+  </div>
 </div>
 
-<div class="answer-box">
-  ⚠️ الإجابة: <span id="answerText">❓</span>
-</div>
 
 <script>
 const images = [
@@ -266,23 +265,28 @@ const images = [
   { url: "https://i.postimg.cc/G2zhZv3r/image.jpg", answer: "مودي الاسمر" }
 ];
 
-
 let remainingImages = [...images];
-
 const bluePlayers = [];
 const redPlayers = [];
 let turnIndex = 0;
 let currentTeam = 'blue';
 let answeringTeam = 'blue';
-let currentAnswer = images[0].answer;
+let currentAnswer = "";
 let blueScore = 0;
 let redScore = 0;
 let timerInterval = null;
+let currentPlayerName = "";
+let answerVisible = true;
+
+function toggleAnswer() {
+  answerVisible = !answerVisible;
+  document.getElementById("answerBox").style.display = answerVisible ? "block" : "none";
+}
 
 function createGrid() {
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
-  for (let i = 0; i < 24; i++) {
+  for (let i = 0; i < 72; i++) {
     const cell = document.createElement("div");
     cell.className = "cell";
     cell.textContent = i + 1;
@@ -325,13 +329,14 @@ function removePlayer(team, index) {
 
 function startGame() {
   document.getElementById("startButton").style.display = "none";
-  document.getElementById("answerText").innerText = currentAnswer;
+  loadRandomImage();
   nextTurn();
 }
 
 function loadRandomImage() {
   if (remainingImages.length === 0) {
-    remainingImages = [...images];
+    alert("✅ انتهت كل الصور!");
+    return;
   }
   const index = Math.floor(Math.random() * remainingImages.length);
   const selectedImage = remainingImages[index];
@@ -346,9 +351,10 @@ function loadRandomImage() {
 }
 
 function nextTurn() {
-  clearTimer();
+  clearInterval(timerInterval);
+  document.getElementById("timer").innerText = "";
   if (bluePlayers.length === 0 || redPlayers.length === 0) {
-    alert("❌ الرجاء إضافة لاعبين في كلا الفريقين أولاً.");
+    alert("❌ الرجاء إضافة لاعبين في كلا الفريقين.");
     return;
   }
   let player;
@@ -362,6 +368,7 @@ function nextTurn() {
     currentTeam = 'blue';
     turnIndex++;
   }
+  currentPlayerName = player;
   document.getElementById("currentPlayer").innerText = `🎮 الدور الآن: ${player}`;
   document.getElementById("answerText").innerText = currentAnswer;
   document.getElementById("guessInput").value = "";
@@ -377,7 +384,7 @@ function submitGuess() {
   const resultDiv = document.getElementById("guessResult");
   if (guess === currentAnswer) {
     resultDiv.innerHTML += `✅ إجابة صحيحة!<br>`;
-    clearTimer();
+    clearInterval(timerInterval);
     const remainingCells = Array.from(document.querySelectorAll(".cell")).filter(c => !c.classList.contains("revealed")).length;
     document.querySelectorAll(".cell").forEach(cell => {
       cell.classList.add("revealed");
@@ -386,15 +393,11 @@ function submitGuess() {
     if (answeringTeam === 'red') {
       redScore += remainingCells;
       document.getElementById("redScore").innerText = redScore;
-      if (redScore >= 75) {
-        alert("🏆 الفريق الأحمر فاز!");
-      }
+      if (redScore >= 150) alert("🏆 الفريق الأحمر فاز!");
     } else {
       blueScore += remainingCells;
       document.getElementById("blueScore").innerText = blueScore;
-      if (blueScore >= 75) {
-        alert("🏆 الفريق الأزرق فاز!");
-      }
+      if (blueScore >= 150) alert("🏆 الفريق الأزرق فاز!");
     }
   } else {
     resultDiv.innerHTML += `❌ خطأ: ${guess}<br>`;
@@ -403,29 +406,23 @@ function submitGuess() {
 }
 
 function startTimer() {
-  clearTimer();
+  clearInterval(timerInterval);
   let timeLeft = 30;
-  document.getElementById("currentPlayer").innerText += ` | ⏳ ${timeLeft} ثانية`;
+  document.getElementById("timer").innerText = `⏳ الوقت المتبقي: ${timeLeft} ثانية`;
   timerInterval = setInterval(() => {
     timeLeft--;
-    document.getElementById("currentPlayer").innerText = document.getElementById("currentPlayer").innerText.split("|")[0].trim() + ` | ⏳ ${timeLeft} ثانية`;
+    document.getElementById("timer").innerText = `⏳ الوقت المتبقي: ${timeLeft} ثانية`;
     if (timeLeft <= 0) {
       clearInterval(timerInterval);
-      alert("⏳ انتهى الوقت!");
+      document.getElementById("timer").innerText = "⏳ انتهى الوقت!";
     }
   }, 1000);
 }
 
-function clearTimer() {
-  if (timerInterval) {
-    clearInterval(timerInterval);
-    timerInterval = null;
-  }
-}
-
 window.onload = () => {
   createGrid();
-}
+};
 </script>
+
 </body>
 </html>
