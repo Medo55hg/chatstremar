@@ -5,28 +5,133 @@
   <title>🎯 لعبة الكلمات المبعثرة</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
-  <script src="tmi.min.js"></script>
+ <script src="tmi.min.js"></script>
   <style>
-    body {background:#111;color:#fff;font-family:'Amiri',serif;text-align:center;padding:20px;}
-    h1 {color:#ff3333;margin-top:10px;}
-    .game-area {font-size:28px;margin:20px auto;background:#222;padding:30px;border-radius:15px;width:90%;max-width:1200px;border:2px solid #ff3333;}
-    input,button {padding:12px;font-size:20px;margin:8px auto;border-radius:8px;border:none;font-family:'Amiri',serif;}
-    input.player-input {width:90%;box-sizing:border-box;}
-    button {background:#ff3333;color:#fff;cursor:pointer;}
-    .teams-container {display:flex;justify-content:space-between;align-items:flex-start;margin:20px auto;width:90%;gap:20px;flex-wrap:wrap;}
-    .team {width:20%;padding:15px;border-radius:15px;text-align:center;}
-    .team-blue {background:rgba(0,0,255,0.1);border:2px solid #0099ff;}
-    .team-red {background:rgba(255,0,0,0.1);border:2px solid #ff3333;}
-    .players-list {background:#333;padding:10px;border-radius:8px;min-height:50px;font-size:18px;text-align:right;}
-    .player-entry {display:flex;justify-content:space-between;align-items:center;margin:2px 0;}
-    .player-entry button {background:#900;font-size:14px;padding:2px 6px;border:none;border-radius:6px;cursor:pointer;}
-    .game-description {width:50%;background:#222;border:1px solid #555;border-radius:10px;padding:15px;font-size:18px;line-height:1.6;}
-    .current-player {font-size:26px;margin:20px 0;color:#00ffcc;}
-    .scrambled-word {font-size:42px;margin:20px 0;word-spacing:10px;}
-    .timer {font-size:28px;color:#ffcc00;margin:15px 0;font-weight:bold;}
-    .guess-result {font-size:22px;margin-top:12px;}
-    .scoreboard {margin-top:25px;font-size:22px;}
-    .answer-box {position:fixed;bottom:20px;left:20px;text-align:center;font-size:20px;color:#fff;z-index:100;}
+    body {
+      background: #111;
+      color: #fff;
+      font-family: 'Amiri', serif;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #ff3333;
+      margin-top: 10px;
+    }
+    .game-area {
+      font-size: 28px;
+      margin: 20px auto;
+      background: #222;
+      padding: 30px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 1200px;
+      border: 2px solid #ff3333;
+    }
+    input, button {
+      padding: 12px;
+      font-size: 20px;
+      margin: 8px auto;
+      border-radius: 8px;
+      border: none;
+      font-family: 'Amiri', serif;
+    }
+    input.player-input {
+      width: 90%;
+      box-sizing: border-box;
+    }
+    button {
+      background: #ff3333;
+      color: #fff;
+      cursor: pointer;
+    }
+    .teams-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin: 20px auto;
+      width: 90%;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .team {
+      width: 20%;
+      padding: 15px;
+      border-radius: 15px;
+      text-align: center;
+    }
+    .team-blue {
+      background: rgba(0,0,255,0.1);
+      border: 2px solid #0099ff;
+    }
+    .team-red {
+      background: rgba(255,0,0,0.1);
+      border: 2px solid #ff3333;
+    }
+    .players-list {
+      background: #333;
+      padding: 10px;
+      border-radius: 8px;
+      min-height: 50px;
+      font-size: 18px;
+      text-align: right;
+    }
+    .player-entry {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 2px 0;
+    }
+    .player-entry button {
+      background: #900;
+      font-size: 14px;
+      padding: 2px 6px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .game-description {
+      width: 50%;
+      background: #222;
+      border: 1px solid #555;
+      border-radius: 10px;
+      padding: 15px;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+    .current-player {
+      font-size: 26px;
+      margin: 20px 0;
+      color: #00ffcc;
+    }
+    .scrambled-word {
+      font-size: 42px;
+      margin: 20px 0;
+      word-spacing: 10px;
+    }
+    .timer {
+      font-size: 28px;
+      color: #ffcc00;
+      margin: 15px 0;
+      font-weight: bold;
+    }
+    .guess-result {
+      font-size: 22px;
+      margin-top: 12px;
+    }
+    .scoreboard {
+      margin-top: 25px;
+      font-size: 22px;
+    }
+    .answer-box {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      text-align: center;
+      font-size: 20px;
+      color: #fff;
+      z-index: 100;
+    }
     .commands-highlight {
       color: #ff3333;
       font-weight: bold;
@@ -37,77 +142,78 @@
 </head>
 <body>
 
-  <h1>🎯 لعبة الكلمات المبعثرة</h1>
+<h1>🎯 لعبة الكلمات المبعثرة</h1>
 
-  <div class="teams-container">
-    <div class="team team-blue">
-      <h3>🔵 الفريق الأزرق</h3>
-      <input type="text" id="bluePlayerInput" class="player-input" placeholder="اسم اللاعب">
-      <button onclick="addPlayer('blue')">➕ إضافة</button>
-      <div id="bluePlayers" class="players-list"></div>
-    </div>
-
-    <div class="game-description">
-      ✅ <strong>شرح اللعبة:</strong><br>
-      ستظهر كلمة مبعثرة في وسط الشاشة.<br>
-      على اللاعبين إعادة ترتيبها بشكل صحيح خلال 30 ثانية.<br>
-      عند انتهاء الوقت أو بعد التخمين، يمكنك الضغط على زر "التالي" للانتقال للدور التالي.<br>
-      أول فريق يصل إلى 15 نقطة يعتبر الفائز 🏆.<br>
-      تأكد من تغطية مربع الإجابة أسفل الشاشة حتى لا يراها اللاعبون.
-      <span class="commands-highlight">
-        📝 أوامر الشات:<br>
-        🔵 !ازرق للانضمام للفريق الأزرق<br>
-        🔴 !احمر للانضمام للفريق الأحمر
-      </span>
-    </div>
-
-    <div class="team team-red">
-      <h3>🔴 الفريق الأحمر</h3>
-      <input type="text" id="redPlayerInput" class="player-input" placeholder="اسم اللاعب">
-      <button onclick="addPlayer('red')">➕ إضافة</button>
-      <div id="redPlayers" class="players-list"></div>
-    </div>
+<div class="teams-container">
+  <div class="team team-blue">
+    <h3>🔵 الفريق الأزرق</h3>
+    <input type="text" id="bluePlayerInput" class="player-input" placeholder="اسم اللاعب">
+    <button onclick="addPlayer('blue')">➕ إضافة</button>
+    <div id="bluePlayers" class="players-list"></div>
   </div>
 
-  <div class="game-area">
-    <button id="startButton" onclick="startGame()">🎮 ابدأ اللعبة</button>
-    <div id="currentPlayer" class="current-player">⬇️ اللاعب الحالي سيظهر هنا</div>
-    <div id="scrambledWord" class="scrambled-word">🔤 الكلمة هنا</div>
-    
-    <div id="timer" class="timer"></div>
-    <button id="startTimerButton" onclick="startTimer()">⏳ ابدأ المؤقت</button>
-    
-    <input type="text" id="guessInput" placeholder="اكتب الإجابة هنا">
-    <button onclick="submitGuess()">✅ تأكيد</button>
-    <div id="guessResult" class="guess-result"></div>
-    <br>
-    <button onclick="nextTurn()">⏭️ التالي</button>
-
-    <div class="scoreboard">
-      🔵 الفريق الأزرق: <span id="blueScore">0</span> نقطة<br>
-      🔴 الفريق الأحمر: <span id="redScore">0</span> نقطة
-    </div>
+  <div class="game-description">
+    ✅ <strong>شرح اللعبة:</strong><br>
+    ستظهر كلمة مبعثرة في وسط الشاشة.<br>
+    على اللاعبين إعادة ترتيبها بشكل صحيح خلال 30 ثانية.<br>
+    عند انتهاء الوقت أو بعد التخمين، يمكنك الضغط على زر "التالي" للانتقال للدور التالي.<br>
+    أول فريق يصل إلى 15 نقطة يعتبر الفائز 🏆.<br>
+    <span class="commands-highlight">
+      📝 أوامر الشات:<br>
+      🔵 !ازرق للانضمام للفريق الأزرق<br>
+      🔴 !احمر للانضمام للفريق الأحمر
+    </span>
   </div>
 
-  <div class="answer-box">
-    ⚠️ الإجابة: <span id="answerText">❓</span>
+  <div class="team team-red">
+    <h3>🔴 الفريق الأحمر</h3>
+    <input type="text" id="redPlayerInput" class="player-input" placeholder="اسم اللاعب">
+    <button onclick="addPlayer('red')">➕ إضافة</button>
+    <div id="redPlayers" class="players-list"></div>
   </div>
+</div>
 
-  <div style="margin-top:20px;">
-    <select id="platformSelect" style="padding:10px;font-size:18px;">
-      <option value="twitch">Twitch</option>
-      <option value="kick">Kick</option>
-    </select>
-    <input type="text" id="channelInput" placeholder="🎮 اكتب اسم القناة" style="padding:10px;font-size:18px;">
-    <button onclick="connectChat()" style="padding:10px;font-size:18px;background:#28a745;color:#fff;border:none;border-radius:6px;cursor:pointer;">
-      ✅ تسجيل الدخول
-    </button>
-    <div id="chatStatus" style="margin-top:10px;font-size:16px;color:#0f0;"></div>
+<div class="game-area">
+  <button id="startButton" onclick="startGame()">🎮 ابدأ اللعبة</button>
+  <div id="currentPlayer" class="current-player">⬇️ اللاعب الحالي سيظهر هنا</div>
+  <div id="scrambledWord" class="scrambled-word">🔤 الكلمة هنا</div>
+  <div id="timer" class="timer"></div>
+  <button id="startTimerButton" onclick="startTimer()">⏳ ابدأ المؤقت</button>
+  <input type="text" id="guessInput" placeholder="اكتب الإجابة هنا">
+  <button onclick="submitGuess()">✅ تأكيد</button>
+  <div id="guessResult" class="guess-result"></div>
+  <br>
+  <button onclick="nextTurn()">⏭️ التالي</button>
+  <div class="scoreboard">
+    🔵 الفريق الأزرق: <span id="blueScore">0</span> نقطة<br>
+    🔴 الفريق الأحمر: <span id="redScore">0</span> نقطة
   </div>
+</div>
+
+<div class="answer-box">
+  ⚠️ الإجابة: <span id="answerText">❓</span>
+  <br>
+  <button onclick="toggleAnswer()">👁️ إخفاء/إظهار الإجابة</button>
+</div>
+
+<div style="margin-top:20px;">
+  <select id="platformSelect" style="padding:10px;font-size:18px;">
+    <option value="twitch">Twitch</option>
+    <option value="kick">Kick</option>
+  </select>
+  <input type="text" id="channelInput" placeholder="🎮 اكتب اسم القناة" style="padding:10px;font-size:18px;">
+  <button onclick="connectChat()" style="padding:10px;font-size:18px;background:#28a745;color:#fff;border:none;border-radius:6px;cursor:pointer;">
+    ✅ تسجيل الدخول
+  </button>
+  <div id="chatStatus" style="margin-top:10px;font-size:16px;color:#0f0;"></div>
+</div>
 
 <script>
+// مصفوفات الفرق
 const bluePlayers = [];
 const redPlayers = [];
+
+// متغيرات اللعبة
 let turnIndex = 0;
 let currentTeam = 'blue';
 let answeringTeam = 'blue';
@@ -116,8 +222,9 @@ let blueScore = 0;
 let redScore = 0;
 let timerInterval;
 let twitchClient;
-let kickSocket;
 let currentPlayerName = "";
+let timerRunning = false;
+const usedWords = [];
 
    const words = [
 "أمل","حياة","نور","سعادة","شمس","قمر","سماء","نجمة","بحر","نهر",
@@ -279,6 +386,8 @@ let currentPlayerName = "";
 "نادل","خادم","حمال","بواب","ناطور","سائس","ناظر","مفتش","مراقب","مشرف"
 ];
 
+
+// خلط الحروف
 function shuffleWord(word) {
   let arr = word.split('');
   let shuffled;
@@ -292,6 +401,7 @@ function shuffleWord(word) {
   return shuffled.join(' ');
 }
 
+// تحديث قائمة اللاعبين
 function updatePlayerList(team) {
   const listId = team === 'blue' ? "bluePlayers" : "redPlayers";
   const players = team === 'blue' ? bluePlayers : redPlayers;
@@ -304,29 +414,43 @@ function updatePlayerList(team) {
     `).join("");
 }
 
+// إضافة لاعب
 function addPlayer(team) {
   const inputId = team === 'blue' ? "bluePlayerInput" : "redPlayerInput";
   const name = document.getElementById(inputId).value.trim();
-  if (name === "") return alert("❌ الرجاء كتابة اسم اللاعب");
-  if (team === 'blue') bluePlayers.push(name);
-  else redPlayers.push(name);
+  if (name === "") {
+    alert("❌ الرجاء كتابة اسم اللاعب");
+    return;
+  }
+  if (team === 'blue') {
+    bluePlayers.push(name);
+  } else {
+    redPlayers.push(name);
+  }
   updatePlayerList(team);
   document.getElementById(inputId).value = "";
 }
 
+// إزالة لاعب
 function removePlayer(team, index) {
-  if (team === 'blue') bluePlayers.splice(index, 1);
-  else redPlayers.splice(index, 1);
+  if (team === 'blue') {
+    bluePlayers.splice(index, 1);
+  } else {
+    redPlayers.splice(index, 1);
+  }
   updatePlayerList(team);
 }
 
+// بدء اللعبة
 function startGame() {
   document.getElementById("startButton").style.display = "none";
   nextTurn();
 }
 
+// بدء المؤقت
 function startTimer() {
   let timeLeft = 30;
+  timerRunning = true;
   document.getElementById("timer").innerText = `⏳ الوقت المتبقي: ${timeLeft} ثانية`;
   clearInterval(timerInterval);
   timerInterval = setInterval(() => {
@@ -335,10 +459,12 @@ function startTimer() {
     if (timeLeft <= 0) {
       clearInterval(timerInterval);
       document.getElementById("timer").innerText = "⏳ انتهى الوقت!";
+      timerRunning = false;
     }
   }, 1000);
 }
 
+// جولة جديدة
 function nextTurn() {
   clearInterval(timerInterval);
   document.getElementById("timer").innerText = "";
@@ -359,7 +485,14 @@ function nextTurn() {
   }
   currentPlayerName = player;
   document.getElementById("currentPlayer").innerText = `🎮 الدور الآن: ${player}`;
-  const randomWord = words[Math.floor(Math.random() * words.length)];
+  let availableWords = words.filter(w => !usedWords.includes(w));
+  if (availableWords.length === 0) {
+    alert("✅ تم استخدام جميع الكلمات! سيتم إعادة التهيئة.");
+    usedWords.length = 0;
+    availableWords = words.slice();
+  }
+  let randomWord = availableWords[Math.floor(Math.random() * availableWords.length)];
+  usedWords.push(randomWord);
   currentAnswer = randomWord;
   document.getElementById("scrambledWord").innerText = shuffleWord(randomWord);
   document.getElementById("answerText").innerText = randomWord;
@@ -367,25 +500,28 @@ function nextTurn() {
   document.getElementById("guessResult").innerText = "";
 }
 
+// إخفاء/إظهار الإجابة
+function toggleAnswer() {
+  const el = document.getElementById("answerText");
+  if (el.style.visibility === "hidden") {
+    el.style.visibility = "visible";
+  } else {
+    el.style.visibility = "hidden";
+  }
+}
+
+// الاتصال بالشات
 function connectChat() {
   const platform = document.getElementById("platformSelect").value;
   const channel = document.getElementById("channelInput").value.trim();
-
-  if (!channel) {
-    alert("❌ الرجاء كتابة اسم القناة");
-    return;
-  }
-
   if (platform === "twitch") {
-    // Twitch Chat Connection
-    twitchClient = new tmi.Client({ channels: [channel] });
-    twitchClient.connect().then(() => {
-      document.getElementById("chatStatus").innerText = `✅ تم الاتصال بـ Twitch (${channel})`;
+    twitchClient = new tmi.Client({
+      channels: [channel]
     });
+    twitchClient.connect();
     twitchClient.on('message', (channel, tags, message, self) => {
       const username = tags['display-name'];
       const content = message.trim();
-
       if (content === "!ازرق") {
         if (!bluePlayers.includes(username)) {
           bluePlayers.push(username);
@@ -396,50 +532,54 @@ function connectChat() {
           redPlayers.push(username);
           updatePlayerList("red");
         }
-      } else if (content === currentAnswer && username === currentPlayerName) {
+      } else if (timerRunning && content === currentAnswer && username === currentPlayerName) {
         document.getElementById("guessResult").innerHTML = `✅ ${username} أجاب بشكل صحيح!`;
         if (answeringTeam === 'red') {
           redScore++;
           document.getElementById("redScore").innerText = redScore;
-          if (redScore >= 15) alert("🏆 الفريق الأحمر فاز!");
+          if (redScore >= 15) {
+            alert("🏆 الفريق الأحمر فاز!");
+          }
         } else {
           blueScore++;
           document.getElementById("blueScore").innerText = blueScore;
-          if (blueScore >= 15) alert("🏆 الفريق الأزرق فاز!");
+          if (blueScore >= 15) {
+            alert("🏆 الفريق الأزرق فاز!");
+          }
         }
       }
     });
+    document.getElementById("chatStatus").innerText = "✅ تم الاتصال بـ Twitch!";
   } else if (platform === "kick") {
-    // Kick Chat Connection
-    (async function(){
+    (async () => {
       try {
-        const res = await fetch(`https://kick.com/api/v2/channels/${channel}`);
-        const data = await res.json();
-        const roomId = data.chatroom.id;
-
-        kickSocket = new WebSocket("wss://ws-us2.pusher.com/app/32cbd69e4b950bf97679?protocol=7&client=js&version=8.4.0-rc2&flash=false");
-        kickSocket.onopen = () => {
-          kickSocket.send(JSON.stringify({
+        let res = await fetch(`https://kick.com/api/v2/channels/${channel}`);
+        let data = await res.json();
+        let roomId = data.chatroom.id;
+        let socket = new WebSocket("wss://ws-us2.pusher.com/app/32cbd69e4b950bf97679?protocol=7&client=js&version=8.4.0-rc2&flash=false");
+        socket.onopen = () => {
+          socket.send(JSON.stringify({
             event: "pusher:subscribe",
             data: {
               auth: "",
               channel: `chatrooms.${roomId}.v2`
             }
           }));
-          document.getElementById("chatStatus").innerText = `✅ تم الاتصال بـ Kick (${channel})`;
           setInterval(() => {
-            if (kickSocket.readyState === WebSocket.OPEN) {
-              kickSocket.send(JSON.stringify({ event: "pusher:ping", data: {} }));
+            if (socket.readyState === WebSocket.OPEN) {
+              socket.send(JSON.stringify({
+                event: "pusher:ping",
+                data: {}
+              }));
             }
           }, 12000);
         };
-        kickSocket.onmessage = e => {
-          const parsed = JSON.parse(e.data);
-          if (parsed.event === "App\\Events\\ChatMessageEvent") {
-            const msg = JSON.parse(parsed.data);
-            const username = msg.sender.username;
-            const content = msg.content.trim();
-
+        socket.onmessage = (event) => {
+          let msg = JSON.parse(event.data);
+          if (msg.event === "App\\Events\\ChatMessageEvent") {
+            let d = JSON.parse(msg.data);
+            let username = d.sender.username;
+            let content = d.content.trim();
             if (content === "!ازرق") {
               if (!bluePlayers.includes(username)) {
                 bluePlayers.push(username);
@@ -450,28 +590,32 @@ function connectChat() {
                 redPlayers.push(username);
                 updatePlayerList("red");
               }
-            } else if (content === currentAnswer && username === currentPlayerName) {
+            } else if (timerRunning && content === currentAnswer && username === currentPlayerName) {
               document.getElementById("guessResult").innerHTML = `✅ ${username} أجاب بشكل صحيح!`;
               if (answeringTeam === 'red') {
                 redScore++;
                 document.getElementById("redScore").innerText = redScore;
-                if (redScore >= 15) alert("🏆 الفريق الأحمر فاز!");
+                if (redScore >= 15) {
+                  alert("🏆 الفريق الأحمر فاز!");
+                }
               } else {
                 blueScore++;
                 document.getElementById("blueScore").innerText = blueScore;
-                if (blueScore >= 15) alert("🏆 الفريق الأزرق فاز!");
+                if (blueScore >= 15) {
+                  alert("🏆 الفريق الأزرق فاز!");
+                }
               }
             }
           }
         };
-      } catch (err) {
-        console.error("Kick connection error:", err);
+        document.getElementById("chatStatus").innerText = "✅ تم الاتصال بـ Kick!";
+      } catch (error) {
+        console.error("Kick connection error:", error);
         document.getElementById("chatStatus").innerText = "❌ فشل الاتصال بـ Kick!";
       }
     })();
   }
 }
-
 </script>
 </body>
 </html>
