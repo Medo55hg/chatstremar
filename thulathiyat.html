@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <title>🎯 لعبة خماسيات</title>
+  <link rel="stylesheet" href="style.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
 <style>
@@ -107,15 +108,18 @@ function seedRandom(seed) {
   let x = Math.sin(seed) * 10000;
   return x - Math.floor(x);
 }
-function pickWordsBySeed(seed) {
+
+// ✅ هنا تعديل الدالة لقبول قائمة مصفاة
+function pickWordsBySeed(seed, wordList) {
   const chosen = new Set();
   while (chosen.size < 3) {
-    const index = Math.floor(seedRandom(seed + chosen.size) * sixLetterWords.length);
-    const word = sixLetterWords[index];
-    if (word && word.length === 5) chosen.add(word);
+    const index = Math.floor(seedRandom(seed + chosen.size) * wordList.length);
+    const word = wordList[index];
+    if (word) chosen.add(word);
   }
   return Array.from(chosen);
 }
+
 function saveState() {
   const state = {
     currentWordIndex,
@@ -128,6 +132,7 @@ function saveState() {
   };
   localStorage.setItem("khmasiyatState", JSON.stringify(state));
 }
+
 function loadState() {
   const data = localStorage.getItem("khmasiyatState");
   if (data) {
@@ -145,10 +150,14 @@ function loadState() {
   }
   return false;
 }
+
 function initGame() {
   const today = new Date().toISOString().slice(0,10);
   const seed = parseInt(today.replace(/-/g,''));
-  words = pickWordsBySeed(seed);
+  // ✅ تصفية الكلمات
+  const filteredWords = sixLetterWords.filter(w => w.length === 5);
+  words = pickWordsBySeed(seed, filteredWords);
+
   if (loadState()) {
     createGrid();
     createKeyboard();
@@ -165,6 +174,7 @@ function initGame() {
     createKeyboard();
   }
 }
+
 function createGrid() {
   grid.innerHTML = "";
   for (let i=0; i<8; i++) {
@@ -184,7 +194,7 @@ function createKeyboard() {
     "هظزوةىرأإؤءذ"
   ];
 
-  rows.forEach((row, idx) => {
+   rows.forEach((row, idx) => {
     const rowDiv = document.getElementById(`row${idx+1}`);
     rowDiv.innerHTML = "";
     row.split("").forEach(k => {
@@ -203,12 +213,14 @@ function handleKey(k) {
   updateGrid();
   saveState();
 }
+
 function handleBackspace() {
   if (isLocked || currentGuess.length === 0) return;
   currentGuess = currentGuess.slice(0, -1);
   updateGrid();
   saveState();
 }
+
 function handleEnter() {
   if (isLocked || currentGuess.length < 5) return;
 
@@ -238,6 +250,7 @@ function handleEnter() {
   currentGuess="";
   saveState();
 }
+
 function updateKeyboardColors(guess, result) {
   for (let i = 0; i < 5; i++) {
     const letter = guess[i];
@@ -257,12 +270,14 @@ function updateKeyboardColors(guess, result) {
     });
   }
 }
+
 function resetKeyboardColors() {
   const keys=document.querySelectorAll(".key");
   keys.forEach(key=>{
     key.classList.remove("correct","present","absent");
   });
 }
+
 function renderGuess(result) {
   for (let j=0; j<5; j++) {
     const cell=document.getElementById(`cell-${currentWordIndex}-${currentRow}-${j}`);
@@ -270,12 +285,14 @@ function renderGuess(result) {
     cell.classList.add(result[j]);
   }
 }
+
 function updateGrid() {
   for (let i=0; i<5; i++) {
     const cell=document.getElementById(`cell-${currentWordIndex}-${currentRow}-${i}`);
     if (cell) cell.textContent=currentGuess[i]||"";
   }
 }
+
 function resetForNextWord() {
   currentRow=0;
   currentGuess="";
@@ -283,6 +300,7 @@ function resetForNextWord() {
   resetKeyboardColors();
   saveState();
 }
+
 function showSummary() {
   summary.innerHTML="<h2>⭐ ملخص محاولاتك:</h2>";
   for (let w=0;w<3;w++) {
@@ -300,6 +318,7 @@ function showSummary() {
     summary.appendChild(gridDiv);
   }
 }
+
 window.onload=initGame;
 </script>
 </body>
