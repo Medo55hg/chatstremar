@@ -1,23 +1,40 @@
 body {
-    background-color: #111;
+    background: linear-gradient(-45deg, #1a1a3d, #004466, #1a1a3d, #004466);
+    background-size: 400% 400%;
+    animation: gradientBG 20s ease infinite;
     color: #fff;
     font-family: 'Cairo', sans-serif;
     text-align: center;
     padding: 20px;
-  }
-  h1 {
+}
+
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+h1 {
     font-size: 36px;
     color: #ff3333;
     margin-bottom: 30px;
-  }
-  .row {
+}
+
+.row {
     display: flex;
     justify-content: center;
     gap: 20px;
     flex-wrap: wrap;
     margin-bottom: 50px;
-  }
-  .game-card {
+}
+
+.game-card {
     background-color: #222;
     border: 2px solid #ff3333;
     border-radius: 10px;
@@ -28,17 +45,20 @@ body {
     text-align: center;
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.6);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  .game-card:hover {
+}
+
+.game-card:hover {
     transform: translateY(-8px) scale(1.03);
     box-shadow: 0 15px 25px rgba(0, 0, 0, 0.8);
-  }
-  .game-card.transitioning {
+}
+
+.game-card.transitioning {
     z-index: 999;
     transform: scale(1.5) translateY(-50px);
     transition: transform 0.6s ease;
-  }
-  .start-btn {
+}
+
+.start-btn {
     display: inline-block;
     margin-top: 15px;
     padding: 10px 20px;
@@ -51,12 +71,14 @@ body {
     text-decoration: none;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
-  }
-  .start-btn:hover {
+}
+
+.start-btn:hover {
     background-color: #00ff80;
     transform: scale(1.05);
-  }
-  .game-card.image-bg::before {
+}
+
+.game-card.image-bg::before {
     content: "";
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -64,8 +86,9 @@ body {
     filter: blur(2px);
     opacity: 0.4;
     z-index: 0;
-  }
-  .game-card.image-bg2::before {
+}
+
+.game-card.image-bg2::before {
     content: "";
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -73,8 +96,9 @@ body {
     filter: blur(2px);
     opacity: 0.4;
     z-index: 0;
-  }
-  .game-card.image-bg3::before {
+}
+
+.game-card.image-bg3::before {
     content: "";
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -82,44 +106,52 @@ body {
     filter: blur(2px);
     opacity: 0.4;
     z-index: 0;
-  }
-  .game-card.image-bg *,
-  .game-card.image-bg2 *,
-  .game-card.image-bg3 * {
+}
+
+.game-card.image-bg *,
+.game-card.image-bg2 *,
+.game-card.image-bg3 * {
     position: relative;
     z-index: 1;
-  }
-  .game-card.blur::before {
+}
+
+.game-card.blur::before {
     content: "";
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
     backdrop-filter: blur(5px);
     background: rgba(0,0,0,0.6);
     z-index: 1;
-  }
-  .game-card.blur button {
+}
+
+.game-card.blur button {
     position: relative;
     z-index: 2;
-  }
-  .note {
+}
+
+.note {
     margin-top: 40px;
     font-size: 18px;
     color: #ccc;
     font-weight: 600;
-  }
-  .platforms {
+}
+
+.platforms {
     margin-top: 10px;
     font-size: 16px;
-  }
-  .twitch-text {
+}
+
+.twitch-text {
     color: #9146FF;
     font-weight: bold;
-  }
-  .kick-text {
+}
+
+.kick-text {
     color: #00D800;
     font-weight: bold;
-  }
-  .contact-button {
+}
+
+.contact-button {
     position: fixed;
     bottom: 20px;
     right: 20px;
@@ -134,7 +166,8 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-  }
-  .contact-button:hover {
+}
+
+.contact-button:hover {
     background-color: #222;
-  }
+}
