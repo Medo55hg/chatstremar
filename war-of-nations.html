@@ -87,6 +87,34 @@ h1 {
     border-radius: 5px;
     margin: 5px;
 }
+.revive-section {
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(0, 255, 0, 0.2);
+    border-radius: 8px;
+    border: 1px solid #00ff00;
+}
+.revive-title {
+    color: #00ff00;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+.revive-select {
+    padding: 8px;
+    font-size: 16px;
+    margin-right: 10px;
+    border-radius: 5px;
+    border: none;
+}
+.revive-button {
+    background: #28a745;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+}
 </style>
 </head>
 <body>
@@ -126,6 +154,16 @@ h1 {
     <div class="eliminated-content" id="eliminatedContent">
         <div class="eliminated-item">لا يوجد محذوفين بعد</div>
     </div>
+</div>
+
+<!-- قسم إعادة اللاعبين -->
+<div class="revive-section" id="reviveSection">
+    <h3 class="revive-title">♻️ إعادة لاعب</h3>
+    <select id="reviveSelect" class="revive-select">
+        <option value="">اختر لاعباً لإعادته</option>
+    </select>
+    <button onclick="revivePlayer()" class="revive-button">إعادة اللاعب</button>
+    <p style="color:#ccc; margin-top:10px;">يمكنك أيضاً استخدام الأمر: !اعاده @اسم_اللاعب</p>
 </div>
 
 <script>
@@ -184,6 +222,57 @@ function renderPlayers(rotation = 0) {
   ctx.fill();
 }
 
+function updateEliminatedDisplay() {
+    const eliminatedContent = document.getElementById("eliminatedContent");
+    const reviveSelect = document.getElementById("reviveSelect");
+    
+    eliminatedContent.innerHTML = "";
+    reviveSelect.innerHTML = '<option value="">اختر لاعباً لإعادته</option>';
+    
+    if (eliminatedData.length === 0) {
+        eliminatedContent.innerHTML = '<div class="eliminated-item">لا يوجد محذوفين بعد</div>';
+        return;
+    }
+    
+    eliminatedData.forEach(item => {
+        // عرض في قسم المحذوفين
+        const itemElement = document.createElement("div");
+        itemElement.className = "eliminated-item";
+        itemElement.textContent = `(${item.country}) ${item.player}`;
+        eliminatedContent.appendChild(itemElement);
+        
+        // إضافة إلى قائمة الاختيار للإعادة
+        const option = document.createElement("option");
+        option.value = item.player;
+        option.textContent = item.player;
+        reviveSelect.appendChild(option);
+    });
+}
+
+function revivePlayer() {
+    const reviveSelect = document.getElementById("reviveSelect");
+    const playerToRevive = reviveSelect.value;
+    
+    if (!playerToRevive) return;
+    
+    if (eliminatedPlayers.includes(playerToRevive)) {
+        players.push(playerToRevive);
+        playerColors[playerToRevive] = getColorForPlayer(playerToRevive);
+        eliminatedPlayers = eliminatedPlayers.filter(x => x !== playerToRevive);
+        
+        // إزالة من قائمة المحذوفين
+        eliminatedData = eliminatedData.filter(item => item.player !== playerToRevive);
+        
+        generateNewCountryForPlayer(playerToRevive);
+        lastReviver = "";
+        updateEliminatedDisplay();
+        
+        overlay.innerText = `♻️ تمت إعادة اللاعب ${playerToRevive}`;
+        overlay.style.display = "flex";
+        setTimeout(() => overlay.style.display = "none", 3000);
+    }
+}
+
 function spinWheelAnimated() {
   if (players.length === 0) return;
   let rotation = 0, totalFrames = 1800, frame = 0;
@@ -208,23 +297,6 @@ function spinWheelAnimated() {
     }
   }
   animate();
-}
-
-function updateEliminatedDisplay() {
-    const eliminatedContent = document.getElementById("eliminatedContent");
-    eliminatedContent.innerHTML = "";
-    
-    if (eliminatedData.length === 0) {
-        eliminatedContent.innerHTML = '<div class="eliminated-item">لا يوجد محذوفين بعد</div>';
-        return;
-    }
-    
-    eliminatedData.forEach(item => {
-        const itemElement = document.createElement("div");
-        itemElement.className = "eliminated-item";
-        itemElement.textContent = `(${item.country}) ${item.player}`;
-        eliminatedContent.appendChild(itemElement);
-    });
 }
 
 function startGame() {
