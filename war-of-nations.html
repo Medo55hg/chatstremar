@@ -61,6 +61,32 @@ h1 {
     color: #ff3333;
     margin-bottom: 30px;
 }
+.eliminated-section {
+    margin-top: 30px;
+    padding: 15px;
+    background: rgba(255, 0, 0, 0.2);
+    border-radius: 8px;
+    border: 1px solid #ff0000;
+}
+.eliminated-title {
+    color: #ff0000;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+.eliminated-content {
+    color: #ff9999;
+    font-size: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+.eliminated-item {
+    background: rgba(255, 0, 0, 0.3);
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin: 5px;
+}
 </style>
 </head>
 <body>
@@ -93,6 +119,15 @@ h1 {
 </div>
 <button onclick="startGame()">بدء اللعبة</button>
 <h3 id="currentTurnDisplay" style="margin-top:20px; color:#0ff;">✨ الدور الآن: لم يبدأ بعد</h3>
+
+<!-- قسم الدول المقصاة واللاعبين المطرودين -->
+<div class="eliminated-section" id="eliminatedSection">
+    <h3 class="eliminated-title">🚫 الدول المقصاة واللاعبين المطرودين</h3>
+    <div class="eliminated-content" id="eliminatedContent">
+        <div class="eliminated-item">لا يوجد محذوفين بعد</div>
+    </div>
+</div>
+
 <script>
 let players = [], playerColors = {}, currentTurnPlayer = "";
 let countriesPool = [
@@ -104,6 +139,7 @@ let assignedCountries = {}, remainingCountries = [], immunityCountries = [], rev
 let playerImmunity = {}, eliminatedPlayers = [], lastReviver = "";
 let isGameStarted = false;
 const overlay = document.getElementById("overlay");
+let eliminatedData = []; // لتخزين بيانات الدول واللاعبين المحذوفين
 
 function getColorForPlayer(player) {
   const hash = [...player].reduce((a, c) => a + c.charCodeAt(0), 0);
@@ -174,6 +210,23 @@ function spinWheelAnimated() {
   animate();
 }
 
+function updateEliminatedDisplay() {
+    const eliminatedContent = document.getElementById("eliminatedContent");
+    eliminatedContent.innerHTML = "";
+    
+    if (eliminatedData.length === 0) {
+        eliminatedContent.innerHTML = '<div class="eliminated-item">لا يوجد محذوفين بعد</div>';
+        return;
+    }
+    
+    eliminatedData.forEach(item => {
+        const itemElement = document.createElement("div");
+        itemElement.className = "eliminated-item";
+        itemElement.textContent = `(${item.country}) ${item.player}`;
+        eliminatedContent.appendChild(itemElement);
+    });
+}
+
 function startGame() {
   if (players.length < 2) return alert("يجب إضافة لاعبين أولاً!");
   isGameStarted = true;
@@ -187,6 +240,7 @@ function startGame() {
   eliminatedPlayers = [];
   lastReviver = "";
   usedSpecialCountries = [];
+  eliminatedData = [];
 
   // حساب عدد الدول المطلوبة (لاعبين + 4 دول خاصة)
   const totalNeeded = players.length + 4;
@@ -240,6 +294,7 @@ function startGame() {
   // عرض الدول واللاعبين
   renderCountries();
   renderPlayers();
+  updateEliminatedDisplay();
   
   // إظهار رسالة بدء اللعبة
   overlay.textContent = "🎮 بدأت اللعبة! تم توزيع الدول عشوائياً";
@@ -366,7 +421,16 @@ function attackCountry(c) {
       if (index !== -1) players.splice(index, 1);
       delete playerColors[p];
       eliminatedPlayers.push(p);
-      renderPlayers(); renderCountries();
+      
+      // إضافة إلى قائمة المحذوفين
+      eliminatedData.push({
+        country: c,
+        player: p
+      });
+      
+      renderPlayers(); 
+      renderCountries();
+      updateEliminatedDisplay();
     }
     setTimeout(() => overlay.style.display = "none", 3000);
   }, 3000);
@@ -400,8 +464,13 @@ function connectChat() {
           players.push(mentioned);
           playerColors[mentioned] = getColorForPlayer(mentioned);
           eliminatedPlayers = eliminatedPlayers.filter(x => x !== mentioned);
+          
+          // إزالة من قائمة المحذوفين
+          eliminatedData = eliminatedData.filter(item => item.player !== mentioned);
+          
           generateNewCountryForPlayer(mentioned);
           lastReviver = "";
+          updateEliminatedDisplay();
         }
       }
     });
@@ -440,8 +509,13 @@ function connectChat() {
                 players.push(mentioned);
                 playerColors[mentioned] = getColorForPlayer(mentioned);
                 eliminatedPlayers = eliminatedPlayers.filter(x => x !== mentioned);
+                
+                // إزالة من قائمة المحذوفين
+                eliminatedData = eliminatedData.filter(item => item.player !== mentioned);
+                
                 generateNewCountryForPlayer(mentioned);
                 lastReviver = "";
+                updateEliminatedDisplay();
               }
             }
           }
