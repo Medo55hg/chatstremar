@@ -3,71 +3,64 @@
 <head>
 <meta charset="UTF-8">
 <title>🌍 حرب الدول</title>
-  <link rel="stylesheet" href="style.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo&display=swap" rel="stylesheet">
 <script src="tmi.min.js"></script>
 <style>
-  body {
-    margin:0;
-    background-color:#111;
-    color:#fff;
-    font-family:'Amiri', serif;
-    text-align:center;
-    padding:20px;
-  }
-  h1 { color:#ff3333;margin-bottom:20px; }
-  .container { display:flex; justify-content:space-between; flex-wrap:wrap; }
-  .wheel, .countries {
-    width:48%;
-    min-height:300px;
-    border:2px solid #fff;
-    border-radius:8px;
-    padding:10px;
-    overflow:auto;
-    position:relative;
-  }
-  .country {
-    display:inline-block;
-    margin:5px;
-    background:#222;
-    padding:5px;
-    border-radius:6px;
-  }
-  .country img {
-    width:80px;
-    display:block;
-    margin:auto;
-  }
-  .overlay {
-    position:fixed;
-    top:0;left:0;right:0;bottom:0;
-    background:rgba(0,0,0,0.8);
-    display:none;
-    align-items:center;
-    justify-content:center;
-    font-size:24px;
-    z-index:999;
-  }
-  .eliminated {
-    background:#222;
-    border:2px solid #ff3333;
-    border-radius:8px;
-    padding:10px;
-    margin:5px auto;
-    width:95%;
-    font-size:18px;
-  }
-  button {
-    padding:10px 20px;
-    margin-top:15px;
-    background:#ff3333;
-    color:#fff;
-    border:none;
-    border-radius:6px;
-    cursor:pointer;
-    font-family:'Amiri', serif;
-  }
+body {
+    background: linear-gradient(-45deg, #1a1a3d, #004466, #1a1a3d, #004466);
+    background-size: 400% 400%;
+    animation: gradientBG 20s ease infinite;
+    color: #fff;
+    font-family: 'Cairo', sans-serif;
+    text-align: center;
+    padding: 20px;
+}
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+.container { display:flex; justify-content:space-between; flex-wrap:wrap; }
+.wheel, .countries {
+  width:48%; min-height:300px; border:2px solid #fff;
+  border-radius:8px; padding:10px; overflow:auto; position:relative;
+}
+#countryList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+.country {
+  width: calc(25% - 10px);
+  background:#222;
+  padding:5px;
+  border-radius:6px;
+  text-align:center;
+  opacity:0;
+  transform: scale(0.5);
+  transition: all 0.4s ease;
+}
+.country.show { opacity:1; transform: scale(1); }
+.country img { width:80px; display:block; margin:auto; }
+.overlay {
+  position:fixed; top:0;left:0;right:0;bottom:0;
+  background:rgba(0,0,0,0.8);
+  display:none; align-items:center; justify-content:center;
+  font-size:24px; z-index:999;
+}
+button {
+  padding:10px 20px; margin-top:15px;
+  background:#ff3333; color:#fff;
+  border:none; border-radius:6px;
+  cursor:pointer; font-family:'Cairo', sans-serif;
+}
+h1 {
+    font-size: 36px;
+    color: #ff3333;
+    margin-bottom: 30px;
+}
 </style>
 </head>
 <body>
@@ -76,15 +69,17 @@
 <div class="container">
   <div class="wheel" id="wheel">
     <h3>👥 قائمة اللاعبين</h3>
-    <ul id="playerList"></ul>
+    <p style="font-size:14px; color:#ccc;">سيكون اختيار الأسماء عشوائيًا</p>
+    <canvas id="playerWheel" width="400" height="400" style="margin: 20px auto; display: block;"></canvas>
+    <button onclick="spinWheelAnimated()">🎯 دوران العجلة</button>
   </div>
   <div class="countries" id="countries">
     <h3>🌐 الدول</h3>
     <div id="countryList"></div>
+    <button onclick="regenerateCountries()">🔁 خلط الدول</button>
   </div>
 </div>
 <div class="overlay" id="overlay"></div>
-
 <div style="margin-top:20px;">
   <select id="platformSelect" style="padding:10px;font-size:18px;">
     <option value="twitch">Twitch</option>
@@ -96,187 +91,382 @@
   </button>
   <div id="chatStatus" style="margin-top:10px;font-size:16px;color:#0f0;"></div>
 </div>
-
 <button onclick="startGame()">بدء اللعبة</button>
-<button onclick="nextTurn()">التالي</button>
-<button onclick="removePlayer()">حذف لاعب</button>
-
-<h3 style="margin-top:30px;">🏴‍☠️ الدول المقصاة</h3>
-<div id="eliminatedList"></div>
-
+<h3 id="currentTurnDisplay" style="margin-top:20px; color:#0ff;">✨ الدور الآن: لم يبدأ بعد</h3>
 <script>
-const maxPlayers = 100;
-const players = [];
-const countriesPool = ["السعودية","الإمارات","قطر","مصر","الأردن","لبنان","العراق","الكويت","عمان","البحرين","تونس","الجزائر","المغرب","ليبيا","السودان","اليمن","سوريا","فلسطين","تركيا","إيران","ألمانيا","فرنسا","إيطاليا","إسبانيا","أمريكا","كندا","روسيا","الصين","اليابان","الهند"];
-let remainingCountries = [];
-let assignedCountries = {};
-let currentPlayer = "";
-let waitingForAttack = false;
-let twitchClient;
-let kickSocket;
+let players = [], playerColors = {}, currentTurnPlayer = "";
+let countriesPool = [
+  "السعودية","الإمارات","قطر","مصر","الأردن","لبنان","العراق","الكويت","عمان","البحرين",
+  "تونس","الجزائر","المغرب","ليبيا","السودان","اليمن","سوريا","فلسطين","تركيا","إيران",
+  "ألمانيا","فرنسا","إيطاليا","إسبانيا","أمريكا","كندا","روسيا","الصين","اليابان","الهند"
+];
+let assignedCountries = {}, remainingCountries = [], immunityCountries = [], reviveCountries = [], usedSpecialCountries = [];
+let playerImmunity = {}, eliminatedPlayers = [], lastReviver = "";
+let isGameStarted = false;
 const overlay = document.getElementById("overlay");
-const eliminatedDiv = document.getElementById("eliminatedList");
 
-function getCountryCode(name){
-  const codes={
-    "السعودية":"sa","الإمارات":"ae","قطر":"qa","مصر":"eg","الأردن":"jo","لبنان":"lb","العراق":"iq","الكويت":"kw","عمان":"om","البحرين":"bh",
-    "تونس":"tn","الجزائر":"dz","المغرب":"ma","ليبيا":"ly","السودان":"sd","اليمن":"ye","سوريا":"sy","فلسطين":"ps","تركيا":"tr","إيران":"ir",
-    "ألمانيا":"de","فرنسا":"fr","إيطاليا":"it","إسبانيا":"es","أمريكا":"us","كندا":"ca","روسيا":"ru","الصين":"cn","اليابان":"jp","الهند":"in"
-  };
-  return codes[name] || "un";
+function getColorForPlayer(player) {
+  const hash = [...player].reduce((a, c) => a + c.charCodeAt(0), 0);
+  return `hsl(${hash % 360}, 70%, 60%)`;
 }
 
-function normalize(text){
-  return text.replace(/أ|إ|آ/g,"ا");
-}
-
-function addPlayer(name){
-  if(players.includes(name)||players.length>=maxPlayers)return;
-  players.push(name);
-  renderPlayers();
-}
-function renderPlayers(){
-  const list=document.getElementById("playerList");
-  list.innerHTML="";
-  players.forEach(p=>{
-    const li=document.createElement("li");
-    li.textContent=p;
-    list.appendChild(li);
-  });
-}
-function startGame(){
-  if(players.length<2){
-    alert("يجب إضافة لاعبين أولًا!");
-    return;
-  }
-  remainingCountries=[];
-  assignedCountries={};
-  eliminatedDiv.innerHTML="";
-  const shuffled=countriesPool.sort(()=>0.5-Math.random()).slice(0,players.length);
-  shuffled.forEach((country,i)=>{
-    assignedCountries[country]=players[i];
-    remainingCountries.push(country);
-  });
-  renderCountries();
-}
-function renderCountries(){
-  const container=document.getElementById("countryList");
-  container.innerHTML="";
-  remainingCountries.forEach(c=>{
-    const div=document.createElement("div");
-    div.className="country";
-    div.innerHTML=`<img src="https://flagcdn.com/w80/${getCountryCode(c)}.png"><br>${c}<br><small>؟</small>`;
-    container.appendChild(div);
-  });
-}
-function nextTurn(){
-  if(players.length<=1){
-    announceWinner();
-    return;
-  }
-  currentPlayer=players[Math.floor(Math.random()*players.length)];
-  overlay.textContent=`الدور على: ${currentPlayer}`;
-  overlay.style.display="flex";
-  setTimeout(()=>{overlay.style.display="none";waitingForAttack=true;},3000);
-}
-function announceWinner(){
-  const lastCountry=Object.keys(assignedCountries)[0];
-  const winner=assignedCountries[lastCountry];
-  overlay.textContent=`🎉 الدولة المسيطرة: ${lastCountry} ورئيسها ${winner}!`;
-  overlay.style.display="flex";
-}
-function handleAttack(target){
-  const normalizedTarget = normalize(target);
-  const normalizedCountries = remainingCountries.map(c=>normalize(c));
-  const index = normalizedCountries.indexOf(normalizedTarget);
-
-  if(index === -1){
-    alert("الدولة غير صحيحة.");
-    return;
-  }
-
-  waitingForAttack=false;
-  const realTarget = remainingCountries[index];
-  const eliminatedPlayer = assignedCountries[realTarget];
-  overlay.textContent=`${currentPlayer} هاجم ${realTarget}`;
-  overlay.style.display="flex";
-  setTimeout(()=>{
-    overlay.textContent=`تم إقصاء الدولة ${realTarget} ورئيسها ${eliminatedPlayer}`;
-
-    const div = document.createElement("div");
-    div.className="eliminated";
-    div.textContent=`الدولة ${realTarget} - الرئيس ${eliminatedPlayer}`;
-    eliminatedDiv.appendChild(div);
-
-    players.splice(players.indexOf(eliminatedPlayer),1);
-    remainingCountries.splice(index,1);
-    delete assignedCountries[realTarget];
+function addPlayer(name, color = "#fff") {
+  if (!players.includes(name)) {
+    players.push(name);
+    playerColors[name] = color;
     renderPlayers();
-    renderCountries();
-    setTimeout(()=>{
-      overlay.style.display="none";
-      if(players.length<=1) announceWinner();
-    },3000);
-  },2000);
-}
-function removePlayer(){
-  const name = prompt("اكتب اسم اللاعب لحذفه:");
-  if(!name) return;
-  const index = players.indexOf(name.trim());
-  if(index !== -1){
-    players.splice(index,1);
-    renderPlayers();
-    alert("تم حذف اللاعب بنجاح.");
-  }else{
-    alert("اللاعب غير موجود.");
   }
 }
-async function connectChat(){
-  const platform=document.getElementById("platformSelect").value;
-  const channel=document.getElementById("channelInput").value.trim();
-  if(platform==="twitch"){
-    twitchClient = new tmi.Client({ channels: [channel] });
-    twitchClient.connect();
-    twitchClient.on('message',(channel,tags,message,self)=>{
-      if(self)return;
-      const username=tags['display-name'];
-      const content=message.trim();
-      if(content==="!دخول"){ addPlayer(username); }
-      else if(waitingForAttack && username==currentPlayer){ handleAttack(content); }
-    });
-    document.getElementById("chatStatus").innerText="✅ تم الاتصال بـTwitch!";
-  } else if(platform==="kick"){
-    try {
-      let res = await fetch(`https://kick.com/api/v2/channels/${channel}`);
-      let data = await res.json();
-      let roomId = data.chatroom.id;
-      kickSocket = new WebSocket("wss://ws-us2.pusher.com/app/32cbd69e4b950bf97679?protocol=7&client=js&version=8.4.0-rc2&flash=false");
-      kickSocket.onopen = () => {
-        kickSocket.send(JSON.stringify({
-          event:"pusher:subscribe",
-          data:{auth:"",channel:`chatrooms.${roomId}.v2`}
-        }));
-        setInterval(()=>{
-          if(kickSocket.readyState===WebSocket.OPEN){
-            kickSocket.send(JSON.stringify({event:"pusher:ping",data:{}}));
-          }
-        },12000);
-      };
-      kickSocket.onmessage = e=>{
-        let t=JSON.parse(e.data);
-        if(t.event==="App\\Events\\ChatMessageEvent"){
-          let m=JSON.parse(t.data);
-          const username=m.sender.username;
-          const content=m.content.trim();
-          if(content==="!دخول"){ addPlayer(username); }
-          else if(waitingForAttack && username==currentPlayer){ handleAttack(content); }
-        }
-      };
-      document.getElementById("chatStatus").innerText="✅ تم الاتصال بـKick!";
-    } catch(err){
-      console.error("Kick connection error:",err);
+
+function renderPlayers(rotation = 0) {
+  const canvas = document.getElementById("playerWheel");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  const r = canvas.width / 2;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (players.length === 0) return;
+  const slice = 2 * Math.PI / players.length;
+  players.forEach((p, i) => {
+    const angle = slice * i + rotation;
+    ctx.beginPath(); ctx.moveTo(r, r);
+    ctx.arc(r, r, r, angle, angle + slice);
+    ctx.fillStyle = playerColors[p]; ctx.fill(); ctx.stroke();
+    ctx.save(); ctx.translate(r, r); ctx.rotate(angle + slice / 2);
+    ctx.textAlign = "right";
+    ctx.fillStyle = "#000";
+    ctx.font = "bold 14px Cairo";
+    let displayName = p;
+    if (playerImmunity[p]) displayName += " (محصن)";
+    ctx.fillText(displayName, r - 10, 5); ctx.restore();
+  });
+  ctx.beginPath();
+  ctx.moveTo(canvas.width - 20, r);
+  ctx.lineTo(canvas.width, r - 20);
+  ctx.lineTo(canvas.width, r + 20);
+  ctx.closePath();
+  ctx.fillStyle = "#ff0";
+  ctx.fill();
+}
+
+function spinWheelAnimated() {
+  if (players.length === 0) return;
+  let rotation = 0, totalFrames = 1800, frame = 0;
+  const slice = 2 * Math.PI / players.length;
+  const fullSpins = 5 * 2 * Math.PI;
+  const randomAngle = Math.random() * 2 * Math.PI;
+  const target = fullSpins + randomAngle;
+  function animate() {
+    frame++;
+    const t = frame / totalFrames;
+    const eased = t * t * (3 - 2 * t);
+    rotation = target * eased;
+    renderPlayers(rotation);
+    if (frame < totalFrames) requestAnimationFrame(animate);
+    else {
+      const index = Math.floor(((2 * Math.PI - (rotation % (2 * Math.PI))) % (2 * Math.PI)) / slice);
+      currentTurnPlayer = players[index];
+      overlay.textContent = `🎯 اللاعب المختار: ${currentTurnPlayer}`;
+      overlay.style.display = "flex";
+      document.getElementById("currentTurnDisplay").innerText = `✨ الدور الآن: ${currentTurnPlayer}`;
+      setTimeout(() => overlay.style.display = "none", 3000);
     }
   }
+  animate();
+}
+
+function startGame() {
+  if (players.length < 2) return alert("يجب إضافة لاعبين أولاً!");
+  isGameStarted = true;
+  
+  // إعادة تعيين جميع المتغيرات
+  assignedCountries = {};
+  remainingCountries = [];
+  immunityCountries = [];
+  reviveCountries = [];
+  playerImmunity = {};
+  eliminatedPlayers = [];
+  lastReviver = "";
+  usedSpecialCountries = [];
+
+  // حساب عدد الدول المطلوبة (لاعبين + 4 دول خاصة)
+  const totalNeeded = players.length + 4;
+  
+  // إنشاء نسخة من مجموعة الدول الأصلية
+  const availableCountries = [...countriesPool];
+  
+  // اختيار الدول المطلوبة بشكل عشوائي
+  const selectedCountries = [];
+  for (let i = 0; i < totalNeeded; i++) {
+    if (availableCountries.length === 0) break;
+    const randomIndex = Math.floor(Math.random() * availableCountries.length);
+    selectedCountries.push(availableCountries[randomIndex]);
+    availableCountries.splice(randomIndex, 1);
+  }
+  
+  // اختيار 4 دول خاصة (حصانة وإعادة) بشكل عشوائي من الدول المختارة
+  const specialCountries = [];
+  while (specialCountries.length < 4 && selectedCountries.length > 0) {
+    const randomIndex = Math.floor(Math.random() * selectedCountries.length);
+    specialCountries.push(selectedCountries[randomIndex]);
+    selectedCountries.splice(randomIndex, 1);
+  }
+  
+  immunityCountries = specialCountries.slice(0, 2);
+  reviveCountries = specialCountries.slice(2);
+  usedSpecialCountries.push(...specialCountries);
+  
+  // الدول المتبقية للاعبين
+  const playableCountries = [...selectedCountries];
+  
+  // توزيع الدول على اللاعبين بشكل عشوائي تماماً
+  const shuffledPlayers = [...players];
+  for (let i = shuffledPlayers.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledPlayers[i], shuffledPlayers[j]] = [shuffledPlayers[j], shuffledPlayers[i]];
+  }
+  
+  playableCountries.forEach((country, i) => {
+    const player = shuffledPlayers[i % shuffledPlayers.length];
+    assignedCountries[country] = player;
+    remainingCountries.push(country);
+  });
+  
+  // إضافة الدول الخاصة إلى القائمة
+  remainingCountries.push(...specialCountries);
+  specialCountries.forEach(country => {
+    assignedCountries[country] = null;
+  });
+
+  // عرض الدول واللاعبين
+  renderCountries();
+  renderPlayers();
+  
+  // إظهار رسالة بدء اللعبة
+  overlay.textContent = "🎮 بدأت اللعبة! تم توزيع الدول عشوائياً";
+  overlay.style.display = "flex";
+  setTimeout(() => overlay.style.display = "none", 3000);
+}
+
+function regenerateCountries() {
+  if (!isGameStarted) return;
+  
+  // إنشاء نسخة من مجموعة الدول الأصلية
+  const availableCountries = countriesPool.filter(c => !usedSpecialCountries.includes(c));
+  
+  // عدد الدول المطلوبة (نفس عدد الدول الحالية)
+  const totalNeeded = remainingCountries.length;
+  
+  // اختيار دول جديدة بشكل عشوائي
+  const newCountries = [];
+  for (let i = 0; i < totalNeeded; i++) {
+    if (availableCountries.length === 0) break;
+    const randomIndex = Math.floor(Math.random() * availableCountries.length);
+    newCountries.push(availableCountries[randomIndex]);
+    availableCountries.splice(randomIndex, 1);
+  }
+  
+  // اختيار 4 دول خاصة (حصانة وإعادة) بشكل عشوائي
+  const newSpecialCountries = [];
+  while (newSpecialCountries.length < 4 && newCountries.length > 0) {
+    const randomIndex = Math.floor(Math.random() * newCountries.length);
+    newSpecialCountries.push(newCountries[randomIndex]);
+    newCountries.splice(randomIndex, 1);
+  }
+  
+  immunityCountries = newSpecialCountries.slice(0, 2);
+  reviveCountries = newSpecialCountries.slice(2);
+  usedSpecialCountries.push(...newSpecialCountries);
+  
+  // الدول المتبقية للاعبين
+  const newPlayableCountries = [...newCountries];
+  
+  // توزيع الدول الجديدة على اللاعبين بشكل عشوائي تماماً
+  const shuffledPlayers = [...players];
+  for (let i = shuffledPlayers.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledPlayers[i], shuffledPlayers[j]] = [shuffledPlayers[j], shuffledPlayers[i]];
+  }
+  
+  // تعيين الدول الجديدة
+  assignedCountries = {};
+  remainingCountries = [];
+  
+  newPlayableCountries.forEach((country, i) => {
+    const player = shuffledPlayers[i % shuffledPlayers.length];
+    assignedCountries[country] = player;
+    remainingCountries.push(country);
+  });
+  
+  // إضافة الدول الخاصة إلى القائمة
+  remainingCountries.push(...newSpecialCountries);
+  newSpecialCountries.forEach(country => {
+    assignedCountries[country] = null;
+  });
+
+  // عرض الدول واللاعبين
+  renderCountries();
+  renderPlayers();
+  
+  // إظهار رسالة الخلط
+  overlay.textContent = "🔀 تم خلط الدول وتوزيعها عشوائياً من جديد";
+  overlay.style.display = "flex";
+  setTimeout(() => overlay.style.display = "none", 3000);
+}
+
+function renderCountries() {
+  const box = document.getElementById("countryList");
+  box.innerHTML = "";
+  
+  // خلط ترتيب عرض الدول عشوائياً
+  const shuffledCountries = [...remainingCountries].sort(() => Math.random() - 0.5);
+  
+  shuffledCountries.forEach((c, i) => {
+    const div = document.createElement("div");
+    div.className = "country";
+    div.innerHTML = `<img src="https://flagcdn.com/w80/${getCountryCode(c)}.png"><br>${c}`;
+    setTimeout(() => { box.appendChild(div); setTimeout(() => div.classList.add("show"), 50); }, i * 100);
+  });
+}
+
+function attackCountry(c) {
+  if (!remainingCountries.includes(c)) return;
+  const p = assignedCountries[c];
+  overlay.innerText = `🔴 ${currentTurnPlayer} هاجم الدولة: ${c}`;
+  overlay.style.display = "flex";
+
+  setTimeout(() => {
+    if (playerImmunity[p] && currentTurnPlayer !== p) {
+      playerImmunity[p] = false;
+      overlay.innerText = `🛡️ تم كسر الحصانة عن ${p}`;
+      renderCountries(); renderPlayers();
+    }
+    else if (immunityCountries.includes(c)) {
+      playerImmunity[currentTurnPlayer] = true;
+      immunityCountries = immunityCountries.filter(x => x !== c);
+      usedSpecialCountries.push(c);
+      remainingCountries = remainingCountries.filter(x => x !== c);
+      delete assignedCountries[c];
+      overlay.innerText = `✅ ${currentTurnPlayer} حصل على حصانة!`;
+      renderCountries(); renderPlayers();
+    }
+    else if (reviveCountries.includes(c)) {
+      reviveCountries = reviveCountries.filter(x => x !== c);
+      usedSpecialCountries.push(c);
+      remainingCountries = remainingCountries.filter(x => x !== c);
+      delete assignedCountries[c];
+      lastReviver = currentTurnPlayer;
+      overlay.innerText = `♻️ ${currentTurnPlayer} يمكنك الآن إعادة لاعب باستخدام !اعاده @الاسم`;
+      renderCountries();
+    }
+    else if (currentTurnPlayer !== p && p) {
+      overlay.innerText = `❌ تم إقصاء ${p} من الدولة ${c}`;
+      remainingCountries = remainingCountries.filter(x => x !== c);
+      delete assignedCountries[c];
+      const index = players.indexOf(p);
+      if (index !== -1) players.splice(index, 1);
+      delete playerColors[p];
+      eliminatedPlayers.push(p);
+      renderPlayers(); renderCountries();
+    }
+    setTimeout(() => overlay.style.display = "none", 3000);
+  }, 3000);
+}
+
+function getCountryCode(n) {
+  const codes = { "السعودية":"sa","الإمارات":"ae","قطر":"qa","مصر":"eg","الأردن":"jo","لبنان":"lb","العراق":"iq","الكويت":"kw","عمان":"om","البحرين":"bh","تونس":"tn","الجزائر":"dz","المغرب":"ma","ليبيا":"ly","السودان":"sd","اليمن":"ye","سوريا":"sy","فلسطين":"ps","تركيا":"tr","إيران":"ir","ألمانيا":"de","فرنسا":"fr","إيطاليا":"it","إسبانيا":"es","أمريكا":"us","كندا":"ca","روسيا":"ru","الصين":"cn","اليابان":"jp","الهند":"in" };
+  return codes[n] || "un";
+}
+
+function connectChat() {
+  const plat = document.getElementById("platformSelect").value;
+  const channel = document.getElementById("channelInput").value.trim();
+
+  if (plat === "twitch") {
+    const client = new tmi.Client({ channels: [channel] });
+    client.connect();
+    client.on("message", (ch, tags, msg, self) => {
+      if (self) return;
+      const user = tags["display-name"];
+      const color = tags["color"] || "#fff";
+      const content = msg.trim();
+
+      if (content === "!دخول" && !isGameStarted) addPlayer(user, color);
+      if (isGameStarted && currentTurnPlayer === user && countriesPool.includes(content)) {
+        attackCountry(content);
+      }
+      if (msg.startsWith("!اعاده") && user === lastReviver) {
+        const mentioned = msg.split("@")[1]?.trim();
+        if (mentioned && eliminatedPlayers.includes(mentioned)) {
+          players.push(mentioned);
+          playerColors[mentioned] = getColorForPlayer(mentioned);
+          eliminatedPlayers = eliminatedPlayers.filter(x => x !== mentioned);
+          generateNewCountryForPlayer(mentioned);
+          lastReviver = "";
+        }
+      }
+    });
+    document.getElementById("chatStatus").innerText = "✅ تم الاتصال بـTwitch!";
+  }
+
+  else if (plat === "kick") {
+    fetch(`https://kick.com/api/v2/channels/${channel}`)
+      .then(res => res.json())
+      .then(data => {
+        const roomId = data.chatroom.id;
+        const socket = new WebSocket("wss://ws-us2.pusher.com/app/32cbd69e4b950bf97679?protocol=7&client=js&version=8.4.0-rc2");
+
+        socket.onopen = () => {
+          socket.send(JSON.stringify({ event: "pusher:subscribe", data: { auth: "", channel: `chatrooms.${roomId}.v2` } }));
+          setInterval(() => {
+            if (socket.readyState === WebSocket.OPEN)
+              socket.send(JSON.stringify({ event: "pusher:ping", data: {} }));
+          }, 12000);
+        };
+
+        socket.onmessage = (e) => {
+          const msg = JSON.parse(e.data);
+          if (msg.event === "App\\Events\\ChatMessageEvent") {
+            const d = JSON.parse(msg.data);
+            const user = d.sender.username;
+            const content = d.content.trim();
+
+            if (content === "!دخول" && !isGameStarted) addPlayer(user);
+            if (isGameStarted && currentTurnPlayer === user && countriesPool.includes(content)) {
+              attackCountry(content);
+            }
+            if (content.startsWith("!اعاده") && user === lastReviver) {
+              const mentioned = content.split("@")[1]?.trim();
+              if (mentioned && eliminatedPlayers.includes(mentioned)) {
+                players.push(mentioned);
+                playerColors[mentioned] = getColorForPlayer(mentioned);
+                eliminatedPlayers = eliminatedPlayers.filter(x => x !== mentioned);
+                generateNewCountryForPlayer(mentioned);
+                lastReviver = "";
+              }
+            }
+          }
+        };
+
+        document.getElementById("chatStatus").innerText = "✅ تم الاتصال بـKick!";
+      })
+      .catch(err => {
+        console.error("Kick connection error:", err);
+        document.getElementById("chatStatus").innerText = "❌ فشل الاتصال بـKick!";
+      });
+  }
+}
+
+function generateNewCountryForPlayer(playerName) {
+  const available = countriesPool.filter(c => !remainingCountries.includes(c) && !usedSpecialCountries.includes(c));
+  const newCountry = available[Math.floor(Math.random() * available.length)];
+  if (!newCountry) return;
+  assignedCountries[newCountry] = playerName;
+  remainingCountries.push(newCountry);
+  renderCountries();
+  renderPlayers();
+  overlay.innerText = `🎉 تمت إعادة ${playerName} بدولة جديدة: ${newCountry}`;
+  overlay.style.display = "flex";
+  setTimeout(() => overlay.style.display = "none", 3000);
 }
 </script>
 </body>
