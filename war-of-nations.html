@@ -41,6 +41,7 @@ body {
   opacity:0;
   transform: scale(0.5);
   transition: all 0.4s ease;
+  position: relative;
 }
 .country.show { opacity:1; transform: scale(1); }
 .country img { width:80px; display:block; margin:auto; }
@@ -115,6 +116,13 @@ h1 {
     cursor: pointer;
     font-family: 'Cairo', sans-serif;
 }
+.spin-time-select {
+    margin-top: 10px;
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+}
 </style>
 </head>
 <body>
@@ -125,12 +133,21 @@ h1 {
     <h3>👥 قائمة اللاعبين</h3>
     <p style="font-size:14px; color:#ccc;">سيكون اختيار الأسماء عشوائيًا</p>
     <canvas id="playerWheel" width="400" height="400" style="margin: 20px auto; display: block;"></canvas>
-    <button onclick="spinWheelAnimated()">🎯 دوران العجلة</button>
+    <div>
+      <select id="spinTimeSelect" class="spin-time-select">
+        <option value="10">10 ثواني</option>
+        <option value="20">20 ثانية</option>
+        <option value="30">30 ثانية</option>
+        <option value="40">40 ثانية</option>
+        <option value="50">50 ثانية</option>
+        <option value="60" selected>60 ثانية</option>
+      </select>
+      <button onclick="spinWheelAnimated()">🎯 دوران العجلة</button>
+    </div>
   </div>
   <div class="countries" id="countries">
     <h3>🌐 الدول</h3>
     <div id="countryList"></div>
-    <button onclick="regenerateCountries()">🔁 خلط الدول</button>
   </div>
 </div>
 <div class="overlay" id="overlay"></div>
@@ -177,7 +194,8 @@ let assignedCountries = {}, remainingCountries = [], immunityCountries = [], rev
 let playerImmunity = {}, eliminatedPlayers = [], lastReviver = "";
 let isGameStarted = false;
 const overlay = document.getElementById("overlay");
-let eliminatedData = []; // لتخزين بيانات الدول واللاعبين المحذوفين
+let eliminatedData = [];
+let countryAttackers = {};
 
 function getColorForPlayer(player) {
   const hash = [...player].reduce((a, c) => a + c.charCodeAt(0), 0);
@@ -235,13 +253,11 @@ function updateEliminatedDisplay() {
     }
     
     eliminatedData.forEach(item => {
-        // عرض في قسم المحذوفين
         const itemElement = document.createElement("div");
         itemElement.className = "eliminated-item";
         itemElement.textContent = `(${item.country}) ${item.player}`;
         eliminatedContent.appendChild(itemElement);
         
-        // إضافة إلى قائمة الاختيار للإعادة
         const option = document.createElement("option");
         option.value = item.player;
         option.textContent = item.player;
@@ -259,35 +275,75 @@ function revivePlayer() {
         players.push(playerToRevive);
         playerColors[playerToRevive] = getColorForPlayer(playerToRevive);
         eliminatedPlayers = eliminatedPlayers.filter(x => x !== playerToRevive);
-        
-        // إزالة من قائمة المحذوفين
         eliminatedData = eliminatedData.filter(item => item.player !== playerToRevive);
         
-        generateNewCountryForPlayer(playerToRevive);
-        lastReviver = "";
-        updateEliminatedDisplay();
+        const availableCountries = countriesPool.filter(c => 
+            !remainingCountries.includes(c) && 
+            !usedSpecialCountries.includes(c)
+        );
         
-        overlay.innerText = `♻️ تمت إعادة اللاعب ${playerToRevive}`;
-        overlay.style.display = "flex";
-        setTimeout(() => overlay.style.display = "none", 3000);
+        if (availableCountries.length > 0) {
+            const newCountry = availableCountries[Math.floor(Math.random() * availableCountries.length)];
+            assignedCountries[newCountry] = playerToRevive;
+            remainingCountries.push(newCountry);
+            usedSpecialCountries.push(newCountry);
+            
+            shufflePlayersAndCountries();
+            
+            renderCountries();
+            renderPlayers();
+            updateEliminatedDisplay();
+            
+            overlay.innerText = `♻️ تمت إعادة اللاعب ${playerToRevive} بدولة جديدة`;
+            overlay.style.display = "flex";
+            setTimeout(() => overlay.style.display = "none", 3000);
+        }
     }
+}
+
+function shufflePlayersAndCountries() {
+    for (let i = players.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [players[i], players[j]] = [players[j], players[i]];
+    }
+    
+    const shuffledCountries = [...remainingCountries].sort(() => Math.random() - 0.5);
+    const newAssignedCountries = {};
+    
+    shuffledCountries.forEach((country, i) => {
+        if (assignedCountries[country]) {
+            const player = players[i % players.length];
+            newAssignedCountries[country] = player;
+        } else {
+            newAssignedCountries[country] = null;
+        }
+    });
+    
+    assignedCountries = newAssignedCountries;
 }
 
 function spinWheelAnimated() {
   if (players.length === 0) return;
-  let rotation = 0, totalFrames = 1800, frame = 0;
+  
+  const spinTimeSelect = document.getElementById("spinTimeSelect");
+  const spinDuration = parseInt(spinTimeSelect.value) * 100; // تحويل إلى إطارات (كل إطار 10ms)
+  
+  let rotation = 0, frame = 0;
   const slice = 2 * Math.PI / players.length;
   const fullSpins = 5 * 2 * Math.PI;
   const randomAngle = Math.random() * 2 * Math.PI;
   const target = fullSpins + randomAngle;
+  
   function animate() {
     frame++;
-    const t = frame / totalFrames;
+    const t = frame / spinDuration;
     const eased = t * t * (3 - 2 * t);
     rotation = target * eased;
     renderPlayers(rotation);
-    if (frame < totalFrames) requestAnimationFrame(animate);
-    else {
+    
+    if (frame < spinDuration) {
+      requestAnimationFrame(animate);
+    } else {
       const index = Math.floor(((2 * Math.PI - (rotation % (2 * Math.PI))) % (2 * Math.PI)) / slice);
       currentTurnPlayer = players[index];
       overlay.textContent = `🎯 اللاعب المختار: ${currentTurnPlayer}`;
@@ -296,6 +352,7 @@ function spinWheelAnimated() {
       setTimeout(() => overlay.style.display = "none", 3000);
     }
   }
+  
   animate();
 }
 
@@ -303,7 +360,6 @@ function startGame() {
   if (players.length < 2) return alert("يجب إضافة لاعبين أولاً!");
   isGameStarted = true;
   
-  // إعادة تعيين جميع المتغيرات
   assignedCountries = {};
   remainingCountries = [];
   immunityCountries = [];
@@ -313,15 +369,12 @@ function startGame() {
   lastReviver = "";
   usedSpecialCountries = [];
   eliminatedData = [];
+  countryAttackers = {};
 
-  // حساب عدد الدول المطلوبة (لاعبين + 4 دول خاصة)
   const totalNeeded = players.length + 4;
-  
-  // إنشاء نسخة من مجموعة الدول الأصلية
   const availableCountries = [...countriesPool];
-  
-  // اختيار الدول المطلوبة بشكل عشوائي
   const selectedCountries = [];
+  
   for (let i = 0; i < totalNeeded; i++) {
     if (availableCountries.length === 0) break;
     const randomIndex = Math.floor(Math.random() * availableCountries.length);
@@ -329,7 +382,6 @@ function startGame() {
     availableCountries.splice(randomIndex, 1);
   }
   
-  // اختيار 4 دول خاصة (حصانة وإعادة) بشكل عشوائي من الدول المختارة
   const specialCountries = [];
   while (specialCountries.length < 4 && selectedCountries.length > 0) {
     const randomIndex = Math.floor(Math.random() * selectedCountries.length);
@@ -341,11 +393,9 @@ function startGame() {
   reviveCountries = specialCountries.slice(2);
   usedSpecialCountries.push(...specialCountries);
   
-  // الدول المتبقية للاعبين
   const playableCountries = [...selectedCountries];
-  
-  // توزيع الدول على اللاعبين بشكل عشوائي تماماً
   const shuffledPlayers = [...players];
+  
   for (let i = shuffledPlayers.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [shuffledPlayers[i], shuffledPlayers[j]] = [shuffledPlayers[j], shuffledPlayers[i]];
@@ -357,85 +407,16 @@ function startGame() {
     remainingCountries.push(country);
   });
   
-  // إضافة الدول الخاصة إلى القائمة
   remainingCountries.push(...specialCountries);
   specialCountries.forEach(country => {
     assignedCountries[country] = null;
   });
 
-  // عرض الدول واللاعبين
   renderCountries();
   renderPlayers();
   updateEliminatedDisplay();
   
-  // إظهار رسالة بدء اللعبة
   overlay.textContent = "🎮 بدأت اللعبة! تم توزيع الدول عشوائياً";
-  overlay.style.display = "flex";
-  setTimeout(() => overlay.style.display = "none", 3000);
-}
-
-function regenerateCountries() {
-  if (!isGameStarted) return;
-  
-  // إنشاء نسخة من مجموعة الدول الأصلية
-  const availableCountries = countriesPool.filter(c => !usedSpecialCountries.includes(c));
-  
-  // عدد الدول المطلوبة (نفس عدد الدول الحالية)
-  const totalNeeded = remainingCountries.length;
-  
-  // اختيار دول جديدة بشكل عشوائي
-  const newCountries = [];
-  for (let i = 0; i < totalNeeded; i++) {
-    if (availableCountries.length === 0) break;
-    const randomIndex = Math.floor(Math.random() * availableCountries.length);
-    newCountries.push(availableCountries[randomIndex]);
-    availableCountries.splice(randomIndex, 1);
-  }
-  
-  // اختيار 4 دول خاصة (حصانة وإعادة) بشكل عشوائي
-  const newSpecialCountries = [];
-  while (newSpecialCountries.length < 4 && newCountries.length > 0) {
-    const randomIndex = Math.floor(Math.random() * newCountries.length);
-    newSpecialCountries.push(newCountries[randomIndex]);
-    newCountries.splice(randomIndex, 1);
-  }
-  
-  immunityCountries = newSpecialCountries.slice(0, 2);
-  reviveCountries = newSpecialCountries.slice(2);
-  usedSpecialCountries.push(...newSpecialCountries);
-  
-  // الدول المتبقية للاعبين
-  const newPlayableCountries = [...newCountries];
-  
-  // توزيع الدول الجديدة على اللاعبين بشكل عشوائي تماماً
-  const shuffledPlayers = [...players];
-  for (let i = shuffledPlayers.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffledPlayers[i], shuffledPlayers[j]] = [shuffledPlayers[j], shuffledPlayers[i]];
-  }
-  
-  // تعيين الدول الجديدة
-  assignedCountries = {};
-  remainingCountries = [];
-  
-  newPlayableCountries.forEach((country, i) => {
-    const player = shuffledPlayers[i % shuffledPlayers.length];
-    assignedCountries[country] = player;
-    remainingCountries.push(country);
-  });
-  
-  // إضافة الدول الخاصة إلى القائمة
-  remainingCountries.push(...newSpecialCountries);
-  newSpecialCountries.forEach(country => {
-    assignedCountries[country] = null;
-  });
-
-  // عرض الدول واللاعبين
-  renderCountries();
-  renderPlayers();
-  
-  // إظهار رسالة الخلط
-  overlay.textContent = "🔀 تم خلط الدول وتوزيعها عشوائياً من جديد";
   overlay.style.display = "flex";
   setTimeout(() => overlay.style.display = "none", 3000);
 }
@@ -444,13 +425,13 @@ function renderCountries() {
   const box = document.getElementById("countryList");
   box.innerHTML = "";
   
-  // خلط ترتيب عرض الدول عشوائياً
   const shuffledCountries = [...remainingCountries].sort(() => Math.random() - 0.5);
   
   shuffledCountries.forEach((c, i) => {
     const div = document.createElement("div");
     div.className = "country";
     div.innerHTML = `<img src="https://flagcdn.com/w80/${getCountryCode(c)}.png"><br>${c}`;
+    
     setTimeout(() => { box.appendChild(div); setTimeout(() => div.classList.add("show"), 50); }, i * 100);
   });
 }
@@ -458,6 +439,7 @@ function renderCountries() {
 function attackCountry(c) {
   if (!remainingCountries.includes(c)) return;
   const p = assignedCountries[c];
+  
   overlay.innerText = `🔴 ${currentTurnPlayer} هاجم الدولة: ${c}`;
   overlay.style.display = "flex";
 
@@ -465,7 +447,9 @@ function attackCountry(c) {
     if (playerImmunity[p] && currentTurnPlayer !== p) {
       playerImmunity[p] = false;
       overlay.innerText = `🛡️ تم كسر الحصانة عن ${p}`;
-      renderCountries(); renderPlayers();
+      shufflePlayersAndCountries();
+      renderCountries(); 
+      renderPlayers();
     }
     else if (immunityCountries.includes(c)) {
       playerImmunity[currentTurnPlayer] = true;
@@ -474,7 +458,8 @@ function attackCountry(c) {
       remainingCountries = remainingCountries.filter(x => x !== c);
       delete assignedCountries[c];
       overlay.innerText = `✅ ${currentTurnPlayer} حصل على حصانة!`;
-      renderCountries(); renderPlayers();
+      renderCountries(); 
+      renderPlayers();
     }
     else if (reviveCountries.includes(c)) {
       reviveCountries = reviveCountries.filter(x => x !== c);
@@ -485,6 +470,21 @@ function attackCountry(c) {
       overlay.innerText = `♻️ ${currentTurnPlayer} يمكنك الآن إعادة لاعب باستخدام !اعاده @الاسم`;
       renderCountries();
     }
+    else if (currentTurnPlayer === p) {
+      // إذا هاجم اللاعب نفسه
+      overlay.innerText = `❌ ${currentTurnPlayer} هاجم نفسه!`;
+      remainingCountries = remainingCountries.filter(x => x !== c);
+      delete assignedCountries[c];
+      const index = players.indexOf(p);
+      if (index !== -1) players.splice(index, 1);
+      delete playerColors[p];
+      eliminatedPlayers.push(p);
+      eliminatedData.push({ country: c, player: p });
+      shufflePlayersAndCountries();
+      renderPlayers(); 
+      renderCountries();
+      updateEliminatedDisplay();
+    }
     else if (currentTurnPlayer !== p && p) {
       overlay.innerText = `❌ تم إقصاء ${p} من الدولة ${c}`;
       remainingCountries = remainingCountries.filter(x => x !== c);
@@ -493,13 +493,8 @@ function attackCountry(c) {
       if (index !== -1) players.splice(index, 1);
       delete playerColors[p];
       eliminatedPlayers.push(p);
-      
-      // إضافة إلى قائمة المحذوفين
-      eliminatedData.push({
-        country: c,
-        player: p
-      });
-      
+      eliminatedData.push({ country: c, player: p });
+      shufflePlayersAndCountries();
       renderPlayers(); 
       renderCountries();
       updateEliminatedDisplay();
@@ -530,19 +525,32 @@ function connectChat() {
       if (isGameStarted && currentTurnPlayer === user && countriesPool.includes(content)) {
         attackCountry(content);
       }
-      if (msg.startsWith("!اعاده") && user === lastReviver) {
+      if ((msg.startsWith("!اعاده") || msg.startsWith("!إعاده")) && user === lastReviver) {
         const mentioned = msg.split("@")[1]?.trim();
         if (mentioned && eliminatedPlayers.includes(mentioned)) {
           players.push(mentioned);
           playerColors[mentioned] = getColorForPlayer(mentioned);
           eliminatedPlayers = eliminatedPlayers.filter(x => x !== mentioned);
-          
-          // إزالة من قائمة المحذوفين
           eliminatedData = eliminatedData.filter(item => item.player !== mentioned);
           
-          generateNewCountryForPlayer(mentioned);
-          lastReviver = "";
-          updateEliminatedDisplay();
+          const availableCountries = countriesPool.filter(c => 
+              !remainingCountries.includes(c) && 
+              !usedSpecialCountries.includes(c)
+          );
+          
+          if (availableCountries.length > 0) {
+              const newCountry = availableCountries[Math.floor(Math.random() * availableCountries.length)];
+              assignedCountries[newCountry] = mentioned;
+              remainingCountries.push(newCountry);
+              usedSpecialCountries.push(newCountry);
+              shufflePlayersAndCountries();
+              renderCountries();
+              renderPlayers();
+              updateEliminatedDisplay();
+              overlay.innerText = `♻️ تمت إعادة اللاعب ${mentioned} بدولة جديدة`;
+              overlay.style.display = "flex";
+              setTimeout(() => overlay.style.display = "none", 3000);
+          }
         }
       }
     });
@@ -575,19 +583,32 @@ function connectChat() {
             if (isGameStarted && currentTurnPlayer === user && countriesPool.includes(content)) {
               attackCountry(content);
             }
-            if (content.startsWith("!اعاده") && user === lastReviver) {
+            if ((content.startsWith("!اعاده") || content.startsWith("!إعاده")) && user === lastReviver) {
               const mentioned = content.split("@")[1]?.trim();
               if (mentioned && eliminatedPlayers.includes(mentioned)) {
                 players.push(mentioned);
                 playerColors[mentioned] = getColorForPlayer(mentioned);
                 eliminatedPlayers = eliminatedPlayers.filter(x => x !== mentioned);
-                
-                // إزالة من قائمة المحذوفين
                 eliminatedData = eliminatedData.filter(item => item.player !== mentioned);
                 
-                generateNewCountryForPlayer(mentioned);
-                lastReviver = "";
-                updateEliminatedDisplay();
+                const availableCountries = countriesPool.filter(c => 
+                    !remainingCountries.includes(c) && 
+                    !usedSpecialCountries.includes(c)
+                );
+                
+                if (availableCountries.length > 0) {
+                    const newCountry = availableCountries[Math.floor(Math.random() * availableCountries.length)];
+                    assignedCountries[newCountry] = mentioned;
+                    remainingCountries.push(newCountry);
+                    usedSpecialCountries.push(newCountry);
+                    shufflePlayersAndCountries();
+                    renderCountries();
+                    renderPlayers();
+                    updateEliminatedDisplay();
+                    overlay.innerText = `♻️ تمت إعادة اللاعب ${mentioned} بدولة جديدة`;
+                    overlay.style.display = "flex";
+                    setTimeout(() => overlay.style.display = "none", 3000);
+                }
               }
             }
           }
@@ -600,19 +621,6 @@ function connectChat() {
         document.getElementById("chatStatus").innerText = "❌ فشل الاتصال بـKick!";
       });
   }
-}
-
-function generateNewCountryForPlayer(playerName) {
-  const available = countriesPool.filter(c => !remainingCountries.includes(c) && !usedSpecialCountries.includes(c));
-  const newCountry = available[Math.floor(Math.random() * available.length)];
-  if (!newCountry) return;
-  assignedCountries[newCountry] = playerName;
-  remainingCountries.push(newCountry);
-  renderCountries();
-  renderPlayers();
-  overlay.innerText = `🎉 تمت إعادة ${playerName} بدولة جديدة: ${newCountry}`;
-  overlay.style.display = "flex";
-  setTimeout(() => overlay.style.display = "none", 3000);
 }
 </script>
 </body>
