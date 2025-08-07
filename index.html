@@ -134,6 +134,85 @@
     .contact-button:hover {
       background-color: #222;
     }
+    /* New styles for custom streamer section */
+    .custom-streamer-section {
+      background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+      border: 2px dashed #9146FF;
+      padding: 30px;
+      margin: 40px auto;
+      max-width: 800px;
+      border-radius: 10px;
+      position: relative;
+    }
+    .custom-streamer-title {
+      font-size: 28px;
+      color: #00D800;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .custom-streamer-title span {
+      margin-left: 10px;
+    }
+    .custom-streamer-content {
+      margin: 25px 0;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+    .custom-streamer-features {
+      text-align: right;
+      margin: 20px 0;
+      padding-right: 20px;
+    }
+    .custom-streamer-features li {
+      margin-bottom: 10px;
+      list-style-type: none;
+      position: relative;
+      padding-right: 25px;
+    }
+    .custom-streamer-features li:before {
+      content: "✓";
+      color: #00D800;
+      position: absolute;
+      right: 0;
+    }
+    .custom-streamer-price {
+      font-size: 24px;
+      color: #9146FF;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+    .custom-streamer-btn {
+      display: inline-block;
+      padding: 12px 30px;
+      background-color: #9146FF;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: bold;
+      margin: 15px 5px;
+      transition: all 0.3s;
+    }
+    .custom-streamer-btn:hover {
+      background-color: #7d3bff;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    .social-icons {
+      margin-top: 20px;
+    }
+    .social-icon {
+      display: inline-block;
+      margin: 0 10px;
+      font-size: 24px;
+      color: #fff;
+      transition: all 0.3s;
+    }
+    .social-icon:hover {
+      transform: scale(1.2);
+    }
   </style>
 </head>
 <body>
@@ -182,17 +261,39 @@
     </div>
   </div>
 
-  <div class="row">
-    <div class="game-card blur">
-      <h2>🧠 لعبة تحدي الصور</h2>
-      <p>اختبر ذاكرتك في تحدي الصور!</p>
-      <button class="start-btn" disabled>قريبًا</button>
+  <!-- Custom Streamer Section -->
+  <div class="custom-streamer-section">
+    <h3 class="custom-streamer-title">🎮 فئة ستريمر خاصة بك</h3>
+    
+    <div class="custom-streamer-content">
+      <p>احصل على فئة خاصة بك تحتوي على 5 ألعاب مخصصة لك فقط!</p>
+      <p>يمكنك اختيار الألعاب التي تريدها وتخصيصها كما تحب.</p>
     </div>
-
-    <div class="game-card blur">
-      <h2>🎯 التركيز</h2>
-      <p>اختبر قوة تركيزك!</p>
-      <button class="start-btn" disabled>قريبًا</button>
+    
+    <div class="custom-streamer-features">
+      <ul>
+        <li>فئة خاصة باسمك</li>
+        <li>حماية بكلمة مرور</li>
+        <li>تخصيص كامل للألعاب</li>
+        <li>إمكانية إضافة شعارك</li>
+        <li>5 ألعاب مخصصة</li>
+      </ul>
+    </div>
+    
+    <div class="custom-streamer-price">
+      السعر: 10$ فقط
+    </div>
+    
+    <a href="https://twitter.com/medo_dv" target="_blank" class="custom-streamer-btn">
+      تواصل معنا على تويتر
+    </a>
+    <a href="https://instagram.com/medo_dv" target="_blank" class="custom-streamer-btn">
+      تواصل معنا على إنستجرام
+    </a>
+    
+    <div class="social-icons">
+      <a href="https://twitter.com/medo_dv" target="_blank" class="social-icon">🐦</a>
+      <a href="https://instagram.com/medo_dv" target="_blank" class="social-icon">📷</a>
     </div>
   </div>
 
