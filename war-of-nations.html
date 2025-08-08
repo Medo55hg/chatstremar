@@ -188,14 +188,31 @@ let players = [], playerColors = {}, currentTurnPlayer = "";
 let countriesPool = [
   "السعودية","الإمارات","قطر","مصر","الأردن","لبنان","العراق","الكويت","عمان","البحرين",
   "تونس","الجزائر","المغرب","ليبيا","السودان","اليمن","سوريا","فلسطين","تركيا","إيران",
-  "ألمانيا","فرنسا","إيطاليا","إسبانيا","أمريكا","كندا","روسيا","الصين","اليابان","الهند"
+  "ألمانيا","فرنسا","إيطاليا","إسبانيا","أمريكا","كندا","روسيا","الصين","اليابان","الهند",
+  "البرازيل","الأرجنتين","المكسيك","جنوب أفريقيا","نيجيريا","كينيا","أندونيسيا","ماليزيا",
+  "تايلاند","فيتنام","كوريا الجنوبية","أستراليا","نيوزيلندا","اليونان","إنجلترا","البرتغال",
+  "هولندا","بلجيكا","السويد","النرويج","فنلندا","الدنمارك","بولندا","أوكرانيا","النمسا",
+  "سويسرا","جمهورية التشيك","رومانيا","المجر","كولومبيا","بيرو","تشيلي","فنزويلا","الإكوادور"
 ];
+let countryCodes = {
+  "السعودية":"sa","الإمارات":"ae","قطر":"qa","مصر":"eg","الأردن":"jo","لبنان":"lb",
+  "العراق":"iq","الكويت":"kw","عمان":"om","البحرين":"bh","تونس":"tn","الجزائر":"dz",
+  "المغرب":"ma","ليبيا":"ly","السودان":"sd","اليمن":"ye","سوريا":"sy","فلسطين":"ps",
+  "تركيا":"tr","إيران":"ir","ألمانيا":"de","فرنسا":"fr","إيطاليا":"it","إسبانيا":"es",
+  "أمريكا":"us","كندا":"ca","روسيا":"ru","الصين":"cn","اليابان":"jp","الهند":"in",
+  "البرازيل":"br","الأرجنتين":"ar","المكسيك":"mx","جنوب أفريقيا":"za","نيجيريا":"ng",
+  "كينيا":"ke","أندونيسيا":"id","ماليزيا":"my","تايلاند":"th","فيتنام":"vn",
+  "كوريا الجنوبية":"kr","أستراليا":"au","نيوزيلندا":"nz","اليونان":"gr","إنجلترا":"gb-eng",
+  "البرتغال":"pt","هولندا":"nl","بلجيكا":"be","السويد":"se","النرويج":"no",
+  "فنلندا":"fi","الدنمارك":"dk","بولندا":"pl","أوكرانيا":"ua","النمسا":"at",
+  "سويسرا":"ch","جمهورية التشيك":"cz","رومانيا":"ro","المجر":"hu","كولومبيا":"co",
+  "بيرو":"pe","تشيلي":"cl","فنزويلا":"ve","الإكوادور":"ec"
+};
 let assignedCountries = {}, remainingCountries = [], immunityCountries = [], reviveCountries = [], usedSpecialCountries = [];
 let playerImmunity = {}, eliminatedPlayers = [], lastReviver = "";
 let isGameStarted = false;
 const overlay = document.getElementById("overlay");
 let eliminatedData = [];
-let countryAttackers = {};
 
 function getColorForPlayer(player) {
   const hash = [...player].reduce((a, c) => a + c.charCodeAt(0), 0);
@@ -360,6 +377,7 @@ function startGame() {
   if (players.length < 2) return alert("يجب إضافة لاعبين أولاً!");
   isGameStarted = true;
   
+  // إعادة تعيين جميع المتغيرات
   assignedCountries = {};
   remainingCountries = [];
   immunityCountries = [];
@@ -369,33 +387,48 @@ function startGame() {
   lastReviver = "";
   usedSpecialCountries = [];
   eliminatedData = [];
-  countryAttackers = {};
 
+  // حساب عدد الدول المطلوبة (لاعبين + 4 دول خاصة)
   const totalNeeded = players.length + 4;
-  const availableCountries = [...countriesPool];
-  const selectedCountries = [];
   
-  for (let i = 0; i < totalNeeded; i++) {
-    if (availableCountries.length === 0) break;
+  // إنشاء نسخة من مجموعة الدول الأصلية
+  const availableCountries = [...countriesPool];
+  
+  // اختيار الدول المطلوبة بشكل عشوائي مع منع التكرار
+  const selectedCountries = [];
+  while (selectedCountries.length < totalNeeded && availableCountries.length > 0) {
     const randomIndex = Math.floor(Math.random() * availableCountries.length);
-    selectedCountries.push(availableCountries[randomIndex]);
-    availableCountries.splice(randomIndex, 1);
+    const selectedCountry = availableCountries[randomIndex];
+    
+    // التأكد من عدم تكرار الدولة
+    if (!selectedCountries.includes(selectedCountry)) {
+      selectedCountries.push(selectedCountry);
+      availableCountries.splice(randomIndex, 1);
+    }
   }
   
+  // اختيار 4 دول خاصة (حصانة وإعادة) بشكل عشوائي من الدول المختارة
   const specialCountries = [];
   while (specialCountries.length < 4 && selectedCountries.length > 0) {
     const randomIndex = Math.floor(Math.random() * selectedCountries.length);
-    specialCountries.push(selectedCountries[randomIndex]);
-    selectedCountries.splice(randomIndex, 1);
+    const selectedSpecial = selectedCountries[randomIndex];
+    
+    // التأكد من عدم تكرار الدولة الخاصة
+    if (!specialCountries.includes(selectedSpecial)) {
+      specialCountries.push(selectedSpecial);
+      selectedCountries.splice(randomIndex, 1);
+    }
   }
   
   immunityCountries = specialCountries.slice(0, 2);
   reviveCountries = specialCountries.slice(2);
   usedSpecialCountries.push(...specialCountries);
   
+  // الدول المتبقية للاعبين
   const playableCountries = [...selectedCountries];
-  const shuffledPlayers = [...players];
   
+  // توزيع الدول على اللاعبين بشكل عشوائي تماماً
+  const shuffledPlayers = [...players];
   for (let i = shuffledPlayers.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [shuffledPlayers[i], shuffledPlayers[j]] = [shuffledPlayers[j], shuffledPlayers[i]];
@@ -407,15 +440,18 @@ function startGame() {
     remainingCountries.push(country);
   });
   
+  // إضافة الدول الخاصة إلى القائمة
   remainingCountries.push(...specialCountries);
   specialCountries.forEach(country => {
     assignedCountries[country] = null;
   });
 
+  // عرض الدول واللاعبين
   renderCountries();
   renderPlayers();
   updateEliminatedDisplay();
   
+  // إظهار رسالة بدء اللعبة
   overlay.textContent = "🎮 بدأت اللعبة! تم توزيع الدول عشوائياً";
   overlay.style.display = "flex";
   setTimeout(() => overlay.style.display = "none", 3000);
@@ -430,7 +466,8 @@ function renderCountries() {
   shuffledCountries.forEach((c, i) => {
     const div = document.createElement("div");
     div.className = "country";
-    div.innerHTML = `<img src="https://flagcdn.com/w80/${getCountryCode(c)}.png"><br>${c}`;
+    const countryCode = countryCodes[c] || "un";
+    div.innerHTML = `<img src="https://flagcdn.com/w80/${countryCode}.png"><br>${c}`;
     
     setTimeout(() => { box.appendChild(div); setTimeout(() => div.classList.add("show"), 50); }, i * 100);
   });
@@ -504,8 +541,7 @@ function attackCountry(c) {
 }
 
 function getCountryCode(n) {
-  const codes = { "السعودية":"sa","الإمارات":"ae","قطر":"qa","مصر":"eg","الأردن":"jo","لبنان":"lb","العراق":"iq","الكويت":"kw","عمان":"om","البحرين":"bh","تونس":"tn","الجزائر":"dz","المغرب":"ma","ليبيا":"ly","السودان":"sd","اليمن":"ye","سوريا":"sy","فلسطين":"ps","تركيا":"tr","إيران":"ir","ألمانيا":"de","فرنسا":"fr","إيطاليا":"it","إسبانيا":"es","أمريكا":"us","كندا":"ca","روسيا":"ru","الصين":"cn","اليابان":"jp","الهند":"in" };
-  return codes[n] || "un";
+  return countryCodes[n] || "un";
 }
 
 function connectChat() {
