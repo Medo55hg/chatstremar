@@ -3,22 +3,36 @@
 <head>
   <meta charset="UTF-8">
   <title>🎮 ستريمر توب - الألعاب</title>
-  <link rel="stylesheet" href="style.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800&display=swap" rel="stylesheet">
   <style>
+    /* أنماط عامة */
     body {
-      background-color: #111;
+      background: linear-gradient(-45deg, #1a1a3d, #004466, #1a1a3d, #004466);
+      background-size: 400% 400%;
+      animation: gradientBG 20s ease infinite;
       color: #fff;
       font-family: 'Cairo', sans-serif;
       text-align: center;
       padding: 20px;
+      margin: 0;
+      min-height: 100vh;
     }
+    
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
     h1 {
       font-size: 36px;
       color: #ff3333;
       margin-bottom: 30px;
+      padding-top: 20px;
     }
+    
+    /* أنماط بطاقات الألعاب */
     .row {
       display: flex;
       justify-content: center;
@@ -26,6 +40,7 @@
       flex-wrap: wrap;
       margin-bottom: 50px;
     }
+    
     .game-card {
       background-color: #222;
       border: 2px solid #ff3333;
@@ -38,15 +53,18 @@
       box-shadow: 0 8px 15px rgba(0, 0, 0, 0.6);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
+    
     .game-card:hover {
       transform: translateY(-8px) scale(1.03);
       box-shadow: 0 15px 25px rgba(0, 0, 0, 0.8);
     }
+    
     .game-card.transitioning {
       z-index: 999;
       transform: scale(1.5) translateY(-50px);
       transition: transform 0.6s ease;
     }
+    
     .start-btn {
       display: inline-block;
       margin-top: 15px;
@@ -61,14 +79,17 @@
       cursor: pointer;
       transition: background-color 0.3s ease, transform 0.2s ease;
     }
+    
     .start-btn:hover {
       background-color: #00ff80;
       transform: scale(1.05);
     }
+    
     .game-card.image-bg::before,
     .game-card.image-bg2::before,
     .game-card.image-bg3::before,
-    .game-card.image-bg4::before {
+    .game-card.image-bg4::before,
+    .game-card.image-bg5::before {
       content: "";
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -78,43 +99,58 @@
       opacity: 0.4;
       z-index: 0;
     }
+    
     .game-card.image-bg::before {
       background-image: url('https://i.postimg.cc/ncVfrn3s/images.jpg');
     }
+    
     .game-card.image-bg2::before {
       background-image: url('https://i.postimg.cc/rwB4CVZj/Screenshot-2.png');
     }
+    
     .game-card.image-bg3::before {
       background-image: url('https://i.postimg.cc/d1yZhzjX/Screenshot-3.png');
     }
+    
     .game-card.image-bg4::before {
       background-image: url('https://i.postimg.cc/RFt8R96S/Screenshot-2025-07-08-055210.png');
     }
+    
+    .game-card.image-bg5::before {
+      background-image: url('https://i.postimg.cc/zvyNQ4hY/2025-08-12-025123.png');
+    }
+    
     .game-card.image-bg *,
     .game-card.image-bg2 *,
     .game-card.image-bg3 *,
-    .game-card.image-bg4 * {
+    .game-card.image-bg4 *,
+    .game-card.image-bg5 * {
       position: relative;
       z-index: 1;
     }
+    
     .note {
       margin-top: 40px;
       font-size: 18px;
       color: #ccc;
       font-weight: 600;
     }
+    
     .platforms {
       margin-top: 10px;
       font-size: 16px;
     }
+    
     .twitch-text {
       color: #9146FF;
       font-weight: bold;
     }
+    
     .kick-text {
       color: #00D800;
       font-weight: bold;
     }
+    
     .contact-button {
       position: fixed;
       bottom: 20px;
@@ -131,59 +167,82 @@
       align-items: center;
       justify-content: center;
     }
+    
     .contact-button:hover {
       background-color: #222;
     }
-    /* New styles for custom streamer section */
-    .custom-streamer-section {
-      background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
-      border: 2px dashed #9146FF;
-      padding: 30px;
-      margin: 40px auto;
-      max-width: 800px;
+    
+    /* أنماط قسم الستريمر المخصص */
+    .streamer-section {
+      background: rgba(34, 34, 34, 0.8);
+      border: 2px solid #9146FF;
       border-radius: 10px;
-      position: relative;
+      padding: 15px;
+      margin: 30px auto;
+      max-width: 800px;
+      cursor: pointer;
+      transition: all 0.3s;
+      backdrop-filter: blur(5px);
     }
-    .custom-streamer-title {
-      font-size: 28px;
-      color: #00D800;
-      margin-bottom: 20px;
+    
+    .streamer-header {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
+      font-size: 22px;
+      color: #00D800;
     }
-    .custom-streamer-title span {
-      margin-left: 10px;
+    
+    .streamer-header i {
+      transition: transform 0.3s;
     }
-    .custom-streamer-content {
-      margin: 25px 0;
-      font-size: 18px;
-      line-height: 1.6;
+    
+    .streamer-header.collapsed i {
+      transform: rotate(0deg);
     }
-    .custom-streamer-features {
+    
+    .streamer-header.expanded i {
+      transform: rotate(180deg);
+    }
+    
+    .streamer-content {
+      display: none;
+      padding-top: 15px;
       text-align: right;
-      margin: 20px 0;
-      padding-right: 20px;
+      animation: fadeIn 0.3s;
     }
-    .custom-streamer-features li {
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .streamer-features {
+      margin: 20px 0;
+    }
+    
+    .streamer-features li {
       margin-bottom: 10px;
       list-style-type: none;
       position: relative;
       padding-right: 25px;
     }
-    .custom-streamer-features li:before {
+    
+    .streamer-features li:before {
       content: "✓";
       color: #00D800;
       position: absolute;
       right: 0;
     }
-    .custom-streamer-price {
+    
+    .streamer-price {
       font-size: 24px;
       color: #9146FF;
       font-weight: bold;
       margin: 20px 0;
     }
-    .custom-streamer-btn {
+    
+    .streamer-btn {
       display: inline-block;
       padding: 12px 30px;
       background-color: #9146FF;
@@ -195,14 +254,17 @@
       margin: 15px 5px;
       transition: all 0.3s;
     }
-    .custom-streamer-btn:hover {
+    
+    .streamer-btn:hover {
       background-color: #7d3bff;
       transform: translateY(-3px);
       box-shadow: 0 10px 20px rgba(0,0,0,0.2);
     }
+    
     .social-icons {
       margin-top: 20px;
     }
+    
     .social-icon {
       display: inline-block;
       margin: 0 10px;
@@ -210,14 +272,286 @@
       color: #fff;
       transition: all 0.3s;
     }
+    
     .social-icon:hover {
       transform: scale(1.2);
+    }
+    
+    /* أنماط نظام تسجيل الدخول المعدلة */
+    .main-login-btn {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      background-color: rgba(34, 34, 34, 0.8);
+      color: #fff;
+      border: 2px solid #ff3333;
+      border-radius: 8px;
+      padding: 10px 15px;
+      font-size: 16px;
+      cursor: pointer;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      transition: all 0.3s;
+      backdrop-filter: blur(5px);
+    }
+    
+    .main-login-btn:hover {
+      background-color: rgba(51, 51, 51, 0.9);
+    }
+    
+    .main-login-btn i {
+      margin-left: 8px;
+      font-size: 18px;
+    }
+    
+    .login-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.9);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .login-box {
+      background-color: rgba(34, 34, 34, 0.95);
+      border: 2px solid #ff3333;
+      border-radius: 10px;
+      width: 350px;
+      padding: 25px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+      animation: fadeIn 0.3s;
+      backdrop-filter: blur(5px);
+    }
+    
+    .login-title {
+      font-size: 24px;
+      color: #ff3333;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    .login-tabs {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #444;
+    }
+    
+    .login-tab {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+      color: #aaa;
+      font-size: 16px;
+    }
+    
+    .login-tab.active {
+      color: #ff3333;
+      border-bottom: 2px solid #ff3333;
+      margin-bottom: -1px;
+    }
+    
+    .login-form {
+      display: none;
+    }
+    
+    .login-form.active {
+      display: block;
+    }
+    
+    .login-input {
+      width: 100%;
+      padding: 12px 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      border: 1px solid #555;
+      background-color: rgba(51, 51, 51, 0.8);
+      color: #fff;
+      font-size: 16px;
+    }
+    
+    .login-submit {
+      width: 100%;
+      padding: 12px;
+      background-color: #00D86C;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .login-submit:hover {
+      background-color: #00ff80;
+    }
+    
+    .login-error {
+      color: #ff3333;
+      margin-top: 10px;
+      font-size: 14px;
+      display: none;
+      text-align: right;
+    }
+    
+    .login-switch {
+      color: #aaa;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    
+    .login-switch a {
+      color: #ff3333;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    
+    /* ملف المستخدم */
+    .user-profile {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      background-color: rgba(34, 34, 34, 0.8);
+      border: 2px solid #ff3333;
+      border-radius: 8px;
+      padding: 10px 15px;
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      font-size: 16px;
+      backdrop-filter: blur(5px);
+    }
+    
+    .user-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: #ff3333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      margin-left: 8px;
+    }
+    
+    .logout-btn {
+      background: none;
+      border: none;
+      color: #ff3333;
+      cursor: pointer;
+      font-size: 14px;
+      margin-right: 10px;
+    }
+    
+    /* زر الاشتراك */
+    .subscribe-btn {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      background-color: rgba(145, 70, 255, 0.8);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 20px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      transition: all 0.3s;
+      backdrop-filter: blur(5px);
+    }
+    
+    .subscribe-btn:hover {
+      background-color: rgba(145, 70, 255, 0.9);
+      transform: translateY(-2px);
+    }
+    
+    .subscribe-btn i {
+      margin-left: 8px;
+      font-size: 20px;
+    }
+    
+    .subscribe-notification {
+      position: fixed;
+      top: 70px;
+      right: 15px;
+      background-color: rgba(34, 34, 34, 0.95);
+      border: 2px solid #9146FF;
+      border-radius: 8px;
+      padding: 15px 20px;
+      font-size: 16px;
+      z-index: 1000;
+      display: none;
+      animation: fadeIn 0.3s;
+      backdrop-filter: blur(5px);
+      max-width: 300px;
+    }
+    
+    .subscribe-price {
+      color: #00ff80;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+    
+    /* أنماط للهواتف */
+    @media (max-width: 768px) {
+      .game-card {
+        width: 100%;
+        max-width: 300px;
+      }
+      
+      .login-box {
+        width: 90%;
+        padding: 20px;
+      }
+      
+      .subscribe-btn {
+        font-size: 16px;
+        padding: 10px 15px;
+      }
+      
+      .subscribe-notification {
+        top: 65px;
+        right: 10px;
+        font-size: 14px;
+        max-width: 250px;
+      }
+      
+      .streamer-header {
+        font-size: 20px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <h1>🎮 أهلاً بك في ستريمر توب</h1>
+ <!-- زر تسجيل الدخول المعطل -->
+<div class="disabled-container">
+  <button class="main-login-btn disabled-btn" id="mainLoginBtn">
+    <span class="coming-soon-badge">قريباً</span>
+    <i>👤</i>  
+    <div class="coming-soon-tooltip">نظام التسجيل قيد التطوير حالياً وسيتم إطلاقه قريباً</div>
+  </button>
+</div>
+
+<!-- زر ستريمر بلس المعطل -->
+<div class="disabled-container">
+  <button class="subscribe-btn disabled-btn" id="subscribeBtn">
+    <span class="coming-soon-badge">قريباً</span>
+    <i>✨</i>  
+    <div class="coming-soon-tooltip">خدمة الاشتراك المميزة قيد التطوير حالياً</div>
+  </button>
+</div>
+
+<h1>🎮 أهلاً بك في ستريمر توب</h1>
 
   <div class="row">
     <div class="game-card image-bg">
@@ -248,7 +582,9 @@
       </div>
       <a href="thulathiyat.html" class="start-btn">ابدأ اللعب</a>
     </div>
+  </div>
 
+  <div class="row">
     <div class="game-card image-bg4">
       <h2>🌍 حرب الدول</h2>
       <p>تنافس للسيطرة على خريطة العالم!</p>
@@ -259,41 +595,56 @@
       </div>
       <a href="war-of-nations.html" class="start-btn">ابدأ اللعب</a>
     </div>
+
+    <div class="game-card image-bg5">
+      <h2>🔄 يلا نتعاون</h2>
+      <p>تعاون مع المشاهدين لحل التحديات!</p>
+      <div class="platforms">
+        ✅ يدعم:
+        <span class="twitch-text">🟣 تويتش</span> +
+        <span class="kick-text">🟢 كيك</span>
+      </div>
+      <a href="tarkeeb.html" class="start-btn">ابدأ اللعب</a>
+    </div>
   </div>
 
-  <!-- Custom Streamer Section -->
-  <div class="custom-streamer-section">
-    <h3 class="custom-streamer-title">🎮 فئة ستريمر خاصة بك</h3>
-    
-    <div class="custom-streamer-content">
-      <p>احصل على فئة خاصة بك تحتوي على 5 ألعاب مخصصة لك فقط!</p>
-      <p>يمكنك اختيار الألعاب التي تريدها وتخصيصها كما تحب.</p>
+  <!-- قسم الستريمر المخصص -->
+  <div class="streamer-section" id="streamerSection">
+    <div class="streamer-header collapsed" id="streamerHeader">
+      <span>🎮 فئة ستريمر خاصة بك</span>
+      <i>▼</i>
     </div>
-    
-    <div class="custom-streamer-features">
-      <ul>
-        <li>فئة خاصة باسمك</li>
-        <li>حماية بكلمة مرور</li>
-        <li>تخصيص كامل للألعاب</li>
-        <li>إمكانية إضافة شعارك</li>
-        <li>5 ألعاب مخصصة</li>
-      </ul>
-    </div>
-    
-    <div class="custom-streamer-price">
-      السعر: 10$ فقط
-    </div>
-    
-    <a href="https://twitter.com/medo_dv" target="_blank" class="custom-streamer-btn">
-      تواصل معنا على تويتر
-    </a>
-    <a href="https://instagram.com/medo_dv" target="_blank" class="custom-streamer-btn">
-      تواصل معنا على إنستجرام
-    </a>
-    
-    <div class="social-icons">
-      <a href="https://twitter.com/medo_dv" target="_blank" class="social-icon">🐦</a>
-      <a href="https://instagram.com/medo_dv" target="_blank" class="social-icon">📷</a>
+    <div class="streamer-content" id="streamerContent">
+      <div class="custom-streamer-content">
+        <p>احصل على فئة خاصة بك تحتوي على 5 ألعاب مخصصة لك فقط!</p>
+        <p>يمكنك اختيار الألعاب التي تريدها وتخصيصها كما تحب.</p>
+      </div>
+      
+      <div class="streamer-features">
+        <ul>
+          <li>فئة خاصة باسمك</li>
+          <li>حماية بكلمة مرور</li>
+          <li>تخصيص كامل للألعاب</li>
+          <li>إمكانية إضافة شعارك</li>
+          <li>5 ألعاب مخصصة</li>
+        </ul>
+      </div>
+      
+      <div class="streamer-price">
+        السعر: 10$ فقط
+      </div>
+      
+      <a href="https://twitter.com/medo_dv" target="_blank" class="streamer-btn">
+        تواصل معنا على تويتر
+      </a>
+      <a href="https://instagram.com/medo_dv" target="_blank" class="streamer-btn">
+        تواصل معنا على إنستجرام
+      </a>
+      
+      <div class="social-icons">
+        <a href="https://twitter.com/medo_dv" target="_blank" class="social-icon">🐦</a>
+        <a href="https://instagram.com/medo_dv" target="_blank" class="social-icon">📷</a>
+      </div>
     </div>
   </div>
 
@@ -306,6 +657,213 @@
   </a>
 
   <script>
+    // نظام إدارة المستخدمين
+    const usersDB = JSON.parse(localStorage.getItem('streamerTopUsers')) || {};
+    
+    // عناصر واجهة المستخدم
+    const mainLoginBtn = document.getElementById('mainLoginBtn');
+    const loginModal = document.getElementById('loginModal');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const loginTabs = document.querySelectorAll('.login-tab');
+    const switchToRegister = document.getElementById('switchToRegister');
+    const switchToLogin = document.getElementById('switchToLogin');
+    const loginSubmit = document.getElementById('loginSubmit');
+    const registerSubmit = document.getElementById('registerSubmit');
+    const loginError = document.getElementById('loginError');
+    const registerError = document.getElementById('registerError');
+    const userProfile = document.getElementById('userProfile');
+    const displayName = document.getElementById('displayName');
+    const userAvatar = document.getElementById('userAvatar');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const subscribeBtn = document.getElementById('subscribeBtn');
+    const subscribeNotification = document.getElementById('subscribeNotification');
+    const streamerSection = document.getElementById('streamerSection');
+    const streamerHeader = document.getElementById('streamerHeader');
+    const streamerContent = document.getElementById('streamerContent');
+    
+    // عناصر حقول الإدخال
+    const loginUsername = document.getElementById('loginUsername');
+    const loginPassword = document.getElementById('loginPassword');
+    const registerUsername = document.getElementById('registerUsername');
+    const registerPassword = document.getElementById('registerPassword');
+    const registerConfirm = document.getElementById('registerConfirm');
+    
+    // التحقق من وجود مستخدم مسجل بالفعل
+    const currentUser = localStorage.getItem('currentUser');
+    if (currentUser) {
+      mainLoginBtn.style.display = 'none';
+      userProfile.style.display = 'flex';
+      displayName.textContent = currentUser;
+      userAvatar.textContent = currentUser.charAt(0).toUpperCase();
+    }
+    
+    // فتح/إغلاق قسم الستريمر
+    streamerHeader.addEventListener('click', () => {
+      if (streamerHeader.classList.contains('collapsed')) {
+        streamerHeader.classList.remove('collapsed');
+        streamerHeader.classList.add('expanded');
+        streamerContent.style.display = 'block';
+      } else {
+        streamerHeader.classList.remove('expanded');
+        streamerHeader.classList.add('collapsed');
+        streamerContent.style.display = 'none';
+      }
+    });
+    
+    // فتح نافذة تسجيل الدخول
+    mainLoginBtn.addEventListener('click', () => {
+      loginModal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    });
+    
+    // تبديل بين تبويبات الدخول والتسجيل
+    loginTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        loginTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        
+        if (tab.dataset.tab === 'login') {
+          loginForm.classList.add('active');
+          registerForm.classList.remove('active');
+        } else {
+          loginForm.classList.remove('active');
+          registerForm.classList.add('active');
+        }
+      });
+    });
+    
+    // التبديل إلى نموذج التسجيل
+    switchToRegister.addEventListener('click', () => {
+      loginTabs.forEach(t => t.classList.remove('active'));
+      document.querySelector('[data-tab="register"]').classList.add('active');
+      loginForm.classList.remove('active');
+      registerForm.classList.add('active');
+      loginError.style.display = 'none';
+    });
+    
+    // التبديل إلى نموذج الدخول
+    switchToLogin.addEventListener('click', () => {
+      loginTabs.forEach(t => t.classList.remove('active'));
+      document.querySelector('[data-tab="login"]').classList.add('active');
+      registerForm.classList.remove('active');
+      loginForm.classList.add('active');
+      registerError.style.display = 'none';
+    });
+    
+    // تسجيل الدخول
+    loginSubmit.addEventListener('click', () => {
+      const username = loginUsername.value.trim();
+      const password = loginPassword.value.trim();
+      
+      if (!username || !password) {
+        loginError.textContent = 'الرجاء إدخال جميع البيانات';
+        loginError.style.display = 'block';
+        return;
+      }
+      
+      if (usersDB[username] && usersDB[username].password === password) {
+        // تسجيل الدخول الناجح
+        localStorage.setItem('currentUser', username);
+        mainLoginBtn.style.display = 'none';
+        userProfile.style.display = 'flex';
+        displayName.textContent = username;
+        userAvatar.textContent = username.charAt(0).toUpperCase();
+        loginModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        loginError.style.display = 'none';
+        
+        // مسح حقول الإدخال
+        loginUsername.value = '';
+        loginPassword.value = '';
+      } else {
+        loginError.textContent = 'بيانات الدخول غير صحيحة';
+        loginError.style.display = 'block';
+      }
+    });
+    
+    // تسجيل مستخدم جديد
+    registerSubmit.addEventListener('click', () => {
+      const username = registerUsername.value.trim();
+      const password = registerPassword.value.trim();
+      const confirm = registerConfirm.value.trim();
+      
+      if (!username || !password || !confirm) {
+        registerError.textContent = 'الرجاء ملء جميع الحقول';
+        registerError.style.display = 'block';
+        return;
+      }
+      
+      if (password !== confirm) {
+        registerError.textContent = 'كلمات المرور غير متطابقة';
+        registerError.style.display = 'block';
+        return;
+      }
+      
+      if (username.length < 4) {
+        registerError.textContent = 'اسم المستخدم قصير جداً';
+        registerError.style.display = 'block';
+        return;
+      }
+      
+      if (password.length < 6) {
+        registerError.textContent = 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+        registerError.style.display = 'block';
+        return;
+      }
+      
+      if (usersDB[username]) {
+        registerError.textContent = 'اسم المستخدم موجود بالفعل';
+        registerError.style.display = 'block';
+        return;
+      }
+      
+      // تسجيل المستخدم الجديد
+      usersDB[username] = { password };
+      localStorage.setItem('streamerTopUsers', JSON.stringify(usersDB));
+      
+      // تسجيل الدخول تلقائياً بعد التسجيل
+      localStorage.setItem('currentUser', username);
+      mainLoginBtn.style.display = 'none';
+      userProfile.style.display = 'flex';
+      displayName.textContent = username;
+      userAvatar.textContent = username.charAt(0).toUpperCase();
+      loginModal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+      registerError.style.display = 'none';
+      
+      // مسح حقول الإدخال
+      registerUsername.value = '';
+      registerPassword.value = '';
+      registerConfirm.value = '';
+    });
+    
+    // تسجيل الخروج
+    logoutBtn.addEventListener('click', () => {
+      localStorage.removeItem('currentUser');
+      userProfile.style.display = 'none';
+      mainLoginBtn.style.display = 'flex';
+    });
+    
+    // إغلاق نافذة التسجيل عند النقر خارجها
+    loginModal.addEventListener('click', (e) => {
+      if (e.target === loginModal) {
+        loginModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        loginError.style.display = 'none';
+        registerError.style.display = 'none';
+      }
+    });
+    
+    // زر الاشتراك
+    subscribeBtn.addEventListener('click', () => {
+      subscribeNotification.style.display = 'block';
+      setTimeout(() => {
+        subscribeNotification.style.display = 'none';
+      }, 3000);
+    });
+    
+    // تأثيرات بطاقات الألعاب
     document.querySelectorAll('.start-btn').forEach(btn => {
       btn.addEventListener('click', function(e) {
         if (this.hasAttribute('disabled')) return;
@@ -319,6 +877,5 @@
       });
     });
   </script>
-
 </body>
 </html>
