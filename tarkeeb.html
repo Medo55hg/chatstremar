@@ -178,9 +178,9 @@ const allCategories = {
     "القاهرة", "الإسكندرية", "الجيزة", "شرم الشيخ", "الأقصر", "أسوان", "بورسعيد", "السويس", "المنصورة", "طنطا",
     "بغداد", "البصرة", "الموصل", "أربيل", "النجف", "كربلاء", "السليمانية", "الناصرية", "العمارة", "الديوانية",
     "الرباط", "الدار البيضاء", "مراكش", "فاس", "طنجة", "أكادير", "مكناس", "وجدة", "تطوان", "العيون",
-    "الجزائر العاصمة", "وهران", "قسنطينة", "عنابة", "باتنة", "بسكرة", "تلمسان", "سطيف", "الجلفة", "سكيكدة",
+    "الجزائر", "وهران", "قسنطينة", "عنابة", "باتنة", "بسكرة", "تلمسان", "سطيف", "الجلفة", "سكيكدة",
     "أبوظبي", "دبي", "الشارقة", "عجمان", "رأس الخيمة", "الفجيرة", "العين", "دبا الحصن", "خورفكان", "أم القيوين",
-    "الكويت العاصمة", "الأحمدي", "حولي", "الفروانية", "الجهراء", "مبارك الكبير", "العدان", "الرقة", "الجليعة", "الصليبية",
+    "الكويت", "الأحمدي", "حولي", "الفروانية", "الجهراء", "مبارك الكبير", "العدان", "الرقة", "الجليعة", "الصليبية",
     "الدوحة", "الريان", "أم صلال", "الخور", "الوكرة", "دخان", "الشمال", "الزبارة", "مسيعيد", "الرويس",
     "مسقط", "صلالة", "نزوى", "صحار", "صور", "عبري", "الرستاق", "البريمي", "السيب", "خصب",
     "عمان", "الزرقاء", "إربد", "العقبة", "مادبا", "السلط", "الكرك", "معان", "الطفيلة", "جرش"
@@ -240,7 +240,7 @@ const allCategories = {
     "أكرم", "بشير", "تمام", "حسام", "خلف",
     "رامز", "سعد", "شهاب", "عبد العزيز", "فاروق",
     "مشعل", "نبيل", "هيثم", "وسيم", "يافا",
-    "أدهم", "بلال", "تقي", "حمد", "خالد",
+    "أدهم", "بلال", "صالح", "حمد", "خالد",
     "رافع", "سفيان", "شوقي", "عبد الكريم", "فوزي",
     "معاذ", "نادر", "هلال", "واصف", "ياسر"
 ],
@@ -367,6 +367,7 @@ function updateTimer() {
   document.getElementById('timer').textContent = `الوقت: ${min}:${sec.toString().padStart(2, '0')}`;
 }
 
+
 // نهاية الجولة
 function endRound() {
   clearInterval(roundTimer);
@@ -387,21 +388,48 @@ function endRound() {
     }
   });
   
+  // عرض الكلمات التي كان يجب تخمينها
+  showMissedWords();
+  
   // تحديث جدول النقاط
   updateScoreTable(wordPoints);
 }
 
-// تحديث جدول النقاط
-function updateScoreTable(points) {
-  const roundNumber = roundScores.length + 1;
-  const blueScore = currentTeam === 'blue' ? points : 0;
-  const redScore = currentTeam === 'red' ? points : 0;
+// عرض الكلمات التي لم يتم تخمينها
+function showMissedWords() {
+  const missedWords = roundWords.filter(word => !foundWords.includes(word));
   
-  roundScores.push({
-    round: roundNumber,
-    blue: blueScore,
-    red: redScore
-  });
+  if (missedWords.length > 0) {
+    const missedWordsContainer = document.createElement('div');
+    missedWordsContainer.style.marginTop = '20px';
+    missedWordsContainer.style.padding = '15px';
+    missedWordsContainer.style.backgroundColor = '#2d2d2d';
+    missedWordsContainer.style.borderRadius = '10px';
+    missedWordsContainer.style.border = '1px solid #444';
+    
+    const title = document.createElement('div');
+    title.textContent = 'الكلمات التي لم يتم العثور عليها:';
+    title.style.fontWeight = 'bold';
+    title.style.marginBottom = '10px';
+    title.style.color = '#ff6666';
+    
+    const wordsList = document.createElement('div');
+    wordsList.style.textAlign = 'right';
+    wordsList.style.lineHeight = '1.8';
+    
+    missedWords.forEach(word => {
+      const wordElement = document.createElement('div');
+      wordElement.textContent = `• ${word}`;
+      wordsList.appendChild(wordElement);
+    });
+    
+    missedWordsContainer.appendChild(title);
+    missedWordsContainer.appendChild(wordsList);
+    
+    // إضافة العنصر بعد قائمة الكلمات التي تم العثور عليها
+    const wordsFoundContainer = document.getElementById('wordsFound');
+    wordsFoundContainer.appendChild(missedWordsContainer);
+  }
   
   const tableBody = document.getElementById('scoreTableBody');
   tableBody.innerHTML = '';
@@ -678,4 +706,5 @@ function connectChat() {
 </script>
 </body>
 </html>
+
 
