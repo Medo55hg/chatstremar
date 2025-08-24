@@ -3,198 +3,681 @@
 <head>
 <meta charset="UTF-8" />
 <title>🎯 لعبة خماسيات</title>
-  <link rel="stylesheet" href="style.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
 <style>
-body { background-color: #111; color: #fff; font-family: 'Amiri', serif; text-align: center; padding: 20px; }
-h1 { color: #ff3333; margin-top: 10px; }
-.description { background-color: #222; border: 2px solid #555; border-radius: 10px; padding: 15px; font-size: 18px; line-height: 1.6; width: 90%; max-width: 800px; margin: 20px auto; }
-.grid { display: grid; grid-template-columns: repeat(5, 60px); grid-template-rows: repeat(8, 60px); gap: 5px; justify-content: center; margin: 20px 0; }
-.cell { width: 60px; height: 60px; background-color: #333; border: 2px solid #555; font-size: 32px; color: #fff; display: flex; align-items: center; justify-content: center; }
-.cell.correct { background-color: #4caf50; border-color: #4caf50; }
-.cell.present { background-color: #f1c40f; border-color: #f1c40f; color: #000; }
-.cell.absent { background-color: #555; border-color: #555; color: #aaa; }
-.keyboard-container { display: flex; flex-direction: column; gap: 5px; max-width: 650px; margin: auto; }
-.keyboard-row { display: flex; gap: 5px; justify-content: center; flex-wrap: wrap; }
-.key { width: 50px; height: 50px; padding: 0; font-size: 22px; background-color: #222; color: #fff; border: 1px solid #555; border-radius: 6px; cursor: pointer; text-align: center; user-select: none; display: flex; align-items: center; justify-content: center; }
-.key.correct { background-color: #4caf50 !important; color: #fff; }
-.key.present { background-color: #f1c40f !important; color: #000; }
-.key.absent { background-color: #555 !important; color: #aaa; }
-.key:hover { background-color: #444; }
-.key-enter { background-color: #28a745 !important; color: #fff; }
-.key-backspace { background-color: #c0392b !important; color: #fff; }
-.message { margin-top: 15px; font-size: 18px; color: #0f0; }
-.summary { margin-top: 20px; }
-.summary-grid { display: inline-grid; grid-template-columns: repeat(5, 30px); grid-template-rows: repeat(8, 30px); gap: 2px; margin: 10px; }
-.summary-cell { width:30px; height:30px; font-size:18px; border:1px solid #555; display:flex; align-items:center; justify-content:center; }
-.summary-cell.correct { background-color:#4caf50; }
-.summary-cell.present { background-color:#f1c40f; color:#000; }
-.summary-cell.absent { background-color:#555; color:#aaa; }
+  :root{ --bg:#111; --panel:#222; --line:#555; --red:#ff3333; --ok:#4caf50; --warn:#f1c40f; --abs:#555; --txt:#fff; --muted:#aaa; }
+  body { background: var(--bg); color: var(--txt); font-family: 'Amiri', serif; text-align: center; padding: 20px; }
+  h1 { color: var(--red); margin-top: 10px; }
+  .topbar{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin:10px 0;}
+  .pill{background:#1b1b1b;border:1px solid var(--line);padding:8px 12px;border-radius:999px;font-size:14px}
+  .btn{background:#2a2a2a;border:1px solid var(--line);padding:8px 12px;border-radius:10px;cursor:pointer}
+  .btn:hover{background:#333}
+  .description { background: var(--panel); border: 2px solid #444; border-radius: 12px; padding: 14px; font-size: 18px; line-height: 1.6; width: min(92%, 820px); margin: 16px auto; }
+
+  .grid { --cell:60px; display: grid; grid-template-columns: repeat(5, var(--cell)); grid-template-rows: repeat(8, var(--cell)); gap: 6px; justify-content: center; margin: 18px 0; }
+  .cell { width: var(--cell); height: var(--cell); background: #333; border: 2px solid var(--line); font-size: 32px; color: var(--txt);
+          display: flex; align-items: center; justify-content: center; border-radius:10px; transform-style: preserve-3d; }
+  .cell.correct { background: var(--ok); border-color: var(--ok); }
+  .cell.present { background: var(--warn); border-color: var(--warn); color: #000; }
+  .cell.absent { background: var(--abs); border-color: var(--abs); color: var(--muted); }
+
+  @keyframes shake { 10%,90%{transform:translateX(-3px)} 20%,80%{transform:translateX(3px)}
+                     30%,50%,70%{transform:translateX(-6px)} 40%,60%{transform:translateX(6px)}}
+  .shake { animation: shake 400ms; }
+  @keyframes flip { 0%{transform: rotateX(0)} 50%{transform: rotateX(90deg)} 100%{transform: rotateX(0)} }
+  .flip { animation: flip 380ms ease; }
+
+  .statusbar{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin:8px 0;}
+  .status{background:#191919;border:1px solid var(--line);padding:6px 10px;border-radius:8px;font-size:14px}
+
+  .keyboard-container { display: flex; flex-direction: column; gap: 6px; max-width: 650px; margin: auto; }
+  .keyboard-row { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
+  .key { min-width: 44px; height: 52px; padding: 0 6px; font-size: 20px; background: #222; color: var(--txt);
+         border: 1px solid var(--line); border-radius: 8px; cursor: pointer; user-select: none; display: flex; align-items: center; justify-content: center; }
+  .key.correct { background: var(--ok) !important; color: #fff; }
+  .key.present { background: var(--warn) !important; color: #000; }
+  .key.absent { background: var(--abs) !important; color: var(--muted); }
+  .key:hover { background: #333; }
+  .key-enter { background: #28a745 !important; color: #fff; }
+  .key-backspace { background: #c0392b !important; color: #fff; }
+
+  .message { margin-top: 10px; font-size: 16px; color: #0f0; min-height: 22px; }
+  .summary { margin-top: 20px; }
+  .summary-grid { display: inline-grid; grid-template-columns: repeat(5, 30px); grid-template-rows: repeat(8, 30px); gap: 3px; margin: 10px; }
+  .summary-cell { width:30px; height:30px; font-size:18px; border:1px solid var(--line); display:flex; align-items:center; justify-content:center; border-radius:6px; }
+  .summary-cell.correct { background: var(--ok); }
+  .summary-cell.present { background: var(--warn); color:#000; }
+  .summary-cell.absent { background: var(--abs); color: var(--muted); }
+
+  .stats{background:#181818;border:1px solid var(--line);border-radius:12px;padding:10px; width:min(92%,820px); margin:14px auto; text-align:center}
+  .stats h3{margin:0 0 8px 0;color:#eee}
+  .stats .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  .stats .chip{background:#202020;border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:14px}
+
+  @media (max-width: 480px){
+    .grid{ --cell: 46px; gap:5px }
+    .cell{ font-size:24px }
+    .keyboard-container{ max-width: 96% }
+    .key{ min-width: 36px; height: 44px; font-size:18px }
+    .description{ font-size:16px; }
+  }
+  @media (max-width: 380px){
+    .grid{ --cell: 42px }
+    .key{ min-width: 32px; height: 40px; font-size:16px }
+  }
 </style>
 </head>
 <body>
-<h1>🎯 خماسيات</h1>
-<div class="description">
-🧠 <strong>شرح اللعبة:</strong><br>
-كل يوم 3 كلمات جديدة مكونة من 5 حروف.<br>
-لديك 8 محاولات لكل كلمة باستخدام الكيبورد.<br>
-🟩 أخضر: الحرف صحيح وفي مكانه.<br>
-🟨 أصفر: الحرف موجود لكن في مكان خاطئ.<br>
-بعد حل الكلمات أو استنفاد المحاولات، تعرض محاولاتك كلها.<br>
-</div>
+  <h1>🎯 خماسيات</h1>
 
-<div id="summary" class="summary"></div>
-
-<div class="game-container">
-<div id="correctAnswer" class="message" style="color:#0ff; text-align:right;"></div>
-<div id="grid" class="grid"></div>
-<div class="keyboard-container">
-  <div class="keyboard-row" id="row1"></div>
-  <div class="keyboard-row" id="row2"></div>
-  <div class="keyboard-row" id="row3"></div>
-  <div class="keyboard-row">
-    <div class="key key-backspace" onclick="handleBackspace()">⌫</div>
-    <div class="key key-enter" onclick="handleEnter()">⏎</div>
+  <div class="topbar">
+    <div class="pill" id="daySeedPill">اليوم: —</div>
+    <div class="pill" id="categoryPill">الفئة: —</div>
+    <div class="pill" id="countdown">⏳ الوقت المتبقي: —</div>
+    <button class="btn" id="hintBtn" title="تلميح (مرة واحدة يوميًا)">💡 تلميح</button>
+    <button class="btn" id="copyResultBtn" title="نسخ الملخص للنشر">📋 نسخ الملخص</button>
   </div>
-</div>
 
-<div class="message" id="messageBox"></div>
-</div>
+  <div class="description">
+    🧠 <strong>شرح اللعبة:</strong><br>
+    كل يوم 3 كلمات من فئة محددة — لديك 8 محاولات لكل كلمة (5 حروف).<br>
+    🟩 حرف صحيح بمكانه — 🟨 موجود بمكان آخر — ⬛ غير موجود. لديك <b>تلميح واحد يوميًا</b>.
+  </div>
+
+  <div class="statusbar">
+    <div class="status" id="attemptStatus">المحاولة: 1 / 8</div>
+    <div class="status" id="bestStatus">أفضل نتيجة اليوم: —</div>
+  </div>
+
+  <div id="summary" class="summary"></div>
+
+  <div class="game-container">
+    <div id="correctAnswer" class="message" style="color:#0ff; text-align:right;"></div>
+    <div id="grid" class="grid"></div>
+
+    <div class="keyboard-container">
+      <div class="keyboard-row" id="row1"></div>
+      <div class="keyboard-row" id="row2"></div>
+      <div class="keyboard-row" id="row3"></div>
+      <div class="keyboard-row">
+        <div class="key key-backspace" onclick="handleBackspace()">⌫</div>
+        <div class="key key-enter" onclick="handleEnter()">⏎</div>
+      </div>
+    </div>
+
+    <div class="message" id="messageBox"></div>
+  </div>
+
+  <div class="stats" id="statsBox" style="display:none;">
+    <h3>📊 إحصائيات اليوم</h3>
+    <div class="row" id="statsChips"></div>
+  </div>
 
 <script>
-const sixLetterWords = [
-  "أزهار","أحداث","أصوات","أمثلة","أمانة","أشجار","إبصار","إعصار","إشارة","إقامة",
-  "بحرية","بلدية","بشارة","بطاقة","بوصلة","بذورك","بقاياك",
-  "تجارب","تحليق","تصميم","تقرير","توصية","ترتيب","تسليم","تدريب","تعايش","تبادل",
-  "جداول","جزيرة","جماعة","جميلة","جولات","جرائد","جوائز","جلوسك","جدولك","جمارك",
-  "حدائق","حكاية","حراسة","حقيقة","حسابك","حصيلة","حوافز","حقوقك","حاضرة",
-  "خادمة","خطوات","خيارات","خزانة","خاطرك","خلاصة","خريطة","خصائص","خطيرة","خيامك",
-  "دعوات","دروس","دليلك","دعاوى","دقيقة","دائرة","دعمكم","دفعات","دوافع",
-  "رحلات","رسالة","رغبات","روابط","رواية","رصيفك","رخصتك","رقائق",
-  "سفينة","سياسة","سعادة","سرائر","سلالة","سريعة","سجلات","ستائر","ساحات","سلمون",
-  "شهادة","شجاعة","شعائر","شواهد","شواطئ","شريعة","شظايا","شرائع","شطائر","شريكة",
-  "صداقة","صناعة","صراحة","صيانة","صواريخ","صيغات","صحائف","صحارى","صواعق",
-  "ضيافة","ضمانك","ضوابط","ضغائن","ضرائب","ضربات","ضياعك","ضحكات","ضبابي",
-  "طاحون","طموحك","طبيعي","طوائف","طرائف","طبقات","طوافة","طماطم","طلبات","طوالع",
-  "ظواهر","ظلالك","ظنونك","ظريفة","ظهورك","ظلمات","ظهيره","ظفائر",
-  "عوامل","عقارب","عناصر","عناية","عواطف","عادتك","عقائد","عواصف","عزائم","عذوبة",
-  "غنائم","غرامة","غطايا","غواية","غنيمة","غلافك","غسالة","غموضك","غرائب","غرفتك",
-  "فائدة","فضائل","فلاتر","فصولك","فواكه","فراشة","فريقك","فكاهة","فوترة","فصائل",
-  "قائمة","قبائل","قدوات","قوافل","قدرات","قصائد","قواسم","قراءة","قصصية",
-  "كرامة","كواكب","كراسة","كفالة","كلمات","كتيبة","كفوفك","كفاءة","كتائب","كنيسة",
-  "لوحات","لواحق","لوازم","لذائذ","لمحات","لحظات",
-  "مساعد","مكتبة","مدارس","مراسم","منازل","مشاعر","مفاتيح","مراحل","ممالك","مواسم",
-  "نماذج","نجاحك","نواحي","نقاشك","نهائية","نفايات","نجومك","نشاطك",
-  "هدايا","هتافة","هواجر","هواية","هواجس","هضابك","هداوه","جواهر",
-  "وثائق","ورقات","وراثة","وجبات","وظائف","ولادة","وقائع","وسائل","وحدات","وجوهك",
-  "يقظتك","يقينك","يمنية","يمامة","يمناك","يقظان","يوسفي"
+/* =========================
+   إعدادات عامة
+   ========================= */
+const REQUIRE_DICTIONARY = false; // يقبل أي كلمة 5 أحرف
+const WORD_LEN = 5;
+const MAX_ROWS = 8;
+
+/* =========================
+   قاموس كبير مدمج (426 كلمة خمسية)
+   ========================= */
+const WORDS5_LARGE = [
+  "إشارة",
+  "إفادة",
+  "بابنا",
+  "بابها",
+  "بابهم",
+  "بحرنا",
+  "بحرها",
+  "بحرهم",
+  "برقنا",
+  "برقها",
+  "برقهم",
+  "بطاقة",
+  "بطننا",
+  "بطنها",
+  "بطنهم",
+  "بنتنا",
+  "بنتها",
+  "بنتهم",
+  "بوابة",
+  "بيتنا",
+  "بيتها",
+  "بيتهم",
+  "تاجها",
+  "تاجهم",
+  "تفاح",
+  "تقرير",
+  "ترتيب",
+  "تسليم",
+  "تدريب",
+  "تعايش",
+  "تبادل",
+  "ثيابك",
+  "جبال",
+  "جزيرة",
+  "جسرك",
+  "جسرها",
+  "جسرهم",
+  "جماعة",
+  "جميلة",
+  "جنوب",
+  "جوائز",
+  "جوال",
+  "جلوس",
+  "حديقة",
+  "حدودك",
+  "حدوده",
+  "حكاية",
+  "حراسة",
+  "حقيقة",
+  "حصيلة",
+  "حياة",
+  "حياةٌ",
+  "خريطة",
+  "خيمة",
+  "دروس",
+  "دفترك",
+  "دقيقة",
+  "دليلك",
+  "دعاوى",
+  "ذهبك",
+  "ذهبها",
+  "ذهبهم",
+  "ذهبنا",
+  "رئيس",
+  "رسالة",
+  "رعدنا",
+  "رعدها",
+  "رعدهم",
+  "رواية",
+  "رياح",
+  "زهره",
+  "زهرهُ",
+  "ساحات",
+  "سفينة",
+  "سلامة",
+  "سلالة",
+  "سماك",
+  "سماها",
+  "سماهم",
+  "سماي",
+  "سماع",
+  "سوقك",
+  "سوقها",
+  "سوقهم",
+  "سوقنا",
+  "سيارة",
+  "سياق",
+  "سياقك",
+  "سياقها",
+  "سياقهم",
+  "ستائر",
+  "سجلات",
+  "شهادة",
+  "شجاعة",
+  "شطائر",
+  "شريعة",
+  "شريكة",
+  "شمسك",
+  "شمسها",
+  "شمسهم",
+  "شمسنا",
+  "شمسٌ",
+  "صبيان",
+  "صدرك",
+  "صدرها",
+  "صدرهم",
+  "صداقة",
+  "صناعة",
+  "صراحة",
+  "صيانة",
+  "صورة",
+  "صورةٍ",
+  "صورك",
+  "صورهم",
+  "صواعق",
+  "صيغة",
+  "ضباب",
+  "ضبابي",
+  "ضربات",
+  "ضمانك",
+  "ضوابط",
+  "طائرة",
+  "طابق",
+  "طريق",
+  "طريقا",
+  "طريقك",
+  "طريقه",
+  "طماطم",
+  "طلبك",
+  "طلبها",
+  "طلبهم",
+  "طلبنا",
+  "طلبات",
+  "طبيعي",
+  "ظلال",
+  "ظلالك",
+  "ظنون",
+  "عذوبة",
+  "عوامل",
+  "عناصر",
+  "عناية",
+  "عواطف",
+  "عواصف",
+  "عينك",
+  "عينها",
+  "عينهم",
+  "غرفة",
+  "غرفتك",
+  "غرامة",
+  "غنائم",
+  "غنيمة",
+  "غلافك",
+  "غسالة",
+  "فائدة",
+  "فضائل",
+  "فصولك",
+  "فكاهة",
+  "فواكه",
+  "فصائل",
+  "فجرنا",
+  "فجرها",
+  "فجرهم",
+  "فمك",
+  "فمها",
+  "فمهم",
+  "قائمة",
+  "قاضيه",
+  "قاضيك",
+  "قاربك",
+  "قاربها",
+  "قاربهم",
+  "قبرك",
+  "قبرها",
+  "قبرهم",
+  "قدرات",
+  "قلبك",
+  "قلبها",
+  "قلبهم",
+  "قلمك",
+  "قلمها",
+  "قلمهم",
+  "قميص",
+  "قيمة",
+  "قيمةٌ",
+  "كاتبه",
+  "كاتبك",
+  "كاتبها",
+  "كتاب",
+  "كتابك",
+  "كتابها",
+  "كتابهم",
+  "كتابه",
+  "كتائب",
+  "كرامة",
+  "كرسي",
+  "كفالة",
+  "كفاءة",
+  "كلمات",
+  "كنيسة",
+  "كوخك",
+  "كوخها",
+  "كوخهم",
+  "كوخنا",
+  "لوحة",
+  "لوحةٍ",
+  "لوحات",
+  "لوازم",
+  "لمحات",
+  "لحظات",
+  "مدينة",
+  "معبد",
+  "مفتاح",
+  "مصباح",
+  "مطارك",
+  "مطعم",
+  "مكتبك",
+  "مكتبة",
+  "ملاعب",
+  "ملابس",
+  "ملعب",
+  "ملعبك",
+  "ملعبه",
+  "منازل",
+  "مراحل",
+  "مدارس",
+  "مراسم",
+  "منازل",
+  "مناور",
+  "مناخ",
+  "منارة",
+  "ميناك",
+  "ميناء",
+  "مسار",
+  "مشاعر",
+  "مفاتيح",
+  "مراحل",
+  "ممالك",
+  "مواسم",
+  "مطبخ",
+  "مكتب",
+  "ميدان",
+  "ميدانك",
+  "مخزن",
+  "مخزنه",
+  "مساعد",
+  "نافذة",
+  "نبات",
+  "نبضك",
+  "نبضها",
+  "نبضهم",
+  "نجمك",
+  "نجمها",
+  "نجمهم",
+  "نجاحك",
+  "نجاحه",
+  "نجاحي",
+  "نجاحهم",
+  "نهرنا",
+  "نهرها",
+  "نهرهم",
+  "نواحي",
+  "نقاشك",
+  "نهارية",
+  "نهاريةٍ",
+  "نهائية",
+  "نشاطك",
+  "هدايا",
+  "هوية",
+  "هواتف",
+  "هواية",
+  "هواجس",
+  "وادي",
+  "واديه",
+  "واديك",
+  "ورقة",
+  "وراثة",
+  "وردة",
+  "وجبات",
+  "وجهك",
+  "وجهها",
+  "وجههم",
+  "وثائق",
+  "وثيقة",
+  "وسائل",
+  "وحدات",
+  "وقائع",
+  "ولادة",
+  "يقينك",
+  "يمامة",
+  "يمنية",
+  "يوسفي",
+  "رجلنا",
+  "رجلها",
+  "رجلهم",
+  "طفلنا",
+  "طفلها",
+  "طفلهم",
+  "صبيان",
+  "بنتنا",
+  "بنتها",
+  "بنتهم",
+  "قمرنا",
+  "قمرها",
+  "قمرهم",
+  "شمسنا",
+  "شمسها",
+  "شمسهم",
+  "نورنا",
+  "نورها",
+  "نورهم",
+  "وردك",
+  "وردها",
+  "وردهم",
+  "قوسك",
+  "قوسها",
+  "قوسهم",
+  "صوتك",
+  "صوتها",
+  "صوتهم",
+  "بابك",
+  "بابها",
+  "بابهم",
+  "بابنا",
+  "بيتُك",
+  "بيتِك",
+  "بيتهم",
+  "بيتها",
+  "بيتنا",
+  "قصرٍ",
+  "قصرنا",
+  "قصرها",
+  "قصرهم",
+  "قانون",
+  "قوانين",
+  "وزيرك",
+  "وزيره",
+  "قاضيك",
+  "قاضيه",
+  "طلابك",
+  "طلابها",
+  "طلابهم",
+  "قارئك",
+  "قارئه",
+  "قارئها",
+  "قارئ",
+  "قاري",
+  "كاتب",
+  "كاتبك",
+  "كاتبه",
+  "كاتبها",
+  "قارئ",
+  "قاري",
+  "قهوة",
+  "شايٌ",
+  "ماءٌ",
+  "عدوٌ",
+  "صديق",
+  "قميص",
+  "ثياب",
+  "ملابس",
+  "ملعب",
+  "دفتر",
+  "كتاب",
+  "كتابك",
+  "مكتب",
+  "مكتبك",
+  "مطبخ",
+  "كرسي",
+  "قماش",
+  "مدينة",
+  "قرية",
+  "شارع",
+  "منزل",
+  "معبد",
+  "مدرس",
+  "مدير",
+  "طالب",
+  "مطار",
+  "ميناء",
+  "سفينة",
+  "سيارة",
+  "قارب",
+  "حديقة",
+  "نافذة",
+  "مصباح",
+  "مفتاح",
+  "خريطة",
+  "بطاقة",
+  "ورقة",
+  "صورة",
+  "وثيقة",
+  "رواية",
+  "قصيدة",
+  "منارة",
+  "بوابة",
+  "قيادة",
+  "عمارة",
+  "عبارة",
+  "شارة",
+  "إشارة",
+  "هوية",
+  "وسيلة",
+  "قائمة",
+  "منصة",
+  "مائدة",
+  "طاولة",
+  "غرفة",
+  "غنيمة",
+  "سعادة",
+  "سياسة",
+  "كرامة",
+  "سلامة",
+  "فائدة",
+  "ميزة",
+  "ميزةٌ"
 ];
 
+/* =========================
+   تطبيع العربية والطول
+   ========================= */
+function normalizeArabic(s){
+  const diacritics = /[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED]/g;
+  s = (s||"").replace(diacritics, "");
+  s = s.replace(/[إأآا]/g, "ا");
+  s = s.replace(/[ىي]/g, "ي");
+  return s;
+}
+function charLen(s){ return [...(s||"")].length; }
 
+/* =========================
+   فئات + احتياطي
+   ========================= */
+const CATEGORIES = {
+  "طبيعة": ["أزهار","شمس","قمر","بحر","وردة","غصون","ظلال","سحاب","عشب","صخور"],
+  "أشياء/أدوات": ["مفتاح","كتاب","كرسي","قماش","قلم","ورق","طابع","ممسك","ملصق","مغلف"],
+  "أماكن": ["مدينة","قرية","معبد","قصر","سوق","ميناء","مطار","حديقة","وادي","جسر"],
+  "صفات": ["جميل","ظريف","قاسي","لطيف","ذكي","شجاع","قوي","ضعيف","نشيط","هادئ"],
+  "عامّة": []
+};
+
+const fallbackWords = [
+  "أزهار","أحداث","أصوات","أمثلة","أمانة","أشجار","إشارة",
+  "بحرية","بلدية","بطاقة","بوصلة","بذورك","بقايا","بشارة",
+  "تصميم","ترتيب","تقرير","تسليم","تدريب","تعايش","تبادل",
+  "جداول","جزيرة","جماعة","جميلة","جولات","جرائد","جوائز","جلوس","جدولك",
+  "حكاية","حراسة","حقيقة","حصيلة","حوافز","حاضرة",
+  "خطوات","خيارات","خزانة","خلاصة","خريطة","خطيرة",
+  "دعوات","دروس","دليلك","دعاوى","دقيقة",
+  "رحلات","رسالة","رغبات","روابط","رواية","رقائق",
+  "سفينة","سياسة","سعادة","سلالة","سجلات","ستائر","ساحات",
+  "شهادة","شجاعة","شعائر","شواهد","شواطئ","شريعة","شطائر","شريكة",
+  "صداقة","صناعة","صراحة","صيانة","صحارى","صواعق",
+  "ضيافة","ضمانك","ضوابط","ضرائب","ضربات","ضبابي",
+  "طبيعي","طلبات","طماطم",
+  "ظواهر","ظريفة","ظلمات",
+  "عوامل","عناصر","عناية","عواطف","عواصف","عذوبة",
+  "غنائم","غرامة","غسالة","غرائب","غرفتك",
+  "فائدة","فضائل","فواكه","فراشة","فكاهة","فصائل",
+  "قائمة","قدرات","قواسم","قراءة","قصصية",
+  "كرامة","كواكب","كراسة","كفالة","كلمات","كفاءة","كنيسة",
+  "لوحات","لوازم","لمحات","لحظات",
+  "مساعد","مكتبة","مدارس","مراسم","منازل","مشاعر","مفاتيح","مراحل","ممالك","مواسم",
+  "نماذج","نواحي","نقاشك","نهائية","نشاطك",
+  "هدايا","هواية","هواجس","جواهر",
+  "وثائق","وراثة","وجبات","وظائف","ولادة","وقائع","وسائل","وحدات","وجوهك",
+  "يقينك","يمامة","يمنية","يوسفي",
+  "سلامة","إبداع","قيمة","كلمة","مدينة","قمر","شمس","وردة","كتاب"
+].filter(w=>charLen(w)===5);
+
+/* =========================
+   حالة اللعبة
+   ========================= */
+let fiveLetterWords = [];   // تتعبأ من WORDS5_LARGE + الاحتياطي
+let DICTIONARY = new Set(); // يجهز لو احتجت التحقق لاحقًا
 let words = [];
 let currentWordIndex = 0;
 let currentRow = 0;
 let currentGuess = "";
 let isLocked = false;
 let savedGuesses = [[], [], []];
+let shareCache = "";
+let usedHintToday = false;
+let hintFixedIndices = [new Set(), new Set(), new Set()];
+let currentCategory = "عامّة";
+let bestAttemptsToday = null;
+let stats = { solved: 0, failed: 0, totalTries: 0 };
 
+/* =========================
+   DOM
+   ========================= */
 const grid = document.getElementById("grid");
 const messageBox = document.getElementById("messageBox");
 const correctAnswerBox = document.getElementById("correctAnswer");
 const summary = document.getElementById("summary");
+const daySeedPill = document.getElementById("daySeedPill");
+const categoryPill = document.getElementById("categoryPill");
+const countdown = document.getElementById("countdown");
+const copyResultBtn = document.getElementById("copyResultBtn");
+const hintBtn = document.getElementById("hintBtn");
+const attemptStatus = document.getElementById("attemptStatus");
+const bestStatus = document.getElementById("bestStatus");
+const statsBox = document.getElementById("statsBox");
+const statsChips = document.getElementById("statsChips");
 
-function seedRandom(seed) {
-  let x = Math.sin(seed) * 10000;
-  return x - Math.floor(x);
-}
+/* =========================
+   أدوات عامة
+   ========================= */
+function seedRandom(seed){ let x = Math.sin(seed) * 10000; return x - Math.floor(x); }
+function pad(n){ return String(n).padStart(2,"0"); }
+function vibrate(ms=80){ if (navigator.vibrate) navigator.vibrate(ms); }
+function showMsg(txt, color="#0f0"){ messageBox.style.color = color; messageBox.textContent = txt; }
 
-// ✅ هنا تعديل الدالة لقبول قائمة مصفاة
-function pickWordsBySeed(seed, wordList) {
-  const chosen = new Set();
-  while (chosen.size < 3) {
-    const index = Math.floor(seedRandom(seed + chosen.size) * wordList.length);
-    const word = wordList[index];
-    if (word) chosen.add(word);
-  }
-  return Array.from(chosen);
-}
+/* =========================
+   بناء المجمّع من القائمة المدمجة
+   ========================= */
+function buildPools(){
+  const pool = new Set();
+  // فئات
+  Object.values(CATEGORIES).flat().forEach(w=>{
+    if (charLen(w)===5) pool.add(w);
+  });
+  // الاحتياطي
+  fallbackWords.forEach(w=>pool.add(w));
+  // القاموس الكبير المدمج
+  WORDS5_LARGE.forEach(w=>{ if (charLen(w)===5) pool.add(w); });
 
-function saveState() {
-  const state = {
-    currentWordIndex,
-    currentRow,
-    currentGuess,
-    isLocked,
-    savedGuesses,
-    correctHTML: correctAnswerBox.innerHTML,
-    date: new Date().toISOString().slice(0,10)
-  };
-  localStorage.setItem("khmasiyatState", JSON.stringify(state));
-}
+  fiveLetterWords = Array.from(pool);
+  DICTIONARY = new Set(fiveLetterWords.map(w=>normalizeArabic(w)));
 
-function loadState() {
-  const data = localStorage.getItem("khmasiyatState");
-  if (data) {
-    const state = JSON.parse(data);
-    const today = new Date().toISOString().slice(0,10);
-    if (state.date === today) {
-      currentWordIndex = state.currentWordIndex;
-      currentRow = state.currentRow;
-      currentGuess = state.currentGuess;
-      isLocked = state.isLocked;
-      savedGuesses = state.savedGuesses || [[],[],[]];
-      correctAnswerBox.innerHTML = state.correctHTML || "";
-      return true;
-    }
-  }
-  return false;
-}
-
-function initGame() {
-  const today = new Date().toISOString().slice(0,10);
-  const seed = parseInt(today.replace(/-/g,''));
-  // ✅ تصفية الكلمات
-  const filteredWords = sixLetterWords.filter(w => w.length === 5);
-  words = pickWordsBySeed(seed, filteredWords);
-
-  if (loadState()) {
-    createGrid();
-    createKeyboard();
-    savedGuesses[currentWordIndex].forEach((g, i) => {
-      currentRow = i;
-      currentGuess = g.guess;
-      renderGuess(g.result);
-      updateKeyboardColors(g.guess, g.result);
-    });
-    currentGuess = "";
-    if (isLocked) showSummary();
-  } else {
-    createGrid();
-    createKeyboard();
+  if (CATEGORIES["عامّة"].length === 0) {
+    CATEGORIES["عامّة"] = fiveLetterWords.slice(0, Math.min(500, fiveLetterWords.length));
   }
 }
 
+/* =========================
+   واجهة
+   ========================= */
 function createGrid() {
   grid.innerHTML = "";
-  for (let i=0; i<8; i++) {
-    for (let j=0; j<5; j++) {
+  for (let i=0; i<MAX_ROWS; i++) {
+    for (let j=0; j<WORD_LEN; j++) {
       const cell = document.createElement("div");
       cell.classList.add("cell");
       cell.id = `cell-${currentWordIndex}-${i}-${j}`;
       grid.appendChild(cell);
     }
   }
+  updateAttemptStatus();
 }
-// ✅ تعديل الكيبورد فقط
 function createKeyboard() {
-  const rows = [
-    "دجحخعغفقثصض",
-    "طكمنتلابيسش",
-    "هظزوةىرأإؤءذ"
-  ];
-
-   rows.forEach((row, idx) => {
+  const rows = ["دجحخعغفقثصض","طكمنتلابيسش","هظزوةىرأإؤءذ"];
+  rows.forEach((row, idx) => {
     const rowDiv = document.getElementById(`row${idx+1}`);
     rowDiv.innerHTML = "";
     row.split("").forEach(k => {
@@ -207,119 +690,368 @@ function createKeyboard() {
   });
 }
 
-function handleKey(k) {
-  if (isLocked || currentGuess.length >= 5) return;
-  currentGuess += k;
-  updateGrid();
-  saveState();
+/* =========================
+   منطق اللعب
+   ========================= */
+function lettersCountMap(word){
+  const map = {};
+  for (const ch of [...word]){ map[ch] = (map[ch]||0)+1; }
+  return map;
 }
-
-function handleBackspace() {
-  if (isLocked || currentGuess.length === 0) return;
-  currentGuess = currentGuess.slice(0, -1);
-  updateGrid();
-  saveState();
-}
-
-function handleEnter() {
-  if (isLocked || currentGuess.length < 5) return;
-
-  const correct = words[currentWordIndex];
-  const result = Array(5).fill("absent");
-  for (let i=0; i<5; i++) {
-    if (currentGuess[i] === correct[i]) result[i]="correct";
-    else if (correct.includes(currentGuess[i])) result[i]="present";
+function evaluateGuess(guess, correct){
+  const res = Array(WORD_LEN).fill("absent");
+  const count = lettersCountMap(correct);
+  for (let i=0;i<WORD_LEN;i++){
+    if (guess[i] === correct[i]){ res[i] = "correct"; count[guess[i]]--; }
   }
-  renderGuess(result);
-  updateKeyboardColors(currentGuess, result);
-  savedGuesses[currentWordIndex].push({guess:currentGuess, result});
-  if (currentGuess === correct) {
-    correctAnswerBox.innerHTML += `✅ الكلمة ${currentWordIndex+1}: ${correct}<br>`;
-    currentWordIndex++;
-    if (currentWordIndex >=3) {isLocked=true;showSummary();}
-    else {resetForNextWord();}
-  } else {
-    currentRow++;
-    if (currentRow >=8) {
-      correctAnswerBox.innerHTML += `❌ الكلمة ${currentWordIndex+1}: ${correct}<br>`;
-      currentWordIndex++;
-      if (currentWordIndex >=3) {isLocked=true;showSummary();}
-      else {resetForNextWord();}
-    }
+  for (let i=0;i<WORD_LEN;i++){
+    if (res[i] !== "correct" && count[guess[i]]>0){ res[i] = "present"; count[guess[i]]--; }
   }
-  currentGuess="";
-  saveState();
+  return res;
 }
-
+function updateAttemptStatus(){
+  attemptStatus.textContent = `المحاولة: ${currentRow+1} / ${MAX_ROWS}`;
+  bestStatus.textContent = `أفضل نتيجة اليوم: ${bestAttemptsToday ? bestAttemptsToday + " محاولة" : "—"}`;
+}
+function updateGrid() {
+  for (let i=0;i<WORD_LEN;i++){
+    const cell = document.getElementById(`cell-${currentWordIndex}-${currentRow}-${i}`);
+    if (cell) cell.textContent = currentGuess[i] || "";
+  }
+}
+function renderGuess(result) {
+  for (let j=0; j<WORD_LEN; j++) {
+    const cell = document.getElementById(`cell-${currentWordIndex}-${currentRow}-${j}`);
+    cell.textContent = currentGuess[j] ?? "";
+    setTimeout(()=>cell.classList.add("flip"), j*60);
+    setTimeout(()=>{ cell.classList.remove("flip"); cell.classList.add(result[j]); }, j*60 + 180);
+  }
+}
 function updateKeyboardColors(guess, result) {
-  for (let i = 0; i < 5; i++) {
+  const keys = document.querySelectorAll(".key");
+  for (let i=0;i<WORD_LEN;i++){
     const letter = guess[i];
-    const keys = document.querySelectorAll(".key");
     keys.forEach(key => {
       if (key.textContent === letter) {
-        if (result[i] === "correct") {
-          key.classList.remove("present", "absent");
-          key.classList.add("correct");
-        } else if (result[i] === "present" && !key.classList.contains("correct")) {
-          key.classList.remove("absent");
-          key.classList.add("present");
-        } else if (!key.classList.contains("correct") && !key.classList.contains("present")) {
-          key.classList.add("absent");
-        }
+        if (result[i] === "correct") { key.classList.remove("present","absent"); key.classList.add("correct"); }
+        else if (result[i] === "present" && !key.classList.contains("correct")) { key.classList.remove("absent"); key.classList.add("present"); }
+        else if (!key.classList.contains("correct") && !key.classList.contains("present")) { key.classList.add("absent"); }
       }
     });
   }
 }
-
-function resetKeyboardColors() {
-  const keys=document.querySelectorAll(".key");
-  keys.forEach(key=>{
-    key.classList.remove("correct","present","absent");
+function resetKeyboardColors(){ document.querySelectorAll(".key").forEach(k=>k.classList.remove("correct","present","absent")); }
+function shakeRow(){
+  const startIdx = currentRow*WORD_LEN;
+  const cells = [...grid.children].slice(startIdx, startIdx+WORD_LEN);
+  cells.forEach(c=>{ c.classList.add("shake"); setTimeout(()=>c.classList.remove("shake"), 420); });
+}
+function updateGridWithHints(){
+  updateGrid();
+  const fixed = hintFixedIndices[currentWordIndex];
+  const correct = words[currentWordIndex];
+  fixed.forEach(idx=>{
+    const cell = document.getElementById(`cell-${currentWordIndex}-${currentRow}-${idx}`);
+    if (cell){ cell.textContent = correct[idx]; }
+    const arr = [...(currentGuess.padEnd(WORD_LEN," "))];
+    arr[idx] = correct[idx];
+    currentGuess = arr.join("").trimEnd();
   });
 }
-
-function renderGuess(result) {
-  for (let j=0; j<5; j++) {
-    const cell=document.getElementById(`cell-${currentWordIndex}-${currentRow}-${j}`);
-    cell.textContent=currentGuess[j];
-    cell.classList.add(result[j]);
-  }
+function handleKey(k) {
+  if (isLocked || currentGuess.length >= WORD_LEN) return;
+  if (!/^[\u0600-\u06FF]$/.test(k)) return;
+  const fixed = hintFixedIndices[currentWordIndex];
+  let i = currentGuess.length;
+  while (fixed.has(i) && i < WORD_LEN) i++;
+  if (i >= WORD_LEN) return;
+  while (currentGuess.length < i) currentGuess += " ";
+  currentGuess = currentGuess.substring(0, i) + k + currentGuess.substring(i+1);
+  currentGuess = currentGuess.trimEnd();
+  updateGridWithHints();
+  saveState();
 }
-
-function updateGrid() {
-  for (let i=0; i<5; i++) {
-    const cell=document.getElementById(`cell-${currentWordIndex}-${currentRow}-${i}`);
-    if (cell) cell.textContent=currentGuess[i]||"";
-  }
+function handleBackspace() {
+  if (isLocked) return;
+  const fixed = hintFixedIndices[currentWordIndex];
+  if (currentGuess.length === 0) return;
+  let i = Math.max(0, currentGuess.length - 1);
+  while (i>=0 && fixed.has(i)) i--;
+  if (i<0) return;
+  currentGuess = currentGuess.substring(0, i) + currentGuess.substring(i+1);
+  currentGuess = currentGuess.trimEnd();
+  updateGridWithHints();
+  saveState();
 }
+function handleEnter() {
+  if (isLocked) return;
+  if (currentGuess.length < WORD_LEN){
+    showMsg("أكمل الكلمة (5 حروف)!", "#ffcc00"); shakeRow(); vibrate(); return;
+  }
 
+  // ✅ التحقق من القاموس اختياري
+  if (REQUIRE_DICTIONARY) {
+    const normGuess = normalizeArabic(currentGuess);
+    if (!DICTIONARY.has(normGuess)){
+      showMsg("الكلمة غير موجودة في القاموس.", "#ffcc00"); shakeRow(); vibrate(120); return;
+    }
+  }
+
+  const correct = words[currentWordIndex];
+  const result = evaluateGuess(currentGuess, correct);
+  renderGuess(result);
+  updateKeyboardColors(currentGuess, result);
+  savedGuesses[currentWordIndex].push({guess:currentGuess, result});
+  stats.totalTries++;
+
+  const isWin = currentGuess === correct;
+  if (isWin) {
+    const triesUsed = currentRow + 1;
+    if (bestAttemptsToday === null || triesUsed < bestAttemptsToday) bestAttemptsToday = triesUsed;
+    correctAnswerBox.innerHTML += `✅ الكلمة ${currentWordIndex+1}: ${correct} (محاولات: ${triesUsed})<br>`;
+    stats.solved++;
+    currentWordIndex++;
+    if (currentWordIndex >=3) { isLocked = true; showSummary(); makeShareText(); showStats(); }
+    else { resetForNextWord(); }
+  } else {
+    currentRow++;
+    if (currentRow >= MAX_ROWS) {
+      correctAnswerBox.innerHTML += `❌ الكلمة ${currentWordIndex+1}: ${correct}<br>`;
+      stats.failed++;
+      currentWordIndex++;
+      if (currentWordIndex >=3) { isLocked = true; showSummary(); makeShareText(); showStats(); }
+      else { resetForNextWord(); }
+    } else {
+      updateAttemptStatus();
+    }
+  }
+  currentGuess = "";
+  saveState();
+}
 function resetForNextWord() {
-  currentRow=0;
-  currentGuess="";
+  currentRow = 0;
+  currentGuess = "";
   createGrid();
   resetKeyboardColors();
+  showMsg("");
+  updateAttemptStatus();
   saveState();
 }
 
+/* =========================
+   التلميح مرة يوميًا
+   ========================= */
+function useHint(){
+  if (isLocked) return;
+  if (usedHintToday){ showMsg("استخدمت تلميح اليوم بالفعل ✔", "#ffcc00"); return; }
+  const word = words[currentWordIndex];
+  const fixed = hintFixedIndices[currentWordIndex];
+  const avail = [];
+  for (let i=0;i<WORD_LEN;i++){ if (!fixed.has(i)) avail.push(i); }
+  if (avail.length === 0){ showMsg("لا توجد خانات متاحة للتلميح.", "#ffcc00"); return; }
+  const idx = avail[Math.floor(Math.random()*avail.length)];
+  fixed.add(idx);
+  usedHintToday = true;
+  const cell = document.getElementById(`cell-${currentWordIndex}-${currentRow}-${idx}`);
+  if (cell){ cell.textContent = word[idx]; cell.classList.add("present"); setTimeout(()=>cell.classList.remove("present"), 300); }
+  updateGridWithHints();
+  showMsg(`تم كشف حرف في الموضع ${idx+1} ✅`, "#00e676");
+  saveState();
+}
+hintBtn.addEventListener("click", useHint);
+
+/* =========================
+   الملخص/المشاركة/الإحصاءات
+   ========================= */
 function showSummary() {
-  summary.innerHTML="<h2>⭐ ملخص محاولاتك:</h2>";
-  for (let w=0;w<3;w++) {
-    const gridDiv=document.createElement("div");
-    gridDiv.className="summary-grid";
-    for (let r=0;r<8;r++) {
-      const guessObj=savedGuesses[w][r];
-      for (let c=0;c<5;c++) {
-        const cell=document.createElement("div");
-        cell.className="summary-cell";
-        if (guessObj){cell.textContent=guessObj.guess[c];cell.classList.add(guessObj.result[c]);}
+  summary.innerHTML = "<h2>⭐ ملخص محاولاتك:</h2>";
+  for (let w=0; w<3; w++) {
+    const gridDiv = document.createElement("div");
+    gridDiv.className = "summary-grid";
+    for (let r=0;r<MAX_ROWS;r++) {
+      const guessObj = savedGuesses[w]?.[r];
+      for (let c=0;c<WORD_LEN;c++) {
+        const cell = document.createElement("div");
+        cell.className = "summary-cell";
+        if (guessObj){
+          cell.textContent = guessObj.guess[c];
+          cell.classList.add(guessObj.result[c]);
+        }
         gridDiv.appendChild(cell);
       }
     }
     summary.appendChild(gridDiv);
   }
 }
+function makeShareText(){
+  let lines = ["🎯 خماسيات (اليوم):", `الفئة: ${currentCategory}`];
+  for (let w=0; w<3; w++){
+    const tries = savedGuesses[w] || [];
+    lines.push(`كلمة ${w+1}:`);
+    if (!tries.length){ lines.push("—"); continue; }
+    for (const t of tries){
+      const row = t.result.map(r => r==="correct"?"🟩":(r==="present"?"🟨":"⬛")).join("");
+      lines.push(row);
+    }
+  }
+  shareCache = lines.join("\n");
+}
+copyResultBtn.addEventListener("click", async ()=>{
+  if (!shareCache) makeShareText();
+  try{ await navigator.clipboard.writeText(shareCache); showMsg("تم نسخ الملخص! ✔", "#00e676"); }
+  catch(e){ showMsg("لم أستطع النسخ تلقائيًا. حدده وانسخه يدويًا.", "#ffcc00"); }
+});
+function showStats(){
+  const totalWords = stats.solved + stats.failed;
+  const successRate = totalWords ? Math.round((stats.solved/totalWords)*100) : 0;
+  statsBox.style.display = "block";
+  statsChips.innerHTML = `
+    <div class="chip">✅ تم حلها: ${stats.solved}</div>
+    <div class="chip">❌ لم تُحل: ${stats.failed}</div>
+    <div class="chip">📈 نسبة النجاح: ${successRate}%</div>
+    <div class="chip">🧮 إجمالي المحاولات: ${stats.totalTries}</div>
+  `;
+}
 
-window.onload=initGame;
+/* =========================
+   اليوم التالي + البذرة
+   ========================= */
+function startCountdown(){
+  function tick(){
+    const now = new Date();
+    const nextMidnight = new Date(now);
+    nextMidnight.setHours(24,0,0,0);
+    const diff = nextMidnight - now;
+    if (diff <= 0){ countdown.textContent = "⏳ التحديث الآن"; return; }
+    const h = Math.floor(diff/3600000);
+    const m = Math.floor((diff%3600000)/60000);
+    const s = Math.floor((diff%60000)/1000);
+    countdown.textContent = `⏳ الوقت المتبقي: ${pad(h)}:${pad(m)}:${pad(s)}`;
+  }
+  tick(); setInterval(tick, 1000);
+}
+function pickCategoryBySeed(seed){
+  const names = Object.keys(CATEGORIES);
+  const pool = names.filter(n => n !== "عامّة");
+  const useGeneral = seed % 4 === 0;
+  if (useGeneral) return "عامّة";
+  const idx = Math.floor(seedRandom(seed*3) * pool.length);
+  return pool[idx] || "عامّة";
+}
+function pickWordsBySeed(seed, list) {
+  const chosen = new Set();
+  const L = list.length || 0;
+  let i = 0;
+  while (chosen.size < 3 && i < 2000) {
+    const idx = Math.floor(seedRandom(seed + i) * L);
+    if (list[idx]) chosen.add(list[idx]);
+    i++;
+  }
+  if (chosen.size < 3){
+    for (let k = 0; k < fiveLetterWords.length && chosen.size < 3; k++) chosen.add(fiveLetterWords[k]);
+  }
+  return Array.from(chosen);
+}
+
+/* =========================
+   حفظ/استرجاع
+   ========================= */
+function saveState() {
+  const today = new Date().toISOString().slice(0,10);
+  const state = {
+    currentWordIndex, currentRow, currentGuess, isLocked,
+    savedGuesses, correctHTML: correctAnswerBox.innerHTML,
+    date: today, usedHintToday, hintFixedIndices: hintFixedIndices.map(s=>[...s]),
+    currentCategory, words, bestAttemptsToday, stats
+  };
+  localStorage.setItem("khmasiyatState", JSON.stringify(state));
+}
+function loadState() {
+  const data = localStorage.getItem("khmasiyatState");
+  if (!data) return false;
+  try{
+    const state = JSON.parse(data);
+    const today = new Date().toISOString().slice(0,10);
+    if (state.date === today) {
+      currentWordIndex = state.currentWordIndex || 0;
+      currentRow = state.currentRow || 0;
+      currentGuess = state.currentGuess || "";
+      isLocked = !!state.isLocked;
+      savedGuesses = state.savedGuesses || [[],[],[]];
+      correctAnswerBox.innerHTML = state.correctHTML || "";
+      usedHintToday = !!state.usedHintToday;
+      hintFixedIndices = (state.hintFixedIndices || [[],[],[]]).map(a=>new Set(a));
+      currentCategory = state.currentCategory || "عامّة";
+      words = state.words || words;
+      bestAttemptsToday = state.bestAttemptsToday ?? null;
+      stats = state.stats || { solved:0, failed:0, totalTries:0 };
+      return true;
+    }
+  }catch(e){}
+  return false;
+}
+
+/* =========================
+   Bootstrap
+   ========================= */
+function createKeyboardListeners(){
+  window.addEventListener("keydown", (e)=>{
+    const key = e.key;
+    if (key === "Enter"){ handleEnter(); return; }
+    if (key === "Backspace"){ handleBackspace(); return; }
+    if (/^[\u0600-\u06FF]$/.test(key)){ handleKey(key); }
+  });
+}
+function initNewDay(seed, dateStr){
+  daySeedPill.textContent = "اليوم: " + dateStr;
+  currentCategory = pickCategoryBySeed(seed);
+  categoryPill.textContent = "الفئة: " + currentCategory;
+
+  let list = (CATEGORIES[currentCategory] || []).filter(w => charLen(w)===5);
+  if (list.length < 5) list = fiveLetterWords;
+
+  words = pickWordsBySeed(seed, list);
+  createGrid(); createKeyboard();
+  startCountdown(); createKeyboardListeners();
+  saveState();
+}
+function bootstrap(){
+  // جهّز المجمّع من القائمة المدمجة
+  buildPools();
+
+  // تشغيل اليوم
+  const today = new Date();
+  const dateStr = today.toISOString().slice(0,10);
+  const seed = parseInt(dateStr.replace(/-/g,''));
+
+  createGrid(); createKeyboard();
+
+  if (loadState()){
+    const currList = savedGuesses[currentWordIndex] || [];
+    for (let i=0; i<currList.length; i++){
+      currentRow = i;
+      currentGuess = currList[i].guess;
+      renderGuess(currList[i].result);
+      updateKeyboardColors(currList[i].guess, currList[i].result);
+    }
+    currentGuess = "";
+    if (isLocked) { showSummary(); makeShareText(); showStats(); }
+    daySeedPill.textContent = "اليوم: " + dateStr;
+    categoryPill.textContent = "الفئة: " + (currentCategory || "عامّة");
+  } else {
+    initNewDay(seed, dateStr);
+  }
+
+  hintBtn.addEventListener("click", useHint);
+  copyResultBtn.addEventListener("click", async ()=>{
+    if (!shareCache) makeShareText();
+    try{ await navigator.clipboard.writeText(shareCache); showMsg("تم نسخ الملخص! ✔", "#00e676"); }
+    catch(e){ showMsg("لم أستطع النسخ تلقائيًا. حدده وانسخه يدويًا.", "#ffcc00"); }
+  });
+
+  updateAttemptStatus();
+}
+window.onload = bootstrap;
 </script>
 </body>
 </html>
