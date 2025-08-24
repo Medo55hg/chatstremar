@@ -1,881 +1,444 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>🎮 ستريمر توب - الألعاب</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🎮 ستريمر توب - منصة الألعاب التفاعلية للستريمرز</title>
+  <meta name="description" content="منصة ألعاب تفاعلية مصممة خصيصاً للستريمرز، تدعم التكامل مع منصات البث مثل تويتش وكيك" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <style>
-    /* أنماط عامة */
+    /* =====================
+       إعداد الألوان والمتغيرات
+       ===================== */
+    :root {
+      --primary: #ff3333;   /* DV Red */
+      --primary-600: #ff4444;
+      --secondary: #00d86c; /* Green */
+      --accent: #9146ff;    /* Twitch purple */
+      --kick: #00d800;      /* Kick green */
+      --bg-900: #0e0f1a;    /* خلفية داكنة جداً */
+      --bg-800: #13142a;
+      --bg-700: #1a1b39;
+      --card: rgba(26, 27, 57, 0.6);
+      --text: #f7f7fb;
+      --muted: #c9c9d3;
+      --border: rgba(255,255,255,0.08);
+      --glass: rgba(255,255,255,0.06);
+      --success: #00ff80;
+    }
+
+    /* =====================
+       قاعدة عامة
+       ===================== */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; }
     body {
-      background: linear-gradient(-45deg, #1a1a3d, #004466, #1a1a3d, #004466);
-      background-size: 400% 400%;
-      animation: gradientBG 20s ease infinite;
-      color: #fff;
-      font-family: 'Cairo', sans-serif;
-      text-align: center;
-      padding: 20px;
       margin: 0;
-      min-height: 100vh;
+      font-family: 'Cairo', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 600px at 85% -10%, rgba(145,70,255,0.18), transparent 60%),
+        radial-gradient(900px 500px at -10% 110%, rgba(255,51,51,0.14), transparent 60%),
+        linear-gradient(180deg, var(--bg-900), #0a0b14 70%);
+      overflow-x: hidden;
     }
-    
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+
+    /* شبكة زخرفية خفيفة */
+    .grid-bg {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px, 40px 40px;
+      /* كان فيه mask-image يحدّها ويظهر قص بالأعلى؛ أزلناه لتغطي الصفحة كاملة */
     }
-    
-    h1 {
-      font-size: 36px;
-      color: #ff3333;
-      margin-bottom: 30px;
-      padding-top: 20px;
+
+    /* أضواء خلفية */
+    .blob, .blob2 {
+      position: fixed; filter: blur(40px); opacity: .4; z-index: 0; pointer-events:none;
+      width: 420px; height: 420px; border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, var(--accent), transparent 60%);
+      top: -120px; left: -120px; transform: rotate(15deg);
     }
-    
-    /* أنماط بطاقات الألعاب */
-    .row {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      flex-wrap: wrap;
-      margin-bottom: 50px;
+    .blob2 {
+      width: 720px; height: 720px; right: -220px; bottom: -160px; left: auto; top: auto;
+      background: radial-gradient(circle at 70% 50%, var(--primary), transparent 60%);
     }
-    
+
+    /* =====================
+       رأس الصفحة / شريط علوي
+       ===================== */
+    header {
+      position: sticky; top: 0; z-index: 40;
+      backdrop-filter: saturate(140%) blur(10px);
+      background: linear-gradient(180deg, rgba(10,11,20,0.85), rgba(10,11,20,0.5));
+      border-bottom: 1px solid var(--border);
+    }
+    .nav {
+      max-width: 1200px; margin: 0 auto; padding: 14px 18px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .brand { display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing: .2px; }
+    .logo {
+      width: 38px; height: 38px; border-radius: 10px; display:grid; place-items:center;
+      background: linear-gradient(135deg, var(--primary), #b81f1f);
+      box-shadow: 0 8px 24px rgba(255,51,51,.25), inset 0 0 20px rgba(255,255,255,.08);
+      border: 1px solid var(--border);
+    }
+    .brand span { font-size: 1.05rem; }
+
+    .nav-cta {
+      display:flex; align-items:center; gap:10px;
+    }
+    .btn, .chip {
+      display:inline-flex; align-items:center; gap:8px; cursor:pointer; text-decoration:none;
+      font-weight:700; border-radius:12px; padding:.7rem 1rem; border:1px solid var(--border);
+      background: var(--glass); color: var(--text); transition: transform .15s ease, box-shadow .2s ease, background .2s;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(0,0,0,.35); }
+    .btn.primary { background: linear-gradient(135deg, var(--primary), #b81f1f); border-color: rgba(255,255,255,0.1); }
+    .btn.outline { background: transparent; }
+    .chip { padding:.45rem .7rem; font-size:.86rem; opacity:.95 }
+    .chip.kick { color: var(--kick); border-color: rgba(0,216,0,.35) }
+    .chip.twitch { color: var(--accent); border-color: rgba(145,70,255,.35) }
+
+    /* =====================
+       البطل/الهيرو
+       ===================== */
+    .hero {
+      position: relative; z-index: 1; margin: 28px auto 8px; max-width: 1200px; padding: 0 18px;
+      display:grid; gap: 18px; grid-template-columns: 1.1fr .9fr;
+    }
+    .hero-card {
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--border); border-radius: 22px; padding: 26px; position:relative; overflow:hidden;
+      box-shadow: 0 18px 50px rgba(0,0,0,.35);
+    }
+    .hero h1 { font-size: clamp(1.8rem, 3.6vw, 2.6rem); margin:.4rem 0 1rem; color: var(--text); }
+    .hero p { color: var(--muted); margin: 0 0 1.1rem; font-weight:600 }
+    .divider {
+      height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.16), transparent);
+      margin: 14px 0 18px;
+    }
+    .hero-actions { display:flex; gap:10px; flex-wrap:wrap }
+
+    .stat {
+      display:flex; align-items:center; gap:10px; padding:.6rem .8rem; border-radius: 12px; background: rgba(255,255,255,.04);
+      border:1px solid var(--border); font-weight:700; color:#fff;
+    }
+    .stat small { display:block; color: var(--muted); font-weight:600 }
+
+    /* =====================
+       شبكة الألعاب
+       ===================== */
+    .section { position: relative; z-index:1; max-width: 1200px; margin: 8px auto 40px; padding: 0 18px; }
+    .section h2 { font-size: 1.2rem; color: var(--muted); font-weight:800; margin: 18px 6px; letter-spacing:.3px }
+
+    .games-grid {
+      display:grid; gap: 22px; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* EDIT */
+    }
     .game-card {
-      background-color: #222;
-      border: 2px solid #ff3333;
-      border-radius: 10px;
-      padding: 20px;
-      width: 250px;
-      position: relative;
-      overflow: hidden;
-      text-align: center;
-      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.6);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position:relative; overflow:hidden; border-radius: 18px; background: var(--card); border: 1px solid var(--border);
+      box-shadow: 0 14px 36px rgba(0,0,0,.35); display:flex; flex-direction:column; min-height: 180px; /* EDIT */
+      transition: transform .2s ease, box-shadow .25s ease, border-color .25s ease;
+      isolation:isolate;
     }
-    
-    .game-card:hover {
-      transform: translateY(-8px) scale(1.03);
-      box-shadow: 0 15px 25px rgba(0, 0, 0, 0.8);
+    .game-card::before { /* خلفية صورة خافتة */
+      content:""; position:absolute; inset:0; z-index:0; opacity:.25; background-size:cover; background-position:center; filter: grayscale(.2) contrast(1.05) saturate(1.1);
+      transition: opacity .25s ease;
     }
-    
-    .game-card.transitioning {
-      z-index: 999;
-      transform: scale(1.5) translateY(-50px);
-      transition: transform 0.6s ease;
+    .game-card:hover { transform: translateY(-6px); border-color: rgba(255,255,255,.2); box-shadow: 0 24px 60px rgba(0,0,0,.45); }
+    .game-card:hover::before { opacity:.45 }
+
+    .game-body { position:relative; z-index:1; padding: 18px; display:flex; flex-direction:column; gap:8px; flex:1 }
+    .game-title { font-size:1.1rem; font-weight:800; display:flex; align-items:center; gap:8px }
+    .game-desc { color: var(--muted); font-weight:600 }
+
+    .badges { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:auto }
+    .badge { padding:.38rem .6rem; border-radius: 999px; border:1px solid var(--border); font-size:.83rem; background: rgba(255,255,255,.05); font-weight:700 }
+    .badge.ok { color: var(--secondary); border-color: rgba(0,216,108,.35) }
+    .badge.nok { color: #ff8b8b; border-color: rgba(255,51,51,.35) }
+    .badge i { margin-inline-start: 6px }
+
+    .start-btn { margin: 12px 16px 16px; border: none; text-decoration:none; text-align:center; cursor:pointer; font-weight:800; font-size:.96rem; border-radius: 12px; padding: .85rem 1rem; color:#fff;
+      background: linear-gradient(135deg, var(--secondary), #09a659); box-shadow: 0 10px 24px rgba(0,216,108,.25);
+      transition: transform .15s ease, box-shadow .25s ease, filter .25s ease; display:block
     }
-    
-    .start-btn {
-      display: inline-block;
-      margin-top: 15px;
-      padding: 10px 20px;
-      background-color: #00D86C;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      font-weight: bold;
-      text-decoration: none;
-      cursor: pointer;
-      transition: background-color 0.3s ease, transform 0.2s ease;
+    .start-btn:hover { transform: translateY(-2px); box-shadow: 0 16px 36px rgba(0,216,108,.35); filter: saturate(1.1) }
+
+    /* صور البطاقات */
+    .img-1::before { background-image: url('https://i.postimg.cc/ncVfrn3s/images.jpg'); }
+    .img-2::before { background-image: url('https://i.postimg.cc/rwB4CVZj/Screenshot-2.png'); }
+    .img-3::before { background-image: url('https://i.postimg.cc/d1yZhzjX/Screenshot-3.png'); }
+    .img-4::before { background-image: url('https://i.postimg.cc/RFt8R96S/Screenshot-2025-07-08-055210.png'); }
+    .img-5::before { background-image: url('https://i.postimg.cc/zvyNQ4hY/2025-08-12-025123.png'); }
+
+    /* شارات "قريبًا" للأزرار المعطلة */
+    .disabled-wrap { position: relative; }
+    .soon {
+      position:absolute; top:-8px; inset-inline-end:-8px; z-index:2; padding: 3px 8px; font-size:.72rem; font-weight:800;
+      border-radius: 999px; color:#fff; background: linear-gradient(135deg, var(--accent), #6b2dff); box-shadow: 0 8px 20px rgba(145,70,255,.35)
     }
-    
-    .start-btn:hover {
-      background-color: #00ff80;
-      transform: scale(1.05);
+    .tooltip { position:absolute; bottom: calc(100% + 10px); inset-inline-start:50%; transform: translateX(-50%); width: 220px; padding:.6rem .7rem; background:#0c0d1a; color:#fff; border:1px solid var(--border); border-radius:10px; opacity:0; visibility:hidden; transition: .2s; text-align:center }
+    .disabled { opacity:.85; cursor: not-allowed }
+    .disabled:hover .tooltip { opacity:1; visibility:visible }
+
+    /* قسم ستريمر خاص */
+    .streamer {
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border: 1px solid var(--border); border-radius: 18px; padding: 18px; box-shadow: 0 14px 36px rgba(0,0,0,.35);
     }
-    
-    .game-card.image-bg::before,
-    .game-card.image-bg2::before,
-    .game-card.image-bg3::before,
-    .game-card.image-bg4::before,
-    .game-card.image-bg5::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-size: cover;
-      background-position: center;
-      filter: blur(2px);
-      opacity: 0.4;
-      z-index: 0;
+    .streamer-head { display:flex; align-items:center; justify-content:space-between; cursor:pointer; user-select:none }
+    .streamer-head h3 { margin:0; font-size:1.05rem; color: var(--secondary) }
+    .streamer-body { display:none; margin-top: 16px; animation: fade .25s ease }
+    .list { margin: 12px 0; padding-inline-start: 18px; color: var(--muted); font-weight:600 }
+    .list li { margin:.5rem 0; position:relative; list-style:none; padding-inline-start: 22px }
+    .list li::before { content:"\2713"; position:absolute; inset-inline-start:0; color: var(--secondary); font-weight:800 }
+    .price { font-size: 1.25rem; font-weight: 800; color: var(--accent); margin: 10px 0 14px }
+    .sbtn { display:inline-flex; align-items:center; gap:8px; padding:.8rem 1rem; border-radius:12px; text-decoration:none; font-weight:800; background: linear-gradient(135deg, var(--accent), #6b2dff); color:#fff; border:1px solid rgba(255,255,255,.08) }
+    .sbtn:hover { filter: saturate(1.1) }
+
+    /* تذييل */
+    footer { max-width:1200px; margin: 24px auto 60px; padding: 0 18px; color: var(--muted); display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap }
+    .social { display:flex; gap:10px }
+    .icon { width:38px; height:38px; display:grid; place-items:center; border-radius: 999px; text-decoration:none; color:#fff; border:1px solid var(--border); background: var(--glass); transition:.2s }
+    .icon:hover { transform: translateY(-2px) }
+
+    /* أزرار عائمة: تسجيل الدخول و"ستريمر بلس" (معطلة مؤقتاً) */
+    .floating { position: fixed; inset-inline: 18px; top: 14px; z-index: 45; display:flex; gap:10px; justify-content: space-between; pointer-events:none }
+    .floating > * { pointer-events: auto }
+
+    /* تحسينات وصول */
+    a:focus, button:focus, input:focus { outline:2px solid var(--secondary); outline-offset:2px }
+
+    /* تجاوبية */
+    @media (max-width: 960px){
+      .hero { grid-template-columns: 1fr; }
     }
-    
-    .game-card.image-bg::before {
-      background-image: url('https://i.postimg.cc/ncVfrn3s/images.jpg');
-    }
-    
-    .game-card.image-bg2::before {
-      background-image: url('https://i.postimg.cc/rwB4CVZj/Screenshot-2.png');
-    }
-    
-    .game-card.image-bg3::before {
-      background-image: url('https://i.postimg.cc/d1yZhzjX/Screenshot-3.png');
-    }
-    
-    .game-card.image-bg4::before {
-      background-image: url('https://i.postimg.cc/RFt8R96S/Screenshot-2025-07-08-055210.png');
-    }
-    
-    .game-card.image-bg5::before {
-      background-image: url('https://i.postimg.cc/zvyNQ4hY/2025-08-12-025123.png');
-    }
-    
-    .game-card.image-bg *,
-    .game-card.image-bg2 *,
-    .game-card.image-bg3 *,
-    .game-card.image-bg4 *,
-    .game-card.image-bg5 * {
-      position: relative;
-      z-index: 1;
-    }
-    
-    .note {
-      margin-top: 40px;
-      font-size: 18px;
-      color: #ccc;
-      font-weight: 600;
-    }
-    
-    .platforms {
-      margin-top: 10px;
-      font-size: 16px;
-    }
-    
-    .twitch-text {
-      color: #9146FF;
-      font-weight: bold;
-    }
-    
-    .kick-text {
-      color: #00D800;
-      font-weight: bold;
-    }
-    
-    .contact-button {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background-color: #000;
-      color: #fff;
-      padding: 10px 15px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-size: 16px;
-      border: 2px solid #fff;
-      z-index: 1000;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .contact-button:hover {
-      background-color: #222;
-    }
-    
-    /* أنماط قسم الستريمر المخصص */
-    .streamer-section {
-      background: rgba(34, 34, 34, 0.8);
-      border: 2px solid #9146FF;
-      border-radius: 10px;
-      padding: 15px;
-      margin: 30px auto;
-      max-width: 800px;
-      cursor: pointer;
-      transition: all 0.3s;
-      backdrop-filter: blur(5px);
-    }
-    
-    .streamer-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 22px;
-      color: #00D800;
-    }
-    
-    .streamer-header i {
-      transition: transform 0.3s;
-    }
-    
-    .streamer-header.collapsed i {
-      transform: rotate(0deg);
-    }
-    
-    .streamer-header.expanded i {
-      transform: rotate(180deg);
-    }
-    
-    .streamer-content {
-      display: none;
-      padding-top: 15px;
-      text-align: right;
-      animation: fadeIn 0.3s;
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    
-    .streamer-features {
-      margin: 20px 0;
-    }
-    
-    .streamer-features li {
-      margin-bottom: 10px;
-      list-style-type: none;
-      position: relative;
-      padding-right: 25px;
-    }
-    
-    .streamer-features li:before {
-      content: "✓";
-      color: #00D800;
-      position: absolute;
-      right: 0;
-    }
-    
-    .streamer-price {
-      font-size: 24px;
-      color: #9146FF;
-      font-weight: bold;
-      margin: 20px 0;
-    }
-    
-    .streamer-btn {
-      display: inline-block;
-      padding: 12px 30px;
-      background-color: #9146FF;
-      color: white;
-      text-decoration: none;
-      border-radius: 8px;
-      font-size: 18px;
-      font-weight: bold;
-      margin: 15px 5px;
-      transition: all 0.3s;
-    }
-    
-    .streamer-btn:hover {
-      background-color: #7d3bff;
-      transform: translateY(-3px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-    }
-    
-    .social-icons {
-      margin-top: 20px;
-    }
-    
-    .social-icon {
-      display: inline-block;
-      margin: 0 10px;
-      font-size: 24px;
-      color: #fff;
-      transition: all 0.3s;
-    }
-    
-    .social-icon:hover {
-      transform: scale(1.2);
-    }
-    
-    /* أنماط نظام تسجيل الدخول المعدلة */
-    .main-login-btn {
-      position: fixed;
-      top: 15px;
-      left: 15px;
-      background-color: rgba(34, 34, 34, 0.8);
-      color: #fff;
-      border: 2px solid #ff3333;
-      border-radius: 8px;
-      padding: 10px 15px;
-      font-size: 16px;
-      cursor: pointer;
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      transition: all 0.3s;
-      backdrop-filter: blur(5px);
-    }
-    
-    .main-login-btn:hover {
-      background-color: rgba(51, 51, 51, 0.9);
-    }
-    
-    .main-login-btn i {
-      margin-left: 8px;
-      font-size: 18px;
-    }
-    
-    .login-modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.9);
-      z-index: 2000;
-      justify-content: center;
-      align-items: center;
-    }
-    
-    .login-box {
-      background-color: rgba(34, 34, 34, 0.95);
-      border: 2px solid #ff3333;
-      border-radius: 10px;
-      width: 350px;
-      padding: 25px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.6);
-      animation: fadeIn 0.3s;
-      backdrop-filter: blur(5px);
-    }
-    
-    .login-title {
-      font-size: 24px;
-      color: #ff3333;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    
-    .login-tabs {
-      display: flex;
-      margin-bottom: 20px;
-      border-bottom: 1px solid #444;
-    }
-    
-    .login-tab {
-      flex: 1;
-      padding: 10px;
-      text-align: center;
-      cursor: pointer;
-      color: #aaa;
-      font-size: 16px;
-    }
-    
-    .login-tab.active {
-      color: #ff3333;
-      border-bottom: 2px solid #ff3333;
-      margin-bottom: -1px;
-    }
-    
-    .login-form {
-      display: none;
-    }
-    
-    .login-form.active {
-      display: block;
-    }
-    
-    .login-input {
-      width: 100%;
-      padding: 12px 15px;
-      margin-bottom: 15px;
-      border-radius: 8px;
-      border: 1px solid #555;
-      background-color: rgba(51, 51, 51, 0.8);
-      color: #fff;
-      font-size: 16px;
-    }
-    
-    .login-submit {
-      width: 100%;
-      padding: 12px;
-      background-color: #00D86C;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    
-    .login-submit:hover {
-      background-color: #00ff80;
-    }
-    
-    .login-error {
-      color: #ff3333;
-      margin-top: 10px;
-      font-size: 14px;
-      display: none;
-      text-align: right;
-    }
-    
-    .login-switch {
-      color: #aaa;
-      margin-top: 20px;
-      font-size: 14px;
-    }
-    
-    .login-switch a {
-      color: #ff3333;
-      text-decoration: none;
-      cursor: pointer;
-    }
-    
-    /* ملف المستخدم */
-    .user-profile {
-      position: fixed;
-      top: 15px;
-      left: 15px;
-      background-color: rgba(34, 34, 34, 0.8);
-      border: 2px solid #ff3333;
-      border-radius: 8px;
-      padding: 10px 15px;
-      z-index: 1000;
-      display: none;
-      align-items: center;
-      font-size: 16px;
-      backdrop-filter: blur(5px);
-    }
-    
-    .user-avatar {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background-color: #ff3333;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      margin-left: 8px;
-    }
-    
-    .logout-btn {
-      background: none;
-      border: none;
-      color: #ff3333;
-      cursor: pointer;
-      font-size: 14px;
-      margin-right: 10px;
-    }
-    
-    /* زر الاشتراك */
-    .subscribe-btn {
-      position: fixed;
-      top: 15px;
-      right: 15px;
-      background-color: rgba(145, 70, 255, 0.8);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 12px 20px;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      transition: all 0.3s;
-      backdrop-filter: blur(5px);
-    }
-    
-    .subscribe-btn:hover {
-      background-color: rgba(145, 70, 255, 0.9);
-      transform: translateY(-2px);
-    }
-    
-    .subscribe-btn i {
-      margin-left: 8px;
-      font-size: 20px;
-    }
-    
-    .subscribe-notification {
-      position: fixed;
-      top: 70px;
-      right: 15px;
-      background-color: rgba(34, 34, 34, 0.95);
-      border: 2px solid #9146FF;
-      border-radius: 8px;
-      padding: 15px 20px;
-      font-size: 16px;
-      z-index: 1000;
-      display: none;
-      animation: fadeIn 0.3s;
-      backdrop-filter: blur(5px);
-      max-width: 300px;
-    }
-    
-    .subscribe-price {
-      color: #00ff80;
-      font-weight: bold;
-      margin-top: 5px;
-    }
-    
-    /* أنماط للهواتف */
-    @media (max-width: 768px) {
-      .game-card {
-        width: 100%;
-        max-width: 300px;
-      }
-      
-      .login-box {
-        width: 90%;
-        padding: 20px;
-      }
-      
-      .subscribe-btn {
-        font-size: 16px;
-        padding: 10px 15px;
-      }
-      
-      .subscribe-notification {
-        top: 65px;
-        right: 10px;
-        font-size: 14px;
-        max-width: 250px;
-      }
-      
-      .streamer-header {
-        font-size: 20px;
-      }
+
+    @keyframes fade { from{opacity:0} to{opacity:1} }
+
+    /* احترام تفضيل تقليل الحركة */
+    @media (prefers-reduced-motion: reduce){
+      .btn:hover, .start-btn:hover, .game-card:hover { transform: none }
+      .blob, .blob2, .grid-bg { display:none }
     }
   </style>
 </head>
 <body>
+  <!-- طبقات الخلفية الزخرفية -->
+  <div class="grid-bg"></div>
+  <div class="blob"></div>
+  <div class="blob2"></div>
 
- <!-- زر تسجيل الدخول المعطل -->
-<div class="disabled-container">
-  <button class="main-login-btn disabled-btn" id="mainLoginBtn">
-    <span class="coming-soon-badge">قريباً</span>
-    <i>👤</i>  
-    <div class="coming-soon-tooltip">نظام التسجيل قيد التطوير حالياً وسيتم إطلاقه قريباً</div>
-  </button>
-</div>
-
-<!-- زر ستريمر بلس المعطل -->
-<div class="disabled-container">
-  <button class="subscribe-btn disabled-btn" id="subscribeBtn">
-    <span class="coming-soon-badge">قريباً</span>
-    <i>✨</i>  
-    <div class="coming-soon-tooltip">خدمة الاشتراك المميزة قيد التطوير حالياً</div>
-  </button>
-</div>
-
-<h1>🎮 أهلاً بك في ستريمر توب</h1>
-
-  <div class="row">
-    <div class="game-card image-bg">
-      <h2>🔤 الكلمات المبعثرة</h2>
-      <p>رتب الحروف بشكل صحيح في أسرع وقت!</p>
-      <div class="platforms">
-        ✅ يدعم:
-        <span class="twitch-text">🟣 تويتش</span> +
-        <span class="kick-text">🟢 كيك</span>
+  <!-- شريط علوي بسيط مع علامة وشيبس المنصات -->
+  <header>
+    <nav class="nav" aria-label="التنقل الرئيسي">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"><i class="fa-solid fa-bolt"></i></div>
+        <span>ستريمر توب</span>
       </div>
-      <a href="wordgame.html" class="start-btn">ابدأ اللعب</a>
+      <div class="nav-cta">
+        <span class="chip twitch"><i class="fa-brands fa-twitch"></i> تويتش</span>
+        <span class="chip kick"><i class="fa-solid fa-fist-raised"></i> كيك</span>
+        <a href="https://linktr.ee/medo_dv" class="btn outline" target="_blank" rel="noopener">
+          <i class="fa-solid fa-link"></i> روابط التواصل
+        </a>
+        <a class="btn primary" href="#games"><i class="fa-solid fa-gamepad"></i> ابدأ الآن</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- الأزرار العائمة (نسخة محسّنة مع شارات قريباً) -->
+  <div class="floating" aria-hidden="true">
+    <div class="disabled-wrap">
+      <a class="btn outline disabled" tabindex="-1" aria-disabled="true">
+        <span class="soon">قريباً</span>
+        <i class="fa-solid fa-user"></i> تسجيل الدخول
+        <span class="tooltip">نظام التسجيل قيد التطوير وسيتم إطلاقه قريبًا</span>
+      </a>
     </div>
-
-    <div class="game-card image-bg2">
-      <h2>🖼️ اكشف الصورة</h2>
-      <p>شوف الصورة وخمّن الكلمة التي تعبر عنها!</p>
-      <div class="platforms">
-        ❌ لا يدعم تويتش وكيك
-      </div>
-      <a href="guessimage.html" class="start-btn">ابدأ اللعب</a>
-    </div>
-
-    <div class="game-card image-bg3">
-      <h2>🎯 خماسيات</h2>
-      <p>جرب تخمين 3 كلمات جديدة كل يوم!</p>
-      <div class="platforms">
-        ❌ لا يدعم تويتش وكيك
-      </div>
-      <a href="thulathiyat.html" class="start-btn">ابدأ اللعب</a>
+    <div class="disabled-wrap">
+      <a class="btn disabled" style="background: linear-gradient(135deg, var(--accent), #6b2dff)" tabindex="-1" aria-disabled="true">
+        <span class="soon">قريباً</span>
+        <i class="fa-solid fa-crown"></i> ستريمر بلس
+        <span class="tooltip">خدمة الاشتراك المميّزة قيد التطوير</span>
+      </a>
     </div>
   </div>
 
-  <div class="row">
-    <div class="game-card image-bg4">
-      <h2>🌍 حرب الدول</h2>
-      <p>تنافس للسيطرة على خريطة العالم!</p>
-      <div class="platforms">
-        ✅ يدعم:
-        <span class="twitch-text">🟣 تويتش</span> +
-        <span class="kick-text">🟢 كيك</span>
+  <!-- قسم البطل -->
+  <section class="hero" id="top">
+    <div class="hero-card">
+      <h1>🎮 أهلاً بك في <span style="color:var(--primary)">ستريمر توب</span></h1>
+      <p>منصة الألعاب التفاعلية المصممة خصيصاً للستريمرز — اربط الشات وخَلِّ المتابعين يلعبون معك مباشرة!</p>
+      <div class="divider"></div>
+      <div class="hero-actions">
+        <a href="#games" class="btn primary"><i class="fa-solid fa-rocket"></i> اكتشف الألعاب</a>
+        <a href="#streamer" class="btn"><i class="fa-solid fa-star"></i> فئة ستريمر خاصة</a>
       </div>
-      <a href="war-of-nations.html" class="start-btn">ابدأ اللعب</a>
+      <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap">
+        <div class="stat"><i class="fa-solid fa-plug"></i> يدعم الدمج مع الشات<small>تويتش + كيك</small></div>
+        <div class="stat"><i class="fa-solid fa-shield-heart"></i> تجربة مستقرة<small>تحسينات للأداء</small></div>
+      </div>
     </div>
+    <div class="hero-card" role="region" aria-label="ملاحظة مهمة">
+      <h2 style="margin:0 0 10px; font-size:1.1rem; color:var(--muted)">ملاحظة</h2>
+      <p style="margin:0">💡 يمكنك ربط قناتك مع الشات <b>داخل الألعاب فقط</b>.</p>
+      <div class="divider"></div>
+      <p style="margin:0">يتم حالياً العمل على: تسجيل الدخول، وخدمة <b>ستريمر بلس</b>.</p>
+    </div>
+  </section>
 
-    <div class="game-card image-bg5">
-      <h2>🔄 يلا نتعاون</h2>
-      <p>تعاون مع المشاهدين لحل التحديات!</p>
-      <div class="platforms">
-        ✅ يدعم:
-        <span class="twitch-text">🟣 تويتش</span> +
-        <span class="kick-text">🟢 كيك</span>
-      </div>
-      <a href="tarkeeb.html" class="start-btn">ابدأ اللعب</a>
-    </div>
-  </div>
+  <!-- الألعاب -->
+  <section class="section" id="games">
+    <h2>الألعاب المتاحة</h2>
+    <div class="games-grid">
+      <!-- الكلمات المبعثرة -->
+      <article class="game-card img-1">
+        <div class="game-body">
+          <div class="game-title"><i class="fa-solid fa-font"></i> الكلمات المبعثرة</div>
+          <div class="game-desc">رتب الحروف بشكل صحيح في أسرع وقت!</div>
+          <div class="badges">
+            <span class="badge ok"><i class="fa-brands fa-twitch"></i> تويتش</span>
+            <span class="badge ok"><i class="fa-solid fa-fist-raised"></i> كيك</span>
+          </div>
+        </div>
+        <a href="wordgame.html" class="start-btn" data-transition>ابدأ اللعب</a>
+      </article>
 
-  <!-- قسم الستريمر المخصص -->
-  <div class="streamer-section" id="streamerSection">
-    <div class="streamer-header collapsed" id="streamerHeader">
-      <span>🎮 فئة ستريمر خاصة بك</span>
-      <i>▼</i>
+      <!-- اكشف الصورة -->
+      <article class="game-card img-2">
+        <div class="game-body">
+          <div class="game-title"><i class="fa-solid fa-image"></i> اكشف الصورة</div>
+        <div class="game-desc">شوف الصورة وخمّن الكلمة التي تعبر عنها!</div>
+          <div class="badges"><span class="badge nok">❌ لا يدعم الشات</span></div>
+        </div>
+        <a href="guessimage.html" class="start-btn" data-transition>ابدأ اللعب</a>
+      </article>
+
+      <!-- خماسيات/ثلاثيات يومية -->
+      <article class="game-card img-3">
+        <div class="game-body">
+          <div class="game-title"><i class="fa-solid fa-puzzle-piece"></i> خماسيات</div>
+          <div class="game-desc">جرب تخمين 3 كلمات جديدة كل يوم!</div>
+          <div class="badges"><span class="badge nok">❌ لا يدعم الشات</span></div>
+        </div>
+        <a href="thulathiyat.html" class="start-btn" data-transition>ابدأ اللعب</a>
+      </article>
+
+      <!-- حرب الدول -->
+      <article class="game-card img-4">
+        <div class="game-body">
+          <div class="game-title"><i class="fa-solid fa-globe-asia"></i> حرب الدول</div>
+          <div class="game-desc">تنافس للسيطرة على خريطة العالم!</div>
+          <div class="badges">
+            <span class="badge ok"><i class="fa-brands fa-twitch"></i> تويتش</span>
+            <span class="badge ok"><i class="fa-solid fa-fist-raised"></i> كيك</span>
+          </div>
+        </div>
+        <a href="war-of-nations.html" class="start-btn" data-transition>ابدأ اللعب</a>
+      </article>
+
+      <!-- يلا نتعاون / تركيب الكلمات -->
+      <article class="game-card img-5">
+        <div class="game-body">
+          <div class="game-title"><i class="fa-solid fa-users"></i> يلا نتعاون</div>
+          <div class="game-desc">تعاون مع المشاهدين لحل التحديات!</div>
+          <div class="badges">
+            <span class="badge ok"><i class="fa-brands fa-twitch"></i> تويتش</span>
+            <span class="badge ok"><i class="fa-solid fa-fist-raised"></i> كيك</span>
+          </div>
+        </div>
+        <a href="tarkeeb.html" class="start-btn" data-transition>ابدأ اللعب</a>
+      </article>
     </div>
-    <div class="streamer-content" id="streamerContent">
-      <div class="custom-streamer-content">
-        <p>احصل على فئة خاصة بك تحتوي على 5 ألعاب مخصصة لك فقط!</p>
-        <p>يمكنك اختيار الألعاب التي تريدها وتخصيصها كما تحب.</p>
+  </section>
+
+  <!-- ستريمر خاص بك -->
+  <section class="section" id="streamer">
+    <div class="streamer" aria-live="polite">
+      <div class="streamer-head" id="streamerHead">
+        <h3><i class="fa-solid fa-star"></i> فئة ستريمر خاصة بك</h3>
+        <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
       </div>
-      
-      <div class="streamer-features">
-        <ul>
+      <div class="streamer-body" id="streamerBody">
+        <p>احصل على فئة خاصة بك تحتوي على 5 ألعاب مخصصة لك فقط! يمكنك اختيار الألعاب التي تريدها وتخصيصها كما تحب.</p>
+        <ul class="list">
           <li>فئة خاصة باسمك</li>
           <li>حماية بكلمة مرور</li>
           <li>تخصيص كامل للألعاب</li>
           <li>إمكانية إضافة شعارك</li>
           <li>5 ألعاب مخصصة</li>
         </ul>
-      </div>
-      
-      <div class="streamer-price">
-        السعر: 10$ فقط
-      </div>
-      
-      <a href="https://twitter.com/medo_dv" target="_blank" class="streamer-btn">
-        تواصل معنا على تويتر
-      </a>
-      <a href="https://instagram.com/medo_dv" target="_blank" class="streamer-btn">
-        تواصل معنا على إنستجرام
-      </a>
-      
-      <div class="social-icons">
-        <a href="https://twitter.com/medo_dv" target="_blank" class="social-icon">🐦</a>
-        <a href="https://instagram.com/medo_dv" target="_blank" class="social-icon">📷</a>
+        <div class="price">السعر: 10$ فقط</div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap">
+          <a href="https://twitter.com/medo_dv" target="_blank" class="sbtn" rel="noopener"><i class="fa-brands fa-x-twitter"></i> تواصل عبر تويتر</a>
+          <a href="https://instagram.com/medo_dv" target="_blank" class="sbtn" rel="noopener"><i class="fa-brands fa-instagram"></i> تواصل عبر إنستجرام</a>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="note">
-    💡 يمكنك ربط قناتك مع الشات داخل الألعاب فقط.
-  </div>
-
-  <a href="https://linktr.ee/medo_dv" target="_blank" class="contact-button">
-    🗂️ روابط التواصل
-  </a>
+  <!-- تذييل -->
+  <footer>
+    <div>© <span id="year"></span> ستريمر توب — كل الحقوق محفوظة</div>
+    <div class="social">
+      <a class="icon" href="https://twitter.com/medo_dv" target="_blank" rel="noopener"><i class="fa-brands fa-x-twitter"></i></a>
+      <a class="icon" href="https://instagram.com/medo_dv" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i></a>
+      <a class="icon" href="https://linktr.ee/medo_dv" target="_blank" rel="noopener"><i class="fa-solid fa-link"></i></a>
+    </div>
+  </footer>
 
   <script>
-    // نظام إدارة المستخدمين
-    const usersDB = JSON.parse(localStorage.getItem('streamerTopUsers')) || {};
-    
-    // عناصر واجهة المستخدم
-    const mainLoginBtn = document.getElementById('mainLoginBtn');
-    const loginModal = document.getElementById('loginModal');
-    const loginForm = document.getElementById('loginForm');
-    const registerForm = document.getElementById('registerForm');
-    const loginTabs = document.querySelectorAll('.login-tab');
-    const switchToRegister = document.getElementById('switchToRegister');
-    const switchToLogin = document.getElementById('switchToLogin');
-    const loginSubmit = document.getElementById('loginSubmit');
-    const registerSubmit = document.getElementById('registerSubmit');
-    const loginError = document.getElementById('loginError');
-    const registerError = document.getElementById('registerError');
-    const userProfile = document.getElementById('userProfile');
-    const displayName = document.getElementById('displayName');
-    const userAvatar = document.getElementById('userAvatar');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const subscribeBtn = document.getElementById('subscribeBtn');
-    const subscribeNotification = document.getElementById('subscribeNotification');
-    const streamerSection = document.getElementById('streamerSection');
-    const streamerHeader = document.getElementById('streamerHeader');
-    const streamerContent = document.getElementById('streamerContent');
-    
-    // عناصر حقول الإدخال
-    const loginUsername = document.getElementById('loginUsername');
-    const loginPassword = document.getElementById('loginPassword');
-    const registerUsername = document.getElementById('registerUsername');
-    const registerPassword = document.getElementById('registerPassword');
-    const registerConfirm = document.getElementById('registerConfirm');
-    
-    // التحقق من وجود مستخدم مسجل بالفعل
+    // سنة التذييل
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // توسيع/طي قسم ستريمر
+    const head = document.getElementById('streamerHead');
+    const body = document.getElementById('streamerBody');
+    head.addEventListener('click', () => {
+      const isOpen = body.style.display === 'block';
+      body.style.display = isOpen ? 'none' : 'block';
+      head.querySelector('.fa-chevron-down').style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+    });
+
+    // انتقال لطيف عند فتح لعبة
+    document.querySelectorAll('[data-transition]')?.forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.preventDefault();
+        const href = btn.getAttribute('href');
+        const card = btn.closest('.game-card');
+        // تأثير بسيط
+        card.style.transform = 'translateY(-6px) scale(1.02)';
+        card.style.transition = 'transform .35s ease';
+        setTimeout(() => { window.location.href = href; }, 350);
+      });
+    });
+
+    // حالة مستخدم مسجل في localStorage (اختياري)
     const currentUser = localStorage.getItem('currentUser');
     if (currentUser) {
-      mainLoginBtn.style.display = 'none';
-      userProfile.style.display = 'flex';
-      displayName.textContent = currentUser;
-      userAvatar.textContent = currentUser.charAt(0).toUpperCase();
+      const nav = document.querySelector('.nav-cta');
+      const avatar = document.createElement('span');
+      avatar.className = 'chip';
+      avatar.style.borderColor = 'rgba(255,255,255,.18)';
+      avatar.innerHTML = `<i class="fa-solid fa-circle-user"></i> ${currentUser}`;
+      nav.prepend(avatar);
     }
-    
-    // فتح/إغلاق قسم الستريمر
-    streamerHeader.addEventListener('click', () => {
-      if (streamerHeader.classList.contains('collapsed')) {
-        streamerHeader.classList.remove('collapsed');
-        streamerHeader.classList.add('expanded');
-        streamerContent.style.display = 'block';
-      } else {
-        streamerHeader.classList.remove('expanded');
-        streamerHeader.classList.add('collapsed');
-        streamerContent.style.display = 'none';
-      }
-    });
-    
-    // فتح نافذة تسجيل الدخول
-    mainLoginBtn.addEventListener('click', () => {
-      loginModal.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
-    });
-    
-    // تبديل بين تبويبات الدخول والتسجيل
-    loginTabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        loginTabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        
-        if (tab.dataset.tab === 'login') {
-          loginForm.classList.add('active');
-          registerForm.classList.remove('active');
-        } else {
-          loginForm.classList.remove('active');
-          registerForm.classList.add('active');
-        }
-      });
-    });
-    
-    // التبديل إلى نموذج التسجيل
-    switchToRegister.addEventListener('click', () => {
-      loginTabs.forEach(t => t.classList.remove('active'));
-      document.querySelector('[data-tab="register"]').classList.add('active');
-      loginForm.classList.remove('active');
-      registerForm.classList.add('active');
-      loginError.style.display = 'none';
-    });
-    
-    // التبديل إلى نموذج الدخول
-    switchToLogin.addEventListener('click', () => {
-      loginTabs.forEach(t => t.classList.remove('active'));
-      document.querySelector('[data-tab="login"]').classList.add('active');
-      registerForm.classList.remove('active');
-      loginForm.classList.add('active');
-      registerError.style.display = 'none';
-    });
-    
-    // تسجيل الدخول
-    loginSubmit.addEventListener('click', () => {
-      const username = loginUsername.value.trim();
-      const password = loginPassword.value.trim();
-      
-      if (!username || !password) {
-        loginError.textContent = 'الرجاء إدخال جميع البيانات';
-        loginError.style.display = 'block';
-        return;
-      }
-      
-      if (usersDB[username] && usersDB[username].password === password) {
-        // تسجيل الدخول الناجح
-        localStorage.setItem('currentUser', username);
-        mainLoginBtn.style.display = 'none';
-        userProfile.style.display = 'flex';
-        displayName.textContent = username;
-        userAvatar.textContent = username.charAt(0).toUpperCase();
-        loginModal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-        loginError.style.display = 'none';
-        
-        // مسح حقول الإدخال
-        loginUsername.value = '';
-        loginPassword.value = '';
-      } else {
-        loginError.textContent = 'بيانات الدخول غير صحيحة';
-        loginError.style.display = 'block';
-      }
-    });
-    
-    // تسجيل مستخدم جديد
-    registerSubmit.addEventListener('click', () => {
-      const username = registerUsername.value.trim();
-      const password = registerPassword.value.trim();
-      const confirm = registerConfirm.value.trim();
-      
-      if (!username || !password || !confirm) {
-        registerError.textContent = 'الرجاء ملء جميع الحقول';
-        registerError.style.display = 'block';
-        return;
-      }
-      
-      if (password !== confirm) {
-        registerError.textContent = 'كلمات المرور غير متطابقة';
-        registerError.style.display = 'block';
-        return;
-      }
-      
-      if (username.length < 4) {
-        registerError.textContent = 'اسم المستخدم قصير جداً';
-        registerError.style.display = 'block';
-        return;
-      }
-      
-      if (password.length < 6) {
-        registerError.textContent = 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
-        registerError.style.display = 'block';
-        return;
-      }
-      
-      if (usersDB[username]) {
-        registerError.textContent = 'اسم المستخدم موجود بالفعل';
-        registerError.style.display = 'block';
-        return;
-      }
-      
-      // تسجيل المستخدم الجديد
-      usersDB[username] = { password };
-      localStorage.setItem('streamerTopUsers', JSON.stringify(usersDB));
-      
-      // تسجيل الدخول تلقائياً بعد التسجيل
-      localStorage.setItem('currentUser', username);
-      mainLoginBtn.style.display = 'none';
-      userProfile.style.display = 'flex';
-      displayName.textContent = username;
-      userAvatar.textContent = username.charAt(0).toUpperCase();
-      loginModal.style.display = 'none';
-      document.body.style.overflow = 'auto';
-      registerError.style.display = 'none';
-      
-      // مسح حقول الإدخال
-      registerUsername.value = '';
-      registerPassword.value = '';
-      registerConfirm.value = '';
-    });
-    
-    // تسجيل الخروج
-    logoutBtn.addEventListener('click', () => {
-      localStorage.removeItem('currentUser');
-      userProfile.style.display = 'none';
-      mainLoginBtn.style.display = 'flex';
-    });
-    
-    // إغلاق نافذة التسجيل عند النقر خارجها
-    loginModal.addEventListener('click', (e) => {
-      if (e.target === loginModal) {
-        loginModal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-        loginError.style.display = 'none';
-        registerError.style.display = 'none';
-      }
-    });
-    
-    // زر الاشتراك
-    subscribeBtn.addEventListener('click', () => {
-      subscribeNotification.style.display = 'block';
-      setTimeout(() => {
-        subscribeNotification.style.display = 'none';
-      }, 3000);
-    });
-    
-    // تأثيرات بطاقات الألعاب
-    document.querySelectorAll('.start-btn').forEach(btn => {
-      btn.addEventListener('click', function(e) {
-        if (this.hasAttribute('disabled')) return;
-        e.preventDefault();
-        const card = this.closest('.game-card');
-        card.classList.add('transitioning');
-        const link = this.getAttribute('href');
-        setTimeout(() => {
-          window.location.href = link;
-        }, 600);
-      });
-    });
+
+    // طبقة تدرّج إضافية تمتد بطول الصفحة (تزيل أي إحساس بالقص)
+    (function(){
+      const el = document.createElement('div');
+      el.setAttribute('aria-hidden','true');
+      el.style.position='fixed';
+      el.style.inset='0';
+      el.style.zIndex='0';
+      el.style.pointerEvents='none';
+      el.style.background = 'linear-gradient(180deg, rgba(255,255,255,0.00) 0%, rgba(255,255,255,0.02) 35%, rgba(255,255,255,0.00) 100%)';
+      document.body.appendChild(el);
+    })();
   </script>
 </body>
 </html>
