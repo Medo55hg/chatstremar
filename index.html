@@ -417,6 +417,36 @@
       });
     });
 
+    /* =========================
+       (الإضافة المطلوبة فقط)
+       جعل البطاقة كاملة قابلة للنقر + دعم الكيبورد
+       ========================= */
+    document.querySelectorAll('.game-card').forEach(card => {
+      const link = card.querySelector('.start-btn');
+      if (!link) return;
+
+      // مؤشر يد عند hover
+      card.style.cursor = 'pointer';
+      // وصول بالكيبورد
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('role', 'link');
+      card.setAttribute('aria-label', (card.querySelector('.game-title')?.textContent || 'ابدأ اللعب').trim());
+
+      // لو النقر كان داخل الزر، نخلي كود الانتقال الأصلي يشتغل
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('.start-btn')) return;
+        link.click();
+      });
+
+      // دعم Enter / Space
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          link.click();
+        }
+      });
+    });
+
     // حالة مستخدم مسجل في localStorage (اختياري)
     const currentUser = localStorage.getItem('currentUser');
     if (currentUser) {
