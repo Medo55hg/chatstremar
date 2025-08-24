@@ -3,139 +3,222 @@
 <head>
   <meta charset="UTF-8">
   <title>🎯 تركيب الكلمات</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/tmi.js@1.8.5/dist/tmi.min.js"></script>
   <script src="tmi.min.js"></script>
   <style>
-   body { background: #111; color: #fff; font-family: 'Cairo', sans-serif; text-align: center; padding: 20px; }
-    h1 { color: #ff3333; margin-top: 10px; }
-    .teams-container { display: flex; justify-content: center; align-items: flex-start; margin: 40px auto; width: 100%; gap: 40px; flex-wrap: wrap; }
-    .team { width: 250px; padding: 15px; border-radius: 15px; text-align: center; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
-    .team-blue { background-color: #0b0f2e; border: 2px solid #0099ff; }
-    .team-red { background-color: #2e0b0b; border: 2px solid #ff3333; }
-    .players-list { background: #333; padding: 10px; border-radius: 8px; min-height: 50px; font-size: 18px; text-align: right; color: #fff; }
-    .player-entry { display: flex; justify-content: space-between; align-items: center; margin: 2px 0; }
-    .player-input { width: 90%; padding: 10px; font-size: 16px; margin: 10px 0; border-radius: 8px; border: none; background: #3a3a3a; color: #ccc; text-align: center; }
-    .add-btn { background-color: #cc0000; color: white; padding: 8px 16px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; margin-bottom: 10px; }
-    .add-btn span { color: #00ccff; font-weight: bold; margin-right: 5px; }
-    .game-description { flex: 1; max-width: 500px; background: #222; border: 1px solid #888; border-radius: 10px; padding: 20px; font-size: 18px; line-height: 1.8; }
-    .game-description strong { color: #00ff99; }
-    .commands-highlight { color: #ff3333; font-weight: bold; margin-top: 10px; display: block; }
-    .commands-highlight .blue { color: #0099ff; }
-    .commands-highlight .red { color: #ff4444; }
-    button { padding: 10px 20px; font-size: 18px; background: #444; color: white; border: none; border-radius: 8px; cursor: pointer; margin: 5px; }
-    button:hover { background: #555; }
-    .game-box { margin-top: 40px; max-width: 800px; margin-inline: auto; border-radius: 15px; padding: 30px 20px; }
-    .team-turn-blue { background: rgba(0, 60, 120, 0.3); border: 2px solid #0099ff; }
-    .team-turn-red { background: rgba(120, 0, 0, 0.3); border: 2px solid #ff3333; }
-    .letter-used { background-color: #27ae60 !important; border-color: #1e8449 !important; }
-    .word-point { color: #f1c40f; font-weight: bold; }
-    .score-table { width: 100%; margin-top: 20px; border-collapse: collapse; }
-    .score-table th, .score-table td { padding: 10px; border: 1px solid #444; text-align: center; }
-    .score-table th { background-color: #333; }
-    .score-table tr:nth-child(even) { background-color: #222; }
-    .score-table tr:hover { background-color: #2a2a2a; }
+    :root{
+      --bg:#111; --panel:#1b1b1b; --line:#333; --red:#ff3333; --blue:#0099ff;
+      --ok:#27ae60; --warn:#f1c40f; --muted:#aaa;
+    }
+    *{box-sizing:border-box}
+    body{background:var(--bg);color:#fff;font-family:'Cairo',sans-serif;text-align:center;padding:16px}
+    h1{color:var(--red);margin:8px 0 12px}
+    .wrap{max-width:1200px;margin:0 auto}
+    .teams-container{display:flex;justify-content:center;align-items:stretch;gap:16px;flex-wrap:wrap;margin:16px auto}
+    .team{width:280px;min-width:260px;padding:14px;border-radius:14px;text-align:right;background:#0b0f2e;border:2px solid var(--blue)}
+    .team-red{background:#2e0b0b;border-color:var(--red)}
+    .team h3{margin:0 0 8px}
+    .players-list{background:#222;padding:10px;border-radius:8px;min-height:56px;font-size:16px}
+    .player-entry{display:flex;justify-content:space-between;align-items:center;margin:2px 0}
+    .player-input{width:100%;padding:10px;font-size:15px;margin:8px 0;border-radius:8px;border:1px solid var(--line);background:#2a2a2a;color:#ddd;text-align:center}
+    .btn{padding:10px 14px;font-size:15px;background:#444;color:#fff;border:none;border-radius:8px;cursor:pointer}
+    .btn:hover{background:#555}
+    .add-btn{background:#cc0000}.add-btn span{color:#00ccff;font-weight:700;margin:0 4px}
+    .desc{flex:1;min-width:300px;max-width:520px;background:#181818;border:1px solid #444;border-radius:12px;padding:16px;line-height:1.9}
+    .desc strong{color:#00ff99}.commands-highlight{color:var(--red);font-weight:700;margin-top:8px;display:block}
+    .blue{color:var(--blue)}.red{color:#ff5555}
+    .score-table{width:100%;margin-top:10px;border-collapse:collapse;font-size:15px}
+    .score-table th,.score-table td{padding:8px;border:1px solid #333;text-align:center}
+    .score-table th{background:#252525}
+    .score-table tr:nth-child(even){background:#1c1c1c}
+    .admin{background:#121212;border:1px solid #333;border-radius:12px;padding:12px;margin:10px auto;display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));text-align:right}
+    .admin label{font-size:13px;color:#ddd}
+    .admin input,.admin select{width:100%;padding:8px;border-radius:8px;border:1px solid #333;background:#1f1f1f;color:#eee}
+    .admin .switch{display:flex;gap:8px;align-items:center}
+    .admin .switch input{width:auto}
+    .game-box{margin-top:16px;max-width:900px;margin-inline:auto;border-radius:15px;padding:18px;border:2px solid #333;background:#141414;transition:box-shadow .2s}
+    .team-turn-blue{box-shadow:0 0 0 3px rgba(0,153,255,.35)}
+    .team-turn-red{box-shadow:0 0 0 3px rgba(255,51,51,.35)}
+    .info{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:8px}
+    .badge{padding:6px 10px;border-radius:10px;background:#1f1f1f;border:1px solid #2c2c2c}
+    #timer{color:var(--warn);font-weight:700}
+    .controls{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0}
+    .letters{display:grid;grid-template-columns:repeat(auto-fit,minmax(48px,1fr));gap:8px;max-width:620px;margin:10px auto}
+    .letter{height:56px;border-radius:12px;background:#1a1a1a;border:2px solid #333;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px}
+    .letter-used{background:var(--ok)!important;border-color:#1e8449!important;color:#fff}
+    .words-wrap{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:820px;margin:14px auto}
+    .panel{background:#1a1a1a;border:1px solid #333;border-radius:10px;padding:10px;text-align:right}
+    .panel h4{margin:0 0 6px}
+    .muted{color:var(--muted)}
+    .flex{display:flex;gap:8px;align-items:center}
+    .mini{font-size:13px}
+    .pill{padding:4px 8px;border-radius:999px;background:#222;border:1px solid #333}
+    .players-contrib{max-height:180px;overflow:auto}
+    .copy-area{width:100%;min-height:68px;background:#121212;color:#ddd;border:1px solid #333;border-radius:8px;padding:8px}
+    @media (max-width:640px){
+      .words-wrap{grid-template-columns:1fr}
+      .team{width:100%}
+      .letters{max-width:100%}
+    }
   </style>
 </head>
 <body>
+<div class="wrap">
   <h1>🎯 تركيب الكلمات</h1>
 
   <div class="teams-container">
-    <div class="team team-blue">
+    <div class="team">
       <h3>🔵 الفريق الأزرق</h3>
       <input type="text" id="bluePlayerInput" class="player-input" placeholder="اسم اللاعب">
-      <button class="add-btn" onclick="addPlayerFromInput('blue')"><span>+</span>إضافة</button>
+      <div class="flex">
+        <button class="btn add-btn" onclick="addPlayerFromInput('blue')"><span>+</span>إضافة</button>
+        <button class="btn" onclick="quickJoin('blue')">انضمام (أنا)</button>
+      </div>
       <div id="bluePlayers" class="players-list"></div>
     </div>
 
-    <div class="game-description">
+    <div class="desc">
       ✅ <strong>شرح اللعبة:</strong><br>
-      ستظهر مجموعة من الحروف في منتصف الشاشة.<br>
-      على الفريق تركيب أكبر عدد ممكن من الكلمات الصحيحة خلال 5 دقائق.<br>
-      كل كلمة = 1 نقطة 🏆<br>
-      الفائز هو من يجمع أكثر نقاط!<br>
+      ستظهر مجموعة من الحروف في منتصف الشاشة. على الفريق تركيب أكبر عدد ممكن من الكلمات الصحيحة خلال الزمن المحدد. كل كلمة = 1 نقطة 🏆
       <span class="commands-highlight">
-        📄 أوامر الشات:<br>
-        <span class="blue">🔵 !ازرق</span> للانضمام للفريق الأزرق<br>
-        <span class="red">🔴 !احمر</span> للانضمام للفريق الأحمر
+        📄 أوامر الشات: <span class="blue">!ازرق</span> للانضمام للأزرق — <span class="red">!احمر</span> للانضمام للأحمر
       </span>
-      
       <table class="score-table">
-        <thead>
-          <tr>
-            <th>الجولة</th>
-            <th>الفريق الأزرق</th>
-            <th>الفريق الأحمر</th>
-          </tr>
-        </thead>
-        <tbody id="scoreTableBody">
-          <!-- سيتم ملؤه بالجافاسكريبت -->
-        </tbody>
-        <tfoot>
-          <tr>
-            <th>المجموع</th>
-            <th id="blueTotalScore">0</th>
-            <th id="redTotalScore">0</th>
-          </tr>
-        </tfoot>
+        <thead><tr><th>الجولة</th><th>الأزرق</th><th>الأحمر</th></tr></thead>
+        <tbody id="scoreTableBody"></tbody>
+        <tfoot><tr><th>المجموع</th><th id="blueTotalScore">0</th><th id="redTotalScore">0</th></tr></tfoot>
       </table>
     </div>
 
     <div class="team team-red">
       <h3>🔴 الفريق الأحمر</h3>
       <input type="text" id="redPlayerInput" class="player-input" placeholder="اسم اللاعب">
-      <button class="add-btn" onclick="addPlayerFromInput('red')"><span>+</span>إضافة</button>
+      <div class="flex">
+        <button class="btn add-btn" onclick="addPlayerFromInput('red')"><span>+</span>إضافة</button>
+        <button class="btn" onclick="quickJoin('red')">انضمام (أنا)</button>
+      </div>
       <div id="redPlayers" class="players-list"></div>
+    </div>
+  </div>
+
+  <!-- لوحة تحكم المضيف -->
+  <div class="admin">
+    <div>
+      <label>⏱ مدة الجولة (ثوانٍ)</label>
+      <input type="number" id="optDuration" min="30" step="10" value="300">
+    </div>
+    <div>
+      <label>🔢 عدد كلمات الفئة (2 - 12)</label>
+      <input type="number" id="optWordCount" min="2" max="12" value="7">
+    </div>
+    <div>
+      <label>📂 اختر فئة (اختياري)</label>
+      <select id="optCategory"></select>
+    </div>
+    <div class="switch">
+      <input type="checkbox" id="optAllowAny">
+      <label for="optAllowAny">قبول أي كلمة من الحروف (بدون قاموس الجولة)</label>
+    </div>
+    <div>
+      <label>🚫 تباطؤ اللاعب (ثوانٍ بين رسالتين)</label>
+      <input type="number" id="optCooldown" min="0" value="1">
+    </div>
+    <div>
+      <label>🎮 المنصة</label>
+      <select id="platformSelect">
+        <option value="twitch">Twitch</option>
+        <option value="kick">Kick</option>
+      </select>
+    </div>
+    <div>
+      <label>📺 اسم القناة</label>
+      <input type="text" id="channelInput" placeholder="اكتب اسم القناة">
+    </div>
+    <div class="flex">
+      <button class="btn" onclick="connectChat()">✅ تسجيل الدخول</button>
+      <span id="chatStatus" class="mini pill muted">غير متصل</span>
+    </div>
+    <div class="flex">
+      <button class="btn" onclick="startRound()">🎮 ابدأ الجولة</button>
+      <button class="btn" onclick="pauseResume()"><span id="pauseLbl">⏸️ إيقاف مؤقت</span></button>
+      <button class="btn" onclick="endRound()">⏹️ إنهاء الجولة</button>
+      <button class="btn" onclick="resetGame()">🔄 إعادة ضبط</button>
     </div>
   </div>
 
   <div id="gameBox" class="game-box">
     <div class="info">
-      <div class="category" id="category" style="font-size: 26px; font-weight: bold; margin-bottom: 10px;">الفئة: ...</div>
-      <div class="timer" id="timer" style="font-size: 24px; color: #ffcc00; font-weight: bold;">الوقت: 5:00</div>
-      <div id="currentTeam" style="font-size: 20px; margin-top: 10px;">الدور: لا أحد</div>
-      <div id="pointsInfo" style="font-size: 18px; margin-top: 5px; color: #f1c40f;"></div>
+      <div class="badge" id="category">الفئة: ...</div>
+      <div class="badge" id="timer">الوقت: 5:00</div>
+      <div class="badge" id="currentTeam">الدور: لا أحد</div>
+      <div class="badge" id="pointsInfo"></div>
     </div>
 
-    <div class="controls" style="margin: 20px 0;">
-      <button onclick="startRound()">🎮 ابدأ الجولة</button>
-      <button onclick="resetGame()">🔄 إعادة تعيين</button>
+    <div class="letters" id="letters"></div>
+
+    <div class="words-wrap">
+      <div class="panel">
+        <h4>✅ الكلمات المكتشفة</h4>
+        <div id="wordsFound" class="mini" style="line-height:1.9"></div>
+      </div>
+      <div class="panel">
+        <h4>📋 الكلمات الفائتة</h4>
+        <div id="missedWords" class="mini muted" style="line-height:1.9"></div>
+      </div>
     </div>
 
-    <div class="letters" id="letters" style="display: flex; flex-wrap: wrap; justify-content: center; max-width: 600px; margin: 0 auto; gap: 8px;"></div>
-    <div class="words-found" id="wordsFound" style="margin-top: 20px; max-width: 400px; margin-inline: auto; text-align: right;"></div>
+    <div class="panel">
+      <h4>👥 مساهمات اللاعبين</h4>
+      <div class="players-contrib" id="playersContrib"></div>
+      <div class="flex" style="margin-top:8px;flex-wrap:wrap">
+        <button class="btn" onclick="copySummary()">📄 نسخ ملخص الجولة</button>
+        <textarea id="summaryText" class="copy-area" placeholder="سيظهر الملخص هنا للنسخ…"></textarea>
+      </div>
+    </div>
   </div>
 
-  <div style="margin-top: 40px;">
-    <h2>🛠️ ربط اللعبة بالشات</h2>
-    <select id="platformSelect" style="padding:10px;font-size:18px;">
-      <option value="twitch">Twitch</option>
-      <option value="kick">Kick</option>
-    </select>
-    <input type="text" id="channelInput" placeholder="🎮 اكتب اسم القناة" style="padding:10px;font-size:18px;">
-    <button onclick="connectChat()" style="padding:10px;font-size:18px;background:#28a745;color:#fff;border:none;border-radius:6px;cursor:pointer;">
-      ✅ تسجيل الدخول
-    </button>
-    <div id="chatStatus" style="margin-top:10px;font-size:16px;color:#0f0;"></div>
+  <div style="margin-top:20px" class="panel">
+    <h4>🔌 توجيهات سريعة</h4>
+    <div class="mini muted">
+      • اللاعبون ينضمون عبر الشات (!ازرق / !احمر) أو من الأزرار في الواجهة.<br>
+      • عند تفعيل “قبول أي كلمة”، تُحتسب أي كلمة مكوّنة من الحروف المعروضة (بدون قاموس الجولة).<br>
+      • تم حفظ الإعدادات واللاعبين تلقائيًا في المتصفح.
+    </div>
   </div>
+</div>
 
 <script>
-// حالة اللعبة
-let bluePlayers = [];
-let redPlayers = [];
+/* =========================
+   البيانات والحالة العامة
+   ========================= */
+let bluePlayers = JSON.parse(localStorage.getItem('tk_blue')) || [];
+let redPlayers  = JSON.parse(localStorage.getItem('tk_red'))  || [];
 let currentTeam = '';
 let currentTeamIndex = 0;
-let roundTimer;
-let secondsLeft = 300;
-let foundWords = [];
+
 let roundWords = [];
 let roundLetters = [];
 let availableLetters = [];
+let foundWords = [];
+let playersScore = {}; // { username: number }
+let playerLastMsgTs = {}; // anti-spam
+
+let roundTimer = null;
+let roundPaused = false;
+let roundEndsAt = 0; // timestamp
+let duration = Number(localStorage.getItem('tk_duration')) || 300;
+let wordCount = Number(localStorage.getItem('tk_wordcount')) || 7;
+let allowAny = JSON.parse(localStorage.getItem('tk_any')) || false;
+let cooldownSec = Number(localStorage.getItem('tk_cooldown')) || 1;
+
+let roundScores = JSON.parse(localStorage.getItem('tk_scores')) || [];
+let currentRound = roundScores.length ? Math.max(...roundScores.map(r=>r.round))+1 : 1;
+
 let chatClient = null;
 let kickSocket = null;
-let totalPoints = 0;
-let roundScores = []; // لتخزين نتائج الجولات
 
-// فئات الكلمات
 const allCategories = {
   "حيوانات": [
     "أسد", "نمر", "فهد", "ذئب", "دب", 
@@ -178,9 +261,9 @@ const allCategories = {
     "القاهرة", "الإسكندرية", "الجيزة", "شرم الشيخ", "الأقصر", "أسوان", "بورسعيد", "السويس", "المنصورة", "طنطا",
     "بغداد", "البصرة", "الموصل", "أربيل", "النجف", "كربلاء", "السليمانية", "الناصرية", "العمارة", "الديوانية",
     "الرباط", "الدار البيضاء", "مراكش", "فاس", "طنجة", "أكادير", "مكناس", "وجدة", "تطوان", "العيون",
-    "الجزائر", "وهران", "قسنطينة", "عنابة", "باتنة", "بسكرة", "تلمسان", "سطيف", "الجلفة", "سكيكدة",
+    "الجزائر العاصمة", "وهران", "قسنطينة", "عنابة", "باتنة", "بسكرة", "تلمسان", "سطيف", "الجلفة", "سكيكدة",
     "أبوظبي", "دبي", "الشارقة", "عجمان", "رأس الخيمة", "الفجيرة", "العين", "دبا الحصن", "خورفكان", "أم القيوين",
-    "الكويت", "الأحمدي", "حولي", "الفروانية", "الجهراء", "مبارك الكبير", "العدان", "الرقة", "الجليعة", "الصليبية",
+    "الكويت العاصمة", "الأحمدي", "حولي", "الفروانية", "الجهراء", "مبارك الكبير", "العدان", "الرقة", "الجليعة", "الصليبية",
     "الدوحة", "الريان", "أم صلال", "الخور", "الوكرة", "دخان", "الشمال", "الزبارة", "مسيعيد", "الرويس",
     "مسقط", "صلالة", "نزوى", "صحار", "صور", "عبري", "الرستاق", "البريمي", "السيب", "خصب",
     "عمان", "الزرقاء", "إربد", "العقبة", "مادبا", "السلط", "الكرك", "معان", "الطفيلة", "جرش"
@@ -240,7 +323,7 @@ const allCategories = {
     "أكرم", "بشير", "تمام", "حسام", "خلف",
     "رامز", "سعد", "شهاب", "عبد العزيز", "فاروق",
     "مشعل", "نبيل", "هيثم", "وسيم", "يافا",
-    "أدهم", "بلال", "صالح", "حمد", "خالد",
+    "أدهم", "بلال", "تقي", "حمد", "خالد",
     "رافع", "سفيان", "شوقي", "عبد الكريم", "فوزي",
     "معاذ", "نادر", "هلال", "واصف", "ياسر"
 ],
@@ -278,433 +361,449 @@ const allCategories = {
     "كاماز", "بروتون", "برلييت", "كابنيك", "فوتون",
     "تشانجان", "فيات كرايسلر", "ميتسوكا", "تاترا", "زينورو",
     "سيكويا", "فينيكس", "يونيك", "فارمونت", "زيسيس",
-    "فيسكر", "لوسيد موتورز", "ريفين", "بولستار", "أسبارك",
+    "فيسكر", "لوسيد موتورز", "ريفين", "ولستار", "أسبارك",
     "ماها", "فاو", "جاكوار لاند روفر", "دينالي"
 ]
 };
 
-// بدء الجولة
-function startRound() {
-  // تحديد الفريق الحالي
+
+/* =============== عناصر DOM مختصرة =============== */
+const el = (id)=>document.getElementById(id);
+
+/* ================ تهيئة القوائم ================ */
+(function initCategorySelect(){
+  const sel = el('optCategory');
+  sel.innerHTML = '<option value="">(عشوائي)</option>' + Object.keys(allCategories).map(k=>`<option>${k}</option>`).join('');
+  // تحميل الإعدادات المخزنة
+  el('optDuration').value = duration;
+  el('optWordCount').value = wordCount;
+  el('optAllowAny').checked = allowAny;
+  el('optCooldown').value = cooldownSec;
+  updatePlayersList('blue'); updatePlayersList('red');
+  renderScores();
+})();
+
+/* ================ حفظ الإعدادات ================= */
+['optDuration','optWordCount','optCooldown'].forEach(id=>{
+  el(id).addEventListener('change',()=>{
+    if(id==='optDuration'){ duration = Math.max(30, Number(el(id).value)||300); localStorage.setItem('tk_duration', duration); }
+    if(id==='optWordCount'){ wordCount = Math.min(12, Math.max(2, Number(el(id).value)||7)); localStorage.setItem('tk_wordcount', wordCount); }
+    if(id==='optCooldown'){ cooldownSec = Math.max(0, Number(el(id).value)||0); localStorage.setItem('tk_cooldown', cooldownSec); }
+  });
+});
+el('optAllowAny').addEventListener('change',()=>{
+  allowAny = el('optAllowAny').checked;
+  localStorage.setItem('tk_any', allowAny);
+});
+
+/* ================ وظائف أساسية ================== */
+function startRound(){
+  // تحديد الفريق الحالي (تناوب)
   currentTeam = currentTeamIndex % 2 === 0 ? 'blue' : 'red';
   currentTeamIndex++;
-  
-  // تحديث واجهة المستخدم
-  document.getElementById('currentTeam').textContent = currentTeam === 'blue' ? '🔵 الفريق الأزرق' : '🔴 الفريق الأحمر';
-  document.getElementById('gameBox').className = currentTeam === 'blue' ? 'game-box team-turn-blue' : 'game-box team-turn-red';
-  
-  // إعادة تعيين حالة الجولة
+  el('currentTeam').textContent = currentTeam==='blue' ? '🔵 الفريق الأزرق' : '🔴 الفريق الأحمر';
+  el('gameBox').className = 'game-box ' + (currentTeam==='blue'?'team-turn-blue':'team-turn-red');
+
+  // تهيئة الجولة
   foundWords = [];
-  totalPoints = 0;
-  document.getElementById('wordsFound').innerHTML = '';
-  document.getElementById('pointsInfo').textContent = '';
-  secondsLeft = 300;
-  updateTimer();
+  availableLetters = [];
+  roundLetters = [];
+  roundWords = [];
+  playersScore = {};
+  playerLastMsgTs = {};
+  el('wordsFound').innerHTML = '';
+  el('missedWords').innerHTML = '';
+  el('pointsInfo').textContent = '';
+
+  // توليد الكلمات والحروف
+  generateRound();
+
+  // المؤقت الدقيق
   clearInterval(roundTimer);
-  
-  // توليد الحروف والكلمات
-  generateRoundWords();
-  showLetters();
-  
-  // بدء المؤقت
-  roundTimer = setInterval(() => {
-    secondsLeft--;
-    updateTimer();
-    if (secondsLeft <= 0) {
-      endRound();
-    }
-  }, 1000);
+  const now = Date.now();
+  roundEndsAt = now + duration*1000;
+  roundPaused = false;
+  tickTimer(); // تحديث فوري
+  roundTimer = setInterval(tickTimer, 250);
+  el('pauseLbl').textContent = '⏸️ إيقاف مؤقت';
 }
 
-// توليد كلمات الجولة
-function generateRoundWords() {
-  const categories = Object.keys(allCategories);
-  const randomCategory = categories[Math.floor(Math.random() * categories.length)];
-  const wordList = [...allCategories[randomCategory]];
-  shuffleArray(wordList);
-  
-  // اختيار 7 كلمات عشوائية من الفئة
-  roundWords = wordList.slice(0, 7);
-  document.getElementById('category').textContent = `الفئة: ${randomCategory}`;
-  
-  // توليد الحروف من الكلمات المختارة (مع التكرار)
-  roundLetters = [];
-  roundWords.forEach(word => {
-    roundLetters.push(...word.split(''));
+function pauseResume(){
+  if(!roundEndsAt) return;
+  if(!roundPaused){
+    // إيقاف: نحفظ المتبقي ونصفر العداد
+    const remain = Math.max(0, roundEndsAt - Date.now());
+    roundEndsAt = Date.now() + remain; // تثبيت القيمة
+    clearInterval(roundTimer);
+    roundPaused = true;
+    el('pauseLbl').textContent = '▶️ استئناف';
+  }else{
+    // استئناف: نعيد العداد
+    roundPaused = false;
+    roundTimer = setInterval(tickTimer, 250);
+    el('pauseLbl').textContent = '⏸️ إيقاف مؤقت';
+  }
+}
+
+function tickTimer(){
+  if(roundPaused) return;
+  const remainMs = Math.max(0, roundEndsAt - Date.now());
+  const s = Math.ceil(remainMs/1000);
+  el('timer').textContent = `الوقت: ${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+  if(remainMs<=0){
+    endRound();
+  }
+}
+
+function endRound(){
+  clearInterval(roundTimer);
+  roundTimer = null;
+  roundPaused = false;
+
+  // حساب نقاط الفريق في هذه الجولة
+  const teamPoints = foundWords.length;
+  el('pointsInfo').textContent = `النقاط: ${teamPoints}`;
+  el('gameBox').className = 'game-box';
+  el('currentTeam').textContent = 'الدور: لا أحد';
+
+  // إخفاء الحروف غير المستخدمة
+  document.querySelectorAll('.letter').forEach(letter=>{
+    if(!letter.classList.contains('letter-used')) letter.style.opacity = .25;
   });
+
+  // عرض الكلمات الفائتة (إذا كان وضع القاموس)
+  if(!allowAny){
+    const all = new Set(roundWords);
+    foundWords.forEach(w=>all.delete(w));
+    const missed = Array.from(all);
+    el('missedWords').innerHTML = missed.length ? missed.map(w=>`• ${w}`).join('<br>') : '<span class="muted">لا يوجد</span>';
+  }else{
+    el('missedWords').innerHTML = '<span class="muted">وضع "أي كلمة" مفعّل — لا توجد قائمة فائتة.</span>';
+  }
+
+  // تحديث جدول النتائج
+  updateScoreTable(teamPoints);
+
+  // توليد ملخص الجولة
+  buildSummary(teamPoints);
+
+  // زيادة رقم الجولة
+  currentRound++;
+  saveScores();
+}
+
+function generateRound(){
+  // اختيار فئة
+  const selCat = el('optCategory').value;
+  let category = selCat || pick(Object.keys(allCategories));
+  const wordList = [...allCategories[category]];
+  shuffleArray(wordList);
+
+  // تحديد كلمات الجولة إذا لم يكن وضع "أي كلمة"
+  if(!allowAny){
+    roundWords = wordList.slice(0, wordCount);
+  }else{
+    roundWords = []; // يُحتسب من الحروف فقط
+  }
+
+  // توليد الحروف: من كلمات الجولة أو من قائمة مختارة عشوائيًا إذا allowAny
+  const srcWords = roundWords.length ? roundWords : wordList.slice(0, wordCount);
+  roundLetters = [];
+  srcWords.forEach(w => roundLetters.push(...w.split('')));
   availableLetters = [...roundLetters];
   shuffleArray(roundLetters);
+
+  el('category').textContent = `الفئة: ${category}`;
+  renderLetters();
 }
 
-// عرض الحروف
-function showLetters() {
-  const container = document.getElementById('letters');
-  container.innerHTML = '';
-  
-  roundLetters.forEach((ch, index) => {
-    const div = document.createElement('div');
-    div.className = 'letter';
-    div.id = `letter-${index}`;
-    div.textContent = ch;
-    div.style = `
-      width: 60px; height: 60px; 
-      margin: 0; font-size: 24px; 
-      font-weight: bold; border-radius: 12px; 
-      background-color: #1a1a1a; 
-      display: flex; align-items: center; 
-      justify-content: center; 
-      border: 2px solid #333; 
-      color: #fff;
-    `;
-    container.appendChild(div);
+function renderLetters(){
+  const c = el('letters'); c.innerHTML='';
+  roundLetters.forEach((ch,i)=>{
+    const d = document.createElement('div');
+    d.className='letter'; d.id=`l-${i}`; d.textContent=ch;
+    c.appendChild(d);
   });
 }
 
-// تحديث المؤقت
-function updateTimer() {
-  const min = Math.floor(secondsLeft / 60);
-  const sec = secondsLeft % 60;
-  document.getElementById('timer').textContent = `الوقت: ${min}:${sec.toString().padStart(2, '0')}`;
-}
+function onChatMessage(username, message){
+  // شروط عامة
+  if(!currentTeam || !roundTimer) return;
 
+  // اللاعب يجب أن يكون في الفريق الحالي
+  const currentTeamPlayers = currentTeam==='blue' ? bluePlayers : redPlayers;
+  if(!currentTeamPlayers.includes(username)) return;
 
-// نهاية الجولة
-function endRound() {
-  clearInterval(roundTimer);
-  
-  // حساب النقاط النهائية
-  const wordPoints = foundWords.length;
-  totalPoints = wordPoints;
-  
-  document.getElementById('pointsInfo').textContent = `النقاط: ${wordPoints}`;
-  document.getElementById('gameBox').className = 'game-box';
-  document.getElementById('currentTeam').textContent = 'الدور: لا أحد';
-  
-  // إخفاء الحروف غير المستخدمة
-  const letters = document.querySelectorAll('.letter');
-  letters.forEach(letter => {
-    if (!letter.classList.contains('letter-used')) {
-      letter.style.visibility = 'hidden';
-    }
-  });
-  
-  // عرض الكلمات التي كان يجب تخمينها
-  showMissedWords();
-  
-  // تحديث جدول النقاط
-  updateScoreTable(wordPoints);
-}
-
-// عرض الكلمات التي لم يتم تخمينها
-function showMissedWords() {
-  const missedWords = roundWords.filter(word => !foundWords.includes(word));
-  
-  if (missedWords.length > 0) {
-    const missedWordsContainer = document.createElement('div');
-    missedWordsContainer.style.marginTop = '20px';
-    missedWordsContainer.style.padding = '15px';
-    missedWordsContainer.style.backgroundColor = '#2d2d2d';
-    missedWordsContainer.style.borderRadius = '10px';
-    missedWordsContainer.style.border = '1px solid #444';
-    
-    const title = document.createElement('div');
-    title.textContent = 'الكلمات التي لم يتم العثور عليها:';
-    title.style.fontWeight = 'bold';
-    title.style.marginBottom = '10px';
-    title.style.color = '#ff6666';
-    
-    const wordsList = document.createElement('div');
-    wordsList.style.textAlign = 'right';
-    wordsList.style.lineHeight = '1.8';
-    
-    missedWords.forEach(word => {
-      const wordElement = document.createElement('div');
-      wordElement.textContent = `• ${word}`;
-      wordsList.appendChild(wordElement);
-    });
-    
-    missedWordsContainer.appendChild(title);
-    missedWordsContainer.appendChild(wordsList);
-    
-    // إضافة العنصر بعد قائمة الكلمات التي تم العثور عليها
-    const wordsFoundContainer = document.getElementById('wordsFound');
-    wordsFoundContainer.appendChild(missedWordsContainer);
+  // تباطؤ للحد من السبام
+  const now = Date.now();
+  if(cooldownSec>0){
+    const last = playerLastMsgTs[username] || 0;
+    if(now - last < cooldownSec*1000) return;
+    playerLastMsgTs[username] = now;
   }
-  
-  const tableBody = document.getElementById('scoreTableBody');
-  tableBody.innerHTML = '';
-  
-  roundScores.forEach(score => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${score.round}</td>
-      <td>${score.blue}</td>
-      <td>${score.red}</td>
-    `;
-    tableBody.appendChild(row);
-  });
-  
-  // حساب المجموع الكلي
-  const blueTotal = roundScores.reduce((sum, score) => sum + score.blue, 0);
-  const redTotal = roundScores.reduce((sum, score) => sum + score.red, 0);
-  
-  document.getElementById('blueTotalScore').textContent = blueTotal;
-  document.getElementById('redTotalScore').textContent = redTotal;
-}
 
-// معالجة رسائل الشات
-function onChatMessage(username, message) {
-  if (!currentTeam || foundWords.length >= roundWords.length) return;
-  
-  // التحقق من أن اللاعب مسجل في الفريق الحالي
-  const currentTeamPlayers = currentTeam === 'blue' ? bluePlayers : redPlayers;
-  if (!currentTeamPlayers.includes(username)) return;
-  
   const clean = message.trim();
-  
-  // التحقق من صحة الكلمة
-  if (roundWords.includes(clean) && !foundWords.includes(clean)) {
-    if (canFormWord(clean)) {
-      foundWords.push(clean);
-      markLetters(clean);
-      
-      // حساب النقاط
-      const wordPoints = 1;
-      totalPoints = wordPoints;
-      
-      document.getElementById('wordsFound').innerHTML += `
-        <div style='
-          background: #1f1f1f;
-          padding: 8px 12px;
-          border-radius: 8px;
-          margin-bottom: 6px;
-          border: 1px solid #333;
-        '>
-          ✅ ${clean} - ${username} 
-          <span class="word-point">(${wordPoints} نقطة)</span>
-        </div>
-      `;
-      
-      // التحقق إذا تم العثور على جميع الكلمات
-      if (foundWords.length === roundWords.length) {
-        endRound();
-      }
+  if(!clean) return;
+
+  // منع التكرار
+  if(foundWords.includes(clean)) return;
+
+  // تحقق قدرة التكوين من الحروف
+  if(!canFormFromLetters(clean)) return;
+
+  if(allowAny){
+    // نقبل أي كلمة من الحروف طالما لم تتكرر
+    acceptWord(clean, username, /*points=*/1);
+  }else{
+    // يجب أن تكون ضمن كلمات الجولة
+    if(roundWords.includes(clean)){
+      acceptWord(clean, username, /*points=*/1);
+      // إذا اكتملت قائمة الكلمات — ننهي الجولة
+      if(foundWords.length === roundWords.length) endRound();
     }
   }
 }
 
-// التحقق إذا كان يمكن تكوين الكلمة من الحروف المتاحة
-function canFormWord(word) {
-  const tempAvailableLetters = [...availableLetters];
-  const wordLetters = word.split('');
-  
-  for (const letter of wordLetters) {
-    const index = tempAvailableLetters.indexOf(letter);
-    if (index === -1) return false;
-    tempAvailableLetters.splice(index, 1);
+function canFormFromLetters(word){
+  const temp = [...availableLetters];
+  for(const ch of [...word]){
+    const idx = temp.indexOf(ch);
+    if(idx===-1) return false;
+    temp.splice(idx,1);
   }
-  
   return true;
 }
 
-// تمييز الحروف المستخدمة
-function markLetters(word) {
-  const wordLetters = word.split('');
-  const lettersToMark = [...wordLetters];
-  
-  // تحديث الحروف المتاحة
-  for (const letter of wordLetters) {
-    const index = availableLetters.indexOf(letter);
-    if (index !== -1) {
-      availableLetters.splice(index, 1);
-    }
+function markLetters(word){
+  const chars = [...word];
+  // خصم من الحروف المتاحة
+  for(const ch of chars){
+    const idx = availableLetters.indexOf(ch);
+    if(idx!==-1) availableLetters.splice(idx,1);
   }
-  
-  // تمييز الحروف في الواجهة
-  const letters = document.querySelectorAll('.letter');
-  letters.forEach(letter => {
-    if (lettersToMark.includes(letter.textContent) && !letter.classList.contains('letter-used')) {
-      letter.classList.add('letter-used');
-      lettersToMark.splice(lettersToMark.indexOf(letter.textContent), 1);
-    }
+  // تمييز في الواجهة
+  const nodes = Array.from(document.querySelectorAll('.letter'));
+  for(const ch of chars){
+    const node = nodes.find(n=>n.textContent===ch && !n.classList.contains('letter-used'));
+    if(node) node.classList.add('letter-used');
+  }
+}
+
+function acceptWord(clean, username, points){
+  foundWords.push(clean);
+  markLetters(clean);
+  // نقاط اللاعب
+  if(!playersScore[username]) playersScore[username]=0;
+  playersScore[username]+=points;
+
+  // عرض الكلمة
+  el('wordsFound').innerHTML += `
+    <div style="background:#1f1f1f;padding:6px 10px;border-radius:8px;margin-bottom:6px;border:1px solid #333">
+      ✅ ${clean} — <span class="muted">@${username}</span>
+      <span class="pill">+${points} نقطة</span>
+    </div>
+  `;
+  renderPlayersContrib();
+}
+
+function renderPlayersContrib(){
+  const cont = el('playersContrib');
+  const entries = Object.entries(playersScore).sort((a,b)=>b[1]-a[1]);
+  cont.innerHTML = entries.length ? entries.map(([u,s])=>`<div class="flex" style="justify-content:space-between"><strong>@${u}</strong><span class="pill">${s} نقطة</span></div>`).join('') : '<span class="muted">لا مساهمات بعد.</span>';
+}
+
+/* ============== إدارة اللاعبين ============== */
+function addPlayerFromInput(team){
+  const id = team==='blue' ? 'bluePlayerInput' : 'redPlayerInput';
+  const name = el(id).value.trim();
+  if(name){ addPlayerFromChat(team, name); el(id).value=''; }
+}
+function quickJoin(team){
+  const name = prompt('اكتب اسمك للانضمام:');
+  if(name) addPlayerFromChat(team, name.trim());
+}
+function addPlayerFromChat(team, username){
+  const list = team==='blue'? bluePlayers : redPlayers;
+  const other = team==='blue'? redPlayers : bluePlayers;
+  if(!username) return;
+  if(list.includes(username) || other.includes(username)) return;
+  list.push(username);
+  updatePlayersList(team);
+  persistPlayers();
+}
+function updatePlayersList(team){
+  const listId = team==='blue' ? 'bluePlayers' : 'redPlayers';
+  const players = team==='blue' ? bluePlayers : redPlayers;
+  const c = el(listId); c.innerHTML='';
+  players.forEach(p=>{
+    const div = document.createElement('div');
+    div.className='player-entry';
+    div.innerHTML = `<span>• ${p}</span> <button class="btn mini" onclick="removePlayer('${team}','${p}')">حذف</button>`;
+    c.appendChild(div);
   });
 }
-
-// إضافة لاعب من واجهة المستخدم
-function addPlayerFromInput(team) {
-  const inputId = team === 'blue' ? 'bluePlayerInput' : 'redPlayerInput';
-  const username = document.getElementById(inputId).value.trim();
-  
-  if (username) {
-    addPlayerFromChat(team, username);
-    document.getElementById(inputId).value = '';
-  }
+function removePlayer(team, username){
+  let arr = team==='blue' ? bluePlayers : redPlayers;
+  const i = arr.indexOf(username);
+  if(i>-1){ arr.splice(i,1); updatePlayersList(team); persistPlayers(); }
+}
+function persistPlayers(){
+  localStorage.setItem('tk_blue', JSON.stringify(bluePlayers));
+  localStorage.setItem('tk_red', JSON.stringify(redPlayers));
 }
 
-// إضافة لاعب من الشات
-function addPlayerFromChat(team, username) {
-  const listId = team === 'blue' ? 'bluePlayers' : 'redPlayers';
-  const players = team === 'blue' ? bluePlayers : redPlayers;
-  const otherTeamPlayers = team === 'blue' ? redPlayers : bluePlayers;
-
-  // التحقق من عدم وجود اللاعب في أي فريق
-  if (username && !players.includes(username) && !otherTeamPlayers.includes(username)) {
-    players.push(username);
-    updatePlayersList(team);
+/* ============== النتائج/السكور ============== */
+function updateScoreTable(points){
+  if(currentTeam==='blue'){
+    roundScores.push({round: currentRound, blue: points, red: 0});
+  }else{
+    roundScores.push({round: currentRound, blue: 0, red: points});
   }
+  renderScores();
 }
-
-// تحديث قائمة اللاعبين
-function updatePlayersList(team) {
-  const listId = team === 'blue' ? 'bluePlayers' : 'redPlayers';
-  const players = team === 'blue' ? bluePlayers : redPlayers;
-  const container = document.getElementById(listId);
-  
-  container.innerHTML = '';
-  players.forEach(player => {
-    const entry = document.createElement('div');
-    entry.className = 'player-entry';
-    entry.innerHTML = `<span>• ${player}</span>`;
-    container.appendChild(entry);
+function renderScores(){
+  const tb = el('scoreTableBody'); tb.innerHTML='';
+  roundScores.forEach(r=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${r.round}</td><td>${r.blue}</td><td>${r.red}</td>`;
+    tb.appendChild(tr);
   });
+  const blueTotal = roundScores.reduce((s,r)=>s+r.blue,0);
+  const redTotal  = roundScores.reduce((s,r)=>s+r.red,0);
+  el('blueTotalScore').textContent = blueTotal;
+  el('redTotalScore').textContent  = redTotal;
+}
+function saveScores(){
+  localStorage.setItem('tk_scores', JSON.stringify(roundScores));
 }
 
-// خلط المصفوفة
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
+/* ============== أدوات مساعدة ============== */
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)] }
+function shuffleArray(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} }
+
+/* ============== الملخص ============== */
+function buildSummary(teamPoints){
+  const teamName = currentTeam==='blue'?'الفريق الأزرق':'الفريق الأحمر';
+  const wordsList = foundWords.map(w=>`- ${w}`).join('\n');
+  const contrib = Object.entries(playersScore).sort((a,b)=>b[1]-a[1]).map(([u,s])=>`@${u}: ${s} نقطة`).join('\n');
+  const blueTotal = roundScores.reduce((s,r)=>s+r.blue,0);
+  const redTotal  = roundScores.reduce((s,r)=>s+r.red,0);
+  const text = `ملخص الجولة #${currentRound}
+الفريق: ${teamName}
+النقاط في هذه الجولة: ${teamPoints}
+
+الكلمات المقبولة:
+${wordsList || '- لا يوجد'}
+
+مساهمات اللاعبين:
+${contrib || '- لا يوجد'}
+
+المجموع حتى الآن — الأزرق: ${blueTotal} | الأحمر: ${redTotal}
+وضع أي كلمة: ${allowAny ? 'مفعّل' : 'متوقف'}
+زمن الجولة: ${Math.floor(duration/60)}:${String(duration%60).padStart(2,'0')}`;
+  el('summaryText').value = text;
+}
+function copySummary(){
+  const ta = el('summaryText'); ta.select(); ta.setSelectionRange(0, 99999);
+  document.execCommand('copy');
+  alert('تم نسخ الملخص!');
 }
 
-// إعادة تعيين اللعبة
-function resetGame() {
-  clearInterval(roundTimer);
-  bluePlayers = [];
-  redPlayers = [];
-  currentTeam = '';
-  currentTeamIndex = 0;
-  foundWords = [];
-  roundWords = [];
-  roundLetters = [];
-  availableLetters = [];
-  totalPoints = 0;
-  roundScores = [];
-  
-  document.getElementById('bluePlayers').innerHTML = '';
-  document.getElementById('redPlayers').innerHTML = '';
-  document.getElementById('letters').innerHTML = '';
-  document.getElementById('wordsFound').innerHTML = '';
-  document.getElementById('currentTeam').textContent = 'الدور: لا أحد';
-  document.getElementById('timer').textContent = 'الوقت: 5:00';
-  document.getElementById('category').textContent = 'الفئة: ...';
-  document.getElementById('pointsInfo').textContent = '';
-  document.getElementById('gameBox').className = 'game-box';
-  document.getElementById('scoreTableBody').innerHTML = '';
-  document.getElementById('blueTotalScore').textContent = '0';
-  document.getElementById('redTotalScore').textContent = '0';
+/* ============== إعادة الضبط ============== */
+function resetGame(){
+  clearInterval(roundTimer); roundTimer=null; roundPaused=false; roundEndsAt=0;
+  bluePlayers=[]; redPlayers=[]; persistPlayers();
+  currentTeam=''; currentTeamIndex=0; foundWords=[]; roundWords=[]; roundLetters=[]; availableLetters=[];
+  playersScore={}; playerLastMsgTs={};
+  roundScores=[]; saveScores(); currentRound=1;
+  el('bluePlayers').innerHTML=''; el('redPlayers').innerHTML='';
+  el('letters').innerHTML=''; el('wordsFound').innerHTML=''; el('missedWords').innerHTML='';
+  el('currentTeam').textContent='الدور: لا أحد';
+  el('timer').textContent='الوقت: 5:00';
+  el('category').textContent='الفئة: ...';
+  el('pointsInfo').textContent='';
+  el('gameBox').className='game-box';
+  el('scoreTableBody').innerHTML='';
+  el('blueTotalScore').textContent='0'; el('redTotalScore').textContent='0';
+  el('summaryText').value='';
 }
 
-// الاتصال بالشات
-function connectChat() {
-  const platform = document.getElementById("platformSelect").value;
-  const channel = document.getElementById("channelInput").value.trim();
+/* ============== اتصال الشات ============== */
+function connectChat(){
+  const platform = el("platformSelect").value;
+  const channel = el("channelInput").value.trim();
+  if(!channel){ alert('اكتب اسم القناة أولاً'); return; }
 
-  // إغلاق الاتصالات السابقة
-  if (chatClient) chatClient.disconnect();
-  if (kickSocket) kickSocket.close();
+  // إغلاق أي اتصال سابق
+  try{ if(chatClient) chatClient.disconnect(); }catch(e){}
+  try{ if(kickSocket) kickSocket.close(); }catch(e){}
 
-  if (platform === "twitch") {
-    chatClient = new tmi.Client({ 
-      channels: [channel],
-      connection: {
-        reconnect: true,
-        secure: true
-      }
+  if(platform === "twitch"){
+    chatClient = new tmi.Client({
+      channels:[channel],
+      connection:{ reconnect:true, secure:true }
     });
-
-    chatClient.connect()
-      .then(() => {
-        document.getElementById("chatStatus").textContent = "✅ تم الاتصال بـ Twitch!";
-      })
-      .catch(err => {
-        console.error("Twitch error:", err);
-        document.getElementById("chatStatus").textContent = "❌ فشل الاتصال بـ Twitch!";
-      });
-
-    chatClient.on("message", (channel, tags, message, self) => {
-      if (self) return;
+    chatClient.connect().then(()=> el("chatStatus").textContent="✅ متصل بـ Twitch").catch(err=>{
+      console.error(err); el("chatStatus").textContent="❌ فشل اتصال Twitch";
+    });
+    chatClient.on("message",(ch, tags, msg, self)=>{
+      if(self) return;
       const username = tags["display-name"] || tags.username;
-      const content = message.trim();
-
-      if (content === "!ازرق") {
-        addPlayerFromChat("blue", username);
-      } else if (content === "!احمر") {
-        addPlayerFromChat("red", username);
-      } else {
-        onChatMessage(username, content);
-      }
+      const content = msg.trim();
+      if(content==="!ازرق"){ addPlayerFromChat("blue", username); }
+      else if(content==="!احمر"){ addPlayerFromChat("red", username); }
+      else{ onChatMessage(username, content); }
     });
   }
 
-  if (platform === "kick") {
-    (async () => {
-      try {
+  if(platform === "kick"){
+    (async ()=>{
+      try{
         const res = await fetch(`https://kick.com/api/v2/channels/${channel}`);
         const data = await res.json();
         const roomId = data.chatroom.id;
-
         kickSocket = new WebSocket("wss://ws-us2.pusher.com/app/32cbd69e4b950bf97679?protocol=7&client=js&version=8.4.0-rc2");
-
-        kickSocket.onopen = () => {
+        kickSocket.onopen = ()=>{
           kickSocket.send(JSON.stringify({
-            event: "pusher:subscribe",
-            data: {
-              auth: "",
-              channel: `chatrooms.${roomId}.v2`
-            }
+            event:"pusher:subscribe",
+            data:{ auth:"", channel:`chatrooms.${roomId}.v2` }
           }));
-          
-          const pingInterval = setInterval(() => {
-            if (kickSocket.readyState === WebSocket.OPEN) {
-              kickSocket.send(JSON.stringify({ event: "pusher:ping", data: {} }));
-            } else {
-              clearInterval(pingInterval);
-            }
+          const ping = setInterval(()=>{
+            if(kickSocket.readyState===WebSocket.OPEN){
+              kickSocket.send(JSON.stringify({event:"pusher:ping", data:{}}));
+            }else{ clearInterval(ping); }
           }, 12000);
+          el("chatStatus").textContent="✅ متصل بـ Kick";
         };
-
-        kickSocket.onmessage = (event) => {
-          const msg = JSON.parse(event.data);
-          if (msg.event === "App\\Events\\ChatMessageEvent") {
+        kickSocket.onmessage = (ev)=>{
+          const msg = JSON.parse(ev.data);
+          if(msg.event==="App\\Events\\ChatMessageEvent"){
             const d = JSON.parse(msg.data);
             const username = d.sender.username;
-            const content = d.content.trim();
-
-            if (content === "!ازرق") {
-              addPlayerFromChat("blue", username);
-            } else if (content === "!احمر") {
-              addPlayerFromChat("red", username);
-            } else {
-              onChatMessage(username, content);
-            }
+            const content = (d.content||"").trim();
+            if(content==="!ازرق"){ addPlayerFromChat("blue", username); }
+            else if(content==="!احمر"){ addPlayerFromChat("red", username); }
+            else{ onChatMessage(username, content); }
           }
         };
-
-        kickSocket.onclose = () => {
-          document.getElementById("chatStatus").textContent = "❌ تم قطع الاتصال بـ Kick!";
-        };
-
-        document.getElementById("chatStatus").textContent = "✅ تم الاتصال بـ Kick!";
-      } catch (error) {
-        console.error("Kick error:", error);
-        document.getElementById("chatStatus").textContent = "❌ فشل الاتصال بـ Kick!";
+        kickSocket.onclose = ()=> el("chatStatus").textContent="❌ تم قطع اتصال Kick";
+      }catch(e){
+        console.error(e); el("chatStatus").textContent="❌ فشل اتصال Kick";
       }
     })();
   }
 }
+
+/* ============== أدوات متنوعة ============== */
+function canFormFromLetters(word){
+  const temp=[...availableLetters];
+  for(const ch of [...word]){
+    const idx=temp.indexOf(ch);
+    if(idx===-1) return false;
+    temp.splice(idx,1);
+  }
+  return true;
+}
 </script>
 </body>
 </html>
-
-
