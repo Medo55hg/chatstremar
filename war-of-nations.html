@@ -7,226 +7,320 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo&display=swap" rel="stylesheet">
 <script src="tmi.min.js"></script>
 <style>
+:root{
+  --bg1:#1a1a3d; --bg2:#004466; --text:#fff; --panel:#222; --line:#444;
+  --accent:#ff3333; --ok:#00e6a8; --warn:#ffcc00; --muted:#ccc; --card:#222;
+  --badge:#0b3d3d; --badge-b:#0ff; --bad:#ff6666;
+}
+[data-theme="light"]{
+  --bg1:#f2f6ff; --bg2:#dfe9ff; --text:#111; --panel:#fff; --line:#e5e7eb;
+  --accent:#ff3333; --ok:#00a37a; --warn:#b08500; --muted:#444; --card:#fff;
+  --badge:#e8f7f7; --badge-b:#027e7e; --bad:#b00020;
+}
 body {
-    background: linear-gradient(-45deg, #1a1a3d, #004466, #1a1a3d, #004466);
-    background-size: 400% 400%;
-    animation: gradientBG 20s ease infinite;
-    color: #fff;
-    font-family: 'Cairo', sans-serif;
-    text-align: center;
-    padding: 20px;
+  background: linear-gradient(-45deg, var(--bg1), var(--bg2), var(--bg1), var(--bg2));
+  background-size: 400% 400%;
+  animation: gradientBG 20s ease infinite;
+  color: var(--text);
+  font-family: 'Cairo', sans-serif;
+  text-align: center;
+  padding: 20px;
 }
-@keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+@keyframes gradientBG { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+
+h1{ font-size:36px; color:var(--accent); margin:0 0 10px; }
+.small-note{ font-size:14px; color:var(--muted); }
+.badge{ display:inline-block; padding:2px 8px; border-radius:999px; background:var(--badge); border:1px solid var(--badge-b); color:var(--badge-b); font-size:12px; margin-inline:6px; }
+
+.container { display:flex; gap:16px; flex-wrap:wrap; align-items:flex-start; }
+.panel{
+  width:48%; min-height:300px; border:2px solid #fff3; background: #0003;
+  backdrop-filter: blur(4px);
+  border-radius:12px; padding:12px; overflow:hidden; position:relative;
 }
-.container { display:flex; justify-content:space-between; flex-wrap:wrap; }
-.wheel, .countries {
-  width:48%; min-height:300px; border:2px solid #fff;
-  border-radius:8px; padding:10px; overflow:auto; position:relative;
+@media(max-width: 1000px){ .panel{ width:100%; } }
+
+button{
+  padding:10px 16px; border:none; border-radius:8px; cursor:pointer;
+  background:var(--accent); color:#fff; font-family:'Cairo',sans-serif;
 }
-#countryList {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-}
-.country {
-  width: calc(25% - 10px);
-  background:#222;
-  padding:5px;
-  border-radius:6px;
-  text-align:center;
-  opacity:0;
-  transform: scale(0.5);
-  transition: all 0.4s ease;
-  position: relative;
-}
-.country.show { opacity:1; transform: scale(1); }
-.country img { width:80px; display:block; margin:auto; }
+button.alt{ background:#6c757d; }
+button.ghost{ background:#39424e; }
+button.green{ background:#198754; }
+button.cyan{ background:#0dcaf0; color:#001218; }
+button.warn{ background:#b08500; }
+button:disabled{ opacity:0.6; cursor:not-allowed; }
+
+select,input{ padding:10px; border-radius:8px; border:1px solid var(--line); background:#0004; color:var(--text); }
+.controls-row{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; align-items:center; }
+
 .overlay {
-  position:fixed; top:0;left:0;right:0;bottom:0;
-  background:rgba(0,0,0,0.8);
+  position:fixed; inset:0;
+  background:rgba(0,0,0,0.7);
   display:none; align-items:center; justify-content:center;
-  font-size:24px; z-index:999;
+  font-size:24px; z-index:999; padding: 20px; text-align:center;
 }
-button {
-  padding:10px 20px; margin-top:15px;
-  background:#ff3333; color:#fff;
-  border:none; border-radius:6px;
-  cursor:pointer; font-family:'Cairo', sans-serif;
+
+#noticeBar{
+  position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
+  background: #000c; color:#fff; padding:10px 16px; border-radius:999px;
+  border:1px solid #fff4; z-index:1000; opacity:0; pointer-events:none;
+  transition: opacity .25s ease;
 }
-h1 {
-    font-size: 36px;
-    color: #ff3333;
-    margin-bottom: 30px;
+
+/* لوحة اللاعبين */
+#wheel canvas{ display:block; margin:10px auto 0; }
+#turnTimerText { margin-top:6px; }
+#turnProgressWrap{ width:80%; height:10px; background:#ffffff22; border-radius:999px; margin:6px auto 0; overflow:hidden; }
+#turnProgress{ height:100%; width:0%; background:linear-gradient(90deg, #0ff, #09f); transition: width .2s linear; }
+
+/* الدول Grid */
+#countryList{
+  display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:10px; padding:8px;
 }
-.eliminated-section {
-    margin-top: 30px;
-    padding: 15px;
-    background: rgba(255, 0, 0, 0.2);
-    border-radius: 8px;
-    border: 1px solid #ff0000;
+.country{
+  background:var(--card); border:1px solid #ffffff1a; border-radius:10px; padding:8px;
+  text-align:center; opacity:0; transform: translateY(8px) scale(.98);
+  transition: all .25s ease; cursor:pointer; user-select:none;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
 }
-.eliminated-title {
-    color: #ff0000;
-    font-size: 24px;
-    margin-bottom: 10px;
-}
-.eliminated-content {
-    color: #ff9999;
-    font-size: 18px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-}
-.eliminated-item {
-    background: rgba(255, 0, 0, 0.3);
-    padding: 5px 10px;
-    border-radius: 5px;
-    margin: 5px;
-}
-.revive-section {
-    margin-top: 20px;
-    padding: 15px;
-    background: rgba(0, 255, 0, 0.2);
-    border-radius: 8px;
-    border: 1px solid #00ff00;
-}
-.revive-title {
-    color: #00ff00;
-    font-size: 24px;
-    margin-bottom: 10px;
-}
-.revive-select {
-    padding: 8px;
-    font-size: 16px;
-    margin-right: 10px;
-    border-radius: 5px;
-    border: none;
-}
-.revive-button {
-    background: #28a745;
-    color: white;
-    padding: 8px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-family: 'Cairo', sans-serif;
-}
-.spin-time-select {
-    margin-top: 10px;
-    padding: 8px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: none;
-}
+.country.show{ opacity:1; transform: translateY(0) scale(1); }
+.country img{ width:80px; display:block; margin:2px auto 6px; border-radius:6px; }
+
+/* المقصّيين */
+.eliminated-section { margin-top: 16px; padding: 12px; background: rgba(255,0,0,0.12);
+  border-radius: 10px; border: 1px solid #ff000055; }
+.eliminated-title { color: #ff6b6b; font-size: 22px; margin:0 0 6px; }
+.eliminated-content { color: #ff9999; font-size: 16px; display:flex; flex-wrap:wrap; justify-content:center; gap:8px; }
+.eliminated-item { background: rgba(255,0,0,0.25); padding:6px 10px; border-radius: 8px; }
+
+/* إعادة اللاعبين */
+.revive-section{ margin-top: 12px; padding: 12px; background: rgba(0,255,0,0.12);
+  border-radius: 10px; border: 1px solid #00ff0055; }
+.revive-title{ color:#00ff99; font-size:22px; margin:0 0 8px; }
+.revive-select{ padding:8px; font-size:16px; border-radius:8px; border:none; }
+.revive-button{ background:#28a745; }
+
+/* لوحة نتائج + تاريخ أحداث */
+.sidebar{ width:100%; border-top:1px dashed #ffffff33; margin-top:10px; padding-top:10px; }
+.score-table{ width:100%; border-collapse: collapse; font-size:14px; }
+.score-table th, .score-table td{ padding:6px 8px; border-bottom:1px solid #ffffff1a; text-align:center; }
+.score-table th{ color:#0ff; }
+.bad-icon{ color: var(--bad); }
+.ok-icon{ color: var(--ok); }
+
+/* مؤقت الجولة */
+#roundTimerBox{ margin-top:10px; padding:8px; background:#0004; border:1px solid #ffffff22; border-radius:10px; display:inline-block; }
+#themeToggle{ position: fixed; bottom: 14px; left: 14px; padding:8px 12px; font-size:14px; background:#222; border:1px solid #fff2; }
 </style>
 </head>
 <body>
+<div id="noticeBar"></div>
+
 <h1>🌍 لعبة حرب الدول</h1>
-<p>اختر المنصة وأرسل "!دخول" في الشات للانضمام</p>
+<p>اختر المنصة وأرسل <span class="badge">!دخول</span> في الشات للانضمام <span class="badge">يُقفل بعد البدء</span></p>
+
 <div class="container">
-  <div class="wheel" id="wheel">
+  <!-- لوحة اللاعبين -->
+  <div class="panel" id="wheel">
     <h3>👥 قائمة اللاعبين</h3>
-    <p style="font-size:14px; color:#ccc;">سيكون اختيار الأسماء عشوائيًا</p>
-    <canvas id="playerWheel" width="400" height="400" style="margin: 20px auto; display: block;"></canvas>
-    <div>
-      <select id="spinTimeSelect" class="spin-time-select">
-        <option value="10">10 ثواني</option>
-        <option value="20">20 ثانية</option>
-        <option value="30">30 ثانية</option>
-        <option value="40">40 ثانية</option>
-        <option value="50">50 ثانية</option>
-        <option value="60" selected>60 ثانية</option>
-      </select>
+    <p class="small-note">سيكون اختيار الأسماء عشوائيًا</p>
+    <canvas id="playerWheel" width="420" height="420"></canvas>
+    <div class="controls-row" style="margin-top:6px;">
+      <div title="مدة دوران العجلة: تؤثر على مدة الأنيميشن فقط">
+        <select id="spinTimeSelect">
+          <option value="10">10 ثواني</option>
+          <option value="20">20 ثانية</option>
+          <option value="30">30 ثانية</option>
+          <option value="40">40 ثانية</option>
+          <option value="50">50 ثانية</option>
+          <option value="60" selected>60 ثانية</option>
+        </select>
+        <div class="small-note">⏱️ مدة دوران العجلة</div>
+      </div>
+
+      <div title="عدّاد الدور: الوقت المسموح للاعب المختار قبل التجاوز">
+        <select id="turnSecondsSelect">
+          <option value="20">20ث</option>
+          <option value="30" selected>30ث</option>
+          <option value="45">45ث</option>
+          <option value="60">60ث</option>
+        </select>
+        <div class="small-note">⌚ عدّاد الدور</div>
+      </div>
+
       <button onclick="spinWheelAnimated()">🎯 دوران العجلة</button>
+      <button class="ghost" onclick="skipTurn()">⏭️ تجاوز الدور</button>
+      <button class="alt" onclick="resetGame()">↺ إعادة تعيين</button>
+    </div>
+    <div id="turnTimerText" class="small-note">⏳ عدّاد الدور: غير نشط</div>
+    <div id="turnProgressWrap"><div id="turnProgress"></div></div>
+
+    <div class="sidebar">
+      <h4 style="margin:10px 0 6px;">📊 لوحة النتائج</h4>
+      <table class="score-table" id="scoreTable">
+        <thead><tr><th>اللاعب</th><th>الدول</th><th>الحصانة</th></tr></thead>
+        <tbody></tbody>
+      </table>
+
+      <h4 style="margin:10px 0 6px;">🕑 آخر الأحداث</h4>
+      <div id="eventLog" class="small-note" style="text-align:right; max-height:140px; overflow:auto;"></div>
+
+      <div style="margin-top:10px;">
+        <button class="warn" onclick="endRound()">🏁 إنهاء الجولة وإعلان الفائز</button>
+      </div>
     </div>
   </div>
-  <div class="countries" id="countries">
-    <h3>🌐 الدول</h3>
+
+  <!-- الدول -->
+  <div class="panel">
+    <div class="controls-row" style="justify-content:space-between;">
+      <h3 style="margin:0;">🌐 الدول</h3>
+      <div>
+        <button onclick="manualShuffle()">🔁 خلط الدول</button>
+        <button class="ghost" onclick="clearSavedState()">🗑️ حذف الحفظ</button>
+      </div>
+    </div>
+    <p class="small-note">تقدر تنقر على بطاقة دولة للهجوم إذا كان دورك</p>
     <div id="countryList"></div>
+
+    <!-- مقصّيين -->
+    <div class="eliminated-section" id="eliminatedSection">
+      <h3 class="eliminated-title">🚫 الدول المقصاة واللاعبين المطرودين</h3>
+      <div class="eliminated-content" id="eliminatedContent">
+        <div class="eliminated-item">لا يوجد محذوفين بعد</div>
+      </div>
+    </div>
+
+    <!-- إعادة اللاعبين + مؤقت الجولة -->
+    <div class="revive-section" id="reviveSection">
+      <h3 class="revive-title">♻️ إعادة لاعب</h3>
+      <select id="reviveSelect" class="revive-select">
+        <option value="">اختر لاعباً لإعادته</option>
+      </select>
+      <button onclick="revivePlayer()" class="revive-button">إعادة اللاعب</button>
+      <p class="small-note">أوامر الشات: <b>!اعاده @اسم</b> — الخروج: <b>!خروج</b></p>
+
+      <div id="roundTimerBox" title="مؤقت الجولة: حدّ أقصى لمدّة المباراة كلها">
+        ⌛ مؤقت الجولة:
+        <select id="roundSelect" onchange="resetRoundTimerSelect()">
+          <option value="0">بدون</option>
+          <option value="600">10 دقائق</option>
+          <option value="900">15 دقيقة</option>
+          <option value="1800" selected>30 دقيقة</option>
+        </select>
+        <span id="roundTimeText">— غير نشط</span>
+        <button class="cyan" onclick="startRoundTimer()">بدء</button>
+        <button class="alt" onclick="stopRoundTimer()">إيقاف</button>
+        <div class="small-note">📝 عند انتهاء المؤقت: نعلن الفائز حسب الباقين/أكثر دول</div>
+      </div>
+    </div>
   </div>
 </div>
+
 <div class="overlay" id="overlay"></div>
-<div style="margin-top:20px;">
-  <select id="platformSelect" style="padding:10px;font-size:18px;">
+
+<!-- اتصال بالشات -->
+<div style="margin-top:16px;">
+  <select id="platformSelect">
     <option value="twitch">Twitch</option>
     <option value="kick">Kick</option>
   </select>
-  <input type="text" id="channelInput" placeholder="🎮 اكتب اسم القناة" style="padding:10px;font-size:18px;">
-  <button onclick="connectChat()" style="padding:10px;font-size:18px;background:#28a745;color:#fff;border:none;border-radius:6px;cursor:pointer;">
-    ✅ تسجيل الدخول
-  </button>
-  <div id="chatStatus" style="margin-top:10px;font-size:16px;color:#0f0;"></div>
-</div>
-<button onclick="startGame()">بدء اللعبة</button>
-<h3 id="currentTurnDisplay" style="margin-top:20px; color:#0ff;">✨ الدور الآن: لم يبدأ بعد</h3>
-
-<!-- قسم الدول المقصاة واللاعبين المطرودين -->
-<div class="eliminated-section" id="eliminatedSection">
-    <h3 class="eliminated-title">🚫 الدول المقصاة واللاعبين المطرودين</h3>
-    <div class="eliminated-content" id="eliminatedContent">
-        <div class="eliminated-item">لا يوجد محذوفين بعد</div>
-    </div>
+  <input type="text" id="channelInput" placeholder="🎮 اكتب اسم القناة">
+  <button class="green" onclick="connectChat()">✅ تسجيل الدخول</button>
+  <div id="chatStatus" class="small-note" style="margin-top:6px; color:#0f0;"></div>
 </div>
 
-<!-- قسم إعادة اللاعبين -->
-<div class="revive-section" id="reviveSection">
-    <h3 class="revive-title">♻️ إعادة لاعب</h3>
-    <select id="reviveSelect" class="revive-select">
-        <option value="">اختر لاعباً لإعادته</option>
-    </select>
-    <button onclick="revivePlayer()" class="revive-button">إعادة اللاعب</button>
-    <p style="color:#ccc; margin-top:10px;">يمكنك أيضاً استخدام الأمر: !اعاده @اسم_اللاعب</p>
+<div class="controls-row" style="margin-top:12px; gap:6px;">
+  <button onclick="startGame()">بدء اللعبة</button>
+  <button class="green" onclick="saveState()">💾 حفظ</button>
+  <button class="cyan" onclick="loadState()">📥 استرجاع</button>
+  <button id="themeToggle" onclick="toggleTheme()">🌓 تبديل الثيم</button>
 </div>
+
+<h3 id="currentTurnDisplay" style="margin-top:10px; color:#0ff;">✨ الدور الآن: لم يبدأ بعد</h3>
 
 <script>
+/* =========================
+   الحالة والمتغيرات العامة
+   ========================= */
 let players = [], playerColors = {}, currentTurnPlayer = "";
-let countriesPool = [
+const countriesPool = [
   "السعودية","الإمارات","قطر","مصر","الأردن","لبنان","العراق","الكويت","عمان","البحرين",
   "تونس","الجزائر","المغرب","ليبيا","السودان","اليمن","سوريا","فلسطين","تركيا","إيران",
-  "ألمانيا","فرنسا","إيطاليا","إسبانيا","أمريكا","كندا","روسيا","الصين","اليابان","الهند",
-  "البرازيل","الأرجنتين","المكسيك","جنوب أفريقيا","نيجيريا","كينيا","أندونيسيا","ماليزيا",
-  "تايلاند","فيتنام","كوريا الجنوبية","أستراليا","نيوزيلندا","اليونان","إنجلترا","البرتغال",
-  "هولندا","بلجيكا","السويد","النرويج","فنلندا","الدنمارك","بولندا","أوكرانيا","النمسا",
-  "سويسرا","جمهورية التشيك","رومانيا","المجر","كولومبيا","بيرو","تشيلي","فنزويلا","الإكوادور"
+  "ألمانيا","فرنسا","إيطاليا","إسبانيا","أمريكا","كندا","روسيا","الصين","اليابان","الهند"
 ];
-let countryCodes = {
-  "السعودية":"sa","الإمارات":"ae","قطر":"qa","مصر":"eg","الأردن":"jo","لبنان":"lb",
-  "العراق":"iq","الكويت":"kw","عمان":"om","البحرين":"bh","تونس":"tn","الجزائر":"dz",
-  "المغرب":"ma","ليبيا":"ly","السودان":"sd","اليمن":"ye","سوريا":"sy","فلسطين":"ps",
-  "تركيا":"tr","إيران":"ir","ألمانيا":"de","فرنسا":"fr","إيطاليا":"it","إسبانيا":"es",
-  "أمريكا":"us","كندا":"ca","روسيا":"ru","الصين":"cn","اليابان":"jp","الهند":"in",
-  "البرازيل":"br","الأرجنتين":"ar","المكسيك":"mx","جنوب أفريقيا":"za","نيجيريا":"ng",
-  "كينيا":"ke","أندونيسيا":"id","ماليزيا":"my","تايلاند":"th","فيتنام":"vn",
-  "كوريا الجنوبية":"kr","أستراليا":"au","نيوزيلندا":"nz","اليونان":"gr","إنجلترا":"gb-eng",
-  "البرتغال":"pt","هولندا":"nl","بلجيكا":"be","السويد":"se","النرويج":"no",
-  "فنلندا":"fi","الدنمارك":"dk","بولندا":"pl","أوكرانيا":"ua","النمسا":"at",
-  "سويسرا":"ch","جمهورية التشيك":"cz","رومانيا":"ro","المجر":"hu","كولومبيا":"co",
-  "بيرو":"pe","تشيلي":"cl","فنزويلا":"ve","الإكوادور":"ec"
-};
 let assignedCountries = {}, remainingCountries = [], immunityCountries = [], reviveCountries = [], usedSpecialCountries = [];
 let playerImmunity = {}, eliminatedPlayers = [], lastReviver = "";
 let isGameStarted = false;
 const overlay = document.getElementById("overlay");
 let eliminatedData = [];
+let turnTimerId = null, turnSeconds = 30, joinLocked = false;
+let roundTimerId = null, roundLeft = 0;
+let eventLog = [];
 
-function getColorForPlayer(player) {
-  const hash = [...player].reduce((a, c) => a + c.charCodeAt(0), 0);
-  return `hsl(${hash % 360}, 70%, 60%)`;
+/* =========================
+   إشعارات علوية + Overlay
+   ========================= */
+const notice = document.getElementById('noticeBar');
+function toast(msg, ms=3000){
+  overlay.textContent = msg;
+  overlay.style.display = "flex";
+  clearTimeout(overlay._t);
+  overlay._t = setTimeout(()=> overlay.style.display = "none", ms);
+}
+function notify(msg, ms=1800){
+  notice.textContent = msg;
+  notice.style.opacity = 1;
+  clearTimeout(notice._t);
+  notice._t = setTimeout(()=> notice.style.opacity = 0, ms);
 }
 
-function addPlayer(name, color = "#fff") {
+/* =========================
+   أدوات مساعدة
+   ========================= */
+function getColorForPlayer(player) {
+  if (playerColors[player]) return playerColors[player];
+  const hash = [...player].reduce((a, c) => a + c.charCodeAt(0), 0);
+  const col = `hsl(${hash % 360}, 70%, 60%)`;
+  playerColors[player] = col;
+  return col;
+}
+function addPlayer(name, color = null) {
+  if (joinLocked) return;
+  if (!name) return;
   if (!players.includes(name)) {
     players.push(name);
-    playerColors[name] = color;
-    renderPlayers();
+    getColorForPlayer(name);
+    renderPlayers(); updateScoreboard();
   }
 }
+function removePlayer(name){
+  const idx = players.indexOf(name);
+  if (idx !== -1){
+    players.splice(idx,1);
+    delete playerColors[name];
+    for (const c of Object.keys(assignedCountries)){
+      if (assignedCountries[c] === name){
+        delete assignedCountries[c];
+        remainingCountries = remainingCountries.filter(x=>x!==c);
+      }
+    }
+    eliminatedPlayers = eliminatedPlayers.filter(x=>x!==name);
+    eliminatedData = eliminatedData.filter(item=> item.player !== name);
+    renderPlayers(); renderCountries(); updateEliminatedDisplay(); updateScoreboard();
+  }
+}
+function logEvent(text){
+  const ts = new Date().toLocaleTimeString();
+  eventLog.unshift(`• [${ts}] ${text}`);
+  eventLog = eventLog.slice(0, 20);
+  document.getElementById('eventLog').innerHTML = eventLog.map(e=>`<div>${e}</div>`).join('');
+}
 
+/* =========================
+   رسم عجلة اللاعبين
+   ========================= */
 function renderPlayers(rotation = 0) {
   const canvas = document.getElementById("playerWheel");
   if (!canvas) return;
@@ -239,15 +333,15 @@ function renderPlayers(rotation = 0) {
     const angle = slice * i + rotation;
     ctx.beginPath(); ctx.moveTo(r, r);
     ctx.arc(r, r, r, angle, angle + slice);
-    ctx.fillStyle = playerColors[p]; ctx.fill(); ctx.stroke();
+    ctx.fillStyle = getColorForPlayer(p); ctx.fill(); ctx.strokeStyle="#000"; ctx.lineWidth=1; ctx.stroke();
     ctx.save(); ctx.translate(r, r); ctx.rotate(angle + slice / 2);
     ctx.textAlign = "right";
     ctx.fillStyle = "#000";
     ctx.font = "bold 14px Cairo";
-    let displayName = p;
-    if (playerImmunity[p]) displayName += " (محصن)";
+    let displayName = p + (playerImmunity[p] ? " (محصن)" : "");
     ctx.fillText(displayName, r - 10, 5); ctx.restore();
   });
+  // السهم الثابت عند زاوية 0 راديان (يمين المركز)
   ctx.beginPath();
   ctx.moveTo(canvas.width - 20, r);
   ctx.lineTo(canvas.width, r - 20);
@@ -257,337 +351,359 @@ function renderPlayers(rotation = 0) {
   ctx.fill();
 }
 
+/* =========================
+   المقصّيين + الإعادة
+   ========================= */
 function updateEliminatedDisplay() {
-    const eliminatedContent = document.getElementById("eliminatedContent");
-    const reviveSelect = document.getElementById("reviveSelect");
-    
-    eliminatedContent.innerHTML = "";
-    reviveSelect.innerHTML = '<option value="">اختر لاعباً لإعادته</option>';
-    
-    if (eliminatedData.length === 0) {
-        eliminatedContent.innerHTML = '<div class="eliminated-item">لا يوجد محذوفين بعد</div>';
-        return;
-    }
-    
-    eliminatedData.forEach(item => {
-        const itemElement = document.createElement("div");
-        itemElement.className = "eliminated-item";
-        itemElement.textContent = `(${item.country}) ${item.player}`;
-        eliminatedContent.appendChild(itemElement);
-        
-        const option = document.createElement("option");
-        option.value = item.player;
-        option.textContent = item.player;
-        reviveSelect.appendChild(option);
-    });
+  const eliminatedContent = document.getElementById("eliminatedContent");
+  const reviveSelect = document.getElementById("reviveSelect");
+  eliminatedContent.innerHTML = "";
+  reviveSelect.innerHTML = '<option value="">اختر لاعباً لإعادته</option>';
+  if (eliminatedData.length === 0) {
+      eliminatedContent.innerHTML = '<div class="eliminated-item">لا يوجد محذوفين بعد</div>';
+      return;
+  }
+  eliminatedData.forEach(item => {
+      const itemElement = document.createElement("div");
+      itemElement.className = "eliminated-item";
+      itemElement.textContent = `(${item.country}) ${item.player}`;
+      eliminatedContent.appendChild(itemElement);
+      const option = document.createElement("option");
+      option.value = item.player;
+      option.textContent = item.player;
+      reviveSelect.appendChild(option);
+  });
 }
-
 function revivePlayer() {
-    const reviveSelect = document.getElementById("reviveSelect");
-    const playerToRevive = reviveSelect.value;
-    
-    if (!playerToRevive) return;
-    
-    if (eliminatedPlayers.includes(playerToRevive)) {
-        players.push(playerToRevive);
-        playerColors[playerToRevive] = getColorForPlayer(playerToRevive);
-        eliminatedPlayers = eliminatedPlayers.filter(x => x !== playerToRevive);
-        eliminatedData = eliminatedData.filter(item => item.player !== playerToRevive);
-        
-        const availableCountries = countriesPool.filter(c => 
-            !remainingCountries.includes(c) && 
-            !usedSpecialCountries.includes(c)
-        );
-        
-        if (availableCountries.length > 0) {
-            const newCountry = availableCountries[Math.floor(Math.random() * availableCountries.length)];
-            assignedCountries[newCountry] = playerToRevive;
-            remainingCountries.push(newCountry);
-            usedSpecialCountries.push(newCountry);
-            
-            shufflePlayersAndCountries();
-            
-            renderCountries();
-            renderPlayers();
-            updateEliminatedDisplay();
-            
-            overlay.innerText = `♻️ تمت إعادة اللاعب ${playerToRevive} بدولة جديدة`;
-            overlay.style.display = "flex";
-            setTimeout(() => overlay.style.display = "none", 3000);
-        }
-    }
+  const reviveSelect = document.getElementById("reviveSelect");
+  const playerToRevive = reviveSelect.value;
+  if (!playerToRevive) return;
+  reviveByName(playerToRevive);
+}
+function reviveByName(playerToRevive){
+  if (!eliminatedPlayers.includes(playerToRevive)) return;
+  players.push(playerToRevive);
+  getColorForPlayer(playerToRevive);
+  eliminatedPlayers = eliminatedPlayers.filter(x => x !== playerToRevive);
+  eliminatedData = eliminatedData.filter(item => item.player !== playerToRevive);
+  const availableCountries = countriesPool.filter(c => 
+      !remainingCountries.includes(c) && 
+      !usedSpecialCountries.includes(c)
+  );
+  if (availableCountries.length > 0) {
+      const newCountry = availableCountries[Math.floor(Math.random() * availableCountries.length)];
+      assignedCountries[newCountry] = playerToRevive;
+      remainingCountries.push(newCountry);
+      usedSpecialCountries.push(newCountry);
+      shufflePlayersAndCountries();
+      renderCountries();
+      renderPlayers();
+      updateEliminatedDisplay();
+      updateScoreboard();
+      notify(`♻️ تمت إعادة ${playerToRevive} بدولة جديدة`);
+      logEvent(`إعادة ${playerToRevive}`);
+  }
 }
 
+/* =========================
+   خلط اللاعبين والدول
+   ========================= */
 function shufflePlayersAndCountries() {
-    for (let i = players.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [players[i], players[j]] = [players[j], players[i]];
-    }
-    
-    const shuffledCountries = [...remainingCountries].sort(() => Math.random() - 0.5);
-    const newAssignedCountries = {};
-    
-    shuffledCountries.forEach((country, i) => {
-        if (assignedCountries[country]) {
-            const player = players[i % players.length];
-            newAssignedCountries[country] = player;
-        } else {
-            newAssignedCountries[country] = null;
-        }
-    });
-    
-    assignedCountries = newAssignedCountries;
+  for (let i = players.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [players[i], players[j]] = [players[j], players[i]];
+  }
+  const shuffledCountries = [...remainingCountries].sort(() => Math.random() - 0.5);
+  const newAssignedCountries = {};
+  shuffledCountries.forEach((country, i) => {
+      if (assignedCountries[country] !== undefined) {
+          const player = players[i % players.length] || null;
+          newAssignedCountries[country] = player;
+      } else {
+          newAssignedCountries[country] = null;
+      }
+  });
+  assignedCountries = newAssignedCountries;
+}
+function manualShuffle(){
+  shufflePlayersAndCountries();
+  renderCountries();
+  renderPlayers();
+  updateScoreboard();
+  notify("🔁 تم خلط الدول واللاعبين عشوائيًا");
 }
 
+/* =========================
+   دوران العجلة — دقّة وساعة حقيقية
+   ========================= */
 function spinWheelAnimated() {
   if (players.length === 0) return;
-  
-  const spinTimeSelect = document.getElementById("spinTimeSelect");
-  const spinDuration = parseInt(spinTimeSelect.value) * 100; // تحويل إلى إطارات (كل إطار 10ms)
-  
-  let rotation = 0, frame = 0;
+
+  stopTurnTimer(); // نوقف عدّاد الدور لو شغّال
+
+  const spinSec = Math.max(1, parseInt(document.getElementById("spinTimeSelect").value) || 10);
+  const durationMs = spinSec * 1000; // ← مدة حقيقية بالمللي ثانية
   const slice = 2 * Math.PI / players.length;
-  const fullSpins = 5 * 2 * Math.PI;
-  const randomAngle = Math.random() * 2 * Math.PI;
-  const target = fullSpins + randomAngle;
-  
-  function animate() {
-    frame++;
-    const t = frame / spinDuration;
+
+  const fullSpins = 5 * 2 * Math.PI;     // دورات كاملة لجمالية الحركة
+  const randomAngle = Math.random() * 2 * Math.PI; // زاوية عشوائية لنتيجة مختلفة كل مرة
+  const targetRotation = fullSpins + randomAngle;
+
+  let rotation = 0;
+  const start = performance.now();
+
+  function animate(now) {
+    const elapsed = now - start;
+    let t = Math.min(1, elapsed / durationMs);      // 0 → 1 بحسب الوقت الحقيقي
+    // منحنى تسهيل (ease-in-out, smoothstep)
     const eased = t * t * (3 - 2 * t);
-    rotation = target * eased;
+    rotation = targetRotation * eased;
     renderPlayers(rotation);
-    
-    if (frame < spinDuration) {
+
+    if (t < 1) {
       requestAnimationFrame(animate);
     } else {
-      const index = Math.floor(((2 * Math.PI - (rotation % (2 * Math.PI))) % (2 * Math.PI)) / slice);
+      // حساب الفائز بدقة: السهم عند زاوية 0 راديان (يمين)
+      const final = rotation % (2 * Math.PI);
+      // الزاوية المقابلة تحت السهم هي عكس دوران العجلة:
+      const angleUnderPointer = ( (2 * Math.PI) - final ) % (2 * Math.PI);
+      // حوّلها إلى فهرس القطاع:
+      const index = Math.floor(angleUnderPointer / slice) % players.length;
+
       currentTurnPlayer = players[index];
-      overlay.textContent = `🎯 اللاعب المختار: ${currentTurnPlayer}`;
-      overlay.style.display = "flex";
+      toast(`🎯 اللاعب المختار: ${currentTurnPlayer}`, 1200);
       document.getElementById("currentTurnDisplay").innerText = `✨ الدور الآن: ${currentTurnPlayer}`;
-      setTimeout(() => overlay.style.display = "none", 3000);
+
+      // ابدأ عدّاد الدور الحقيقي بعد الاختيار
+      turnSeconds = parseInt(document.getElementById("turnSecondsSelect").value) || 30;
+      startTurnTimer();
+      logEvent(`اختيار الدور: ${currentTurnPlayer}`);
     }
   }
-  
-  animate();
+  requestAnimationFrame(animate);
 }
 
+/* =========================
+   عدّاد الدور (اللاعب المختار)
+   ========================= */
+function startTurnTimer(){
+  const txt = document.getElementById("turnTimerText");
+  const bar = document.getElementById("turnProgress");
+  let secs = turnSeconds;
+  txt.textContent = `⏳ عدّاد الدور: ${secs}ث`;
+  stopTurnTimer();
+  bar.style.width = "100%";
+  const total = secs;
+  turnTimerId = setInterval(()=>{
+    secs--;
+    txt.textContent = `⏳ عدّاد الدور: ${secs}ث`;
+    bar.style.width = Math.max(0, (secs/total)*100) + "%";
+    if (secs <= 0){
+      stopTurnTimer();
+      txt.textContent = `⏳ عدّاد الدور: انتهى`;
+      notify(`⏭️ انتهى وقت ${currentTurnPlayer} — تم تجاوز الدور`);
+      logEvent(`تجاوز الدور عن ${currentTurnPlayer}`);
+      currentTurnPlayer = "";
+      document.getElementById("currentTurnDisplay").innerText = `✨ الدور الآن: لم يتم الاختيار`;
+    }
+  }, 1000);
+}
+function stopTurnTimer(){
+  if (turnTimerId){ clearInterval(turnTimerId); turnTimerId = null; }
+  const bar = document.getElementById("turnProgress");
+  if (bar) bar.style.width = "0%";
+}
+function skipTurn(){
+  if (!currentTurnPlayer) return;
+  notify(`⏭️ تجاوزنا دور ${currentTurnPlayer}`);
+  logEvent(`تجاوز ${currentTurnPlayer}`);
+  currentTurnPlayer = "";
+  document.getElementById("currentTurnDisplay").innerText = `✨ الدور الآن: لم يتم الاختيار`;
+  stopTurnTimer();
+}
+
+/* =========================
+   بدء اللعبة
+   ========================= */
 function startGame() {
   if (players.length < 2) return alert("يجب إضافة لاعبين أولاً!");
   isGameStarted = true;
-  
-  // إعادة تعيين جميع المتغيرات
+  joinLocked = true;
+  usedSpecialCountries = [];
+  eliminatedData = [];
+  playerImmunity = {};
+  eliminatedPlayers = [];
+  lastReviver = "";
   assignedCountries = {};
   remainingCountries = [];
   immunityCountries = [];
   reviveCountries = [];
-  playerImmunity = {};
-  eliminatedPlayers = [];
-  lastReviver = "";
-  usedSpecialCountries = [];
-  eliminatedData = [];
 
-  // حساب عدد الدول المطلوبة (لاعبين + 4 دول خاصة)
-  const totalNeeded = players.length + 4;
-  
-  // إنشاء نسخة من مجموعة الدول الأصلية
+  const totalNeeded = Math.min(countriesPool.length, players.length + 4);
   const availableCountries = [...countriesPool];
-  
-  // اختيار الدول المطلوبة بشكل عشوائي مع منع التكرار
   const selectedCountries = [];
-  while (selectedCountries.length < totalNeeded && availableCountries.length > 0) {
+  for (let i = 0; i < totalNeeded; i++) {
+    if (availableCountries.length === 0) break;
     const randomIndex = Math.floor(Math.random() * availableCountries.length);
-    const selectedCountry = availableCountries[randomIndex];
-    
-    // التأكد من عدم تكرار الدولة
-    if (!selectedCountries.includes(selectedCountry)) {
-      selectedCountries.push(selectedCountry);
-      availableCountries.splice(randomIndex, 1);
-    }
+    selectedCountries.push(availableCountries[randomIndex]);
+    availableCountries.splice(randomIndex, 1);
   }
-  
-  // اختيار 4 دول خاصة (حصانة وإعادة) بشكل عشوائي من الدول المختارة
   const specialCountries = [];
-  while (specialCountries.length < 4 && selectedCountries.length > 0) {
+  while (specialCountries.length < Math.min(4, selectedCountries.length)) {
     const randomIndex = Math.floor(Math.random() * selectedCountries.length);
-    const selectedSpecial = selectedCountries[randomIndex];
-    
-    // التأكد من عدم تكرار الدولة الخاصة
-    if (!specialCountries.includes(selectedSpecial)) {
-      specialCountries.push(selectedSpecial);
-      selectedCountries.splice(randomIndex, 1);
-    }
+    specialCountries.push(selectedCountries[randomIndex]);
+    selectedCountries.splice(randomIndex, 1);
   }
-  
   immunityCountries = specialCountries.slice(0, 2);
   reviveCountries = specialCountries.slice(2);
   usedSpecialCountries.push(...specialCountries);
-  
-  // الدول المتبقية للاعبين
+
   const playableCountries = [...selectedCountries];
-  
-  // توزيع الدول على اللاعبين بشكل عشوائي تماماً
   const shuffledPlayers = [...players];
   for (let i = shuffledPlayers.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [shuffledPlayers[i], shuffledPlayers[j]] = [shuffledPlayers[j], shuffledPlayers[i]];
   }
-  
   playableCountries.forEach((country, i) => {
     const player = shuffledPlayers[i % shuffledPlayers.length];
     assignedCountries[country] = player;
     remainingCountries.push(country);
   });
-  
-  // إضافة الدول الخاصة إلى القائمة
-  remainingCountries.push(...specialCountries);
-  specialCountries.forEach(country => {
-    assignedCountries[country] = null;
-  });
 
-  // عرض الدول واللاعبين
+  remainingCountries.push(...specialCountries);
+  specialCountries.forEach(country => { assignedCountries[country] = null; });
+
   renderCountries();
   renderPlayers();
   updateEliminatedDisplay();
-  
-  // إظهار رسالة بدء اللعبة
-  overlay.textContent = "🎮 بدأت اللعبة! تم توزيع الدول عشوائياً";
-  overlay.style.display = "flex";
-  setTimeout(() => overlay.style.display = "none", 3000);
+  updateScoreboard();
+  toast("🎮 بدأت اللعبة! تم توزيع الدول عشوائياً", 1300);
+  saveState();
 }
 
+/* =========================
+   عرض الدول + النقر للهجوم
+   ========================= */
 function renderCountries() {
   const box = document.getElementById("countryList");
   box.innerHTML = "";
-  
-  const shuffledCountries = [...remainingCountries].sort(() => Math.random() - 0.5);
-  
-  shuffledCountries.forEach((c, i) => {
+  const list = [...remainingCountries];
+  list.forEach((c, i) => {
     const div = document.createElement("div");
     div.className = "country";
-    const countryCode = countryCodes[c] || "un";
-    div.innerHTML = `<img src="https://flagcdn.com/w80/${countryCode}.png"><br>${c}`;
-    
-    setTimeout(() => { box.appendChild(div); setTimeout(() => div.classList.add("show"), 50); }, i * 100);
+    div.innerHTML = `<img src="https://flagcdn.com/w80/${getCountryCode(c)}.png" alt=""><div>${c}</div>`;
+    div.onclick = () => { if (isGameStarted && currentTurnPlayer) attackCountry(c); };
+    setTimeout(() => { box.appendChild(div); setTimeout(() => div.classList.add("show"), 10); }, i * 40);
   });
 }
 
+/* =========================
+   منطق الهجوم
+   ========================= */
 function attackCountry(c) {
+  if (!isGameStarted || !currentTurnPlayer) return;
   if (!remainingCountries.includes(c)) return;
-  const p = assignedCountries[c];
-  
-  overlay.innerText = `🔴 ${currentTurnPlayer} هاجم الدولة: ${c}`;
-  overlay.style.display = "flex";
+
+  const attacker = currentTurnPlayer;
+  const victim = assignedCountries[c];
+
+  toast(`🔴 ${attacker} هاجم ${c}`, 900);
+  stopTurnTimer();
+  currentTurnPlayer = ""; // تجميد الدور أثناء الإجراء
 
   setTimeout(() => {
-    if (playerImmunity[p] && currentTurnPlayer !== p) {
-      playerImmunity[p] = false;
-      overlay.innerText = `🛡️ تم كسر الحصانة عن ${p}`;
+    if (victim && playerImmunity[victim] && attacker !== victim) {
+      playerImmunity[victim] = false;
+      notify(`🛡️ تم كسر حصانة ${victim}`);
+      logEvent(`كسر حصانة ${victim}`);
       shufflePlayersAndCountries();
-      renderCountries(); 
-      renderPlayers();
+      renderCountries(); renderPlayers(); updateScoreboard();
     }
     else if (immunityCountries.includes(c)) {
-      playerImmunity[currentTurnPlayer] = true;
+      playerImmunity[attacker] = true;
       immunityCountries = immunityCountries.filter(x => x !== c);
       usedSpecialCountries.push(c);
       remainingCountries = remainingCountries.filter(x => x !== c);
       delete assignedCountries[c];
-      overlay.innerText = `✅ ${currentTurnPlayer} حصل على حصانة!`;
-      renderCountries(); 
-      renderPlayers();
+      notify(`✅ ${attacker} حصل على حصانة`);
+      logEvent(`حصانة إلى ${attacker}`);
+      renderCountries(); renderPlayers(); updateScoreboard();
     }
     else if (reviveCountries.includes(c)) {
       reviveCountries = reviveCountries.filter(x => x !== c);
       usedSpecialCountries.push(c);
       remainingCountries = remainingCountries.filter(x => x !== c);
       delete assignedCountries[c];
-      lastReviver = currentTurnPlayer;
-      overlay.innerText = `♻️ ${currentTurnPlayer} يمكنك الآن إعادة لاعب باستخدام !اعاده @الاسم`;
+      lastReviver = attacker;
+      notify(`♻️ ${attacker} يقدر يعيد لاعب: !اعاده @الاسم`);
+      logEvent(`صلاحية إعادة حصل عليها ${attacker}`);
       renderCountries();
     }
-    else if (currentTurnPlayer === p) {
-      // إذا هاجم اللاعب نفسه
-      overlay.innerText = `❌ ${currentTurnPlayer} هاجم نفسه!`;
+    else if (victim && attacker === victim) {
       remainingCountries = remainingCountries.filter(x => x !== c);
       delete assignedCountries[c];
-      const index = players.indexOf(p);
+      const index = players.indexOf(victim);
       if (index !== -1) players.splice(index, 1);
-      delete playerColors[p];
-      eliminatedPlayers.push(p);
-      eliminatedData.push({ country: c, player: p });
-      shufflePlayersAndCountries();
-      renderPlayers(); 
-      renderCountries();
-      updateEliminatedDisplay();
+      delete playerColors[victim];
+      eliminatedPlayers.push(victim);
+      eliminatedData.push({ country: c, player: victim });
+      notify(`❌ ${victim} أقصى نفسه`);
+      logEvent(`${victim} أقصى نفسه من ${c}`);
+      renderPlayers(); renderCountries(); updateEliminatedDisplay(); updateScoreboard();
     }
-    else if (currentTurnPlayer !== p && p) {
-      overlay.innerText = `❌ تم إقصاء ${p} من الدولة ${c}`;
+    else if (victim && attacker !== victim) {
       remainingCountries = remainingCountries.filter(x => x !== c);
       delete assignedCountries[c];
-      const index = players.indexOf(p);
+      const index = players.indexOf(victim);
       if (index !== -1) players.splice(index, 1);
-      delete playerColors[p];
-      eliminatedPlayers.push(p);
-      eliminatedData.push({ country: c, player: p });
-      shufflePlayersAndCountries();
-      renderPlayers(); 
-      renderCountries();
-      updateEliminatedDisplay();
+      delete playerColors[victim];
+      eliminatedPlayers.push(victim);
+      eliminatedData.push({ country: c, player: victim });
+      notify(`❌ تم إقصاء ${victim} من ${c}`);
+      logEvent(`${attacker} أقصى ${victim} من ${c}`);
+      renderPlayers(); renderCountries(); updateEliminatedDisplay(); updateScoreboard();
     }
-    setTimeout(() => overlay.style.display = "none", 3000);
-  }, 3000);
+
+    saveState();
+    document.getElementById("currentTurnDisplay").innerText = `✨ الدور الآن: لم يتم الاختيار`;
+  }, 900);
 }
 
+/* =========================
+   أعلام
+   ========================= */
 function getCountryCode(n) {
-  return countryCodes[n] || "un";
+  const codes = { "السعودية":"sa","الإمارات":"ae","قطر":"qa","مصر":"eg","الأردن":"jo","لبنان":"lb","العراق":"iq","الكويت":"kw","عمان":"om","البحرين":"bh","تونس":"tn","الجزائر":"dz","المغرب":"ma","ليبيا":"ly","السودان":"sd","اليمن":"ye","سوريا":"sy","فلسطين":"ps","تركيا":"tr","إيران":"ir","ألمانيا":"de","فرنسا":"fr","إيطاليا":"it","إسبانيا":"es","أمريكا":"us","كندا":"ca","روسيا":"ru","الصين":"cn","اليابان":"jp","الهند":"in" };
+  return codes[n] || "un";
 }
 
+/* =========================
+   اتصال بالشات
+   ========================= */
 function connectChat() {
   const plat = document.getElementById("platformSelect").value;
   const channel = document.getElementById("channelInput").value.trim();
+  if (!channel) { toast("⚠️ اكتب اسم القناة أولاً"); return; }
 
   if (plat === "twitch") {
     const client = new tmi.Client({ channels: [channel] });
     client.connect();
     client.on("message", (ch, tags, msg, self) => {
       if (self) return;
-      const user = tags["display-name"];
-      const color = tags["color"] || "#fff";
-      const content = msg.trim();
+      const user = tags["display-name"] || tags["username"] || "";
+      const color = tags["color"] || null;
+      const content = (msg||"").trim();
 
-      if (content === "!دخول" && !isGameStarted) addPlayer(user, color);
-      if (isGameStarted && currentTurnPlayer === user && countriesPool.includes(content)) {
-        attackCountry(content);
+      if (!isGameStarted && content === "!دخول") addPlayer(user, color);
+      if (content === "!خروج") removePlayer(user);
+
+      if (isGameStarted && currentTurnPlayer && user === currentTurnPlayer && countriesPool.includes(content)) {
+        if (remainingCountries.includes(content)) attackCountry(content);
       }
-      if ((msg.startsWith("!اعاده") || msg.startsWith("!إعاده")) && user === lastReviver) {
-        const mentioned = msg.split("@")[1]?.trim();
-        if (mentioned && eliminatedPlayers.includes(mentioned)) {
-          players.push(mentioned);
-          playerColors[mentioned] = getColorForPlayer(mentioned);
-          eliminatedPlayers = eliminatedPlayers.filter(x => x !== mentioned);
-          eliminatedData = eliminatedData.filter(item => item.player !== mentioned);
-          
-          const availableCountries = countriesPool.filter(c => 
-              !remainingCountries.includes(c) && 
-              !usedSpecialCountries.includes(c)
-          );
-          
-          if (availableCountries.length > 0) {
-              const newCountry = availableCountries[Math.floor(Math.random() * availableCountries.length)];
-              assignedCountries[newCountry] = mentioned;
-              remainingCountries.push(newCountry);
-              usedSpecialCountries.push(newCountry);
-              shufflePlayersAndCountries();
-              renderCountries();
-              renderPlayers();
-              updateEliminatedDisplay();
-              overlay.innerText = `♻️ تمت إعادة اللاعب ${mentioned} بدولة جديدة`;
-              overlay.style.display = "flex";
-              setTimeout(() => overlay.style.display = "none", 3000);
-          }
-        }
+
+      if ((content.startsWith("!اعاده") || content.startsWith("!إعاده")) && user === lastReviver) {
+        const mentioned = content.split("@")[1]?.trim();
+        if (mentioned) reviveByName(mentioned);
       }
     });
     document.getElementById("chatStatus").innerText = "✅ تم الاتصال بـTwitch!";
@@ -599,7 +715,6 @@ function connectChat() {
       .then(data => {
         const roomId = data.chatroom.id;
         const socket = new WebSocket("wss://ws-us2.pusher.com/app/32cbd69e4b950bf97679?protocol=7&client=js&version=8.4.0-rc2");
-
         socket.onopen = () => {
           socket.send(JSON.stringify({ event: "pusher:subscribe", data: { auth: "", channel: `chatrooms.${roomId}.v2` } }));
           setInterval(() => {
@@ -607,49 +722,26 @@ function connectChat() {
               socket.send(JSON.stringify({ event: "pusher:ping", data: {} }));
           }, 12000);
         };
-
         socket.onmessage = (e) => {
           const msg = JSON.parse(e.data);
           if (msg.event === "App\\Events\\ChatMessageEvent") {
             const d = JSON.parse(msg.data);
             const user = d.sender.username;
-            const content = d.content.trim();
+            const content = (d.content || "").trim();
 
-            if (content === "!دخول" && !isGameStarted) addPlayer(user);
-            if (isGameStarted && currentTurnPlayer === user && countriesPool.includes(content)) {
-              attackCountry(content);
+            if (!isGameStarted && content === "!دخول") addPlayer(user);
+            if (content === "!خروج") removePlayer(user);
+
+            if (isGameStarted && currentTurnPlayer && user === currentTurnPlayer && countriesPool.includes(content)) {
+              if (remainingCountries.includes(content)) attackCountry(content);
             }
+
             if ((content.startsWith("!اعاده") || content.startsWith("!إعاده")) && user === lastReviver) {
               const mentioned = content.split("@")[1]?.trim();
-              if (mentioned && eliminatedPlayers.includes(mentioned)) {
-                players.push(mentioned);
-                playerColors[mentioned] = getColorForPlayer(mentioned);
-                eliminatedPlayers = eliminatedPlayers.filter(x => x !== mentioned);
-                eliminatedData = eliminatedData.filter(item => item.player !== mentioned);
-                
-                const availableCountries = countriesPool.filter(c => 
-                    !remainingCountries.includes(c) && 
-                    !usedSpecialCountries.includes(c)
-                );
-                
-                if (availableCountries.length > 0) {
-                    const newCountry = availableCountries[Math.floor(Math.random() * availableCountries.length)];
-                    assignedCountries[newCountry] = mentioned;
-                    remainingCountries.push(newCountry);
-                    usedSpecialCountries.push(newCountry);
-                    shufflePlayersAndCountries();
-                    renderCountries();
-                    renderPlayers();
-                    updateEliminatedDisplay();
-                    overlay.innerText = `♻️ تمت إعادة اللاعب ${mentioned} بدولة جديدة`;
-                    overlay.style.display = "flex";
-                    setTimeout(() => overlay.style.display = "none", 3000);
-                }
-              }
+              if (mentioned) reviveByName(mentioned);
             }
           }
         };
-
         document.getElementById("chatStatus").innerText = "✅ تم الاتصال بـKick!";
       })
       .catch(err => {
@@ -658,6 +750,165 @@ function connectChat() {
       });
   }
 }
+
+/* =========================
+   لوحة النتائج
+   ========================= */
+function updateScoreboard(){
+  const counts = {};
+  for (const c of Object.keys(assignedCountries)){
+    const p = assignedCountries[c];
+    if (p) counts[p] = (counts[p]||0) + 1;
+  }
+  const tbody = document.querySelector('#scoreTable tbody');
+  tbody.innerHTML = players.map(p=>{
+    const n = counts[p]||0;
+    const hasImmunity = !!playerImmunity[p];
+    return `<tr>
+      <td>${p}</td>
+      <td>${n}</td>
+      <td>${hasImmunity ? '<span class="ok-icon">🛡️</span>' : '-'}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* =========================
+   مؤقت الجولة
+   ========================= */
+function resetRoundTimerSelect(){
+  const sel = document.getElementById('roundSelect');
+  roundLeft = parseInt(sel.value)||0;
+  document.getElementById('roundTimeText').textContent = roundLeft ? `— ${formatM(roundLeft)}` : '— غير نشط';
+}
+function startRoundTimer(){
+  stopRoundTimer();
+  roundLeft = parseInt(document.getElementById('roundSelect').value)||0;
+  if (!roundLeft){ notify("⏳ لا يوجد مؤقت محدد"); return; }
+  document.getElementById('roundTimeText').textContent = `— ${formatM(roundLeft)}`;
+  roundTimerId = setInterval(()=>{
+    roundLeft--;
+    document.getElementById('roundTimeText').textContent = `— ${formatM(roundLeft)}`;
+    if (roundLeft<=0){
+      stopRoundTimer();
+      notify("🏁 انتهى زمن الجولة — سنعلن الفائزين حسب البقاء/أكثر دول");
+      endRound(true);
+    }
+  },1000);
+}
+function stopRoundTimer(){
+  if (roundTimerId){ clearInterval(roundTimerId); roundTimerId=null; }
+}
+function formatM(sec){
+  const m = Math.floor(sec/60), s = sec%60;
+  return `${m}:${String(s).padStart(2,'0')}`;
+}
+
+/* =========================
+   إنهاء الجولة وإعلان الفائز
+   ========================= */
+function endRound(auto=false){
+  const counts = {};
+  for (const c of Object.keys(assignedCountries)){
+    const p = assignedCountries[c];
+    if (p) counts[p] = (counts[p]||0) + 1;
+  }
+  let best = [], max = -1;
+  players.forEach(p=>{
+    const n = counts[p]||0;
+    if (n>max){ max=n; best=[p]; }
+    else if (n===max){ best.push(p); }
+  });
+  let msg = "";
+  if (players.length===1){
+    msg = `🏆 الفائز: ${players[0]} — آخر لاعب باقٍ`;
+  }else if (best.length===1){
+    msg = `🏆 الفائز: ${best[0]} — بأكبر عدد دول (${max})`;
+  }else{
+    msg = `🤝 تعادل بين: ${best.join('، ')} — (${max})`;
+  }
+  toast(msg, 3500);
+  logEvent(msg);
+}
+
+/* =========================
+   الحفظ
+   ========================= */
+function saveState(){
+  const state = {
+    players, playerColors, currentTurnPlayer,
+    assignedCountries, remainingCountries,
+    immunityCountries, reviveCountries, usedSpecialCountries,
+    playerImmunity, eliminatedPlayers, lastReviver,
+    isGameStarted, eliminatedData, joinLocked, eventLog
+  };
+  localStorage.setItem("war_states_v3", JSON.stringify(state));
+  notify("💾 تم الحفظ", 900);
+}
+function loadState(){
+  const raw = localStorage.getItem("war_states_v3");
+  if (!raw) { toast("ℹ️ لا يوجد حفظ سابق"); return; }
+  try{
+    const s = JSON.parse(raw);
+    players = s.players || [];
+    playerColors = s.playerColors || {};
+    currentTurnPlayer = s.currentTurnPlayer || "";
+    assignedCountries = s.assignedCountries || {};
+    remainingCountries = s.remainingCountries || [];
+    immunityCountries = s.immunityCountries || [];
+    reviveCountries = s.reviveCountries || [];
+    usedSpecialCountries = s.usedSpecialCountries || [];
+    playerImmunity = s.playerImmunity || {};
+    eliminatedPlayers = s.eliminatedPlayers || [];
+    lastReviver = s.lastReviver || "";
+    isGameStarted = !!s.isGameStarted;
+    eliminatedData = s.eliminatedData || [];
+    joinLocked = !!s.joinLocked;
+    eventLog = s.eventLog || [];
+
+    renderCountries(); renderPlayers(); updateEliminatedDisplay(); updateScoreboard();
+    document.getElementById("eventLog").innerHTML = eventLog.map(e=>`<div>${e}</div>`).join('');
+    document.getElementById("currentTurnDisplay").innerText = `✨ الدور الآن: ${currentTurnPlayer || "غير محدد"}`;
+    notify("📥 تم استرجاع الحالة");
+  }catch(e){
+    console.error(e);
+    toast("⚠️ حصل خطأ أثناء الاسترجاع");
+  }
+}
+function clearSavedState(){
+  localStorage.removeItem("war_states_v3");
+  notify("🗑️ تم حذف الحفظ", 900);
+}
+
+/* =========================
+   ثيم
+   ========================= */
+function toggleTheme(){
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  document.documentElement.setAttribute('data-theme', isLight ? 'dark' : 'light');
+  notify(isLight ? "🌙 ثيم غامق" : "☀️ ثيم فاتح");
+}
+
+/* =========================
+   تهيئة
+   ========================= */
+function resetGame(){
+  if (turnTimerId) clearInterval(turnTimerId);
+  if (roundTimerId) clearInterval(roundTimerId);
+  players = []; playerColors = {}; currentTurnPlayer = "";
+  assignedCountries = {}; remainingCountries = [];
+  immunityCountries = []; reviveCountries = []; usedSpecialCountries = [];
+  playerImmunity = {}; eliminatedPlayers = []; lastReviver = "";
+  isGameStarted = false; eliminatedData = []; joinLocked = false; eventLog = [];
+  renderPlayers(); renderCountries(); updateEliminatedDisplay(); updateScoreboard();
+  document.getElementById("eventLog").innerHTML = "";
+  document.getElementById("currentTurnDisplay").innerText = `✨ الدور الآن: لم يبدأ بعد`;
+  notify("↺ تم إعادة تعيين اللعبة");
+}
+function init(){
+  document.documentElement.setAttribute('data-theme', 'dark');
+  resetRoundTimerSelect();
+}
+init();
 </script>
 </body>
 </html>
