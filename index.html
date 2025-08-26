@@ -130,19 +130,30 @@
     .stat small { display:block; color: var(--muted); font-weight:600 }
 
     /* =====================
-       شبكة الألعاب
+       شبكة الألعاب (تعديل لتصبح صف واحد مع سحب + أسهم)
        ===================== */
     .section { position: relative; z-index:1; max-width: 1200px; margin: 8px auto 40px; padding: 0 18px; }
     .section h2 { font-size: 1.2rem; color: var(--muted); font-weight:800; margin: 18px 6px; letter-spacing:.3px }
 
     .games-grid {
-      display:grid; gap: 22px; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* EDIT */
+      display:flex;
+      gap: 22px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-behavior: smooth;
+      scroll-snap-type: x mandatory;
+      padding-bottom: 6px;
+      -webkit-overflow-scrolling: touch;
     }
+    .games-grid::-webkit-scrollbar { height: 8px; }
+    .games-grid::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 999px; }
     .game-card {
       position:relative; overflow:hidden; border-radius: 18px; background: var(--card); border: 1px solid var(--border);
-      box-shadow: 0 14px 36px rgba(0,0,0,.35); display:flex; flex-direction:column; min-height: 180px; /* EDIT */
+      box-shadow: 0 14px 36px rgba(0,0,0,.35); display:flex; flex-direction:column; min-height: 180px;
       transition: transform .2s ease, box-shadow .25s ease, border-color .25s ease;
       isolation:isolate;
+      min-width: 240px;
+      scroll-snap-align: start;
     }
     .game-card::before { /* خلفية صورة خافتة */
       content:""; position:absolute; inset:0; z-index:0; opacity:.25; background-size:cover; background-position:center; filter: grayscale(.2) contrast(1.05) saturate(1.1);
@@ -167,12 +178,33 @@
     }
     .start-btn:hover { transform: translateY(-2px); box-shadow: 0 16px 36px rgba(0,216,108,.35); filter: saturate(1.1) }
 
+    /* أزرار تمرير الألعاب يمين/يسار */
+    .games-scroller-btn {
+      position: absolute;
+      top: 66px;
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--glass);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      box-shadow: 0 10px 22px rgba(0,0,0,.35);
+      z-index: 5;
+    }
+    .games-scroller-btn:hover { transform: translateY(-2px); }
+    .games-scroller-prev { inset-inline-start: 6px; }
+    .games-scroller-next { inset-inline-end: 6px; }
+
     /* صور البطاقات */
     .img-1::before { background-image: url('https://i.postimg.cc/ncVfrn3s/images.jpg'); }
     .img-2::before { background-image: url('https://i.postimg.cc/rwB4CVZj/Screenshot-2.png'); }
     .img-3::before { background-image: url('https://i.postimg.cc/d1yZhzjX/Screenshot-3.png'); }
     .img-4::before { background-image: url('https://i.postimg.cc/RFt8R96S/Screenshot-2025-07-08-055210.png'); }
     .img-5::before { background-image: url('https://i.postimg.cc/zvyNQ4hY/2025-08-12-025123.png'); }
+    .img-6::before { background-image: url('https://via.placeholder.com/1200x800.png?text=5+in+1+%7C+Mini+Games'); }
 
     /* شارات "قريبًا" للأزرار المعطلة */
     .disabled-wrap { position: relative; }
@@ -199,6 +231,69 @@
     .sbtn { display:inline-flex; align-items:center; gap:8px; padding:.8rem 1rem; border-radius:12px; text-decoration:none; font-weight:800; background: linear-gradient(135deg, var(--accent), #6b2dff); color:#fff; border:1px solid rgba(255,255,255,.08) }
     .sbtn:hover { filter: saturate(1.1) }
 
+    /* =====================
+       (إضافة البطاقات فقط - بدون تعديل أي شيء آخر)
+       بطاقات ستريمر قادمة تحت قسم الستريمر
+       ===================== */
+    .streamer-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 18px;
+      margin-top: 18px;
+    }
+    .streamer-card {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      min-height: 160px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+    }
+    .streamer-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      filter: blur(6px) brightness(0.7);
+      z-index: 0;
+    }
+    .streamer-card .overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+      color: #fff;
+      text-align: center;
+      font-weight: 800;
+    }
+    .streamer-card .overlay span {
+      background: rgba(0,0,0,0.6);
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+    }
+    .streamer-card .soon-label {
+      position: absolute;
+      top: 10px;
+      inset-inline-end: 10px;
+      background: linear-gradient(135deg, var(--accent), #6b2dff);
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 999px;
+      z-index: 2;
+    }
+    /* صور الخلفيات للبطاقات */
+    .img-0onoufo0::before {
+      background-image: url('https://i.postimg.cc/YSw1B0Pt/62c6680cad14f6ab179e141dfbcbbcd4.webp');
+    }
+
     /* تذييل */
     footer { max-width:1200px; margin: 24px auto 60px; padding: 0 18px; color: var(--muted); display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap }
     .social { display:flex; gap:10px }
@@ -224,6 +319,123 @@
       .btn:hover, .start-btn:hover, .game-card:hover { transform: none }
       .blob, .blob2, .grid-bg { display:none }
     }
+
+    /* =====================
+       (إضافة فقط) تنسيقات قائمة "الستريمر" تحت الألعاب المتاحة
+       ===================== */
+    .streamer-access-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 18px;
+      margin-top: 12px;
+    }
+    .streamer-access-card {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      min-height: 180px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      box-shadow: 0 14px 36px rgba(0,0,0,.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .streamer-access-card .overlay {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .streamer-access-thumb {
+      width: 96px;
+      height: 96px;
+      border-radius: 16px;
+      object-fit: cover;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 24px rgba(0,0,0,.35);
+    }
+
+    /* =====================
+       (إضافة فقط) نافذة تحفيزية للدعم عند الضغط على زر "عشان تدعمنا"
+       ===================== */
+    .support-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .support-modal {
+      width: min(520px, 92vw);
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      padding: 20px;
+      text-align: center;
+      color: var(--text);
+      position: relative;
+    }
+    .support-modal h3 {
+      margin: 0 0 8px 0;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .support-modal p {
+      margin: 0 0 14px 0;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .support-close {
+      position: absolute;
+      top: 10px;
+      inset-inline-end: 10px;
+      background: transparent;
+      color: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-weight: 800;
+    }
+    .support-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+    .support-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      font-weight: 800;
+      border-radius: 12px;
+      padding: .85rem 1rem;
+      color: #fff;
+      background: linear-gradient(135deg, #2980b9, #0e5aa3);
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 10px 24px rgba(0,0,0,.35);
+    }
+    .support-note {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+    .support-icon {
+      font-size: 48px;
+      margin-bottom: 6px;
+      opacity: 0.9;
+    }
   </style>
 </head>
 <body>
@@ -246,6 +458,10 @@
           <i class="fa-solid fa-link"></i> روابط التواصل
         </a>
         <a class="btn primary" href="#games"><i class="fa-solid fa-gamepad"></i> ابدأ الآن</a>
+        <!-- زر عشان تدعمنا (موجود) -->
+        <a class="btn" href="https://streamlabs.com/medo_dv/tip" target="_blank" rel="noopener" id="supportBtn">
+          <i class="fa-solid fa-hand-holding-heart"></i> عشان تدعمنا
+        </a>
       </div>
     </nav>
   </header>
@@ -294,7 +510,16 @@
   <!-- الألعاب -->
   <section class="section" id="games">
     <h2>الألعاب المتاحة</h2>
-    <div class="games-grid">
+
+    <!-- أزرار التمرير -->
+    <button type="button" class="games-scroller-btn games-scroller-prev" id="gamesPrev" aria-label="السابق">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+    <button type="button" class="games-scroller-btn games-scroller-next" id="gamesNext" aria-label="التالي">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+
+    <div class="games-grid" id="gamesGrid">
       <!-- الكلمات المبعثرة -->
       <article class="game-card img-1">
         <div class="game-body">
@@ -353,8 +578,41 @@
         </div>
         <a href="tarkeeb.html" class="start-btn" data-transition>ابدأ اللعب</a>
       </article>
+
+      <!-- اللعبة السادسة: 5 في 1 -->
+      <article class="game-card img-6">
+        <div class="game-body">
+          <div class="game-title"><i class="fa-solid fa-layer-group"></i> 5 في 1</div>
+          <div class="game-desc">تشكيلة مصغّرة من 5 ألعاب ممتعة في مكان واحد!</div>
+          <div class="badges">
+            <span class="badge ok"><i class="fa-brands fa-twitch"></i> تويتش</span>
+            <span class="badge ok"><i class="fa-solid fa-fist-raised"></i> كيك</span>
+          </div>
+        </div>
+        <a href="mini-games.html" class="start-btn" data-transition>ابدأ اللعب</a>
+      </article>
+      <!-- نهاية اللعبة السادسة -->
     </div>
   </section>
+
+  <!-- =====================
+       (إضافة فقط) قائمة "الستريمر" تحت الألعاب المتاحة
+       ===================== -->
+  <section class="section" id="streamer-access">
+    <h2>الستريمر</h2>
+    <div class="streamer-access-grid">
+      <article class="streamer-access-card" id="saleehCard">
+        <div class="overlay">
+          <img class="streamer-access-thumb" src="https://i.postimg.cc/qqpqNrBX/74508bb339c7d4b80fdc0dc3d41c8898.webp" alt="Saleeh Icon">
+          <div style="margin-top:10px; font-weight:800;">Saleeh</div>
+          <button type="button" class="sbtn" style="margin-top:10px;" onclick="openSaleehWithPassword()">
+            <i class="fa-solid fa-lock"></i> دخول
+          </button>
+        </div>
+      </article>
+    </div>
+  </section>
+  <!-- ===================== نهاية الإضافة ===================== -->
 
   <!-- ستريمر خاص بك -->
   <section class="section" id="streamer">
@@ -377,6 +635,16 @@
           <a href="https://twitter.com/medo_dv" target="_blank" class="sbtn" rel="noopener"><i class="fa-brands fa-x-twitter"></i> تواصل عبر تويتر</a>
           <a href="https://instagram.com/medo_dv" target="_blank" class="sbtn" rel="noopener"><i class="fa-brands fa-instagram"></i> تواصل عبر إنستجرام</a>
         </div>
+
+        <!-- (تعديل بحسب الطلب): إبقاء بطاقة 0onoufo0 فقط -->
+        <div class="streamer-cards">
+          <div class="streamer-card img-0onoufo0">
+            <div class="soon-label">قريباً</div>
+            <div class="overlay"><span>0onoufo0</span></div>
+          </div>
+        </div>
+        <!-- نهاية التعديل -->
+
       </div>
     </div>
   </section>
@@ -390,6 +658,22 @@
       <a class="icon" href="https://linktr.ee/medo_dv" target="_blank" rel="noopener"><i class="fa-solid fa-link"></i></a>
     </div>
   </footer>
+
+  <!-- نافذة الدعم التحفيزية (موجودة) -->
+  <div id="supportDialog" class="support-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="supportTitle" aria-hidden="true">
+    <div class="support-modal">
+      <button class="support-close" type="button" id="supportClose"><i class="fa-solid fa-xmark"></i></button>
+      <div class="support-icon"><i class="fa-solid fa-heart"></i></div>
+      <h3 id="supportTitle">شكراً لدعمك! 🤍</h3>
+      <p>كل دعمك يساعدنا نطوّر ألعاب جديدة ونحسّن الأداء لكل الستريمرز والمشاهدين 🙌</p>
+      <div class="support-actions">
+        <a class="support-link" href="https://streamlabs.com/medo_dv/tip" target="_blank" rel="noopener">
+          <i class="fa-brands fa-paypal"></i> ادعمني الآن
+        </a>
+      </div>
+      <div class="support-note">هدفنا نوصل لتجربة أسطورية – دعمك يصنع الفرق! 🔥</div>
+    </div>
+  </div>
 
   <script>
     // سنة التذييل
@@ -418,7 +702,6 @@
     });
 
     /* =========================
-       (الإضافة المطلوبة فقط)
        جعل البطاقة كاملة قابلة للنقر + دعم الكيبورد
        ========================= */
     document.querySelectorAll('.game-card').forEach(card => {
@@ -469,6 +752,79 @@
       el.style.background = 'linear-gradient(180deg, rgba(255,255,255,0.00) 0%, rgba(255,255,255,0.02) 35%, rgba(255,255,255,0.00) 100%)';
       document.body.appendChild(el);
     })();
+
+    /* =========================
+       حماية أيقونة Saleeh بكلمة مرور
+       ========================= */
+    function openSaleehWithPassword() {
+      const pass = prompt("🚪 أدخل كلمة المرور للدخول:");
+      if (pass === "sa14leh") {
+        window.location.href = "saleeh.html";
+      } else if (pass !== null) {
+        alert("❌ كلمة المرور غير صحيحة");
+      }
+    }
+    document.getElementById('saleehCard')?.addEventListener('click', function(e){
+      const clickedButton = e.target.closest('button');
+      if (!clickedButton) {
+        openSaleehWithPassword();
+      }
+    });
+
+    /* =========================
+       منطق زر "عشان تدعمنا" لعرض نافذة تحفيزية
+       ========================= */
+    const supportBtn = document.getElementById('supportBtn');
+    const supportDialog = document.getElementById('supportDialog');
+    const supportClose = document.getElementById('supportClose');
+
+    function openSupportDialog(e) {
+      if (e) { e.preventDefault(); }
+      supportDialog.style.display = 'flex';
+      supportDialog.setAttribute('aria-hidden', 'false');
+    }
+    function closeSupportDialog() {
+      supportDialog.style.display = 'none';
+      supportDialog.setAttribute('aria-hidden', 'true');
+    }
+
+    supportBtn?.addEventListener('click', openSupportDialog);
+    supportClose?.addEventListener('click', closeSupportDialog);
+    supportDialog?.addEventListener('click', (e) => {
+      if (e.target === supportDialog) closeSupportDialog();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeSupportDialog();
+    });
+
+    /* =========================
+       أسهم تحريك قائمة الألعاب الأفقية
+       ========================= */
+    const gamesGrid = document.getElementById('gamesGrid');
+    const gamesPrev = document.getElementById('gamesPrev');
+    const gamesNext = document.getElementById('gamesNext');
+
+    function scrollAmount() {
+      // نحرّك بمقدار عرض الشبكة تقريباً لعرض مجموعة جديدة
+      return Math.max(gamesGrid.clientWidth * 0.9, 300);
+    }
+
+    gamesPrev?.addEventListener('click', function() {
+      gamesGrid.scrollBy({ left: -scrollAmount(), behavior: 'smooth' });
+    });
+    gamesNext?.addEventListener('click', function() {
+      gamesGrid.scrollBy({ left: scrollAmount(), behavior: 'smooth' });
+    });
+
+    // دعم التمرير عبر عجلة الماوس (Shift) للأفق
+    gamesGrid?.addEventListener('wheel', function(e) {
+      if (Math.abs(e.deltaX) < Math.abs(e.deltaY)) {
+        // تحويل التمرير العمودي إلى أفقي
+        gamesGrid.scrollBy({ left: (e.deltaY > 0 ? 1 : -1) * 60 });
+        e.preventDefault();
+      }
+    }, { passive: false });
   </script>
 </body>
 </html>
+
