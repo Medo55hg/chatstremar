@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Saleeh</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --primary:#ff3333;
+      --text:#ffffff;
+      --overlay: rgba(0,0,0,.55);
+      --card-bg: rgba(17,17,17,.75);
+      --card-border:#333;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:'Cairo',system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial,'Noto Sans',sans-serif;
+      color:var(--text);
+      background:#000 url('https://i.postimg.cc/qqpqNrBX/74508bb339c7d4b80fdc0dc3d41c8898.webp') center/cover no-repeat fixed;
+    }
+    .overlay{ position:fixed; inset:0; background:var(--overlay); z-index:0; }
+
+    .wrap{
+      position:relative; z-index:1;
+      min-height:100%; display:grid; place-items:center;
+      padding:32px 16px;
+    }
+    .panel{
+      width:min(720px, 92vw);
+      background:var(--card-bg);
+      border:1px solid var(--card-border);
+      border-radius:18px;
+      box-shadow:0 10px 30px rgba(0,0,0,.45);
+      backdrop-filter: blur(6px);
+      padding:28px; text-align:center;
+    }
+    h1{ margin:0 0 6px; font-size:clamp(28px, 5vw, 44px); font-weight:800; letter-spacing:.5px; }
+    .subtitle{ margin:0 0 22px; opacity:.9; font-size:clamp(14px, 2.5vw, 16px); }
+
+    .games{ display:grid; grid-template-columns:1fr; gap:14px; margin-top:6px; }
+    .game-card{
+      border:1px solid var(--card-border);
+      border-radius:16px; padding:18px;
+      background:rgba(0,0,0,.35);
+      transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+      box-shadow:0 6px 16px rgba(0,0,0,.35);
+    }
+    .game-card:hover{ transform: translateY(-2px); border-color:#555; box-shadow:0 10px 22px rgba(0,0,0,.45); }
+    .game-title{ font-size:clamp(18px, 3.5vw, 22px); margin:0 0 10px; font-weight:800; color:#fff; }
+    .game-desc{ margin:0 0 16px; opacity:.9; line-height:1.7; font-size:15px; }
+    .play-btn{
+      display:inline-block; padding:12px 18px; border-radius:12px; font-weight:800; text-decoration:none; color:#fff;
+      background:linear-gradient(180deg, var(--primary), #cc1f1f); border:1px solid #991b1b;
+      box-shadow:0 6px 18px rgba(255,51,51,.35);
+      transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+    }
+    .play-btn:hover{ transform:translateY(-1px); filter:saturate(1.05); box-shadow:0 10px 22px rgba(255,51,51,.45);}
+    .play-btn:active{ transform:translateY(0); }
+
+    .footer{ margin-top:18px; font-size:12px; opacity:.8; }
+  </style>
+</head>
+<body>
+  <div class="overlay" aria-hidden="true"></div>
+
+  <main class="wrap">
+    <section class="panel" aria-label="Saleeh">
+      <h1>Saleeh</h1>
+      <p class="subtitle">مرحباً! اختر لعبتك.</p>
+
+      <div class="games">
+        <article class="game-card">
+          <h2 class="game-title">الاسماء الوهمية</h2>
+          <p class="game-desc">اضغط للانتقال مباشرةً إلى صفحة اللعبة.</p>
+          <a class="play-btn" href="fake-names.html">بدء اللعب</a>
+        </article>
+      </div>
+
+      <div class="footer">© Saleeh</div>
+    </section>
+  </main>
+</body>
+</html>

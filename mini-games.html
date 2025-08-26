@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🎮 ستريمر توب — مركز الألعاب (Twitch + Kick)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800&display=swap" rel="stylesheet" />
+  <!-- Twitch ONLY (اسم القناة فقط) -->
+  <script src="tmi.min.js"></script>
+  <!-- Kick عبر اسم القناة فقط (نستخدم Centrifuge الرسمي) -->
+  <script src="https://cdn.jsdelivr.net/npm/centrifuge@5.1.0/dist/centrifuge.min.js"></script>
+  <style>
+    :root{
+      --red:#ff3333; --bg:#0b0b0b; --panel:#141414; --line:#2a2a2a;
+      --ok:#00d86c; --warn:#ffcc00; --blue:#00a8ff; --glow:#ff5a5a;
+    }
+    *{box-sizing:border-box}
+    body{
+      background:
+        radial-gradient(1200px 600px at 80% -10%, rgba(255,51,51,.10), transparent),
+        radial-gradient(900px 600px at 0% 110%, rgba(0,168,255,.08), transparent),
+        var(--bg);
+      color:#fff;font-family:'Cairo',sans-serif;margin:0
+    }
+    header{
+      position:sticky;top:0;z-index:50;
+      background:linear-gradient(90deg,#121212,#171717);
+      border-bottom:1px solid var(--line);
+      padding:12px 14px; display:flex; gap:10px; align-items:center; flex-wrap:wrap
+    }
+    .brand{font-weight:800;color:var(--red)}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .col{flex:1 1 260px}
+    select,button,input{
+      background:#0f0f0f;color:#fff;border:1px solid var(--line);
+      border-radius:10px;padding:10px 12px;font-family:inherit
+    }
+    button{cursor:pointer;transition:transform .07s, box-shadow .2s}
+    button:hover{box-shadow:0 0 0 2px #ffffff10}
+    button:active{transform:scale(.98)}
+    main{max-width:1200px;margin:22px auto;padding:0 16px}
+    .card{background:linear-gradient(180deg,#151515,#101010); border:1px solid #1f1f1f; border-radius:16px; padding:14px; margin:14px 0}
+    h2{margin:0 0 10px;color:var(--red)}
+    .meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .pill{display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border:1px solid var(--line);border-radius:999px;font-size:12px;opacity:.9}
+    .ok{color:var(--ok)} .warn{color:var(--warn)} .blue{color:var(--blue)}
+    .hidden{display:none}
+    .bar{height:16px;background:#1c1c1c;border-radius:999px;overflow:hidden;border:1px solid #2a2a2a;position:relative}
+    .bar>span{display:block;height:100%;background:linear-gradient(90deg,#ff5a5a,#e41414)}
+    .shake{animation:shake .4s both}
+    @keyframes shake{25%{transform:translateX(-4px)}50%{transform:translateX(4px)}75%{transform:translateX(-3px)}}
+    .glow{box-shadow:0 0 18px rgba(255,90,90,.35)}
+    .big{font-size:26px}
+    .center{text-align:center}
+    .sep{height:1px;background:#1f1f1f;margin:10px 0}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+    .log{background:#0e0e0e;border:1px dashed #2a2a2a;border-radius:12px;padding:10px;height:120px;overflow:auto;font-size:12px;white-space:pre-wrap}
+    .status-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-inline-end:6px}
+    .on{background:#38d269}.off{background:#666}
+    .kbd{background:#181818;border:1px solid #2a2a2a;border-radius:6px;padding:2px 6px;font-size:12px}
+    .timer{font-weight:800;color:var(--warn)}
+    .vote-star{font-size:22px;cursor:pointer;user-select:none}
+    .vote-star.active{color:#ffd54a}
+    .confetti{position:fixed;inset:0;pointer-events:none;z-index:999}
+    .piece{position:absolute;width:8px;height:14px;opacity:.9}
+    .desc{font-size:14px; opacity:.85; margin-bottom:10px; background:#1a1a1a; padding:8px 10px; border-radius:10px; border:1px solid #2a2a2a;}
+    .emoji-font{font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji","Twemoji Mozilla",system-ui,sans-serif}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">🎮 ستريمر توب — مركز الألعاب</div>
+
+    <!-- اختيار اللعبة -->
+    <div class="meta" style="margin-inline-start:auto">
+      <label>اختر لعبة:
+        <select id="gamePicker">
+          <option value="quickWord">3) أسرع كلمة</option>
+          <option value="fastMemory">19) ذاكرة سريعة</option>
+          <option value="emojiStory">22) قصة إيموجي</option>
+          <option value="numberWar">32) حرب الأرقام</option>
+          <option value="castleRaid">34) غزو القلاع</option>
+        </select>
+      </label>
+      <button id="openGame">تشغيل</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- إعدادات الربط (Twitch + Kick باستخدام اسم القناة فقط) -->
+    <section class="card">
+      <h2>🔗 الربط مع الدردشة</h2>
+      <div class="grid">
+        <div class="col">
+          <div class="pill"><span class="status-dot off" id="tw_dot"></span> Twitch</div>
+          <div class="row">
+            <input id="tw_channel" placeholder="اسم قناة Twitch (بدون #)" />
+            <input id="tw_user" placeholder="اسم البوت (اختياري)" />
+            <input id="tw_oauth" placeholder="oauth:xxxxxxxx (اختياري لإرسال رسائل)" />
+          </div>
+          <div class="row">
+            <button id="tw_connect">اتصال Twitch</button>
+            <button id="tw_disconnect">فصل</button>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="pill"><span class="status-dot off" id="kk_dot"></span> Kick</div>
+          <div class="row">
+            <input id="kk_channel" placeholder="اسم قناة Kick (slug) مثال: medo_dv" />
+          </div>
+          <div class="row">
+            <button id="kk_connect">اتصال Kick</button>
+            <button id="kk_disconnect">فصل</button>
+          </div>
+          <div class="muted" style="font-size:12px;opacity:.8">
+            يكتفى بكتابة اسم القناة. سيتم جلب chatroom والاشتراك تلقائيًا.
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="title">أوامر الفرق</div>
+          <div class="muted">انضمام: <span class="kbd">!ازرق</span> — <span class="kbd">!احمر</span></div>
+          <div class="muted">غزو القلاع: <span class="kbd">!هجوم</span> <span class="kbd">!دفاع</span> <span class="kbd">!شفاء</span></div>
+          <div class="muted">أول إجابة صحيحة تُسجل تلقائيًا حسب اللعبة المعروضة.</div>
+        </div>
+      </div>
+      <div class="sep"></div>
+      <div class="row">
+        <div class="col">
+          <div class="title">سجل الدردشة</div>
+          <div id="chat_log" class="log"></div>
+        </div>
+        <div class="col">
+          <div class="title">الفرق</div>
+          <div class="log" id="teams_log"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3) أسرع كلمة -->
+    <section id="game_quickWord" class="card">
+      <h2>3) أسرع كلمة — Quick Word</h2>
+      <div class="desc">
+        📝 الشرح: يظهر حرف عشوائي. أول لاعب يكتب كلمة في الشات تبدأ بهذا الحرف يفوز بالجولة.
+        <br>الأوامر: يكتبون الكلمة مباشرة في الشات. يمكن منع التكرار.
+      </div>
+      <div class="meta">
+        <span>الحرف الحالي: <b id="qw_letter" class="big">—</b></span>
+        <span>الوقت: <b id="qw_time" class="timer">—</b></span>
+      </div>
+      <div class="row">
+        <div class="col">
+          <button id="qw_new">حرف جديد</button>
+          <label>مدة الجولة (ث): <input id="qw_duration" type="number" value="12" min="3" max="60" style="width:90px"></label>
+          <label><input type="checkbox" id="qw_dedup" checked> منع التكرار</label>
+        </div>
+        <div class="col center">
+          <span class="muted">أول رسالة بالشات تبدأ بالحرف تربح الجولة.</span>
+        </div>
+      </div>
+      <div id="qw_status" class="muted"></div>
+    </section>
+
+    <!-- 19) ذاكرة سريعة -->
+    <section id="game_fastMemory" class="card hidden">
+      <h2>19) ذاكرة سريعة — Fast Memory</h2>
+      <div class="desc">
+        🧠 الشرح: يعرض مجموعة إيموجي بسرعة. بعد ثوانٍ تختفي ويُسأل عن رمز محدد (مثلاً: "ما الرمز رقم 3؟").
+        <br>الأوامر: يكتب اللاعبون الرمز الصحيح نفسه في الشات.
+      </div>
+      <div class="meta">
+        <span>الطول: <input id="fm_len" type="number" min="3" max="10" value="5" style="width:70px"></span>
+        <span>عرض الرموز (ث): <input id="fm_show" type="number" min="1" max="10" value="3" style="width:70px"></span>
+        <button id="fm_start">ابدأ</button>
+        <span>المطلوب: <b id="fm_query" class="ok">—</b></span>
+      </div>
+      <div class="center" style="min-height:52px;margin:10px 0">
+        <div id="fm_stream" class="big emoji-font">—</div>
+      </div>
+      <div id="fm_status" class="muted"></div>
+    </section>
+
+    <!-- 22) قصة إيموجي -->
+    <section id="game_emojiStory" class="card hidden">
+      <h2>22) قصة إيموجي — Emoji Story</h2>
+      <div class="desc">
+        📖 الشرح: يحدد الهوست موضوع (مثلاً "أنمي أكشن"). يكتب كل فريق قصة باستخدام الإيموجي فقط خلال الوقت المحدد، ثم تصويت نجوم.
+        <br>الأوامر: اللاعب يرسل سطرًا من الإيموجي فقط، ويتم جمعها لكل فريق.
+      </div>
+      <div class="row">
+        <div class="col">
+          <label>الموضوع: <input id="es_topic" value="أنمي أكشن"></label>
+        </div>
+        <div class="col">
+          <label>وقت الكتابة (ث): <input id="es_time_inp" type="number" value="15" min="5" max="60" style="width:90px"></label>
+          <button id="es_start">ابدأ الجولة</button>
+          <span>الوقت: <b id="es_time" class="timer">—</b></span>
+        </div>
+      </div>
+      <div class="sep"></div>
+      <div class="row">
+        <div class="col">
+          <div class="title blue">تجميع قصص الأزرق (تلقائيًا من الشات)</div>
+          <div id="es_blue_view" class="log emoji-font"></div>
+        </div>
+        <div class="col">
+          <div class="title" style="color:var(--red)">تجميع قصص الأحمر</div>
+          <div id="es_red_view" class="log emoji-font"></div>
+        </div>
+      </div>
+      <div class="sep"></div>
+      <div class="grid">
+        <div class="col">
+          <div class="title">تصويت الجمهور (نجوم)</div>
+          <div>الأزرق:
+            <span class="vote-star" data-esb="1">★</span>
+            <span class="vote-star" data-esb="2">★</span>
+            <span class="vote-star" data-esb="3">★</span>
+            <span class="vote-star" data-esb="4">★</span>
+            <span class="vote-star" data-esb="5">★</span>
+          </div>
+          <div>الأحمر:
+            <span class="vote-star" data-esr="1">★</span>
+            <span class="vote-star" data-esr="2">★</span>
+            <span class="vote-star" data-esr="3">★</span>
+            <span class="vote-star" data-esr="4">★</span>
+            <span class="vote-star" data-esr="5">★</span>
+          </div>
+        </div>
+        <div class="col center">
+          <button id="es_finish">حساب النتيجة</button>
+          <div id="es_status" class="muted"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 32) حرب الأرقام -->
+    <section id="game_numberWar" class="card hidden">
+      <h2>32) حرب الأرقام — Number War</h2>
+      <div class="desc">
+        🔢 الشرح: يظهر رقم عشوائي (مثلاً 4931). المطلوب ترتيبه ليكون أصغر/أكبر رقم ممكن من نفس الأرقام (حسب الوضع).
+        <br>الأوامر: يكتب اللاعب الناتج في الشات.
+      </div>
+      <div class="meta">
+        <span>الخانات: <input id="nw_digits" type="number" min="3" max="6" value="4" style="width:70px"></span>
+        <label><input id="nw_mode" type="checkbox"> اطلب أكبر رقم بدل الأصغر</label>
+        <button id="nw_new">رقم جديد</button>
+        <span>الرقم: <b id="nw_number" class="big">—</b></span>
+      </div>
+      <div id="nw_status" class="muted"></div>
+    </section>
+
+    <!-- 34) غزو القلاع -->
+    <section id="game_castleRaid" class="card hidden">
+      <h2>34) غزو القلاع — Castle Raid</h2>
+      <div class="desc">
+        🏰 الشرح: كل فريق عنده قلعة (HP=100). يستخدمون أوامر للهجوم/الدفاع/الشفاء. الهدف تدمير قلعة الخصم.
+        <br>الأوامر في الشات: <span class="kbd">!هجوم</span> <span class="kbd">!دفاع</span> <span class="kbd">!شفاء</span>
+      </div>
+      <div class="grid">
+        <div class="col">
+          <div class="title blue">قلعة الأزرق</div>
+          <div class="bar glow" id="cr_bar_b"><span id="cr_hp_b" style="width:100%"></span></div>
+          <div class="muted">HP: <b id="cr_hp_b_txt">100</b></div>
+        </div>
+        <div class="col">
+          <div class="title" style="color:var(--red)">قلعة الأحمر</div>
+          <div class="bar glow" id="cr_bar_r"><span id="cr_hp_r" style="width:100%"></span></div>
+          <div class="muted">HP: <b id="cr_hp_r_txt">100</b></div>
+        </div>
+      </div>
+      <div class="sep"></div>
+      <div class="row">
+        <div class="col">
+          وضع العشوائية: <label><input id="cr_rng" type="checkbox" checked> ضرر/دفاع عشوائي</label>
+          <div class="muted">انضمام للفرق: <span class="kbd">!ازرق</span> — <span class="kbd">!احمر</span></div>
+        </div>
+        <div class="col center">
+          <button id="cr_reset">إعادة ضبط</button>
+        </div>
+      </div>
+      <div id="cr_log" class="log"></div>
+    </section>
+  </main>
+
+  <!-- كونفيتي -->
+  <div id="confetti" class="confetti"></div>
+
+  <script>
+    /************ أدوات عامة + ساوند ************/
+    function clamp(n,min,max){return Math.max(min,Math.min(max,n))}
+    const SFX = {
+      win: new Audio('data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABYAAAAgAAAASGNvbmYAAABkAAAAAQAAAP//AACAgICA'),
+      hit: new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10 IBAAAAABAAEAESsAACJWAAACABYAAAAgAAAASGNvbmYAAAA4AAAAAQAAAP//AACAgICA'.replace(/\s+/g,'')),
+      err: new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10 IBAAAAABAAEAESsAACJWAAACABYAAAAgAAAASGNvbmYAAAA4AAAAAQAAAP//AACAgICA'.replace(/\s+/g,'')),
+    };
+    function play(s){ try{SFX[s].currentTime=0; SFX[s].play();}catch(e){} }
+    function confettiBurst(){
+      const root = document.getElementById('confetti');
+      root.innerHTML='';
+      for(let i=0;i<120;i++){
+        const d=document.createElement('div');
+        d.className='piece';
+        d.style.left=Math.random()*100+'%';
+        d.style.top='-20px';
+        d.style.background = `hsl(${Math.floor(Math.random()*360)} 90% 60%)`;
+        const tt = 6+Math.random()*3;
+        const rot = (Math.random()*720-360);
+        d.animate([{transform:`translateY(0) rotate(0deg)`},{transform:`translateY(100vh) rotate(${rot}deg)`}],{duration:tt*1000,iterations:1,easing:'cubic-bezier(.2,.7,.2,1)'});
+        root.appendChild(d);
+        setTimeout(()=>d.remove(), tt*1000);
+      }
+    }
+    function log(el, txt){ el.textContent += txt + "\n"; el.scrollTop = el.scrollHeight; }
+
+    /************ إدارة الفرق ************/
+    const teams = { blue:new Set(), red:new Set() };
+    const teamsLog = document.getElementById('teams_log');
+    function updateTeamsLog(){
+      teamsLog.textContent = `🔵 الأزرق (${teams.blue.size}): ${[...teams.blue].join(', ') || '-'}\n🔴 الأحمر (${teams.red.size}): ${[...teams.red].join(', ') || '-'}`;
+    }
+    function joinTeam(user, which){
+      if(which==='blue'){ teams.red.delete(user); teams.blue.add(user); }
+      else { teams.blue.delete(user); teams.red.add(user); }
+      updateTeamsLog();
+    }
+
+    /************ تبديل واجهات الألعاب ************/
+    const picker = document.getElementById('gamePicker');
+    const openBtn = document.getElementById('openGame');
+    const sections = {
+      quickWord: document.getElementById('game_quickWord'),
+      fastMemory: document.getElementById('game_fastMemory'),
+      emojiStory: document.getElementById('game_emojiStory'),
+      numberWar: document.getElementById('game_numberWar'),
+      castleRaid: document.getElementById('game_castleRaid'),
+    };
+    function showOnly(id){
+      Object.values(sections).forEach(s=>s.classList.add('hidden'));
+      sections[id].classList.remove('hidden');
+    }
+    openBtn.addEventListener('click', ()=> showOnly(picker.value));
+    showOnly('quickWord');
+
+    /************ (3) أسرع كلمة ************/
+    const arabicLetters = "ابتثجحخدذرزسشصضطظعغفقكلمنهوي".split('');
+    const qw_letter = document.getElementById('qw_letter');
+    const qw_time = document.getElementById('qw_time');
+    const qw_new = document.getElementById('qw_new');
+    const qw_duration = document.getElementById('qw_duration');
+    const qw_status = document.getElementById('qw_status');
+    const qw_dedup = document.getElementById('qw_dedup');
+
+    let qw_timer=null, qw_deadline=0, qw_active=false, qw_used=new Set();
+    function qwStartRound(){
+      const ch = arabicLetters[Math.floor(Math.random()*arabicLetters.length)];
+      qw_letter.textContent = ch;
+      qw_used.clear(); qw_active=true;
+      const sec = clamp(+qw_duration.value||12,3,60);
+      qw_deadline = Date.now()+sec*1000;
+      if(qw_timer) clearInterval(qw_timer);
+      qw_timer = setInterval(()=>{
+        const left = Math.max(0, qw_deadline-Date.now());
+        qw_time.textContent = (left/1000).toFixed(1)+"s";
+        if(left<=0){ clearInterval(qw_timer); qw_active=false; qw_status.textContent="⏱️ انتهى الوقت!"; }
+      }, 100);
+      qw_status.textContent="اكتبوا كلمة تبدأ بالحرف المعروض…";
+    }
+    function qwTryWin(user, text){
+      if(!qw_active) return false;
+      const ch = qw_letter.textContent;
+      const word = text.trim();
+      if(!word || !word.startsWith(ch)) return false;
+      if(qw_dedup.checked){
+        const low=word.toLowerCase();
+        if(qw_used.has(low)) return false;
+        qw_used.add(low);
+      }
+      clearInterval(qw_timer); qw_active=false;
+      qw_status.textContent = `🏁 ${user} فاز بالجولة بكلمة: ${word}`;
+      play('win'); confettiBurst();
+      return true;
+    }
+    qw_new.addEventListener('click', qwStartRound);
+
+    /************ (19) ذاكرة سريعة ************/
+    const fm_len = document.getElementById('fm_len');
+    const fm_show = document.getElementById('fm_show');
+    const fm_start = document.getElementById('fm_start');
+    const fm_stream = document.getElementById('fm_stream');
+    const fm_query = document.getElementById('fm_query');
+    const fm_status = document.getElementById('fm_status');
+
+    // استخدام Unicode Escapes لضمان ظهور الإيموجي
+    const EMOJIS = [
+      "\u{1F600}","\u{1F60E}","\u{1F929}","\u{1F973}","\u{1F631}","\u{1F916}","\u{1F47B}",
+      "\u{1F431}","\u{1F436}","\u{1F43C}","\u{1F438}","\u{1F427}","\u{1F98A}","\u{1F984}",
+      "\u{1F40D}","\u{1F996}","\u{1F355}","\u{1F354}","\u{1F35F}","\u{1F32E}","\u{1F363}",
+      "\u{1F369}","\u{1F36A}","\u{1F349}","\u{1F347}","\u{1F34E}","\u{26BD}","\u{1F3C0}",
+      "\u{1F3AE}","\u{1F3B2}","\u{1F3AF}","\u{1F3B5}","\u{1F3A7}","\u{1F697}",
+      "\u{2708}\u{FE0F}","\u{1F680}","\u{23F0}","\u{2B50}","\u{1F525}","\u{1F4A1}","\u{1F48E}","\u{1F511}","\u{1F9E0}"
+    ];
+    let fm_seq=[], fm_idx=0, fm_ans="", fm_active=false;
+
+    function fmStart(){
+      const L = clamp(+fm_len.value||5,3,10);
+      const showSec = clamp(+fm_show.value||3,1,10);
+      fm_seq = Array.from({length:L}, ()=> EMOJIS[Math.floor(Math.random()*EMOJIS.length)]);
+      fm_stream.textContent = fm_seq.join(' ');
+      fm_idx = Math.floor(Math.random()*L);
+      fm_ans = fm_seq[fm_idx];
+      fm_query.textContent = `ما هو الرمز رقم ${fm_idx+1}؟`;
+      fm_status.textContent = "ركّز…";
+      fm_active = true;
+      setTimeout(()=>{ fm_stream.textContent = "—"; fm_status.textContent="أجب الآن في الشات (الإيموجي نفسه)."; }, showSec*1000);
+    }
+    function fmTry(user, text){
+      if(!fm_active) return false;
+      const t = text.trim();
+      if(!t) return false;
+      if(t === fm_ans){
+        fm_active=false; fm_status.textContent = `✅ ${user} صحيح! الرمز: ${fm_ans}`;
+        play('win'); confettiBurst();
+        return true;
+      }
+      return false;
+    }
+    fm_start.addEventListener('click', fmStart);
+
+    /************ (22) قصة إيموجي ************/
+    const es_topic = document.getElementById('es_topic');
+    const es_time_inp = document.getElementById('es_time_inp');
+    const es_time = document.getElementById('es_time');
+    const es_start = document.getElementById('es_start');
+    const es_blue_view = document.getElementById('es_blue_view');
+    const es_red_view = document.getElementById('es_red_view');
+    const es_finish = document.getElementById('es_finish');
+    const es_status = document.getElementById('es_status');
+    const starEls = [...document.querySelectorAll('.vote-star')];
+    let es_deadline=0, esTimer=null, es_active=false, esStarsB=0, esStarsR=0;
+
+    function esTick(){
+      const left = Math.max(0, es_deadline-Date.now());
+      es_time.textContent = (left/1000).toFixed(1)+"s";
+      if(left<=0){ clearInterval(esTimer); es_active=false; es_time.textContent="انتهى الوقت"; }
+    }
+    function esStart(){
+      const sec = clamp(+es_time_inp.value||15,5,60);
+      es_deadline = Date.now()+sec*1000;
+      if(esTimer) clearInterval(esTimer);
+      esTimer = setInterval(esTick,100);
+      es_active = true;
+      es_status.textContent = `📘 الموضوع: ${es_topic.value} — اكتبوا قصتكم بإيموجيات فقط`;
+      es_blue_view.textContent = ""; es_red_view.textContent="";
+      esStarsB=0; esStarsR=0; updateStarUI();
+    }
+    function isEmojiOnly(s){
+      const emojiRegex = /[\u2190-\u2BFF\u{1F300}-\u{1FAFF}]/u;
+      return s && emojiRegex.test(s);
+    }
+    function esCollect(team, user, text){
+      if(!es_active) return;
+      if(!isEmojiOnly(text)) return;
+      const line = `${user}: ${text}`;
+      if(team==='blue') es_blue_view.textContent += line + "\n";
+      else es_red_view.textContent += line + "\n";
+    }
+    function updateStarUI(){
+      starEls.forEach(el=>{
+        const b = el.dataset.esb, r = el.dataset.esr;
+        if(b){ el.classList.toggle('active', +b<=esStarsB); }
+        if(r){ el.classList.toggle('active', +r<=esStarsR); }
+      });
+    }
+    starEls.forEach(el=>{
+      el.addEventListener('click', ()=>{
+        if(el.dataset.esb){ esStarsB = +el.dataset.esb; updateStarUI(); }
+        if(el.dataset.esr){ esStarsR = +el.dataset.esr; updateStarUI(); }
+      });
+    });
+    function esFinish(){
+      let msg = `نجوم الأزرق: ${esStarsB} — نجوم الأحمر: ${esStarsR}\n`;
+      if(esStarsB>esStarsR) msg += "🏁 الفائز: الأزرق";
+      else if(esStarsR>esStarsB) msg += "🏁 الفائز: الأحمر";
+      else msg += "تعادل!";
+      es_status.textContent = msg;
+      confettiBurst(); play('win');
+    }
+    es_start.addEventListener('click', esStart);
+    es_finish.addEventListener('click', esFinish);
+
+    /************ (32) حرب الأرقام ************/
+    const nw_digits = document.getElementById('nw_digits');
+    const nw_mode = document.getElementById('nw_mode');
+    const nw_new = document.getElementById('nw_new');
+    const nw_number = document.getElementById('nw_number');
+    const nw_status = document.getElementById('nw_status');
+    let nw_current = "";
+
+    function nwGenerate(){
+      const d = clamp(+nw_digits.value||4,3,6);
+      let s = "";
+      for(let i=0;i<d;i++){ s += Math.floor(Math.random()*10); }
+      nw_current = s; nw_number.textContent = s;
+      nw_status.textContent = nw_mode.checked ? "المطلوب: أكبر ترتيب من نفس الأرقام" : "المطلوب: أصغر ترتيب من نفس الأرقام";
+    }
+    function reorder(s, largest=false){
+      const arr = s.split('').sort((a,b)=> largest ? (+b - +a) : (+a - +b));
+      if(!largest && arr[0]==='0'){
+        const idx = arr.findIndex(x=>x!=='0');
+        if(idx>0){ const t = arr[idx]; arr[idx]=arr[0]; arr[0]=t; }
+      }
+      return arr.join('');
+    }
+    function nwTry(user, text){
+      if(!nw_current) return false;
+      const target = reorder(nw_current, nw_mode.checked);
+      const val = text.replace(/\D/g,'');
+      if(val === target){
+        nw_status.textContent = `✅ ${user} صحيح! الجواب: ${target}`;
+        play('win'); confettiBurst();
+        nw_current = "";
+        return true;
+      }
+      return false;
+    }
+    nw_new.addEventListener('click', nwGenerate);
+    nwGenerate();
+
+    /************ (34) غزو القلاع ************/
+    const cr_hp_b = document.getElementById('cr_hp_b');
+    const cr_hp_r = document.getElementById('cr_hp_r');
+    const cr_hp_b_txt = document.getElementById('cr_hp_b_txt');
+    const cr_hp_r_txt = document.getElementById('cr_hp_r_txt');
+    const cr_bar_b = document.getElementById('cr_bar_b');
+    const cr_bar_r = document.getElementById('cr_bar_r');
+    const cr_rng = document.getElementById('cr_rng');
+    const cr_log = document.getElementById('cr_log');
+    const cr_reset = document.getElementById('cr_reset');
+
+    let HP_B=100, HP_R=100, DEF_B=0, DEF_R=0, CR_LOCK=false;
+    function crSync(){
+      cr_hp_b.style.width = HP_B+"%";
+      cr_hp_r.style.width = HP_R+"%";
+      cr_hp_b_txt.textContent = HP_B;
+      cr_hp_r_txt.textContent = HP_R;
+    }
+    function crEntry(t){ log(cr_log, t); }
+    function rng(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+    function shake(el){ el.classList.add('shake'); setTimeout(()=>el.classList.remove('shake'), 350); }
+
+    function applyDamage(attacker, target){
+      if(CR_LOCK) return;
+      const randomize = cr_rng.checked;
+      let dmg = randomize ? rng(6,14) : 10;
+      let shield = (target==='R' ? DEF_R : DEF_B);
+      let actual = Math.max(0, dmg - shield);
+      if(target==='R'){ HP_R = clamp(HP_R - actual, 0, 100); DEF_R = 0; shake(cr_bar_r); }
+      else { HP_B = clamp(HP_B - actual, 0, 100); DEF_B = 0; shake(cr_bar_b); }
+      crEntry(`${attacker==='B'?'🔵 الأزرق':'🔴 الأحمر'} هاجم بقيمة ${dmg}، الدرع ${shield} ← الضرر ${actual}`);
+      play('hit'); crSync(); crCheckEnd();
+    }
+    function applyDefender(team){
+      if(CR_LOCK) return;
+      const randomize = cr_rng.checked;
+      const def = randomize ? rng(4,10) : 7;
+      if(team==='B') DEF_B = def; else DEF_R = def;
+      crEntry(`${team==='B'?'🔵 الأزرق':'🔴 الأحمر'} فعّل دفاع بقيمة ${def}`);
+      crSync();
+    }
+    function applyHeal(team){
+      if(CR_LOCK) return;
+      const randomize = cr_rng.checked;
+      const heal = randomize ? rng(6,12) : 8;
+      if(team==='B') HP_B = clamp(HP_B + heal, 0, 100);
+      else HP_R = clamp(HP_R + heal, 0, 100);
+      crEntry(`${team==='B'?'🔵 الأزرق':'🔴 الأحمر'} شفاء +${heal}`);
+      crSync();
+    }
+    function crCheckEnd(){
+      if(HP_B<=0 || HP_R<=0){
+        CR_LOCK=true;
+        const msg = HP_B<=0 ? "🔴 الأحمر دمّر قلعة الأزرق!" : "🔵 الأزرق دمّر قلعة الأحمر!";
+        crEntry("🏁 "+msg); confettiBurst(); play('win');
+      }
+    }
+    function crReset(){
+      HP_B=100; HP_R=100; DEF_B=0; DEF_R=0; CR_LOCK=false;
+      cr_log.textContent="بدأت مباراة جديدة.\n"; crSync();
+    }
+    cr_reset.addEventListener('click', crReset);
+    crReset();
+
+    /************ ربط الدردشة: Twitch (اسم القناة فقط) ************/
+    const chatLog = document.getElementById('chat_log');
+    const tw_dot = document.getElementById('tw_dot');
+    let twClient = null;
+
+    function connectTwitch(){
+      const channel = document.getElementById('tw_channel').value.trim();
+      const username = document.getElementById('tw_user').value.trim();
+      const oauth = document.getElementById('tw_oauth').value.trim(); // يبدأ بـ oauth:
+      if(!channel){ alert("اكتب اسم قناة Twitch"); return; }
+
+      const opts = {
+        options: { debug: false },
+        connection: { reconnect: true, secure: true },
+        channels: [ '#'+channel ]
+      };
+      if(username && oauth){
+        opts.identity = { username, password: oauth };
+      }
+      if(twClient){ try{twClient.disconnect()}catch(e){} }
+
+      twClient = new tmi.Client(opts);
+      twClient.connect().then(()=>{
+        tw_dot.classList.remove('off'); tw_dot.classList.add('on');
+        log(chatLog, `✅ متصل بـ Twitch #${channel}`);
+      }).catch(err=>{ log(chatLog,"❌ Twitch: "+err); });
+
+      twClient.on('message', (ch, tags, message, self)=>{
+        if(self) return;
+        const user = tags['display-name'] || tags.username;
+        handleIncoming('twitch', user, message);
+      });
+    }
+    function disconnectTwitch(){
+      if(twClient){ try{twClient.disconnect()}catch(e){} twClient=null; }
+      tw_dot.classList.remove('on'); tw_dot.classList.add('off');
+      log(chatLog, "🔌 تم فصل Twitch");
+    }
+    document.getElementById('tw_connect').addEventListener('click', connectTwitch);
+    document.getElementById('tw_disconnect').addEventListener('click', disconnectTwitch);
+
+    /************ ربط الدردشة: Kick (اسم القناة فقط) ************/
+    const kk_dot = document.getElementById('kk_dot');
+    let kkC = null, kkSub = null, kkRoomId = null;
+
+    async function connectKick(){
+      const slug = document.getElementById('kk_channel').value.trim();
+      if(!slug){ alert("اكتب اسم قناة Kick (slug)"); return; }
+      try{
+        // 1) جلب معلومات القناة للحصول على chatroom.id
+        const info = await fetch(`https://kick.com/api/v2/channels/${encodeURIComponent(slug)}`, {cache:'no-cache'}).then(r=>r.json());
+        kkRoomId = info?.chatroom?.id;
+        if(!kkRoomId) throw new Error("لم يتم العثور على chatroom.id");
+
+        // 2) اتصال WebSocket عبر Centrifugo الرسمي
+        if(kkC){ try{kkC.disconnect()}catch(e){} kkC=null; }
+        kkC = new Centrifuge("wss://chat.kick.com/connection/websocket", { timeout: 15000 });
+        kkC.on('connect', ()=>{ kk_dot.classList.remove('off'); kk_dot.classList.add('on'); log(chatLog, `✅ متصل بـ Kick @${slug}`); });
+        kkC.on('disconnect', ()=>{ kk_dot.classList.remove('on'); kk_dot.classList.add('off'); log(chatLog, "🔌 تم فصل Kick"); });
+        kkC.connect();
+
+        // 3) الاشتراك في قناة الشات العامة
+        const topic = `chatrooms.${kkRoomId}.v2`;
+        kkSub = kkC.newSubscription(topic);
+        kkSub.on('publication', ctx=>{
+          try{
+            const data = ctx?.data;
+            const msg = data?.content || data?.message || "";
+            const user = (data?.sender?.username || data?.user?.username || "kick_user");
+            if(!msg) return;
+            handleIncoming('kick', user, msg);
+          }catch(e){}
+        });
+        kkSub.subscribe();
+      }catch(e){
+        log(chatLog, "❌ Kick: "+e.message);
+      }
+    }
+    function disconnectKick(){
+      if(kkSub){ try{kkSub.unsubscribe()}catch(e){} kkSub=null; }
+      if(kkC){ try{kkC.disconnect()}catch(e){} kkC=null; }
+      kk_dot.classList.remove('on'); kk_dot.classList.add('off');
+      log(chatLog, "🔌 تم فصل Kick");
+    }
+    document.getElementById('kk_connect').addEventListener('click', connectKick);
+    document.getElementById('kk_disconnect').addEventListener('click', disconnectKick);
+
+    /************ مفسر رسائل الشات العامة ************/
+    function handleIncoming(platform, user, text){
+      log(chatLog, `[${platform}] ${user}: ${text}`);
+
+      // أوامر الانضمام
+      if(/^!ازرق$/i.test(text.trim())){ joinTeam(user,'blue'); return; }
+      if(/^!احمر$/i.test(text.trim())){ joinTeam(user,'red'); return; }
+
+      // حدد فريق المرسل
+      const team = teams.blue.has(user) ? 'blue' : (teams.red.has(user) ? 'red' : null);
+
+      // مرّر للعبة الحالية
+      const current = picker.value;
+      if(current==='quickWord'){
+        if(qwTryWin(user, text)) return;
+      }
+      else if(current==='fastMemory'){
+        if(fmTry(user, text)) return;
+      }
+      else if(current==='emojiStory'){
+        if(team) esCollect(team, user, text);
+      }
+      else if(current==='numberWar'){
+        if(nwTry(user, text)) return;
+      }
+      else if(current==='castleRaid'){
+        if(!team) return;
+        const t = text.trim();
+        if(/^!هجوم$/i.test(t)){
+          applyDamage(team==='blue'?'B':'R', team==='blue'?'R':'B');
+        } else if(/^!دفاع$/i.test(t)){
+          applyDefender(team==='blue'?'B':'R');
+        } else if(/^!شفاء$/i.test(t)){
+          applyHeal(team==='blue'?'B':'R');
+        }
+      }
+    }
+  </script>
+</body>
+</html>
