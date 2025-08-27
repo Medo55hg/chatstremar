@@ -1,168 +1,70 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>🖼️ لعبة اكشف الصورة</title>
-  <link rel="stylesheet" href="style.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tmi.js/1.8.5/tmi.min.js"></script>
-  <style>
-    body {
-      background-color: #111;
-      color: #fff;
-      font-family: 'Amiri', serif;
-      text-align: center;
-      padding: 20px;
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet" />
+  <!-- tmi.js لتويتش -->
+ <script src="tmi.min.js"></script>
+<style>
+    :root{ --bg1:#0e0f14; --bg2:#121827; --red:#ff3333; --blue:#00a8ff; }
+    *{box-sizing:border-box}
+    body{
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(255,255,255,.04), transparent 60%),
+                  radial-gradient(1200px 600px at 90% 90%, rgba(255,255,255,.04), transparent 60%),
+                  linear-gradient(120deg, var(--bg1), var(--bg2));
+      color:#fff; font-family:'Amiri',serif; text-align:center; padding:20px;
     }
-    h1 {
-      color: #ff3333;
-      margin-top: 10px;
+    h1{ color:var(--red); margin:6px 0 14px; letter-spacing:.5px }
+    .teams-container{ display:flex; justify-content:space-between; gap:18px; flex-wrap:wrap; width:95%; margin:18px auto 10px; }
+    .card{ background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.08); backdrop-filter:blur(8px); border-radius:18px; box-shadow:0 10px 30px rgba(0,0,0,.25) }
+    .team{ width:22%; padding:14px; text-align:unset }
+    .team-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px }
+    .team-title{ display:flex; align-items:center; gap:10px; font-weight:700 }
+    .dot{ width:10px; height:10px; border-radius:50% }
+    .dot.blue{ background:#00a8ff; box-shadow:0 0 12px #00a8ff55 }
+    .dot.red{ background:#ff3333; box-shadow:0 0 12px #ff333355 }
+    .team-count{ font-size:14px; padding:4px 10px; border-radius:20px; background:rgba(0,0,0,.35); border:1px solid rgba(255,255,255,.08) }
+    .players-list{ display:grid; gap:8px }
+    .player-card{ display:grid; grid-template-columns:40px 1fr; align-items:center; gap:10px; background:rgba(0,0,0,.30); border:1px solid rgba(255,255,255,.06); border-radius:12px; padding:8px 10px }
+    .slot{ width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center; background:#1f2636; border:1px solid rgba(255,255,255,.06); font-weight:700 }
+    .player-name{ display:flex; align-items:center; gap:8px; font-size:18px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+    .badge{ font-size:12px; padding:2px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.15); background:#233049 }
+
+    .game-description{ width:50%; padding:16px; font-size:18px; line-height:1.6; text-align:center }
+    .game-area{ font-size:20px; margin:18px auto; padding:16px; width:95%; max-width:1100px }
+
+    .host-only{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; align-items:center; padding:12px; border:1px dashed rgba(255,255,255,.15); border-radius:14px; background:linear-gradient(180deg, rgba(20,24,36,.7), rgba(20,24,36,.55)) }
+    .panel{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; align-items:center; margin:8px 0 }
+
+    input,button{
+      padding:10px 12px; font-size:18px; margin:5px; border-radius:10px; border:1px solid rgba(255,255,255,.12);
+      background:#232838; color:#fff; font-family:'Amiri',serif;
     }
-    .teams-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin: 20px auto;
-      width: 90%;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-    .team {
-      width: 20%;
-      padding: 15px;
-      border-radius: 15px;
-      text-align: center;
-    }
-    .team-blue {
-      background-color: rgba(0,0,255,0.1);
-      border: 2px solid #0099ff;
-    }
-    .team-red {
-      background-color: rgba(255,0,0,0.1);
-      border: 2px solid #ff3333;
-    }
-    .players-list {
-      background-color: #333;
-      padding: 10px;
-      border-radius: 8px;
-      min-height: 50px;
-      font-size: 18px;
-      text-align: right;
-    }
-    .player-entry {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 2px 0;
-    }
-    .player-entry button {
-      background: #900;
-      font-size: 14px;
-      padding: 2px 6px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    .game-description {
-      width: 50%;
-      background-color: #222;
-      border: 1px solid #555;
-      border-radius: 10px;
-      padding: 15px;
-      font-size: 18px;
-      line-height: 1.6;
-    }
-    .game-area {
-      font-size: 24px;
-      margin: 20px auto;
-      background-color: #222;
-      padding: 20px;
-      border-radius: 15px;
-      width: 90%;
-      max-width: 1000px;
-      border: 2px solid #ff3333;
-      position: relative;
-    }
-    .image-container {
-      position: relative;
-      width: 100%;
-      padding-top: 66.66%;
-      margin: 10px 0;
-      background: #000;
-      border: 2px solid #444;
-    }
-    .image-container img {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .grid {
-      position: absolute;
-      top: 0;
-      left: 0;
-      display: grid;
-      width: 100%;
-      height: 100%;
-      grid-template-columns: repeat(12, 1fr);
-      grid-template-rows: repeat(6, 1fr);
-    }
-    .cell {
-      background-color: #222;
-      color: #fff;
-      font-size: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: background-color 0.3s, color 0.3s;
-    }
-    .cell.revealed {
-      background-color: transparent;
-      color: transparent;
-      cursor: default;
-    }
-    input, button {
-      padding: 10px;
-      font-size: 18px;
-      margin: 5px;
-      border-radius: 8px;
-      border: none;
-      font-family: 'Amiri', serif;
-    }
-    input.player-input {
-      width: 100%;
-      box-sizing: border-box;
-    }
-    button {
-      background-color: #ff3333;
-      color: #fff;
-      cursor: pointer;
-    }
-    .current-player {
-      font-size: 22px;
-      margin: 10px 0;
-      color: #00ffcc;
-    }
-    .errors-list {
-      margin-top: 10px;
-      background-color: #333;
-      padding: 10px;
-      border-radius: 8px;
-      min-height: 40px;
-      text-align: right;
-    }
-    .scoreboard {
-      margin-top: 15px;
-      font-size: 20px;
-    }
-    .answer-box {
-      margin-top: 15px;
-      font-size: 20px;
-    }
+    button{ background:linear-gradient(180deg, #ff4747, #d73333); border:none; box-shadow:0 6px 18px rgba(255,71,71,.25); cursor:pointer; position:relative; overflow:hidden }
+    button:hover{ filter:brightness(1.05) }
+    button:active{ transform:translateY(1px) }
+    button::after{ content:""; position:absolute; inset:0; background:radial-gradient(circle at var(--x,50%) var(--y,50%), rgba(255,255,255,.25), transparent 40%); opacity:0; transition:opacity .4s ease; }
+    button:active::after{ opacity:1; transition:none }
+
+    .image-container{ position:relative; width:100%; padding-top:66.66%; margin:12px 0; background:#000; border:1px solid rgba(255,255,255,.08); border-radius:12px; overflow:hidden }
+    .image-container::before{ content:""; position:absolute; inset:0; background-image: linear-gradient(#ffffff12 1px, transparent 1px), linear-gradient(90deg, #ffffff12 1px, transparent 1px); background-size:40px 40px; pointer-events:none }
+    .image-container img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover }
+
+    .grid{ position:absolute; inset:0; display:grid; grid-template-columns:repeat(12,1fr); grid-template-rows:repeat(6,1fr) }
+    .cell{ background:#1c2130; color:#fff; display:flex; align-items:center; justify-content:center; border:1px solid rgba(255,255,255,.05); cursor:pointer; transition:.3s }
+    .cell.revealed{ color:transparent; background:transparent; border-color:transparent; transform:rotateY(180deg) }
+
+    .info-line{ font-size:16px; background:rgba(0,0,0,.35); padding:6px 10px; border-radius:10px; border:1px solid rgba(255,255,255,.06) }
+    .errors-list{ margin-top:10px; background:rgba(0,0,0,.35); padding:10px; border-radius:10px; min-height:40px; text-align:right; border:1px solid rgba(255,255,255,.06) }
+
+    .scoreboard{ margin-top:14px; font-size:18px; display:grid; gap:10px }
+    .progress{ background:#101420; border:1px solid rgba(255,255,255,.08); border-radius:14px; overflow:hidden; height:18px; box-shadow:inset 0 0 12px rgba(0,0,0,.35) }
+    .progress > div{ height:100%; width:0%; background:linear-gradient(90deg, rgba(0,168,255,.8), rgba(0,168,255,1)); transition:width .45s ease }
+    .progress.red > div{ background:linear-gradient(90deg, rgba(255,71,71,.8), rgba(255,71,71,1)) }
+
+    @media (max-width:900px){ .team,.game-description{ width:100% } .host-only{ position:sticky; bottom:6px; z-index:20 } input,button{ font-size:16px } }
   </style>
 </head>
 <body>
@@ -170,260 +72,503 @@
 <h1>🖼️ لعبة اكشف الصورة</h1>
 
 <div class="teams-container">
-  <div class="team team-blue">
-    <h3>🔵 الفريق الأزرق</h3>
-    <input type="text" id="bluePlayerInput" class="player-input" placeholder="اسم اللاعب">
-    <button onclick="addPlayer('blue')">➕ إضافة</button>
+  <!-- الأزرق -->
+  <div class="team card">
+    <div class="team-header">
+      <div class="team-title"><span class="dot blue"></span> <span>الفريق الأزرق</span></div>
+      <div class="team-count">اللاعبون: <span id="blueCount">0</span></div>
+    </div>
     <div id="bluePlayers" class="players-list"></div>
   </div>
 
-  <div class="game-description">
-    ✅ <strong>شرح اللعبة:</strong><br>
-    ستظهر صورة مقسمة إلى مربعات.<br>
-    اللاعب يختار رقم لفتح المربع ثم يكتب التخمين.<br>
-    إذا كانت الإجابة صحيحة، تُفتح الصورة وتحسب نقاط بعدد المربعات الباقية.<br>
-    أول فريق يصل إلى 150 نقطة يفوز 🏆.<br>
-    يمكنك إخفاء/إظهار الإجابة بزر التحكم.
+  <!-- وصف -->
+  <div class="game-description card">
+    ✅ الانضمام من الشات: <code>!ازرق</code> — <code>!احمر</code> — <code>!خروج</code><br>
+    ارفع صورة، افتحوا المربعات، والهوست يوزّع النقاط يدويًا. أول فريق يصل إلى 150 نقطة يفوز 🏆.
   </div>
 
-  <div class="team team-red">
-    <h3>🔴 الفريق الأحمر</h3>
-    <input type="text" id="redPlayerInput" class="player-input" placeholder="اسم اللاعب">
-    <button onclick="addPlayer('red')">➕ إضافة</button>
+  <!-- الأحمر -->
+  <div class="team card">
+    <div class="team-header">
+      <div class="team-title"><span class="dot red"></span> <span>الفريق الأحمر</span></div>
+      <div class="team-count">اللاعبون: <span id="redCount">0</span></div>
+    </div>
     <div id="redPlayers" class="players-list"></div>
   </div>
 </div>
 
-<div class="game-area">
-  <button id="startButton" onclick="startGame()">🎮 ابدأ اللعبة</button>
-  <div id="currentPlayer" class="current-player">⬇️ اللاعب الحالي سيظهر هنا</div>
-  <div id="timer" style="color:#ff0;font-size:20px;"></div>
+<div class="game-area card">
+  <!-- لوحة الهوست -->
+  <div class="host-only">
+    <span class="info-line">🎛️ ربط الشات — اكتب الاسم ويتصل تلقائيًا</span>
+    <input id="twitchChannel" placeholder="قناة Twitch (بدون #)">
+    <input id="kickChannel" placeholder="قناة Kick">
+    <button onclick="disconnectAll()">🔌 قطع الاتصال</button>
+    <span class="info-line" id="connState">الحالة: غير متصل</span>
+  </div>
+
+  <div class="host-only" style="margin-top:8px">
+    <span class="info-line">🖼️ التحكم باللعبة</span>
+    <input type="file" id="imageUpload" accept="image/*">
+    <button id="startButton" onclick="startGame()">🎮 ابدأ اللعبة</button>
+    <button onclick="revealRandomCell()">🟩 تلميح (فتح خلية عشوائية)</button>
+    <button onclick="revealAll()">🧩 كشف كل المربعات</button>
+    <button onclick="resetRound()">🔄 جولة جديدة</button>
+    <button onclick="resetRound(true)">🧹 جولة جديدة (مسح الصورة)</button>
+  </div>
+
+  <div class="panel">
+    <div id="currentPlayer" class="info-line">⬇️ اللاعب الحالي سيظهر هنا</div>
+    <div id="timer" class="info-line">⏳</div>
+    <div class="info-line">📦 المربعات غير المكشوفة: <span id="remainingCells">72</span></div>
+  </div>
 
   <div class="image-container">
     <img id="gameImage" src="" alt="صورة اللعبة">
     <div class="grid" id="grid"></div>
   </div>
-  <input type="text" id="guessInput" placeholder="اكتب التخمين هنا">
-  <button onclick="submitGuess()">✅ تأكيد</button>
-  <button onclick="nextTurn()">⏭️ التالي</button>
-  <button id="nextImageButton" onclick="loadRandomImage()" style="display:none;">🖼️ الصورة التالية</button>
-  <button onclick="toggleAnswer()">👁️ إخفاء/إظهار الإجابة</button>
+
+  <div class="panel">
+    <input type="number" id="pointsInput" min="1" value="72" style="width:120px" title="النقاط (افتراضيًا = المتبقي)">
+    <button onclick="awardPoints('blue')">✅ احتساب للأزرق</button>
+    <button onclick="awardPoints('red')">✅ احتساب للأحمر</button>
+    <label><input type="checkbox" id="autoRevealAfterAward"> اكشف كل المربعات بعد الاحتساب</label>
+    <button onclick="nextTurn()">⏭️ التالي</button>
+  </div>
 
   <div id="guessResult" class="errors-list"></div>
 
   <div class="scoreboard">
-    🔵 الفريق الأزرق: <span id="blueScore">0</span> نقطة<br>
-    🔴 الفريق الأحمر: <span id="redScore">0</span> نقطة
-  </div>
-
-  <div class="answer-box" id="answerBox">
-    ⚠️ الإجابة: <span id="answerText">❓</span>
+    <div class="info-line">🔵 الأزرق: <span id="blueScore">0</span> نقطة<div class="progress"><div id="blueBar"></div></div></div>
+    <div class="info-line">🔴 الأحمر: <span id="redScore">0</span> نقطة<div class="progress red"><div id="redBar"></div></div></div>
   </div>
 </div>
 
-
 <script>
-const images = [
-  { url: "https://i.postimg.cc/kXtCZXLX/F3-HFd-HW0-AEa1g7.jpg", answer: "رايد مشواح" },
-  { url: "https://i.postimg.cc/rsty2vqv/hq720.jpg", answer: "شونق بونق" },
-  { url: "https://i.postimg.cc/ydhxDMMc/Gb-TRa-Ng-Wg-AAd-ma.jpg", answer: "بندريتا" },
-  { url: "https://i.postimg.cc/3J1XJCcf/Uf-JSd-QMW-400x400.jpg", answer: "كونان" },
-  { url: "https://i.postimg.cc/G2zDhbM8/AAAABdf-Go9-D-Dve-XMM8-KK8-Kspcy-Jfgdsf-Uu-Nz4r-Fn-SVZ24-Gtq1g-BPI-v-UGRBn3q-SZc0-VQo-Jab-PCEctz-Mcp-ULKkw-zq5-Vs-ZFfv-UI.jpg", answer: "سبايدرمان" },
-  { url: "https://i.postimg.cc/SQf4RJ7t/1831a0d7cfb3101098b4b986d1e43d07.jpg", answer: "ياسر مخ" },
-  { url: "https://i.postimg.cc/W34GZDq6/4e381384cff59a012179eba0df30a717.jpg", answer: "فيصل يجي" },
-  { url: "https://i.postimg.cc/hjJsXCY1/Minecraft-2024.jpg", answer: "ماين كرافت" },
-  { url: "https://i.postimg.cc/W4cTWKGh/image.jpg", answer: "هيرو براين" },
-  { url: "https://i.postimg.cc/JnG8GLmY/image.jpg", answer: "برج المملكة" },
-  { url: "https://i.postimg.cc/8z5Z8PbY/259f0650-094e-11eb-8bfb-60e78dcd1af0.jpg", answer: "فول قايز" },
-  { url: "https://i.postimg.cc/HWFMWWHK/intense-and-fearless-leon-s-kennedy-in-action-1wmdmawmnhjdpy5v-1024x575.jpg", answer: "ليون كينيدي" },
-  { url: "https://i.postimg.cc/434Pv4YP/Zx-PLg-7-N-400x400.jpg", answer: "كراش" },
-  { url: "https://i.postimg.cc/yx63tWzp/on-a-perfect-blue-sky.jpg", answer: "القدس" },
-  { url: "https://i.postimg.cc/s2TTdyKG/2c86dea1b05c4f57ed7b3632898bf2ba.jpg", answer: "للي" },
-  { url: "https://i.postimg.cc/7P9tS3Sn/3-89.jpg", answer: "مساعد الدوسري" },
-  { url: "https://i.postimg.cc/02p4rTcr/598fbb0e2432fbc3c902803e7a120ac9.jpg", answer: "محمد اودين" },
-  { url: "https://i.postimg.cc/xdSM8Zpj/91274f359d57cfc0f2460bfdcd7e1f1c.jpg", answer: "محمد المكسيكي" },
-  { url: "https://i.postimg.cc/qqd2h5vx/144441917.jpg", answer: "كرستيانو رونالدو" },
-  { url: "https://i.postimg.cc/KjvBDgt1/artworks-000230624217-ihfshc-t240x240.jpg", answer: "ابو حمدان" },
-  { url: "https://i.postimg.cc/SsKcWM6J/channels4-profile.jpg", answer: "عزيز" },
-  { url: "https://i.postimg.cc/RZX872yd/El9-Su-U3-Wo-AMZRYb.jpg", answer: "خلودي 25" },
-  { url: "https://i.postimg.cc/BbzbPhsn/f3d1f3bc-f86e-4995-92e3-5311e61a0b7c.jpg", answer: "برج ايفل" },
-  { url: "https://i.postimg.cc/PJ1Zhs1k/f7b391905842a05a643eedb1344ac102cf356788-00.jpg", answer: "مجرم قيمز" },
-  { url: "https://i.postimg.cc/qRcrs1TG/GFu9-QT9-Xc-AAMggb.jpg", answer: "عادل" },
-  { url: "https://i.postimg.cc/gk2DPrnz/images-1.jpg", answer: "صالح اوبلز" },
-  { url: "https://i.postimg.cc/C5bLPbqF/images-2.jpg", answer: "ابو عمر" },
-  { url: "https://i.postimg.cc/3wZqBNRP/images-2-jpg.jpg", answer: "دربحه" },
-  { url: "https://i.postimg.cc/y8KxgpSv/images-3.jpg", answer: "خشب" },
-  { url: "https://i.postimg.cc/FzZrjNSp/images-4.jpg", answer: "سعد سوبفكس" },
-  { url: "https://i.postimg.cc/K8Z2n6cp/images-5.jpg", answer: "نويصر" },
-  { url: "https://i.postimg.cc/KjHMnPBJ/images-6.jpg", answer: "توبز" },
-  { url: "https://i.postimg.cc/8ztjWBGW/images.jpg", answer: "فواز" },
-  { url: "https://i.postimg.cc/9fZKK1fw/p0d7n21l.jpg", answer: "كريم بنزيما" },
-  { url: "https://i.postimg.cc/Jzvs73WQ/shutterstock-editorial-15379570v.jpg", answer: "ميسي" },
-  { url: "https://i.postimg.cc/hGGRY6Yy/The-Great-Wall-of-China-at-Jinshanling-edit.jpg", answer: "سور الصين" },
-  { url: "https://i.postimg.cc/QttNpHsM/image.jpg", answer: "البتراء" },
-  { url: "https://i.postimg.cc/CLtv0tdr/image.jpg", answer: "برج خليفه" },
-  { url: "https://i.postimg.cc/Gh8p98h3/image.jpg", answer: "الاهرامات" },
-  { url: "https://i.postimg.cc/G2zhZv3r/image.jpg", answer: "مودي الاسمر" }
-];
+/* ============= إعدادات عامة ============= */
+const TARGET_SCORE = 150;
+const CMD_BLUE = "!ازرق";
+const CMD_RED  = "!احمر";
+const CMD_LEAVE= "!خروج";
+function $(id){ return document.getElementById(id); }
 
-let remainingImages = [...images];
+/* ============= حالة اللعبة ============= */
 const bluePlayers = [];
 const redPlayers = [];
 let turnIndex = 0;
 let currentTeam = 'blue';
 let answeringTeam = 'blue';
-let currentAnswer = "";
 let blueScore = 0;
 let redScore = 0;
 let timerInterval = null;
-let currentPlayerName = "";
-let answerVisible = true;
 
-function toggleAnswer() {
-  answerVisible = !answerVisible;
-  document.getElementById("answerBox").style.display = answerVisible ? "block" : "none";
+/* ============= ربط الشات ============= */
+let twitchClient = null;
+let kickWS = null;
+let kickPing = null;
+
+function setConnState(){
+  const parts = [];
+  try{
+    if (twitchClient && typeof twitchClient.readyState === 'function' && twitchClient.readyState() === 'OPEN') {
+      parts.push('Twitch ✅');
+    }
+  }catch{}
+  try{
+    if (kickWS && kickWS.readyState === WebSocket.OPEN) {
+      parts.push('Kick ✅');
+    }
+  }catch{}
+  $('connState').innerText = parts.length ? ('الحالة: ' + parts.join(' | ')) : 'الحالة: غير متصل';
 }
 
-function createGrid() {
-  const grid = document.getElementById("grid");
-  grid.innerHTML = "";
-  for (let i = 0; i < 72; i++) {
-    const cell = document.createElement("div");
-    cell.className = "cell";
-    cell.textContent = i + 1;
-    cell.onclick = () => {
-      cell.classList.add("revealed");
-      cell.onclick = null;
-      startTimer();
-    };
-    grid.appendChild(cell);
+function disconnectAll(){
+  try{
+    if (twitchClient) {
+      if (typeof twitchClient.removeAllListeners === 'function') twitchClient.removeAllListeners();
+      if (typeof twitchClient.disconnect === 'function') twitchClient.disconnect();
+    }
+  }catch{}
+  twitchClient = null;
+
+  try{ if (kickPing) clearInterval(kickPing); }catch{}
+  kickPing = null;
+
+  try{
+    if (kickWS && kickWS.readyState === WebSocket.OPEN) {
+      kickWS.close();
+    }
+  }catch{}
+  kickWS = null;
+
+  $('connState').innerText = 'الحالة: غير متصل';
+  toast('🔌 تم قطع الاتصال');
+}
+
+async function connectTwitchAuto(){
+  const ch = ($('twitchChannel').value || "").trim();
+  if(!ch) return;
+
+  try{
+    if (twitchClient && typeof twitchClient.disconnect === 'function') {
+      await twitchClient.disconnect();
+    }
+  }catch{}
+
+  twitchClient = new tmi.Client({ connection:{ secure:true, reconnect:true }, channels:[ch] });
+
+  twitchClient.on('message', function(_channel, tags, msg, self){
+    if (self) return;
+    handleChat({ platform:'twitch', user: tags['display-name'] || tags.username, text: msg });
+  });
+
+  await twitchClient.connect();
+  localStorage.setItem('twitchChannel', ch);
+  setConnState();
+}
+
+async function connectKickAuto(){
+  const ch = ($('kickChannel').value || "").trim();
+  if(!ch) return;
+
+  // استخدام kick_chat.js إن وجد
+  if (typeof window.connectToKick === 'function') {
+    try{ if (kickWS && kickWS.readyState === WebSocket.OPEN) kickWS.close(); }catch{}
+    if (kickPing) { try{ clearInterval(kickPing); }catch{} kickPing = null; }
+
+    const disconnectFn = await window.connectToKick(ch, function(payload){
+      handleChat({ platform:'kick', user: payload.user, text: payload.text });
+      setConnState();
+    });
+
+    // WebSocket وهمي لعرض الحالة
+    kickWS = { readyState: WebSocket.OPEN, close: function(){ try{ disconnectFn(); }catch{} } };
+    localStorage.setItem('kickChannel', ch);
+    setConnState();
+    return;
+  }
+
+  // ربط داخلي مباشر
+  const res = await fetch('https://kick.com/api/v2/channels/' + encodeURIComponent(ch));
+  if(!res.ok){ toast('❌ فشل جلب قناة Kick'); return; }
+  const data = await res.json();
+  const roomId = data && data.chatroom && data.chatroom.id ? data.chatroom.id : null;
+  if(!roomId){ toast('❌ لم يُعثر على chatroom id'); return; }
+
+  try{ if (kickPing) clearInterval(kickPing); }catch{} kickPing = null;
+  try{ if (kickWS && kickWS.readyState === WebSocket.OPEN) kickWS.close(); }catch{}
+  const WS_URL = "wss://ws-us2.pusher.com/app/32cbd69e4b950bf97679?protocol=7&client=js&version=8.4.0-rc2&flash=false";
+  const channelName = "chatrooms." + roomId + ".v2";
+  kickWS = new WebSocket(WS_URL);
+
+  kickWS.onopen = function(){
+    kickWS.send(JSON.stringify({ event:"pusher:subscribe", data:{ auth:"", channel:channelName } }));
+    kickPing = setInterval(function(){
+      if (kickWS && kickWS.readyState === WebSocket.OPEN) {
+        kickWS.send(JSON.stringify({ event:"pusher:ping", data:{} }));
+      }
+    }, 12000);
+    setConnState();
+  };
+  kickWS.onmessage = function(ev){
+    try{
+      const msg = JSON.parse(ev.data);
+      if (msg.event === "App\\Events\\ChatMessageEvent") {
+        const d = JSON.parse(msg.data || "{}");
+        const username = (d && d.sender && (d.sender.username || d.sender.slug)) ? (d.sender.username || d.sender.slug) : "";
+        const content  = (d && d.content) ? String(d.content).trim() : "";
+        handleChat({ platform:'kick', user: username, text: content });
+      }
+    }catch{}
+  };
+  kickWS.onclose = function(){ setConnState(); };
+  kickWS.onerror = function(){ setConnState(); };
+
+  localStorage.setItem('kickChannel', ch);
+}
+
+/* إدخال اسم القناة: اتصال تلقائي عند Enter أو الخروج من الحقل */
+function onChannelInput(e, which){
+  if(e.type === 'keydown' && e.key !== 'Enter') return;
+  if(which === 'twitch'){
+    connectTwitchAuto().then(function(){ setConnState(); }).catch(function(){ toast('❌ فشل تويتش'); });
+  }else{
+    connectKickAuto().then(function(){ setConnState(); }).catch(function(){ toast('❌ فشل كيك'); });
   }
 }
+$('twitchChannel').addEventListener('blur', function(e){ onChannelInput(e,'twitch'); });
+$('twitchChannel').addEventListener('keydown', function(e){ onChannelInput(e,'twitch'); });
+$('kickChannel').addEventListener('blur', function(e){ onChannelInput(e,'kick'); });
+$('kickChannel').addEventListener('keydown', function(e){ onChannelInput(e,'kick'); });
 
-function addPlayer(team) {
-  const inputId = team === 'blue' ? "bluePlayerInput" : "redPlayerInput";
-  const name = document.getElementById(inputId).value.trim();
-  if (name === "") return alert("❌ الرجاء كتابة اسم اللاعب");
-  if (team === 'blue') bluePlayers.push(name);
-  else redPlayers.push(name);
-  updatePlayerList(team);
-  document.getElementById(inputId).value = "";
+/* ============= أوامر الشات ============= */
+function handleChat(payload){
+  if(!payload || !payload.text) return;
+
+  var text = String(payload.text || "").trim().toLowerCase();
+  var isBlue  = (text === CMD_BLUE);
+  var isRed   = (text === CMD_RED);
+  var isLeave = (text === CMD_LEAVE);
+  if(!(isBlue || isRed || isLeave)) return;
+
+  var name = (payload.user || "").toString().trim().replace(/\s+/g,' ').slice(0,24);
+  if(!name) return;
+
+  if(isLeave){ removeFromTeams(name); return; }
+  if(isBlue){ moveToTeam('blue', name, payload.platform); return; }
+  if(isRed){ moveToTeam('red', name, payload.platform); return; }
 }
 
-function updatePlayerList(team) {
-  const listId = team === 'blue' ? "bluePlayers" : "redPlayers";
-  const players = team === 'blue' ? bluePlayers : redPlayers;
-  document.getElementById(listId).innerHTML = players
-    .map((player, i) => `
-      <div class="player-entry">
-        <span>• ${player}</span>
-        <button onclick="removePlayer('${team}', ${i})">🗑️</button>
-      </div>
-    `).join("");
+/* ============= إدارة الفرق ============= */
+function findIndex(arr, name){
+  var lower = name.toLowerCase();
+  for(var i=0;i<arr.length;i++){
+    if(arr[i].name && arr[i].name.toLowerCase() === lower) return i;
+  }
+  return -1;
+}
+function removeFromTeams(name){
+  var changed=false, i=findIndex(bluePlayers,name);
+  if(i>-1){ bluePlayers.splice(i,1); changed=true; renderTeam('blue'); }
+  i=findIndex(redPlayers,name);
+  if(i>-1){ redPlayers.splice(i,1); changed=true; renderTeam('red'); }
+  if(changed) toast('🚪 ' + name + ' خرج من الفريق');
+}
+function moveToTeam(team,name,platform){
+  var other = (team==='blue') ? 'red' : 'blue';
+  var idx=findIndex(other==='blue' ? bluePlayers : redPlayers, name);
+  if(idx>-1){
+    if(other==='blue') bluePlayers.splice(idx,1);
+    else redPlayers.splice(idx,1);
+    renderTeam(other);
+  }
+  var arr = (team==='blue') ? bluePlayers : redPlayers;
+  if(findIndex(arr,name)===-1){
+    arr.push({name:name, source:platform});
+    renderTeam(team);
+    toast('✅ ' + name + ' انضم إلى فريق ' + (team==='blue'?'الأزرق':'الأحمر'));
+  }
+}
+function renderTeam(team){
+  var list = (team==='blue') ? $('bluePlayers') : $('redPlayers');
+  var arr  = (team==='blue') ? bluePlayers : redPlayers;
+  var html = "";
+  for(var i=0;i<arr.length;i++){
+    var p = arr[i];
+    html += '<div class="player-card">' +
+              '<div class="slot">' + (i+1) + '</div>' +
+              '<div class="player-name">' +
+                '<span>' + (p.name||'') + '</span>' +
+                (p.source ? ('<span class="badge">' + (p.source==='twitch'?'Twitch':'Kick') + '</span>') : '') +
+              '</div>' +
+            '</div>';
+  }
+  list.innerHTML = html;
+  var countEl = (team==='blue') ? $('blueCount') : $('redCount');
+  if(countEl) countEl.innerText = String(arr.length);
 }
 
-function removePlayer(team, index) {
-  if (team === 'blue') bluePlayers.splice(index, 1);
-  else redPlayers.splice(index, 1);
-  updatePlayerList(team);
+/* ============= شبكة المربعات ============= */
+function createGrid(){
+  var grid = $('grid');
+  grid.innerHTML='';
+  for(var i=0;i<72;i++){
+    (function(i){
+      var d=document.createElement('div');
+      d.className='cell';
+      d.textContent=(i+1);
+      d.onclick=function(){
+        d.classList.add('revealed');
+        d.onclick=null;
+        updateRemaining();
+        startTimer();
+      };
+      grid.appendChild(d);
+    })(i);
+  }
+  updateRemaining();
+}
+function unrevealedCount(){
+  var all=document.querySelectorAll('.cell');
+  var cnt=0;
+  for(var i=0;i<all.length;i++){
+    if(!all[i].classList.contains('revealed')) cnt++;
+  }
+  return cnt;
+}
+function updateRemaining(){
+  var r = unrevealedCount();
+  $('remainingCells').innerText = String(r);
+  var pi = $('pointsInput');
+  if(pi){
+    var v = r; if(v<1) v=1;
+    pi.value = String(v);
+  }
+}
+function revealRandomCell(){
+  var cells=[].slice.call(document.querySelectorAll('.cell'));
+  var closed=cells.filter(function(c){ return !c.classList.contains('revealed'); });
+  if(!closed.length) return;
+  var d = closed[Math.floor(Math.random()*closed.length)];
+  d.classList.add('revealed');
+  d.onclick=null;
+  updateRemaining();
+}
+function revealAll(){
+  var cells=document.querySelectorAll('.cell');
+  for(var i=0;i<cells.length;i++){
+    cells[i].classList.add('revealed');
+    cells[i].onclick=null;
+  }
+  updateRemaining();
 }
 
-function startGame() {
-  document.getElementById("startButton").style.display = "none";
-  loadRandomImage();
+/* ============= اللعبة ============= */
+function startGame(){
+  var fileInput = $('imageUpload');
+  if(!fileInput || !fileInput.files || !fileInput.files.length){
+    alert('❌ ارفع صورة أولاً');
+    return;
+  }
+  var startBtn=$('startButton');
+  if(startBtn) startBtn.disabled=true;
+
+  var reader=new FileReader();
+  reader.onload=function(e){
+    $('gameImage').src = e.target.result;
+    createGrid();
+  };
+  reader.readAsDataURL(fileInput.files[0]);
   nextTurn();
 }
-
-function loadRandomImage() {
-  if (remainingImages.length === 0) {
-    alert("✅ انتهت كل الصور!");
+function nextTurn(){
+  if(timerInterval){ clearInterval(timerInterval); timerInterval=null; }
+  $('timer').innerText='⏳';
+  if(bluePlayers.length===0 || redPlayers.length===0){
+    alert('❌ لازم لاعبين في كل فريق');
     return;
   }
-  const index = Math.floor(Math.random() * remainingImages.length);
-  const selectedImage = remainingImages[index];
-  remainingImages.splice(index, 1);
-
-  document.getElementById("gameImage").src = selectedImage.url;
-  currentAnswer = selectedImage.answer;
-  document.getElementById("answerText").innerText = currentAnswer;
-  document.getElementById("nextImageButton").style.display = "none";
-  createGrid();
-  document.getElementById("guessResult").innerText = "";
-}
-
-function nextTurn() {
-  clearInterval(timerInterval);
-  document.getElementById("timer").innerText = "";
-  if (bluePlayers.length === 0 || redPlayers.length === 0) {
-    alert("❌ الرجاء إضافة لاعبين في كلا الفريقين.");
-    return;
-  }
-  let player;
-  if (currentTeam === 'blue') {
-    player = bluePlayers[turnIndex % bluePlayers.length];
-    answeringTeam = 'blue';
-    currentTeam = 'red';
-  } else {
-    player = redPlayers[turnIndex % redPlayers.length];
-    answeringTeam = 'red';
-    currentTeam = 'blue';
+  var p;
+  if(currentTeam==='blue'){
+    p = bluePlayers[turnIndex % bluePlayers.length];
+    answeringTeam='blue';
+    currentTeam='red';
+  }else{
+    p = redPlayers[turnIndex % redPlayers.length];
+    answeringTeam='red';
+    currentTeam='blue';
     turnIndex++;
   }
-  currentPlayerName = player;
-  document.getElementById("currentPlayer").innerText = `🎮 الدور الآن: ${player}`;
-  document.getElementById("answerText").innerText = currentAnswer;
-  document.getElementById("guessInput").value = "";
-  document.getElementById("guessResult").innerText = "";
+  $('currentPlayer').innerText='🎮 الدور الآن: ' + (p && p.name ? p.name : '');
+  $('guessResult').innerText='';
 }
-
-function submitGuess() {
-  const guess = document.getElementById("guessInput").value.trim();
-  if (guess === "") {
-    alert("❌ الرجاء كتابة تخمين.");
-    return;
-  }
-  const resultDiv = document.getElementById("guessResult");
-  if (guess === currentAnswer) {
-    resultDiv.innerHTML += `✅ إجابة صحيحة!<br>`;
-    clearInterval(timerInterval);
-    const remainingCells = Array.from(document.querySelectorAll(".cell")).filter(c => !c.classList.contains("revealed")).length;
-    document.querySelectorAll(".cell").forEach(cell => {
-      cell.classList.add("revealed");
-    });
-    document.getElementById("nextImageButton").style.display = "inline-block";
-    if (answeringTeam === 'red') {
-      redScore += remainingCells;
-      document.getElementById("redScore").innerText = redScore;
-      if (redScore >= 150) alert("🏆 الفريق الأحمر فاز!");
-    } else {
-      blueScore += remainingCells;
-      document.getElementById("blueScore").innerText = blueScore;
-      if (blueScore >= 150) alert("🏆 الفريق الأزرق فاز!");
-    }
-  } else {
-    resultDiv.innerHTML += `❌ خطأ: ${guess}<br>`;
-  }
-  document.getElementById("guessInput").value = "";
-}
-
-function startTimer() {
-  clearInterval(timerInterval);
-  let timeLeft = 30;
-  document.getElementById("timer").innerText = `⏳ الوقت المتبقي: ${timeLeft} ثانية`;
-  timerInterval = setInterval(() => {
-    timeLeft--;
-    document.getElementById("timer").innerText = `⏳ الوقت المتبقي: ${timeLeft} ثانية`;
-    if (timeLeft <= 0) {
+function startTimer(){
+  if(timerInterval){ clearInterval(timerInterval); timerInterval=null; }
+  var t=30;
+  $('timer').innerText='⏳ ' + t + 's';
+  timerInterval=setInterval(function(){
+    t--;
+    $('timer').innerText='⏳ ' + t + 's';
+    if(t<=0){
       clearInterval(timerInterval);
-      document.getElementById("timer").innerText = "⏳ انتهى الوقت!";
+      timerInterval=null;
+      $('timer').innerText='⏳ انتهى الوقت!';
     }
-  }, 1000);
+  },1000);
 }
 
-window.onload = () => {
+/* ============= نقاط + بروجريس ============= */
+function awardPoints(team){
+  var auto = $('autoRevealAfterAward').checked;
+  var num = $('pointsInput').value;
+  var pts = parseInt(num,10);
+  if(isNaN(pts) || pts<=0){ alert('⚠️ أدخل نقاط صحيحة'); return; }
+
+  if(team==='blue'){
+    blueScore += pts;
+    $('blueScore').innerText = String(blueScore);
+    if(blueScore>=TARGET_SCORE) alert('🏆 الأزرق فاز!');
+  }else{
+    redScore += pts;
+    $('redScore').innerText = String(redScore);
+    if(redScore>=TARGET_SCORE) alert('🏆 الأحمر فاز!');
+  }
+  updateBars();
+  toast('+' + pts + ' نقطة لفريق ' + (team==='blue'?'الأزرق':'الأحمر'));
+  if(auto) revealAll();
+}
+function updateBars(){
+  var bluePct = (blueScore/TARGET_SCORE)*100; if(bluePct>100) bluePct=100;
+  var redPct  = (redScore /TARGET_SCORE)*100; if(redPct>100) redPct=100;
+  $('blueBar').style.width = bluePct + '%';
+  $('redBar').style.width  = redPct + '%';
+}
+
+/* ============= جولة جديدة (مع خيار مسح الصورة) ============= */
+function resetRound(clearImage = false){
+  if(timerInterval){ clearInterval(timerInterval); timerInterval=null; }
+  $('timer').innerText='⏳';
+  $('guessResult').innerText='';
+
   createGrid();
-};
+
+  var left = unrevealedCount();
+  $('remainingCells').innerText = String(left);
+  var pi = $('pointsInput');
+  if(pi){
+    var v=left; if(v<1) v=1;
+    pi.value = String(v);
+  }
+
+  if(clearImage === true){
+    var img = $('gameImage');
+    var up  = $('imageUpload');
+    if(img) img.src = '';
+    if(up)  up.value = '';
+  }
+
+  var startBtn = $('startButton');
+  if(startBtn) startBtn.disabled = false;
+
+  toast(clearImage ? '🧹 تم تجهيز جولة جديدة ومسح الصورة' : '🔄 تم تجهيز جولة جديدة');
+}
+
+/* ============= Helper ============= */
+function toast(text){
+  var t=document.createElement('div'); t.textContent=text;
+  t.style.position='fixed'; t.style.bottom='24px'; t.style.right='24px';
+  t.style.background='rgba(0,0,0,.7)'; t.style.border='1px solid rgba(255,255,255,.15)';
+  t.style.padding='10px 14px'; t.style.borderRadius='10px'; t.style.zIndex='9999'; t.style.boxShadow='0 10px 24px rgba(0,0,0,.35)';
+  document.body.appendChild(t);
+  setTimeout(function(){ t.style.transition='opacity .6s'; t.style.opacity='0'; },1200);
+  setTimeout(function(){ try{ t.remove(); }catch{} },1900);
+}
+
+/* ============= بدء الصفحة ============= */
+window.addEventListener('load', function(){
+  createGrid();
+  updateBars();
+
+  var tw=localStorage.getItem('twitchChannel');
+  if(tw){ $('twitchChannel').value=tw; connectTwitchAuto().then(function(){ setConnState(); }).catch(function(){}); }
+
+  var kk=localStorage.getItem('kickChannel');
+  if(kk){ $('kickChannel').value=kk; connectKickAuto().then(function(){ setConnState(); }).catch(function(){}); }
+
+  setConnState();
+});
+
+/* ripple للأزرار */
+document.addEventListener('click', function(e){
+  if(e.target && e.target.tagName==='BUTTON'){
+    var r=e.target.getBoundingClientRect();
+    e.target.style.setProperty('--x',(e.clientX-r.left)+'px');
+    e.target.style.setProperty('--y',(e.clientY-r.top)+'px');
+  }
+});
 </script>
 
+<!-- (اختياري) إن وُجد ملف يوفّر window.connectToKick(channel, onMessage) -->
+<script src="kick_chat.js"></script>
 </body>
 </html>
