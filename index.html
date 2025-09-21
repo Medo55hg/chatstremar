@@ -290,9 +290,6 @@
       z-index: 2;
     }
     /* صور الخلفيات للبطاقات */
-    .img-0onoufo0::before {
-      background-image: url('https://i.postimg.cc/YSw1B0Pt/62c6680cad14f6ab179e141dfbcbbcd4.webp');
-    }
 
     /* تذييل */
     footer { max-width:1200px; margin: 24px auto 60px; padding: 0 18px; color: var(--muted); display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap }
@@ -538,19 +535,12 @@
         <div class="game-body">
           <div class="game-title"><i class="fa-solid fa-image"></i> اكشف الصورة</div>
         <div class="game-desc">شوف الصورة وخمّن الكلمة التي تعبر عنها!</div>
-          <div class="badges"><span class="badge nok">❌ لا يدعم الشات</span></div>
+        <div class="badges">
+            <span class="badge ok"><i class="fa-brands fa-twitch"></i> تويتش</span>
+            <span class="badge ok"><i class="fa-solid fa-fist-raised"></i> كيك</span>
+          </div>
         </div>
         <a href="guessimage.html" class="start-btn" data-transition>ابدأ اللعب</a>
-      </article>
-
-      <!-- خماسيات/ثلاثيات يومية -->
-      <article class="game-card img-3">
-        <div class="game-body">
-          <div class="game-title"><i class="fa-solid fa-puzzle-piece"></i> خماسيات</div>
-          <div class="game-desc">جرب تخمين 3 كلمات جديدة كل يوم!</div>
-          <div class="badges"><span class="badge nok">❌ لا يدعم الشات</span></div>
-        </div>
-        <a href="thulathiyat.html" class="start-btn" data-transition>ابدأ اللعب</a>
       </article>
 
       <!-- حرب الدول -->
@@ -579,19 +569,23 @@
         <a href="tarkeeb.html" class="start-btn" data-transition>ابدأ اللعب</a>
       </article>
 
-      <!-- اللعبة السادسة: 5 في 1 -->
-      <article class="game-card img-6">
+      <!-- نهاية اللعبة السادسة -->
+
+      <!-- ===================== (الإضافة الوحيدة) لعبة الحروف بالصورة المحددة ===================== -->
+      <article class="game-card" style="position:relative;">
+        <img src="https://i.postimg.cc/xjLx1hFB/2025-09-20-093402.png" alt="لعبة الحروف" style="width:100%;height:140px;object-fit:cover;display:block;opacity:.9;border-bottom:1px solid var(--border)">
         <div class="game-body">
-          <div class="game-title"><i class="fa-solid fa-layer-group"></i> 5 في 1</div>
-          <div class="game-desc">تشكيلة مصغّرة من 5 ألعاب ممتعة في مكان واحد!</div>
+          <div class="game-title"><i class="fa-solid fa-a"></i> لعبة الحروف</div>
+          <div class="game-desc">اضغط للدخول مباشرة إلى صفحة اللعبة.</div>
           <div class="badges">
             <span class="badge ok"><i class="fa-brands fa-twitch"></i> تويتش</span>
             <span class="badge ok"><i class="fa-solid fa-fist-raised"></i> كيك</span>
           </div>
         </div>
-        <a href="mini-games.html" class="start-btn" data-transition>ابدأ اللعب</a>
+        <a href="huroof-game.html" class="start-btn" data-transition>ابدأ اللعب</a>
       </article>
-      <!-- نهاية اللعبة السادسة -->
+      <!-- =================== نهاية الإضافة فقط =================== -->
+
     </div>
   </section>
 
@@ -600,17 +594,28 @@
        ===================== -->
   <section class="section" id="streamer-access">
     <h2>الستريمر</h2>
-    <div class="streamer-access-grid">
-      <article class="streamer-access-card" id="saleehCard">
-        <div class="overlay">
-          <img class="streamer-access-thumb" src="https://i.postimg.cc/qqpqNrBX/74508bb339c7d4b80fdc0dc3d41c8898.webp" alt="Saleeh Icon">
-          <div style="margin-top:10px; font-weight:800;">Saleeh</div>
-          <button type="button" class="sbtn" style="margin-top:10px;" onclick="openSaleehWithPassword()">
-            <i class="fa-solid fa-lock"></i> دخول
-          </button>
-        </div>
-      </article>
+  <div class="streamer-access-grid">
+  <!-- بطاقة Saleeh -->
+  <article class="streamer-access-card" id="saleehCard">
+    <div class="overlay">
+      <img class="streamer-access-thumb" src="https://i.postimg.cc/qqpqNrBX/74508bb339c7d4b80fdc0dc3d41c8898.webp" alt="Saleeh Icon">
+      <div style="margin-top:10px; font-weight:800;">Saleeh</div>
+      <button type="button" class="sbtn" style="margin-top:10px;" onclick="openSaleehWithPassword()">
+        <i class="fa-solid fa-lock"></i> دخول
+      </button>
     </div>
+  </article>
+
+  <!-- بطاقة naif_z4 -->
+  <article class="streamer-access-card">
+    <div class="overlay">
+      <img class="streamer-access-thumb" src="https://i.postimg.cc/7LF1TF5W/f3b8e631-7b72-4b24-b638-c24b9c22185b-profile-image-70x70.png" alt="naif_z4 Logo">
+      <div style="margin-top:10px; font-weight:800;">naif_z4</div>
+      <div class="soon" style="margin-top:8px;">قريبًا</div>
+    </div>
+  </article>
+</div>
+
   </section>
   <!-- ===================== نهاية الإضافة ===================== -->
 
@@ -636,13 +641,6 @@
           <a href="https://instagram.com/medo_dv" target="_blank" class="sbtn" rel="noopener"><i class="fa-brands fa-instagram"></i> تواصل عبر إنستجرام</a>
         </div>
 
-        <!-- (تعديل بحسب الطلب): إبقاء بطاقة 0onoufo0 فقط -->
-        <div class="streamer-cards">
-          <div class="streamer-card img-0onoufo0">
-            <div class="soon-label">قريباً</div>
-            <div class="overlay"><span>0onoufo0</span></div>
-          </div>
-        </div>
         <!-- نهاية التعديل -->
 
       </div>
@@ -827,4 +825,3 @@
   </script>
 </body>
 </html>
-
