@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>StreamerTop — لعبة الحروف</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+
+<!-- مكتبات الشات -->
+  <script src="tmi.min.js"></script>
+<script src="kick_chat.js"></script>
+
+<style>
+  :root{
+    --bg:#0f1115; --panel:#151923; --panel-2:#1b2030; --text:#e9eef7; --muted:#a7b0c0;
+    --primary:#ff3333; --accent:#00d86c; --blue:#3aa7ff; --red:#ff5964; --gold:#f8d35e;
+    --success:#19c37d; --warning:#f7a94d;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background: radial-gradient(1200px 600px at 20% -10%, rgba(255,51,51,.08), transparent 60%),
+               radial-gradient(900px 500px at 120% 10%, rgba(58,167,255,.08), transparent 60%),
+               linear-gradient(180deg, #0e1014, #0b0d11);
+    color:var(--text); font-family:"Cairo", system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Color Emoji", sans-serif;
+    min-height:100svh; display:flex; flex-direction:column; gap:16px; padding:20px;
+  }
+  header{display:flex; gap:16px; align-items:center; justify-content:space-between; flex-wrap:wrap}
+  .brand{display:flex; gap:12px; align-items:center}
+  .logo{width:40px; height:40px; border-radius:12px; background:
+    conic-gradient(from 210deg, var(--primary), #d62222 40%, #111 41%, #111 59%, #00d86c 60%, #008f47 100%);
+    box-shadow:0 6px 16px rgba(0,0,0,.35); position:relative; overflow:hidden;}
+  .logo::after{content:"ST"; position:absolute; inset:0; display:grid; place-items:center; font-weight:800; color:#fff; text-shadow:0 2px 8px rgba(0,0,0,.5)}
+  h1{margin:0; font-size:20px; font-weight:800; letter-spacing:.2px}
+
+  .controls{
+    background:var(--panel); padding:14px; border-radius:16px; display:flex; gap:12px; flex-wrap:wrap; align-items:end;
+    box-shadow:0 6px 24px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.02);
+  }
+  .ctrl{display:flex; flex-direction:column; gap:6px; min-width:160px}
+  label{font-size:12px; color:var(--muted)}
+  input, select{
+    background:var(--panel-2); color:var(--text); border:1px solid #2a3142; border-radius:10px; padding:10px 12px;
+    outline:none; transition:.2s border-color;
+  }
+  input:focus, select:focus{border-color:var(--primary)}
+  .btn{
+    appearance:none; border:none; border-radius:12px; padding:12px 16px; font-weight:800; cursor:pointer;
+    background:linear-gradient(180deg, var(--primary), #d62222); color:#fff; box-shadow:0 6px 16px rgba(255,51,51,.3);
+    transition:.15s transform,.2s filter;
+  }
+  .btn.secondary{background:linear-gradient(180deg, #3aa7ff, #2484d7); box-shadow:0 6px 16px rgba(58,167,255,.28)}
+  .btn.ghost{background:transparent; border:1px solid #2a3142; color:var(--text)}
+  .btn:active{transform:translateY(1px)}
+  .status{
+    font-size:12px; font-weight:800; padding:8px 12px; border-radius:999px; border:1px solid #2a3142; background:#0d1524;
+  }
+  .status.ok{color:#b6ffd8; border-color:#1f6a47; background:#0f2d24}
+  .status.bad{color:#ffd2d2; border-color:#6a1f2a; background:#2d0f15}
+
+  main{display:grid; grid-template-columns: 1.3fr .7fr; gap:16px}
+  .card{
+    background:var(--panel); border-radius:18px; padding:16px; box-shadow:0 6px 24px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.03);
+  }
+  .gamebar{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:10px}
+  .pill{
+    border-radius:999px; padding:8px 12px; background:var(--panel-2); border:1px solid #2a3142; color:var(--muted); font-weight:700; font-size:12px;
+  }
+  .category{background:#222a; border-color:#384155; color:#cfe0ff}
+  .letter{
+    position:relative;
+    background:linear-gradient(180deg,#0f1726,#0b101a); border-color:#2b3348; color:#fff; font-size:28px; padding:10px 16px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.04), 0 6px 14px rgba(0,0,0,.2);
+  }
+  .letter::after{
+    content: attr(data-count);
+    position:absolute; top:-8px; inset-inline-end:-8px;
+    font-size:12px; font-weight:800; padding:2px 6px; border-radius:999px;
+    background:#27314a; border:1px solid #3a4561;
+  }
+
+  .timer{margin-inline-start:auto; display:flex; align-items:center; gap:10px;}
+  .timer .ring{
+    --p: 0turn;
+    width:42px; height:42px; border-radius:999px;
+    padding:4px;
+    background:
+      conic-gradient(#3aa7ff var(--p), #2b3348 0) content-box,
+      radial-gradient(circle, transparent 60%, #2b3348 61%) border-box;
+    box-sizing: border-box;
+  }
+  .timer .t{font-weight:800; letter-spacing:.5px}
+  .round-status{margin:8px 0 12px; color:var(--muted); font-size:14px}
+  .cols{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+  .panel-title{font-weight:800; margin:0 0 10px; color:#dce6ff}
+  .list{display:flex; flex-direction:column; gap:8px; max-height:44vh; overflow:auto; padding-right:4px}
+  .row{display:flex; align-items:center; justify-content:space-between; background:var(--panel-2); border:1px solid #2a3142; border-radius:12px; padding:10px 12px}
+  .row .name{font-weight:700}
+  .row .score{font-weight:900; color:#fff; background:#27314a; padding:4px 10px; border-radius:999px; border:1px solid #3a4561}
+  .teams{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+  .team-box{border-radius:14px; padding:12px; border:1px solid #2a3142}
+  .team-blue{background:linear-gradient(180deg, rgba(58,167,255,.15), rgba(17,22,33,.6));}
+  .team-red{background:linear-gradient(180deg, rgba(255,89,100,.15), rgba(17,22,33,.6));}
+  .team-hdr{display:flex; align-items:center; justify-content:space-between; margin-bottom:10px}
+  .team-hdr h3{margin:0; font-weight:900}
+  .score-badge{background:#0d1524; padding:6px 10px; border-radius:999px; border:1px solid #2a3142; font-weight:900}
+  .muted{color:var(--muted); font-size:13px}
+  .inline-kbd{background:#00000033; border:1px solid #2a3142; padding:2px 8px; border-radius:6px; font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-size:12px}
+  .footer{display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:space-between}
+  .chip{font-size:12px}
+  .manual{display:flex; gap:8px; margin-top:10px}
+  .manual input{flex:1}
+
+  .review{
+    margin-top:14px; padding:12px; border-radius:14px; border:1px solid #384155; background:#121826;
+    display:none; flex-direction:column; gap:12px;
+  }
+  .review h4{margin:0; font-weight:900; color:#f2f6ff}
+  .review-list{display:flex; flex-direction:column; gap:8px; max-height:36vh; overflow:auto}
+  .review-row{display:grid; grid-template-columns:auto 1fr auto; gap:10px; align-items:center; background:#0f1524; border:1px solid #2b3348; padding:8px 10px; border-radius:10px}
+  .badge{background:#0d1524; border:1px solid #2a3142; padding:3px 8px; border-radius:999px; font-weight:800; font-size:12px}
+  .players{color:#a8b4ca; font-size:12px}
+  .review-actions{display:flex; gap:10px; flex-wrap:wrap}
+</style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <div>
+        <h1>StreamerTop — لعبة الحروف</h1>
+        <div class="muted">سولو أو تيمات • مرتبط بالشات (Twitch/Kick) • راوند 60 ثانية • مراجعة يدوية للاحتساب</div>
+      </div>
+    </div>
+
+    <div class="controls" id="controls">
+      <div class="ctrl">
+        <label>وضع اللعب</label>
+        <select id="mode">
+          <option value="solo">سولو</option>
+          <option value="teams">تيمات</option>
+        </select>
+      </div>
+
+      <div class="ctrl">
+        <label>منصة الشات</label>
+        <select id="platform">
+          <option value="twitch">Twitch</option>
+          <option value="kick">Kick</option>
+          <option value="offline">Manual (بدون اتصال)</option>
+        </select>
+      </div>
+
+      <div class="ctrl">
+        <label>اسم القناة (Twitch/Kick)</label>
+        <input id="channel" placeholder="اكتب اسم القناة بدون @" />
+      </div>
+
+      <div class="ctrl">
+        <label>&nbsp;</label>
+        <button class="btn secondary" id="connectBtn">اتصال</button>
+        <div id="connStatus" class="status bad">غير متصل</div>
+      </div>
+
+      <div class="ctrl">
+        <label>طول الراوند (ثوانٍ)</label>
+        <input id="roundSeconds" type="number" min="10" value="60" />
+      </div>
+
+      <div class="ctrl">
+        <button class="btn" id="startBtn">بدء اللعبة</button>
+      </div>
+
+      <div class="ctrl">
+        <button class="btn ghost" id="stopBtn">إيقاف</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="card">
+      <div class="gamebar">
+        <div class="pill category" id="categoryPill">—</div>
+        <div class="pill letter" id="letterPill" data-count="0">—</div>
+        <div class="timer">
+          <div class="ring" id="ring"></div>
+          <div class="t" id="timeLeft">00:00</div>
+        </div>
+      </div>
+      <div class="round-status" id="roundStatus">اختر المنصة واكتب اسم القناة ثم اضغط “اتصال”.</div>
+
+      <div class="cols">
+        <div>
+          <h3 class="panel-title">اللاعبون</h3>
+          <div class="list" id="playersList"></div>
+
+          <div class="manual" id="manualBox" style="display:none">
+            <input id="manualUser" placeholder="اسم اللاعب" />
+            <input id="manualMsg" placeholder="رسالة الشات (مثلاً: بطيخ / !دخول / !ازرق)" />
+            <button class="btn secondary" id="manualSend">إرسال</button>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="panel-title">النتائج</h3>
+          <div id="scoresBox">
+            <div id="soloScores" class="list"></div>
+
+            <div id="teamsScores" class="teams" style="display:none">
+              <div class="team-box team-blue">
+                <div class="team-hdr">
+                  <h3>فريق الأزرق</h3>
+                  <div class="score-badge" id="blueScore">0</div>
+                </div>
+                <div class="muted">الانضمام: <span class="inline-kbd">!ازرق</span></div>
+                <div class="list" id="blueMembers"></div>
+              </div>
+              <div class="team-box team-red">
+                <div class="team-hdr">
+                  <h3>فريق الأحمر</h3>
+                  <div class="score-badge" id="redScore">0</div>
+                </div>
+                <div class="muted">الانضمام: <span class="inline-kbd">!احمر</span></div>
+                <div class="list" id="redMembers"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="review" id="reviewPanel">
+        <h4>مراجعة الكلمات — اختر الصحيح ثم اضغط “احتساب”</h4>
+        <div class="review-list" id="reviewList"></div>
+        <div class="review-actions">
+          <button class="btn" id="scoreBtn">احتساب ✅</button>
+          <button class="btn ghost" id="nextRoundBtn" disabled>التالي ⏭️</button>
+        </div>
+        <div class="muted">ملاحظة: تُمنح نقطة لكل كلمة معتمَدة يكتبها اللاعب (يمكن احتساب عدة كلمات لنفس اللاعب).</div>
+      </div>
+
+      <div style="margin-top:12px" class="footer">
+        <div class="muted">سولو: <span class="inline-kbd">!دخول</span> • تيمات: <span class="inline-kbd">!ازرق</span> / <span class="inline-kbd">!احمر</span> • خلال الجولة: نقبل أي كلمة تبدأ بالحرف المطلوب</div>
+        <div class="chip pill">من تصميم: Medo_DV — StreamerTop</div>
+      </div>
+    </section>
+
+    <aside class="card">
+      <h3 class="panel-title">سِجل الشات</h3>
+      <div class="list" id="chatLog" style="max-height:64vh"></div>
+    </aside>
+  </main>
+
+  <script>
+  const CATEGORIES = ["اسم", "حيوان", "نبات", "جماد", "مدينة"];
+  const LETTERS = ["ا","ب","ت","ث","ج","ح","خ","د","ذ","ر","ز","س","ش","ص","ض","ط","ظ","ع","غ","ف","ق","ك","ل","م","ن","ه","و","ي"];
+
+  const UI = {
+    mode: document.getElementById('mode'),
+    platform: document.getElementById('platform'),
+    channel: document.getElementById('channel'),
+    roundSeconds: document.getElementById('roundSeconds'),
+    startBtn: document.getElementById('startBtn'),
+    stopBtn: document.getElementById('stopBtn'),
+    connectBtn: document.getElementById('connectBtn'),
+    connStatus: document.getElementById('connStatus'),
+    categoryPill: document.getElementById('categoryPill'),
+    letterPill: document.getElementById('letterPill'),
+    timeLeft: document.getElementById('timeLeft'),
+    ring: document.getElementById('ring'),
+    roundStatus: document.getElementById('roundStatus'),
+    playersList: document.getElementById('playersList'),
+    soloScores: document.getElementById('soloScores'),
+    teamsScores: document.getElementById('teamsScores'),
+    blueScore: document.getElementById('blueScore'),
+    redScore: document.getElementById('redScore'),
+    blueMembers: document.getElementById('blueMembers'),
+    redMembers: document.getElementById('redMembers'),
+    chatLog: document.getElementById('chatLog'),
+    manualBox: document.getElementById('manualBox'),
+    manualUser: document.getElementById('manualUser'),
+    manualMsg: document.getElementById('manualMsg'),
+    manualSend: document.getElementById('manualSend'),
+    reviewPanel: document.getElementById('reviewPanel'),
+    reviewList: document.getElementById('reviewList'),
+    scoreBtn: document.getElementById('scoreBtn'),
+    nextRoundBtn: document.getElementById('nextRoundBtn')
+  };
+
+  const state = {
+    running: false,
+    phase: "idle",
+    currentCategory: null,
+    currentLetter: null,
+    roundEndsAt: 0,
+    timerHandle: null,
+
+    soloPlayers: new Map(), // name -> {score}
+    teamBlue: new Map(),
+    teamRed: new Map(),
+    teamScores: {blue:0, red:0},
+
+    submissionsByWord: new Map(),   // word -> Set(playerName)
+    submissionsByPlayer: new Map(), // player -> Set(word)
+
+    twitchClient: null,
+    kickClient: null,
+    disconnectFn: null,
+    isConnected: false,
+    connectedPlatform: null
+  };
+
+  const normalizeArabic = (s="") => s
+    .replace(/[إأآا]/g,"ا").replace(/ى/g,"ي").replace(/ؤ/g,"و").replace(/ئ/g,"ي").replace(/ة/g,"ه")
+    .replace(/[^\u0600-\u06FF\s]/g,"").trim();
+
+  const startsWithLetter = (word, letter) => {
+    const w = normalizeArabic(word); const l = normalizeArabic(letter);
+    return w && l && w[0] === l[0];
+  };
+  const rand = arr => arr[Math.floor(Math.random()*arr.length)];
+  const fmtTime = (ms) => {
+    ms = Math.max(0, ms); const s = Math.ceil(ms/1000);
+    const mm = String(Math.floor(s/60)).padStart(2,"0");
+    const ss = String(s % 60).padStart(2,"0");
+    return `${mm}:${ss}`;
+  };
+  const setConnStatus = (ok, platformName=null) => {
+    state.isConnected = !!ok; state.connectedPlatform = ok ? platformName : null;
+    UI.connStatus.textContent = ok ? `متصل بـ ${platformName}` : `غير متصل`;
+    UI.connStatus.className = `status ${ok ? 'ok' : 'bad'}`;
+    if(ok) UI.roundStatus.textContent = `تم الاتصال بـ ${platformName}. يمكنك الآن بدء اللعبة.`;
+    else UI.roundStatus.textContent = `اختر المنصة واكتب اسم القناة ثم اضغط “اتصال”.`;
+    UI.manualBox.style.display = (UI.platform.value==='offline') ? 'flex' : 'none';
+  };
+
+  // طباعة آمنة لسجل الشات
+  const logChat = (user, msg, badge=null) => {
+    const row = document.createElement('div'); row.className = 'row';
+
+    const left = document.createElement('div');
+    const nameSpan = document.createElement('span');
+    nameSpan.className = 'name';
+    nameSpan.textContent = `@${user}`;
+    const dash = document.createTextNode(' — ');
+    const msgSpan = document.createElement('span');
+    msgSpan.textContent = msg;
+
+    left.append(nameSpan, dash, msgSpan);
+
+    const right = document.createElement('div');
+    if(badge==='ok'){
+      right.innerHTML = `<span class="score" style="background:#144a2f;border-color:#1c6a46">سُجلت</span>`;
+    } else if(badge==='dup'){
+      right.innerHTML = `<span class="score" style="background:#4a1420;border-color:#6a1c2c">مكررة</span>`;
+    }
+
+    row.append(left, right);
+    UI.chatLog.prepend(row);
+
+    while(UI.chatLog.children.length > 200){ UI.chatLog.lastChild?.remove(); }
+  };
+
+  const renderPlayers = () => {
+    UI.playersList.innerHTML = "";
+
+    const makePlayerRow = (name, score=null) => {
+      const row = document.createElement('div'); row.className='row';
+      const nameDiv = document.createElement('div'); nameDiv.className = 'name'; nameDiv.textContent = name;
+      row.appendChild(nameDiv);
+      if(score !== null){
+        const scoreDiv = document.createElement('div'); scoreDiv.className = 'score'; scoreDiv.textContent = String(score ?? 0);
+        row.appendChild(scoreDiv);
+      }
+      return row;
+    };
+
+    if(UI.mode.value === 'solo'){
+      for(const [name, p] of state.soloPlayers){
+        UI.playersList.appendChild(makePlayerRow(name, p.score ?? 0));
+      }
+      UI.teamsScores.style.display = "none";
+      UI.soloScores.style.display = "flex";
+      UI.soloScores.innerHTML = "";
+      for(const [name, p] of [...state.soloPlayers].sort((a,b)=> (b[1].score||0)-(a[1].score||0))){
+        UI.soloScores.appendChild(makePlayerRow(name, p.score ?? 0));
+      }
+    } else {
+      UI.soloScores.style.display = "none";
+      UI.teamsScores.style.display = "grid";
+
+      UI.blueMembers.innerHTML = "";
+      for(const [name] of state.teamBlue){
+        UI.blueMembers.appendChild(makePlayerRow(name));
+      }
+      UI.redMembers.innerHTML = "";
+      for(const [name] of state.teamRed){
+        UI.redMembers.appendChild(makePlayerRow(name));
+      }
+
+      UI.blueScore.textContent = state.teamScores.blue;
+      UI.redScore.textContent = state.teamScores.red;
+    }
+  };
+
+  const ensurePlayer = (name) => {
+    if(UI.mode.value === 'solo'){
+      return state.soloPlayers.has(name);
+    }else{
+      return state.teamBlue.has(name) || state.teamRed.has(name);
+    }
+  };
+
+  const joinSolo = (name) => {
+    if(!state.soloPlayers.has(name)){
+      state.soloPlayers.set(name, {score:0});
+      renderPlayers();
+    }
+  };
+  const joinTeam = (name, team) => {
+    state.teamBlue.delete(name);
+    state.teamRed.delete(name);
+    if(team==='blue') state.teamBlue.set(name, {});
+    if(team==='red') state.teamRed.set(name, {});
+    renderPlayers();
+  };
+
+  const awardPoint = (name) => {
+    if(UI.mode.value === 'solo'){
+      const p = state.soloPlayers.get(name);
+      if(!p) return;
+      p.score = (p.score||0) + 1;
+    } else {
+      if(state.teamBlue.has(name)){ state.teamScores.blue += 1; }
+      else if(state.teamRed.has(name)){ state.teamScores.red += 1; }
+      else return;
+    }
+  };
+
+  const clearSubmissions = () => {
+    state.submissionsByWord.clear();
+    state.submissionsByPlayer.clear();
+    UI.letterPill.setAttribute('data-count', '0');
+  };
+
+  const toReviewMode = () => {
+    state.phase = "review";
+    UI.roundStatus.textContent = "انتهى الوقت — راجع الكلمات أدناه ثم اضغط احتساب.";
+    UI.reviewPanel.style.display = "flex";
+    UI.scoreBtn.disabled = false;
+    UI.nextRoundBtn.disabled = true;
+
+    UI.reviewList.innerHTML = "";
+    const entries = [...state.submissionsByWord.entries()]
+      .sort((a,b)=> a[0].localeCompare(b[0], 'ar'));
+
+    if(entries.length === 0){
+      const empty = document.createElement('div');
+      empty.className = 'muted';
+      empty.textContent = "لا توجد كلمات مسجّلة لهذا الراوند.";
+      UI.reviewList.appendChild(empty);
+      return;
+    }
+
+    for(const [word, playersSet] of entries){
+      const row = document.createElement('div'); row.className = 'review-row';
+
+      const checkbox = document.createElement('input'); checkbox.type = 'checkbox';
+      checkbox.dataset.word = word;
+
+      const label = document.createElement('div');
+      const strong = document.createElement('strong'); strong.textContent = word;
+      const playersDiv = document.createElement('div'); playersDiv.className = 'players';
+      playersDiv.textContent = `اللاعبون: ${[...playersSet].join(", ")}`;
+      label.append(strong, playersDiv);
+
+      const count = document.createElement('div');
+      count.className = 'badge';
+      count.textContent = `${playersSet.size} لاعب`;
+
+      row.append(checkbox, label, count);
+      UI.reviewList.appendChild(row);
+    }
+  };
+
+  const startRound = () => {
+    state.phase = "play";
+    state.currentCategory = rand(CATEGORIES);
+    state.currentLetter = rand(LETTERS);
+    clearSubmissions();
+
+    UI.categoryPill.textContent = state.currentCategory;
+    UI.letterPill.textContent = state.currentLetter;
+    UI.roundStatus.textContent = "أرسلوا كلماتكم في الشات… (الاحتساب بعد انتهاء الوقت)";
+
+    UI.reviewPanel.style.display = "none";
+    UI.scoreBtn.disabled = true;
+    UI.nextRoundBtn.disabled = true;
+
+    const dur = Math.max(10, Number(UI.roundSeconds.value||60)) * 1000;
+    state.roundEndsAt = Date.now() + dur;
+    if(state.timerHandle) cancelAnimationFrame(state.timerHandle);
+    const tick = () => {
+      const left = state.roundEndsAt - Date.now();
+      UI.timeLeft.textContent = fmtTime(left);
+
+      const progress = 1 - Math.max(0, Math.min(1, left/dur));
+      UI.ring.style.setProperty('--p', `${progress}turn`);
+
+      if(left > 0 && state.running){
+        state.timerHandle = requestAnimationFrame(tick);
+      } else {
+        UI.timeLeft.textContent = "00:00";
+        toReviewMode();
+      }
+    };
+    tick();
+  };
+
+  function onChatMessage(user, text){
+    const msg = text.trim();
+
+    if(UI.mode.value==='solo'){
+      if(/^!دخول$/i.test(msg)){ joinSolo(user); logChat(user, msg); return; }
+    } else {
+      if(/^!ازرق$/i.test(msg)){ joinTeam(user,'blue'); logChat(user, msg); return; }
+      if(/^!احمر$/i.test(msg)){ joinTeam(user,'red'); logChat(user, msg); return; }
+    }
+
+    if(!state.running || state.phase !== "play" || !state.currentLetter) {
+      logChat(user, msg, null);
+      return;
+    }
+
+    if(UI.mode.value==='solo' && !ensurePlayer(user)) return;
+    if(UI.mode.value==='teams' && !(state.teamBlue.has(user)||state.teamRed.has(user))) return;
+
+    const word = msg.split(/\s+/)[0];
+    if(!startsWithLetter(word, state.currentLetter)) {
+      logChat(user, msg, null);
+      return;
+    }
+
+    const keyWord = normalizeArabic(word);
+    if(!state.submissionsByPlayer.has(user)) state.submissionsByPlayer.set(user, new Set());
+    const userSet = state.submissionsByPlayer.get(user);
+    if(userSet.has(keyWord)){
+      logChat(user, msg, 'dup'); // نفس الكلمة لنفس اللاعب لن تُحسب
+      return;
+    }
+    userSet.add(keyWord);
+
+    if(!state.submissionsByWord.has(keyWord)) state.submissionsByWord.set(keyWord, new Set());
+    state.submissionsByWord.get(keyWord).add(user);
+
+    UI.letterPill.setAttribute('data-count', String(state.submissionsByWord.size));
+
+    logChat(user, word, 'ok'); // تظهر "سُجلت"
+  }
+  window.onChatMessage = onChatMessage;
+
+  function connectTwitch(channel){
+    if(state.twitchClient){ try{ state.twitchClient.disconnect(); }catch(e){} state.twitchClient = null; }
+    const ch = channel.startsWith('#') ? channel : '#'+channel;
+    const client = new tmi.Client({ connection: { secure: true, reconnect: true }, channels: [ch] });
+    client.connect().catch(console.error);
+    client.on('message', (chName, tags, message, self)=>{
+      if(self) return;
+      const user = (tags['display-name'] || tags.username || "").toString();
+      onChatMessage(user, message);
+    });
+    state.twitchClient = client;
+    state.disconnectFn = () => { try{ client.disconnect(); }catch(e){} };
+    setConnStatus(true, "Twitch");
+  }
+
+  function connectKick(channel){
+    if(state.kickClient){ try{ state.kickClient.disconnect(); }catch(e){} state.kickClient = null; }
+    try{
+      const conn = KickChat.connect(channel, (payload)=>{
+        const user = payload.username || payload.name || "user";
+        const text = payload.text || "";
+        if(text) onChatMessage(user, text);
+      });
+      state.kickClient = conn;
+      state.disconnectFn = () => { try{ conn.disconnect(); }catch(e){} };
+      setConnStatus(true, "Kick");
+    }catch(err){
+      console.error(err);
+      setConnStatus(false, null);
+      UI.roundStatus.textContent = "تعذّر الاتصال بـ Kick. تأكد من اسم القناة أو استخدم Manual.";
+    }
+  }
+
+  const startGame = () => {
+    const platform = UI.platform.value;
+    if(platform!=='offline' && !state.isConnected){
+      alert("اتصل أولًا بالمنصة عبر زر 'اتصال'. أو اختر Manual.");
+      return;
+    }
+    state.running = true;
+
+    // لا نحذف اللاعبين — نصفر النقاط فقط
+    if (UI.mode.value === 'solo') {
+      for (const [name, p] of state.soloPlayers) {
+        p.score = 0;
+      }
+    } else {
+      state.teamScores.blue = 0;
+      state.teamScores.red  = 0;
+    }
+    renderPlayers();
+
+    if(UI.mode.value==='solo'){
+      UI.teamsScores.style.display = "none";
+      UI.soloScores.style.display = "flex";
+    } else {
+      UI.soloScores.style.display = "none";
+      UI.teamsScores.style.display = "grid";
+    }
+
+    UI.manualBox.style.display = (platform==='offline') ? 'flex' : 'none';
+
+    startRound();
+  };
+
+  const stopGame = () => {
+    state.running = false;
+    state.phase = "idle";
+    if(state.timerHandle) cancelAnimationFrame(state.timerHandle);
+    UI.timeLeft.textContent = "00:00";
+    UI.roundStatus.textContent = "اللعبة متوقفة.";
+    UI.reviewPanel.style.display = "none";
+    if(state.disconnectFn){ try{ state.disconnectFn(); }catch(e){} state.disconnectFn=null; }
+    setConnStatus(false, null);
+  };
+
+  // احتساب: نقطة لكل كلمة معتمَدة ولكل لاعب كتبها
+  UI.scoreBtn.addEventListener('click', ()=>{
+    if(state.phase !== "review") return;
+
+    const checks = [...UI.reviewList.querySelectorAll('input[type="checkbox"]')];
+    const approved = checks.filter(c=>c.checked).map(c=>c.dataset.word);
+
+    for (const w of approved){
+      const players = state.submissionsByWord.get(w);
+      if (!players) continue;
+      for (const name of players){
+        if (ensurePlayer(name)) {
+          awardPoint(name);
+        }
+      }
+    }
+
+    renderPlayers();
+    UI.scoreBtn.disabled = true;
+    UI.nextRoundBtn.disabled = false;
+    UI.roundStatus.textContent = "تم الاحتساب — اضغط “التالي” لبدء الجولة التالية.";
+  });
+
+  UI.nextRoundBtn.addEventListener('click', ()=>{
+    if(!state.running) return;
+    startRound();
+  });
+
+  UI.connectBtn.addEventListener('click', ()=>{
+    const platform = UI.platform.value;
+    const channel = (UI.channel.value||"").trim();
+    if(state.disconnectFn){ try{ state.disconnectFn(); }catch(e){} state.disconnectFn=null; }
+    setConnStatus(false, null);
+
+    if(platform==='twitch'){
+      if(!channel){ alert("اكتب اسم قناة Twitch"); return; }
+      connectTwitch(channel);
+    } else if(platform==='kick'){
+      if(!channel){ alert("اكتب اسم قناة Kick"); return; }
+      connectKick(channel);
+    } else {
+      setConnStatus(true, "Manual");
+      UI.roundStatus.textContent = "وضع Manual: استخدم المدخل بالأسفل لمحاكاة رسائل الشات.";
+      UI.manualBox.style.display = 'flex';
+    }
+  });
+
+  UI.startBtn.addEventListener('click', startGame);
+  UI.stopBtn.addEventListener('click', stopGame);
+  UI.platform.addEventListener('change', ()=>{
+    UI.manualBox.style.display = (UI.platform.value==='offline') ? 'flex' : 'none';
+    if(state.disconnectFn){ try{ state.disconnectFn(); }catch(e){} state.disconnectFn=null; }
+    setConnStatus(false, null);
+  });
+  UI.mode.addEventListener('change', renderPlayers);
+
+  UI.manualSend.addEventListener('click', ()=>{
+    const u = UI.manualUser.value.trim() || "Guest";
+    const m = UI.manualMsg.value.trim();
+    if(!m) return;
+    onChatMessage(u, m);
+    UI.manualMsg.value = "";
+    UI.manualMsg.focus();
+  });
+  UI.manualMsg.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ UI.manualSend.click(); }});
+  UI.manualUser.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ UI.manualMsg.focus(); }});
+
+  UI.channel.value = "medo_dv";
+  </script>
+</body>
+</html>
