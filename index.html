@@ -421,7 +421,7 @@
       color: #fff;
       background: linear-gradient(135deg, #2980b9, #0e5aa3);
       border: 1px solid rgba(255,255,255,0.1);
-      box-shadow: 0 10px 24px rgba(0,0,0,.35);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.35);
     }
     .support-note {
       font-size: 0.85rem;
@@ -752,15 +752,11 @@
     })();
 
     /* =========================
-       حماية أيقونة Saleeh بكلمة مرور
+       دخول Saleeh بدون كلمة مرور (تعديلك الوحيد)
        ========================= */
     function openSaleehWithPassword() {
-      const pass = prompt("🚪 أدخل كلمة المرور للدخول:");
-      if (pass === "sa14leh") {
-        window.location.href = "saleeh.html";
-      } else if (pass !== null) {
-        alert("❌ كلمة المرور غير صحيحة");
-      }
+      // دخول مباشر بدون أي برومبت
+      window.location.href = "saleeh.html";
     }
     document.getElementById('saleehCard')?.addEventListener('click', function(e){
       const clickedButton = e.target.closest('button');
