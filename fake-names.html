@@ -21,12 +21,22 @@
     header{
       padding:16px 24px;border-bottom:1px solid var(--line);
       background:rgba(17,20,30,.6);backdrop-filter: blur(6px);
-      position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between
+      position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:16px
     }
     header .title{display:flex;align-items:center;gap:10px;font-weight:800}
     header .dot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
-    header .right{display:flex;gap:10px;color:var(--muted);font-size:14px;align-items:center}
+    header .right{display:flex;gap:10px;color:var(--muted);font-size:14px;align-items:center;flex-wrap:wrap}
     header .status-pill{padding:6px 10px;border:1px solid var(--line);border-radius:10px;background:rgba(27,33,48,.6)}
+
+    /* بادجات حالة الاتصال */
+    .conn-badges{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .conn{display:flex;align-items:center;gap:6px;border:1px solid var(--line);background:#101625;padding:6px 10px;border-radius:10px}
+    .conn .led{width:8px;height:8px;border-radius:999px;background:#555;box-shadow:0 0 0 0 rgba(255,255,255,0)}
+    .conn.ok .led{background:#27d17c;animation:breath 2.2s ease-in-out infinite}
+    .conn.wait .led{background:#f5c451;animation:pulse 1.4s ease-in-out infinite}
+    .conn.err .led{background:#ff5b5b}
+    @keyframes breath{0%,100%{box-shadow:0 0 0 0 rgba(39,209,124,.7)}50%{box-shadow:0 0 10px 3px rgba(39,209,124,.33)}}
+    @keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
 
     /* مركز الصفحة */
     .wrap{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:18px}
@@ -34,20 +44,31 @@
     @media (max-width:980px){ .container{grid-template-columns:1fr} }
 
     /* شريط تسجيل الدخول أعلى اللوحين */
-    .login-inline{grid-column:1/-1;width:100%;margin:0 auto;background:#121826;border:1px solid var(--line);border-radius:12px;padding:10px;display:grid;gap:8px;grid-template-columns:130px 1fr 160px 1fr 160px}
+    .login-inline{grid-column:1/-1;width:100%;margin:0 auto;background:#121826;border:1px solid var(--line);border-radius:12px;padding:10px;display:grid;gap:8px;grid-template-columns:130px 1fr 160px 1fr 160px;position:relative}
     .login-inline .lbl{display:flex;align-items:center;justify-content:center;border:1px solid #28324a;background:#0f1320;border-radius:10px;font-size:14px}
     .login-inline input,.login-inline select{background:#0f1320;border:1px solid #28324a;color:#e8eefc;padding:8px 10px;border-radius:10px;outline:none;width:100%}
     .login-inline .status{grid-column:1/-1;font-size:14px;color:#a7ffc8}
     @media (max-width:980px){ .login-inline{grid-template-columns:1fr 1fr} .login-inline .lbl{display:none} }
 
-    /* الألواح الوسطية */
-    .panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 0 0 1px rgba(0,0,0,.25),0 12px 32px rgba(0,0,0,.25)}
-    .panel-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;font-weight:700;color:var(--muted)}
-    .title-left{display:flex;align-items:center;gap:10px}
-    .count-chip{font-size:12px;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#0f1320;color:#cfe0ff}
+    /* بانر اللاعب الحالي (نسخة من البطاقة) */
+    .turn-banner{
+      grid-column:1/-1;display:none;align-items:center;justify-content:space-between;gap:12px;
+      background:linear-gradient(180deg,rgba(31,38,57,.92),rgba(16,20,30,.92));
+      border:1px solid var(--line);border-radius:14px;padding:12px 14px;position:relative;overflow:hidden
+    }
+    .turn-banner .left{display:flex;align-items:center;gap:12px}
+    .turn-badge{font-size:12px;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#0f1320;color:#cfe0ff}
+    .turn-name{font-weight:900;font-size:22px;letter-spacing:.3px}
+    .turn-hint{font-size:12px;color:#93a6cc}
     .btn{cursor:pointer;user-select:none;border-radius:10px;border:1px solid var(--line);padding:8px 12px;background:linear-gradient(180deg,#1b2130,#121826);color:var(--text);font-weight:700;transition:.15s}
     .btn:hover{transform:translateY(-1px)} .btn.success{background:linear-gradient(180deg,#183a2d,#0d2019);border-color:#214f3e}
     .btn.warn{background:linear-gradient(180deg,#3a3518,#201d0d)} .btn.accent{background:linear-gradient(180deg,#3a1b1b,#1e1111)}
+
+    /* الألواح الوسطية */
+    .panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 0 0 1px rgba(0,0,0,.25),0 12px 32px rgba(0,0,0,.25);position:relative;overflow:hidden}
+    .panel-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;font-weight:700;color:var(--muted)}
+    .title-left{display:flex;align-items:center;gap:10px}
+    .count-chip{font-size:12px;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#0f1320;color:#cfe0ff}
 
     /* شبكة البطاقات (للجميع) */
     .grid{display:grid;grid-template-columns:repeat(2,minmax(160px,1fr));gap:10px}
@@ -74,10 +95,20 @@
       40%,60%{transform:translateX(4px)}
       100%{transform:translateX(0)}
     }
+    /* فلاش أحمر للخطأ */
+    .flash-red{position:relative;}
+    .flash-red::after{content:"";position:absolute;inset:0;background:rgba(255,0,0,.12);animation:fadeFlash .35s ease-out forwards;border-radius:14px}
+    @keyframes fadeFlash{from{opacity:1}to{opacity:0}}
 
     .status-bar{grid-column:1/-1;background:rgba(21,25,36,.65);border:1px dashed var(--line);border-radius:14px;padding:10px 14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
     .chip{font-size:12px;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#0f1320}
     .hint{font-size:12px;color:#93a6cc}
+
+    /* أسطورة ألوان */
+    .legend{display:flex;gap:8px;flex-wrap:wrap}
+    .legend .lg{display:flex;align-items:center;gap:6px;font-size:12px;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#0f1320}
+    .dot-sm{width:10px;height:10px;border-radius:50%}
+    .d-green{background:#19d38a}.d-yellow{background:#f5c451}.d-blue{background:#3aa7ff}.d-red{background:#ff5b5b}
 
     /* لوحة الستريمر — مخفية عن المشاهدين */
     .gm{display:none}
@@ -98,6 +129,27 @@
       border-radius:12px; padding:10px 12px; color:var(--text); font-weight:800; cursor:pointer; opacity:.9
     }
     .gm-toggle:hover{transform:translateY(-1px)}
+
+    /* (3) نافذة التعليمات السريعة */
+    .help-btn{cursor:pointer;border:1px solid var(--line);border-radius:10px;background:#0f1320;padding:8px 10px;font-weight:800}
+    .help-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:80}
+    .help-card{width:min(760px,92vw);background:#121826;border:1px solid var(--line);border-radius:16px;padding:16px}
+    .help-steps{display:grid;gap:10px}
+    .help-step{display:flex;gap:10px;align-items:flex-start;border:1px solid #27324a;background:#0f1320;border-radius:12px;padding:10px}
+    .help-step .num{width:28px;height:28px;border-radius:8px;background:#1a2235;border:1px solid #2a3550;display:flex;align-items:center;justify-content:center;font-weight:800}
+    .help-close{margin-top:10px;display:flex;justify-content:flex-end}
+
+    /* (10) لاصق آخر حدث */
+    .last-event{position:fixed;inset-inline-end:16px;top:74px;z-index:50;min-width:220px;max-width:40vw;background:#121826;border:1px solid var(--line);border-radius:12px;padding:10px;box-shadow:0 8px 20px rgba(0,0,0,.25);font-size:14px}
+    .last-event .hd{display:flex;align-items:center;justify-content:space-between;color:#9fb0d0;margin-bottom:6px}
+    .last-event .body{line-height:1.6}
+
+    /* (4) بطاقات حالة الفراغ */
+    .empty{display:grid;gap:8px}
+    .empty .ghost{
+      border:1px dashed #2a3550;border-radius:14px;min-height:74px;background:repeating-linear-gradient(135deg,#121826,#121826 8px,#0f1320 8px,#0f1320 16px);
+      display:flex;align-items:center;justify-content:center;color:#9fb0d0
+    }
   </style>
 </head>
 <body>
@@ -106,6 +158,11 @@
   <div class="title"><span class="dot"></span><span>🎭 الأسماء الوهمية</span></div>
   <div class="right">
     <span class="status-pill">الدور الآن: <b id="turnLabel">-</b></span>
+    <button id="helpBtn" class="help-btn">❔ تعليمات</button>
+    <div class="conn-badges">
+      <div id="twitchBadge" class="conn"><span class="led"></span><span>Twitch</span></div>
+      <div id="kickBadge" class="conn"><span class="led"></span><span>Kick</span></div>
+    </div>
   </div>
 </header>
 
@@ -135,22 +192,34 @@
       <div class="status" id="chatStatus">💡 اختر المنصّة وأدخل اسم القناة ثم اضغط تسجيل الدخول. يمكنك تكرارها للمنصّة الأخرى.</div>
     </div>
 
-    <!-- قائمة اللاعبين (وسط الصفحة) -->
+    <!-- بانر اللاعب الحالي (تحت تسجيل الدخول مباشرة) -->
+    <div id="turnBanner" class="turn-banner">
+      <div class="left">
+        <span class="turn-badge">الدور الآن</span>
+        <span id="turnName" class="turn-name">—</span>
+      </div>
+      <div class="right">
+        <span class="turn-hint">اختر بطاقة للاسم الوهمي المطابق</span>
+      </div>
+    </div>
+
+    <!-- قائمة اللاعبين -->
     <div class="panel">
       <div class="panel-title">
         <div class="title-left">
           <span>اللاعبون</span>
           <span class="count-chip" id="playersCount">0 لاعب</span>
         </div>
-        <div style="display:flex;gap:6px">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
           <button class="btn success" id="btnStart">▶️ ابدأ</button>
           <button class="btn accent" id="btnReset">🔁 إعادة</button>
+          <button class="btn" id="btnSkip">⏭️ تجاوز الدور</button>
         </div>
       </div>
       <div id="playersGrid" class="grid"></div>
     </div>
 
-    <!-- قائمة الأسماء الوهمية (وسط الصفحة) -->
+    <!-- قائمة الأسماء الوهمية -->
     <div class="panel">
       <div class="panel-title">
         <div class="title-left">
@@ -170,13 +239,16 @@
     <div class="status-bar">
       <div style="display:flex;flex-wrap:wrap;gap:8px">
         <span class="chip">انضمام من الشات: <b>!دخول</b></span>
-        <span class="chip">التحقق: اضغط بطاقة <b>لاعب</b> (المذكور) ثم اضغط بطاقة <b>اسم وهمي</b></span>
-        <span class="chip">صح ⟵ تخضر وتُوسم "صحيحة" وتُقصى — خطأ ⟵ تهتز باللون الأحمر</span>
+        <span class="chip">التحقق: اختَر <b>لاعبًا</b> ثم اختَر <b>بطاقة</b> من الستريمر</span>
       </div>
-      <div class="hint">لوحة الستريمر مخفية. افتحها بزر الأسفل أو Alt+G أو أضف ‎#gm‎ للرابط.</div>
+      <div class="legend">
+        <div class="lg"><span class="dot-sm d-green"></span><span>صحيحة/مقصى</span></div>
+        <div class="lg"><span class="dot-sm d-yellow"></span><span>مقفلة</span></div>
+        <div class="lg"><span class="dot-sm d-red"></span><span>خطأ</span></div>
+      </div>
     </div>
 
-    <!-- لوحة الستريمر (مخفية – إدارة فقط) -->
+    <!-- لوحة الستريمر -->
     <div id="gm" class="gm" style="grid-column:1/-1">
       <div class="gm-panel">
         <h3 style="margin:0 0 8px">لوحة تحكم الستريمر</h3>
@@ -190,7 +262,7 @@
           <input id="fakeWord" placeholder="اكتب الاسم الوهمي (مثال: سيارة)" />
           <select id="fakeOwner"></select>
           <button class="btn success" id="addFakeBtn">إضافة بطاقة</button>
-          <button class="btn" id="clearUnowned">حذف بطاقات بلا مالك</button>
+          <button class="btn" id="clearUnowned">تحديث قائمة الاسماء</button>
         </div>
 
         <div class="row" style="width:100%;display:grid;grid-template-columns:1fr 1fr;gap:12px">
@@ -219,42 +291,55 @@
   </div>
 </div>
 
-<!-- زر واضح أسفل يسار لفتح/إغلاق لوحة الستريمر -->
+<!-- زر فتح/إغلاق لوحة الستريمر -->
 <button id="gmToggle" class="gm-toggle">⚙️ لوحة الستريمر</button>
 
-<script>
-/* ==============================
-   اتصال المنصات
-   ============================== */
-let TWITCH_CHANNEL = "";
-let KICK_CHANNEL   = "";
-let twitchClient = null;
-let kickSocket   = null;
-let twitchConnected=false, kickConnected=false;
+<!-- (3) نافذة التعليمات السريعة -->
+<div id="helpOverlay" class="help-overlay" role="dialog" aria-modal="true">
+  <div class="help-card">
+    <h3 style="margin:0 0 10px">📘 طريقة اللعب السريعة</h3>
+    <div class="help-steps">
+      <div class="help-step"><div class="num">1</div><div>ابدأ اللعبة من زر <b>▶️ ابدأ</b>.</div></div>
+      <div class="help-step"><div class="num">2</div><div>اختَر بطاقة <b>اللاعب المذكور</b> من لوحة اللاعبين.</div></div>
+      <div class="help-step"><div class="num">3</div><div>اختَر بطاقة <b>الاسم الوهمي</b> المطابقة له.</div></div>
+      <div class="help-step"><div class="num">4</div><div>عند الحاجة يمكنك الضغط على <b>⏭️ تجاوز الدور</b>.</div></div>
+    </div>
+    <div class="help-close">
+      <button id="helpClose" class="btn">حسناً</button>
+    </div>
+  </div>
+</div>
 
+<!-- (10) لاصق آخر حدث -->
+<div id="lastEvent" class="last-event" style="display:none">
+  <div class="hd"><span>📰 آخر حدث</span><button id="lastEventHide" class="btn" style="padding:4px 8px;font-size:12px">إخفاء</button></div>
+  <div class="body" id="lastEventBody">—</div>
+</div>
+
+<script>
+/* ===== اتصال المنصات ===== */
+let TWITCH_CHANNEL = "", KICK_CHANNEL = "";
+let twitchClient = null, kickSocket = null;
+let twitchConnected=false, kickConnected=false;
 const LS_KEY_TWITCH='fn_twitch', LS_KEY_KICK='fn_kick';
 
-/* ==============================
-   عناصر DOM
-   ============================== */
+/* ===== عناصر DOM ===== */
 const els = {
   turnLabel: document.getElementById('turnLabel'),
 
   cardsGrid: document.getElementById('cardsGrid'),
   playersGrid: document.getElementById('playersGrid'),
 
-  // العدادات
   playersCount: document.getElementById('playersCount'),
   cardsCount: document.getElementById('cardsCount'),
 
-  // أزرار عامة
   btnStart: document.getElementById('btnStart'),
   btnReset: document.getElementById('btnReset'),
   btnShuffleCards: document.getElementById('btnShuffleCards'),
   btnLockAll: document.getElementById('btnLockAll'),
   btnUnlockAll: document.getElementById('btnUnlockAll'),
+  btnSkip: document.getElementById('btnSkip'),
 
-  // شريط الدخول
   platformSelect: document.getElementById('platformSelect'),
   channelInput: document.getElementById('channelInput'),
   remember: document.getElementById('remember'),
@@ -262,7 +347,6 @@ const els = {
   fillSaved: document.getElementById('fillSaved'),
   chatStatus: document.getElementById('chatStatus'),
 
-  // لوحة الستريمر
   gm: document.getElementById('gm'),
   gmToggle: document.getElementById('gmToggle'),
   playerName: document.getElementById('playerName'),
@@ -273,46 +357,49 @@ const els = {
   addFakeBtn: document.getElementById('addFakeBtn'),
   clearUnowned: document.getElementById('clearUnowned'),
   cardsTable: document.getElementById('cardsTable'),
-  log: document.getElementById('log')
+  log: document.getElementById('log'),
+
+  twitchBadge: document.getElementById('twitchBadge'),
+  kickBadge: document.getElementById('kickBadge'),
+
+  helpBtn: document.getElementById('helpBtn'),
+  helpOverlay: document.getElementById('helpOverlay'),
+  helpClose: document.getElementById('helpClose'),
+
+  lastEvent: document.getElementById('lastEvent'),
+  lastEventBody: document.getElementById('lastEventBody'),
+  lastEventHide: document.getElementById('lastEventHide'),
+
+  // بانر الدور
+  turnBanner: document.getElementById('turnBanner'),
+  turnName: document.getElementById('turnName'),
 };
 
-/* ==============================
-   حالة اللعبة
-   ============================== */
+/* ===== حالة اللعبة ===== */
 const state = {
   players: [],   // {id,name,eliminated:false}
   cards: [],     // {id,text,ownerId,revealed:false,locked:false}
-  turnIndex: -1, // يظهر فقط أعلى الصفحة
+  turnIndex: -1,
   started: false,
-
-  selectedMentionedId: null, // اللاعب المذكور
-  selectedCardId: null       // بطاقة الاسم المختارة
+  selectedMentionedId: null,
+  selectedCardId: null
 };
 
-/* ==============================
-   أدوات مساعدة
-   ============================== */
+/* ===== مساعدات ===== */
 const uid = ()=> Math.random().toString(36).slice(2,10);
 const normalize = s => (s||"").toString().trim().toLowerCase();
 function byId(arr,id){ return arr.find(x=>x.id===id); }
 function currentPlayer(){ if(state.turnIndex<0||state.turnIndex>=state.players.length) return null; return state.players[state.turnIndex]; }
 function alivePlayers(){ return state.players.filter(p=>!p.eliminated); }
-function log(t){ els.log.value = `[${new Date().toLocaleTimeString()}] ${t}\n` + els.log.value; }
-function updateTurnLabel(){ const p=currentPlayer(); els.turnLabel.textContent = (p && !p.eliminated)?p.name:'-'; }
+function log(t){ els.log.value = `[${new Date().toLocaleTimeString()}] ${t}\n` + els.log.value; setLastEvent(t); }
 
-/* ==============================
-   عدادات
-   ============================== */
+/* ===== عدادات ===== */
 function updateCounts(){
-  const nP = state.players.length;
-  const nC = state.cards.length;
-  els.playersCount.textContent = `${nP} لاعب`;
-  els.cardsCount.textContent   = `${nC} بطاقة`;
+  els.playersCount.textContent = `${state.players.length} لاعب`;
+  els.cardsCount.textContent   = `${state.cards.length} بطاقة`;
 }
 
-/* ==============================
-   تحديث القوائم في GM
-   ============================== */
+/* ===== اختيار القوائم في GM ===== */
 function updateSelects(){
   const setOpts=(el,items,withNone=false)=>{
     el.innerHTML=''; if(withNone){const o=document.createElement('option');o.value='';o.textContent='—';el.append(o);}
@@ -321,31 +408,52 @@ function updateSelects(){
   setOpts(els.fakeOwner, state.players.map(p=>({value:p.id,label:p.name})), true);
 }
 
-/* ==============================
-   رسم اللاعبين (وسط الصفحة + جداول GM)
-   ============================== */
+/* ===== بانر الدور (نسخة من بطاقة اللاعب) ===== */
+function renderTurnBanner(){
+  const p = currentPlayer();
+  if (p && !p.eliminated){
+    els.turnName.textContent = p.name;
+    els.turnLabel.textContent = p.name;
+    els.turnBanner.style.display = 'flex';
+  } else {
+    els.turnName.textContent = '—';
+    els.turnLabel.textContent = '-';
+    els.turnBanner.style.display = 'none';
+  }
+}
+
+/* ===== رسم اللاعبين ===== */
 function renderPlayers(){
   els.playersGrid.innerHTML='';
-  state.players.forEach((p,idx)=>{
-    const el=document.createElement('div'); el.className='card'; el.dataset.id=p.id;
-    if (state.selectedMentionedId===p.id) el.classList.add('selected');
-    if (p.eliminated) el.style.opacity=.55, el.style.filter='saturate(.6)';
+  if (state.players.length===0){
+    const wrap=document.createElement('div'); wrap.className='empty';
+    for(let i=0;i<3;i++){ const g=document.createElement('div'); g.className='ghost'; g.textContent='لاعب سيتم عرضه هنا • أضِف لاعبًا أو استخدم !دخول'; wrap.append(g); }
+    els.playersGrid.append(wrap);
+  } else {
+    state.players.forEach((p)=>{
+      const el=document.createElement('div'); el.className='card'; el.dataset.id=p.id;
+      if (state.selectedMentionedId===p.id) el.classList.add('selected');
+      if (p.eliminated) el.style.opacity=.55, el.style.filter='saturate(.6)';
 
-    el.onclick=()=>{
-      if (p.eliminated) return;
-      state.selectedMentionedId=p.id;
-      document.querySelectorAll('#playersGrid .card').forEach(x=>x.classList.remove('selected'));
-      el.classList.add('selected');
-      tryResolveIfReady();
-    };
+      el.onclick=()=>{
+        if (p.eliminated) return;
+        state.selectedMentionedId=p.id;
+        document.querySelectorAll('#playersGrid .card').forEach(x=>x.classList.remove('selected'));
+        el.classList.add('selected');
+        tryResolveIfReady();
+      };
 
-    const badge=document.createElement('span'); badge.className='badge'; badge.textContent=p.eliminated?'مقصى':(idx===state.turnIndex?'الدور':'جاهز');
-    const t=document.createElement('div'); t.className='text'; t.textContent=p.name;
-    el.append(badge,t);
-    els.playersGrid.append(el);
-  });
+      const badge=document.createElement('span'); badge.className='badge';
+      const isTurn = currentPlayer() && currentPlayer().id===p.id && !p.eliminated;
+      badge.textContent = p.eliminated ? 'مقصى' : (isTurn ? 'الدور' : 'جاهز');
 
-  // جداول GM
+      const t=document.createElement('div'); t.className='text'; t.textContent=p.name;
+      el.append(badge,t);
+      els.playersGrid.append(el);
+    });
+  }
+
+  // جدول GM
   els.playersTable.innerHTML='';
   state.players.forEach((p,idx)=>{
     const tr=document.createElement('tr');
@@ -353,50 +461,51 @@ function renderPlayers(){
     const td2=document.createElement('td'); td2.textContent=p.eliminated?'مقصى':'نشط';
     const td3=document.createElement('td');
     const elim=document.createElement('button'); elim.className='btn accent'; elim.textContent=p.eliminated?'إرجاع':'إقصاء';
-    elim.onclick=()=>{ p.eliminated=!p.eliminated; if (state.turnIndex===idx && p.eliminated) nextTurnAuto(); renderPlayers(); updateTurnLabel(); };
+    elim.onclick=()=>{ p.eliminated=!p.eliminated; if (state.turnIndex===idx && p.eliminated) nextTurnAuto(); renderPlayers(); renderTurnBanner(); };
     const del=document.createElement('button'); del.className='btn'; del.textContent='حذف';
-    del.onclick=()=>{ state.cards.forEach(c=>{ if(c.ownerId===p.id) c.ownerId=null; }); state.players=state.players.filter(x=>x.id!==p.id); if(state.turnIndex>=state.players.length) state.turnIndex=state.players.length-1; renderPlayers(); renderCards(); updateTurnLabel(); };
+    del.onclick=()=>{ state.cards.forEach(c=>{ if(c.ownerId===p.id) c.ownerId=null; }); state.players=state.players.filter(x=>x.id!==p.id); if(state.turnIndex>=state.players.length) state.turnIndex=state.players.length-1; renderPlayers(); renderCards(); renderTurnBanner(); };
     td3.append(elim,document.createTextNode(' '),del);
     tr.append(td1,td2,td3); els.playersTable.append(tr);
   });
 
   updateCounts();
-  updateSelects();
-  updateTurnLabel();
+  renderTurnBanner();
 }
 
-/* ==============================
-   رسم البطاقات (وسط الصفحة + جداول GM)
-   ============================== */
+/* ===== رسم البطاقات ===== */
 function renderCards(){
   els.cardsGrid.innerHTML='';
-  state.cards.forEach(c=>{
-    const el=document.createElement('div'); el.className='card'; el.dataset.id=c.id;
-    if (c.revealed) el.classList.add('revealed');      // خضراء إذا صحيحة
-    if (state.selectedCardId===c.id) el.classList.add('selected');
+  if (state.cards.length===0){
+    const wrap=document.createElement('div'); wrap.className='empty';
+    for(let i=0;i<4;i++){ const g=document.createElement('div'); g.className='ghost'; g.textContent='بطاقة اسم وهمي ستظهر هنا • أضِف بطاقة من لوحة الستريمر'; wrap.append(g); }
+    els.cardsGrid.append(wrap);
+  } else {
+    state.cards.forEach(c=>{
+      const el=document.createElement('div'); el.className='card'; el.dataset.id=c.id;
+      if (c.revealed) el.classList.add('revealed');
+      if (state.selectedCardId===c.id) el.classList.add('selected');
 
-    el.onclick=()=>{
-      if (!state.started){ log('ابدأ اللعبة أولاً.'); return; }
-      if (c.locked){ log('هذه البطاقة مقفلة.'); return; }
-      // لا نخفي النص — البطاقة واضحة دومًا
-      if (c.revealed){ log('هذه البطاقة صارت صحيحة مسبقًا.'); return; }
-      state.selectedCardId=c.id;
-      document.querySelectorAll('#cardsGrid .card').forEach(x=>x.classList.remove('selected','wrong'));
-      el.classList.add('selected');
-      tryResolveIfReady();
-    };
+      el.onclick=()=>{
+        if (!state.started){ log('ابدأ اللعبة أولاً.'); return; }
+        if (c.locked){ log('هذه البطاقة مقفلة.'); return; }
+        if (c.revealed){ log('هذه البطاقة صارت صحيحة مسبقًا.'); return; }
+        state.selectedCardId=c.id;
+        document.querySelectorAll('#cardsGrid .card').forEach(x=>x.classList.remove('selected','wrong'));
+        el.classList.add('selected');
+        tryResolveIfReady();
+      };
 
-    const badge=document.createElement('span'); badge.className='badge';
-    badge.textContent = c.revealed ? 'صحيحة' : (c.locked ? 'مقفلة' : 'جاهزة');
+      const badge=document.createElement('span'); badge.className='badge';
+      badge.textContent = c.revealed ? 'صحيحة' : (c.locked ? 'مقفلة' : 'جاهزة');
 
-    const t=document.createElement('div'); t.className='text';
-    t.textContent = c.text; // 👈 واضحة من البداية
+      const t=document.createElement('div'); t.className='text'; t.textContent = c.text;
 
-    el.append(badge,t);
-    els.cardsGrid.append(el);
-  });
+      el.append(badge,t);
+      els.cardsGrid.append(el);
+    });
+  }
 
-  // جداول GM
+  // جدول GM
   els.cardsTable.innerHTML='';
   state.cards.forEach(c=>{
     const tr=document.createElement('tr');
@@ -413,9 +522,7 @@ function renderCards(){
   updateCounts();
 }
 
-/* ==============================
-   منطق الدور
-   ============================== */
+/* ===== منطق الدور + تجاوز الدور ===== */
 function startGame(){
   if (alivePlayers().length===0){ log('لا يوجد لاعبين.'); return; }
   if (state.cards.length===0){ log('أضف بطاقات أولاً.'); return; }
@@ -423,7 +530,7 @@ function startGame(){
   state.turnIndex = state.players.findIndex(p=>!p.eliminated);
   if (state.turnIndex<0) state.turnIndex = 0;
   log('بدأت اللعبة.');
-  renderPlayers(); renderCards(); updateTurnLabel();
+  renderPlayers(); renderCards(); renderTurnBanner();
 }
 function nextTurnAuto(){
   if (!state.started) return;
@@ -437,7 +544,7 @@ function nextTurnAuto(){
   // تنظيف الاختيار
   state.selectedMentionedId = null;
   state.selectedCardId = null;
-  document.querySelectorAll('.card').forEach(x=>x.classList.remove('selected','wrong'));
+  document.querySelectorAll('.card').forEach(x=>x.classList.remove('selected','wrong','flash-red'));
 
   // الفوز إذا بقي لاعب واحد
   if (alivePlayers().length<=1){
@@ -445,7 +552,7 @@ function nextTurnAuto(){
     log(champ?`🎉 الفائز: ${champ.name}`:'لا يوجد فائز.');
   }
   renderPlayers();
-  updateTurnLabel();
+  renderTurnBanner();
 }
 function resetGame(){
   state.started=false; state.turnIndex=-1;
@@ -453,12 +560,40 @@ function resetGame(){
   state.cards.forEach(c=>{c.revealed=false;c.locked=false;});
   state.selectedMentionedId=null; state.selectedCardId=null;
   log('تمت إعادة اللعبة.');
-  renderPlayers(); renderCards(); updateTurnLabel();
+  renderPlayers(); renderCards(); renderTurnBanner();
+}
+els.btnSkip.onclick = ()=>{
+  if (!state.started){ log('ابدأ اللعبة أولاً.'); return; }
+  const cur = currentPlayer()?.name || '-';
+  log(`⏭️ تم تجاوز دور ${cur}.`);
+  nextTurnAuto();
+};
+
+/* ===== مؤثر النجاح ===== */
+function confettiBurst(x=window.innerWidth/2, y=120){
+  const cnv = document.createElement('canvas');
+  cnv.width=window.innerWidth; cnv.height=200; cnv.style.position='fixed';
+  cnv.style.left='0'; cnv.style.top='0'; cnv.style.pointerEvents='none'; cnv.style.zIndex='70';
+  document.body.appendChild(cnv);
+  const ctx = cnv.getContext('2d');
+  const parts = Array.from({length:60},()=>({
+    x, y, vx:(Math.random()*4-2), vy:(Math.random()*-3-1), g:0.08+Math.random()*0.05, s:2+Math.random()*3, life:50+Math.random()*30
+  }));
+  let id;
+  function step(){
+    ctx.clearRect(0,0,cnv.width,cnv.height);
+    parts.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy; p.vy+=p.g; p.life--;
+      ctx.globalAlpha = Math.max(0, Math.min(1, p.life/80));
+      ctx.fillRect(p.x, p.y, p.s, p.s);
+    });
+    if(parts.every(p=>p.life<=0)){ cancelAnimationFrame(id); document.body.removeChild(cnv); return; }
+    id=requestAnimationFrame(step);
+  }
+  step();
 }
 
-/* ==============================
-   التحقق التلقائي عند اكتمال الاختيار
-   ============================== */
+/* ===== التحقق عند اكتمال الاختيار ===== */
 function tryResolveIfReady(){
   const turnP = currentPlayer();
   if (!turnP || turnP.eliminated) return;
@@ -471,32 +606,32 @@ function tryResolveIfReady(){
   const card = byId(state.cards, cardId);
   if (!mentioned || !card || card.locked) return;
 
-  const owner = byId(state.players, card.ownerId);
-  const correct = !!owner && owner.id === mentioned.id;
-
+  const correct = !!card.ownerId && card.ownerId === mentioned.id;
   const cardEl = document.querySelector(`#cardsGrid .card[data-id="${card.id}"]`);
 
   if (correct){
-    card.revealed = true; // تصبح خضراء وتُوسم "صحيحة"
+    card.revealed = true;
     if (!mentioned.eliminated){
       mentioned.eliminated = true;
       log(`✅ صحيح! "${card.text}" تخص ${mentioned.name}. تم إقصاؤه.`);
     } else {
       log(`✅ صحيح! "${card.text}" تخص ${mentioned.name} (كان مقصى).`);
     }
+    const rect = cardEl?.getBoundingClientRect?.();
+    confettiBurst(rect ? rect.left + rect.width/2 : undefined, rect ? rect.top + 10 : undefined);
   } else {
-    // اهتزاز وإبراز خطأ
-    if (cardEl){ cardEl.classList.add('wrong'); setTimeout(()=>cardEl.classList.remove('wrong'), 350); }
+    if (cardEl){
+      cardEl.classList.add('wrong','flash-red');
+      setTimeout(()=>cardEl.classList.remove('wrong','flash-red'), 400);
+    }
     log(`❌ خطأ! "${card.text}" لا تخص ${mentioned.name}.`);
   }
 
-  renderPlayers(); renderCards(); // لتحديث الحالات والعدادات
+  renderPlayers(); renderCards();
   nextTurnAuto();
 }
 
-/* ==============================
-   أزرار عامة
-   ============================== */
+/* ===== أزرار عامة ===== */
 els.btnStart.onclick = startGame;
 els.btnReset.onclick = resetGame;
 els.btnShuffleCards.onclick = ()=>{
@@ -506,14 +641,12 @@ els.btnShuffleCards.onclick = ()=>{
 els.btnLockAll.onclick   = ()=>{ state.cards.forEach(c=>c.locked=true); renderCards(); };
 els.btnUnlockAll.onclick = ()=>{ state.cards.forEach(c=>c.locked=false); renderCards(); };
 
-/* ==============================
-   لوحة الستريمر (إدارة فقط)
-   ============================== */
+/* ===== لوحة الستريمر ===== */
 els.addPlayerBtn.onclick=()=>{
   const name=els.playerName.value.trim(); if(!name) return;
   if(!state.players.some(p=>normalize(p.name)===normalize(name))){
     state.players.push({id:uid(),name,eliminated:false});
-    els.playerName.value=''; renderPlayers(); updateTurnLabel();
+    els.playerName.value=''; renderPlayers(); renderTurnBanner();
   } else { log('اللاعب موجود مسبقًا.'); }
 };
 els.addFakeBtn.onclick=()=>{
@@ -528,56 +661,46 @@ els.gmToggle.onclick = ()=> setGmVisibility(!els.gm.classList.contains('open'));
 setGmVisibility(location.hash==='#gm');
 window.addEventListener('keydown',e=>{ if(e.altKey && (e.key.toLowerCase()==='g')) setGmVisibility(!els.gm.classList.contains('open')); });
 
-/* ==============================
-   التعامل مع الشات
-   ============================== */
+/* ===== الشات: انضمام فقط ===== */
 function handleChatJoin(user){
   if (!user) return;
   if (state.players.some(p=>normalize(p.name)===normalize(user))) return;
   state.players.push({id:uid(),name:user,eliminated:false});
-  renderPlayers(); updateTurnLabel(); log(`انضم ${user} إلى اللعبة.`);
-}
-function handleChatAttempt(user, message, platform){
-  if (!state.started) return;
-  const turnP = currentPlayer(); if (!turnP) return;
-  if (normalize(turnP.name)!==normalize(user)) return;
-  const parts=(message||'').trim().split(/\s+/).filter(Boolean);
-  if (parts.length>=2){
-    const mentionedName=parts[0];
-    const cardText=parts.slice(1).join(' ');
-    const mentioned = state.players.find(p=>normalize(p.name)===normalize(mentionedName));
-    const card = state.cards.find(c=>normalize(c.text)===normalize(cardText));
-    if (mentioned){ state.selectedMentionedId = mentioned.id; }
-    if (card && !card.revealed && !card.locked){ state.selectedCardId = card.id; }
-    log(`📨 (${platform}) ${user}: يقترح أن ${mentionedName} تحت "${cardText}"`);
-    renderPlayers(); renderCards(); tryResolveIfReady();
-  }
+  renderPlayers(); renderTurnBanner(); log(`انضم ${user} إلى اللعبة.`);
 }
 
 /* Twitch */
 function connectTwitch(channel){
   try{
+    updateConnBadge(els.twitchBadge, 'wait');
     twitchClient = new tmi.Client({ channels:[channel], connection:{secure:true,reconnect:true} });
     twitchClient.connect()
-      .then(()=>{ TWITCH_CHANNEL=channel; twitchConnected=true; els.chatStatus.textContent=`✅ تم الاتصال بـ Twitch: #${channel}`; log(`✅ Twitch متصل: #${channel}`); if (els.remember.checked) localStorage.setItem(LS_KEY_TWITCH, channel); })
-      .catch(e=>{ els.chatStatus.textContent=`❌ فشل اتصال Twitch`; log('❌ فشل اتصال Twitch: '+e); });
+      .then(()=>{ 
+        TWITCH_CHANNEL=channel; twitchConnected=true; 
+        els.chatStatus.textContent=`✅ تم الاتصال بـ Twitch: #${channel}`; 
+        log(`✅ Twitch متصل: #${channel}`); 
+        updateConnBadge(els.twitchBadge, 'ok');
+        if (els.remember.checked) localStorage.setItem(LS_KEY_TWITCH, channel); 
+      })
+      .catch(e=>{ els.chatStatus.textContent=`❌ فشل اتصال Twitch`; log('❌ فشل اتصال Twitch: '+e); updateConnBadge(els.twitchBadge, 'err'); });
     twitchClient.on('message',(ch,tags,message,self)=>{
       if(self) return;
       const user = tags['display-name'] || tags.username || 'مشارك';
       const text = (message||'').trim();
       if (text==='!دخول'){ handleChatJoin(user); return; }
-      handleChatAttempt(user, text, 'twitch');
+      // الإجابات من الشات معطلة
     });
-  }catch(e){ els.chatStatus.textContent=`❌ خطأ في Twitch`; log('خطأ Twitch: '+e.message); }
+  }catch(e){ els.chatStatus.textContent=`❌ خطأ في Twitch`; log('خطأ Twitch: '+e.message); updateConnBadge(els.twitchBadge, 'err'); }
 }
 
-/* Kick (API + Pusher) */
+/* Kick */
 async function connectKick(channel){
   try{
+    updateConnBadge(els.kickBadge, 'wait');
     const res = await fetch(`https://kick.com/api/v2/channels/${channel}`);
     const data = await res.json();
     const roomId = data?.chatroom?.id;
-    if (!roomId){ els.chatStatus.textContent='❌ فشل جلب غرفة كيك'; return; }
+    if (!roomId){ els.chatStatus.textContent='❌ فشل جلب غرفة كيك'; updateConnBadge(els.kickBadge, 'err'); return; }
 
     const ws = new WebSocket("wss://ws-us2.pusher.com/app/32cbd69e4b950bf97679?protocol=7&client=js&version=8.4.0-rc2&flash=false");
     kickSocket = ws;
@@ -585,6 +708,7 @@ async function connectKick(channel){
       ws.send(JSON.stringify({event:"pusher:subscribe",data:{auth:"",channel:`chatrooms.${roomId}.v2`}}));
       setInterval(()=>{ if(ws.readyState===WebSocket.OPEN){ ws.send(JSON.stringify({event:"pusher:ping",data:{}})); } },12000);
       KICK_CHANNEL=channel; kickConnected=true; els.chatStatus.textContent=`✅ تم الاتصال بـ Kick: ${channel}`; log(`✅ Kick متصل: ${channel}`);
+      updateConnBadge(els.kickBadge, 'ok');
       if (els.remember.checked) localStorage.setItem(LS_KEY_KICK, channel);
     };
     ws.onmessage = (event)=>{
@@ -594,17 +718,26 @@ async function connectKick(channel){
         const user = d?.sender?.username || 'مشارك';
         const text = (d?.content || '').trim();
         if (text==='!دخول'){ handleChatJoin(user); return; }
-        handleChatAttempt(user, text, 'kick');
+        // الإجابات من الشات معطلة
       }
     };
-    ws.onerror = ()=>{ els.chatStatus.textContent='❌ مشكلة في اتصال Kick'; log('❌ مشكلة في اتصال Kick'); };
+    ws.onerror = ()=>{ els.chatStatus.textContent='❌ مشكلة في اتصال Kick'; log('❌ مشكلة في اتصال Kick'); updateConnBadge(els.kickBadge, 'err'); };
   }catch(e){
     els.chatStatus.textContent='❌ فشل الاتصال بـ Kick';
     log('Kick error: '+e.message);
+    updateConnBadge(els.kickBadge, 'err');
   }
 }
 
-/* زر الاتصال داخل الصفحة */
+/* بادجات الاتصال */
+function updateConnBadge(el, state){
+  el.classList.remove('ok','wait','err');
+  if (state==='ok') el.classList.add('ok');
+  else if (state==='wait') el.classList.add('wait');
+  else el.classList.add('err');
+}
+
+/* زر الاتصال */
 els.fillSaved.onclick = ()=>{
   els.channelInput.value = (els.platformSelect.value==='twitch')
     ? (localStorage.getItem(LS_KEY_TWITCH)||'')
@@ -621,14 +754,22 @@ els.connectBtn.onclick = ()=>{
   if (platform==='twitch'){ connectTwitch(channel); } else { connectKick(channel); }
 };
 
-/* ==============================
-   بدء الصفحة
-   ============================== */
-function updateAll(){ renderPlayers(); renderCards(); updateSelects(); updateTurnLabel(); updateCounts(); }
+/* بدء الصفحة */
+function updateAll(){ renderPlayers(); renderCards(); updateSelects(); updateCounts(); renderTurnBanner(); }
 updateAll();
 
-// دعم #gm و Alt+G لفتح اللوحة
+/* تعليمات سريعة */
+els.helpBtn.onclick = ()=>{ els.helpOverlay.style.display='flex'; };
+els.helpClose.onclick = ()=>{ els.helpOverlay.style.display='none'; };
+els.helpOverlay.addEventListener('click',(e)=>{ if(e.target===els.helpOverlay) els.helpOverlay.style.display='none'; });
+
+/* لاصق آخر حدث — إخفاء */
+function setLastEvent(text){ els.lastEventBody.textContent = text; els.lastEvent.style.display = 'block'; }
+els.lastEventHide.onclick = ()=>{ els.lastEvent.style.display='none'; };
+
+/* لوحة GM */
 function setGmVisibility(show){ els.gm.classList.toggle('open', !!show); }
+els.gmToggle.onclick = ()=> setGmVisibility(!els.gm.classList.contains('open'));
 setGmVisibility(location.hash==='#gm');
 window.addEventListener('keydown',e=>{ if(e.altKey && (e.key.toLowerCase()==='g')) setGmVisibility(!els.gm.classList.contains('open')); });
 </script>
