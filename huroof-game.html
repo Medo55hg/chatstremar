@@ -580,56 +580,82 @@
     setConnStatus(true, "Twitch");
   }
 
-  function connectKick(channel){
-  // تنظيف الاسم: إزالة @ ومسافات وتحويل إلى lowercase
+function connectKick(channel){
   const slug = (channel || "").trim().replace(/^@/,"").toLowerCase();
-
   if (!slug) {
     UI.roundStatus.textContent = "اكتب اسم قناة Kick بدون @";
     setConnStatus(false, null);
     return;
   }
 
-  if (typeof window.KickChat === "undefined" || typeof window.KickChat.connect !== "function"){
+  // نلقط أي عميل Kick متوفر من ألعابك الثانية
+  const candidates = [
+    // الشكل الشائع: KickChat.connect(slug, onMessage, opts)
+    (slug, onMessage, hooks) => {
+      if (window.KickChat && typeof window.KickChat.connect === "function") {
+        return window.KickChat.connect(slug, (p)=>onMessage({username:p.username||p.name||"user", text:p.text||p.message||p.content||""}), hooks);
+      }
+    },
+    // بعض المشاريع تستخدم KickWS.connect
+    (slug, onMessage, hooks) => {
+      if (window.KickWS && typeof window.KickWS.connect === "function") {
+        return window.KickWS.connect(slug, (p)=>onMessage({username:p.username||"user", text:p.text||p.message||p.content||""}), hooks);
+      }
+    },
+    // أو عميل باسم KickClient(slug, callback)
+    (slug, onMessage, hooks) => {
+      if (typeof window.KickClient === "function") {
+        const c = new window.KickClient(slug, (p)=>onMessage({username:p.username||"user", text:p.text||p.message||p.content||""}));
+        // دعم اختياري للكولباكات
+        hooks?.onOpen && setTimeout(()=>hooks.onOpen(), 0);
+        return { disconnect: ()=>{ try{ c.disconnect && c.disconnect(); }catch(e){} } };
+      }
+    },
+    // بعض الملفات تعطي دالة مباشرة connectKickChat(slug, cb)
+    (slug, onMessage, hooks) => {
+      if (typeof window.connectKickChat === "function") {
+        return window.connectKickChat(slug, (p)=>onMessage({username:p.username||"user", text:p.text||p.message||p.content||""}), hooks);
+      }
+    }
+  ];
+
+  // نحاول العثور على عميل شغال
+  let connector = null;
+  for (const tryIt of candidates) {
+    try {
+      const c = tryIt(slug, (msg)=>onChatMessage(msg.username, msg.text), {
+        onOpen: () => {
+          setConnStatus(true, "Kick");
+          UI.roundStatus.textContent = `تم الاتصال بـ Kick (${slug}) — تقدر تبدأ اللعبة.`;
+        },
+        onError: (err) => {
+          console.error("Kick error:", err);
+          setConnStatus(false, null);
+          UI.roundStatus.textContent = "تعذّر الاتصال بـ Kick (تحقق من الاسم أو جرّب ملف kick_chat.js المستخدم في لعبة أخرى).";
+        },
+        onClose: () => {
+          setConnStatus(false, null);
+          UI.roundStatus.textContent = "انقطع اتصال Kick.";
+        }
+      });
+      if (c && typeof c === "object" && typeof c.disconnect === "function") { connector = c; break; }
+    } catch (e) {
+      // جرّب المرشّح التالي
+    }
+  }
+
+  if (!connector) {
+    // ما لقينا عميل مطابق — بنسبة كبيرة ملف kick_chat.js هنا مختلف عن الملف الشغّال بالألعاب الثانية
     setConnStatus(false, null);
-    UI.roundStatus.textContent = "⚠️ kick_chat.js مفقود أو به خطأ. تأكد إنه بجانب الصفحة.";
-    alert("kick_chat.js غير محمّل. ضع الملف بجانب الصفحة.");
+    UI.roundStatus.textContent = "لم يتم العثور على عميل Kick مناسب. استبدل kick_chat.js بنفس الملف الشغّال في الألعاب الثانية.";
+    alert("استبدل kick_chat.js هنا بنفس الملف الذي تستخدمه في الألعاب الثانية (المضمونة).");
     return;
   }
 
-  // أغلق اتصال قديم
-  if(state.kickClient){ try{ state.kickClient.disconnect(); }catch(e){} state.kickClient = null; }
-
-  UI.roundStatus.textContent = "جارٍ الاتصال بـ Kick…";
-  try{
-    const conn = KickChat.connect(slug, (payload)=>{
-      const user = payload.username || "user";
-      const text = payload.text || "";
-      if (text) onChatMessage(user, text);
-    }, {
-      onOpen: () => {
-        setConnStatus(true, "Kick");
-        UI.roundStatus.textContent = `تم الاتصال بـ Kick (${slug}) — تقدر تبدأ اللعبة.`;
-      },
-      onError: (err) => {
-        console.error("Kick error:", err);
-        setConnStatus(false, null);
-        UI.roundStatus.textContent = "تعذّر الاتصال بـ Kick (تحقق من الاسم أو حاول بعد قليل).";
-      },
-      onClose: () => {
-        setConnStatus(false, null);
-        UI.roundStatus.textContent = "انقطع اتصال Kick.";
-      }
-    });
-
-    state.kickClient = conn;
-    state.disconnectFn = () => { try{ conn.disconnect(); }catch(e){} };
-
-  }catch(err){
-    console.error(err);
-    setConnStatus(false, null);
-    UI.roundStatus.textContent = "تعذّر الاتصال بـ Kick (استثناء غير متوقع).";
-  }
+  // أغلق اتصال قديم واحفظ الجديد
+  if(state.kickClient){ try{ state.kickClient.disconnect(); }catch(e){} }
+  state.kickClient = connector;
+  state.disconnectFn = () => { try{ connector.disconnect(); }catch(e){} };
 }
 
 
@@ -747,6 +773,7 @@
   </script>
 </body>
 </html>
+
 
 
 
