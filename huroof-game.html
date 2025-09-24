@@ -581,36 +581,40 @@
   }
 
   function connectKick(channel){
-  // تنظيف الاسم: شيل @ ومسافات وحوّل لحروف صغيرة
+  // تنظيف الاسم: إزالة @ ومسافات وتحويل إلى lowercase
   const slug = (channel || "").trim().replace(/^@/,"").toLowerCase();
 
-  // فحص: هل ملف kick_chat.js موجود ويعرّف KickChat؟
-  if (typeof window.KickChat === "undefined" || typeof window.KickChat.connect !== "function"){
+  if (!slug) {
+    UI.roundStatus.textContent = "اكتب اسم قناة Kick بدون @";
     setConnStatus(false, null);
-    UI.roundStatus.textContent = "⚠️ ملف kick_chat.js غير موجود أو فيه خطأ. نزّل الملف المرفق أدناه وضعه بجانب الصفحة.";
-    alert("ملف kick_chat.js مفقود/خاطئ. رجاءً ضع kick_chat.js الصحيح بجانب الصفحة.");
     return;
   }
 
-  // إقفال أي اتصال سابق
+  if (typeof window.KickChat === "undefined" || typeof window.KickChat.connect !== "function"){
+    setConnStatus(false, null);
+    UI.roundStatus.textContent = "⚠️ kick_chat.js مفقود أو به خطأ. تأكد إنه بجانب الصفحة.";
+    alert("kick_chat.js غير محمّل. ضع الملف بجانب الصفحة.");
+    return;
+  }
+
+  // أغلق اتصال قديم
   if(state.kickClient){ try{ state.kickClient.disconnect(); }catch(e){} state.kickClient = null; }
 
-  // جرّب الاتصال
+  UI.roundStatus.textContent = "جارٍ الاتصال بـ Kick…";
   try{
-    // نأخر إعلان النجاح لين يفتح السوكيت فعلاً
-    UI.roundStatus.textContent = "جارِ الاتصال بـ Kick…";
     const conn = KickChat.connect(slug, (payload)=>{
-      const user = payload.username || payload.name || "user";
-      const text = payload.text || payload.message || "";
-      if(text) onChatMessage(user, text);
+      const user = payload.username || "user";
+      const text = payload.text || "";
+      if (text) onChatMessage(user, text);
     }, {
       onOpen: () => {
         setConnStatus(true, "Kick");
+        UI.roundStatus.textContent = `تم الاتصال بـ Kick (${slug}) — تقدر تبدأ اللعبة.`;
       },
       onError: (err) => {
-        console.error("Kick connect error:", err);
+        console.error("Kick error:", err);
         setConnStatus(false, null);
-        UI.roundStatus.textContent = "تعذّر الاتصال بـ Kick. تأكد من اسم القناة أو جرّب لاحقًا.";
+        UI.roundStatus.textContent = "تعذّر الاتصال بـ Kick (تحقق من الاسم أو حاول بعد قليل).";
       },
       onClose: () => {
         setConnStatus(false, null);
@@ -743,6 +747,7 @@
   </script>
 </body>
 </html>
+
 
 
 
