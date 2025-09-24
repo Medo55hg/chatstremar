@@ -65,6 +65,11 @@
     .progress.red > div{ background:linear-gradient(90deg, rgba(255,71,71,.8), rgba(255,71,71,1)) }
 
     @media (max-width:900px){ .team,.game-description{ width:100% } .host-only{ position:sticky; bottom:6px; z-index:20 } input,button{ font-size:16px } }
+
+  /* إخفاء اسم ملف الصورة في حقل الرفع مع إبقاء زر الاختيار مرئيًا */
+input[type="file"]{ font-size:0; }
+input[type="file"]::file-selector-button{ font-size:18px; }
+  
   </style>
 </head>
 <body>
@@ -572,3 +577,4 @@ document.addEventListener('click', function(e){
 <script src="kick_chat.js"></script>
 </body>
 </html>
+
