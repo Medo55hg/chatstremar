@@ -6,10 +6,8 @@
 <title>StreamerTop — لعبة الحروف</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
 
-<!-- مكتبات الشات -->
-  <script src="tmi.min.js"></script>
-<script src="kick_chat.js"></script>
-  <script src="kick_chat.js"></script>
+<!-- مكتبات الشات: نحتاج tmi لتويتش فقط -->
+<script src="tmi.min.js"></script>
 
 <style>
   :root{
@@ -250,6 +248,138 @@
     </aside>
   </main>
 
+  <!-- ChatBridge v1 — دمج Twitch/Kick مع حفظ القناة -->
+  <script>
+  (function(global){
+    const LS_TWITCH='cb_twitch_channel';
+    const LS_KICK  ='cb_kick_channel';
+
+    const state = {
+      twitchClient:null,
+      kickSocket:null,
+      kickRoomId:null,
+      connected:{twitch:false, kick:false},
+      handlers:{
+        status: (txt)=>console.log('[Status]',txt),
+        message:(username, text, platform)=>console.log('[Msg]', platform, username+':', text),
+        badge:  (platform, status)=>{}, // ok | wait | err
+      }
+    };
+
+    function setStatus(s){ state.handlers.status(s); }
+    function setBadge(p, st){ state.handlers.badge(p, st); }
+    function saveChannel(platform, channel){
+      try{ localStorage.setItem(platform==='twitch'?LS_TWITCH:LS_KICK, channel); }catch{}
+    }
+    function loadSaved(platform){
+      try{ return localStorage.getItem(platform==='twitch'?LS_TWITCH:LS_KICK)||''; }catch{ return ''; }
+    }
+
+    async function connectTwitch(channel){
+      if (!window.tmi){ setStatus('❌ tmi.js غير مُحمَّل'); return; }
+      try{
+        setBadge('twitch','wait');
+        const client = new tmi.Client({ channels:[channel], connection:{ secure:true, reconnect:true } });
+        state.twitchClient = client;
+
+        client.on('connected',()=>{
+          state.connected.twitch = true;
+          saveChannel('twitch', channel);
+          setStatus(`✅ تم الاتصال بـ Twitch: #${channel}`);
+          setBadge('twitch','ok');
+        });
+
+        client.on('disconnected', (r)=>{ 
+          state.connected.twitch = false; 
+          setStatus(`⚠️ انفصل Twitch: ${r||'-'}`);
+          setBadge('twitch','err');
+        });
+
+        client.on('message',(ch, tags, message, self)=>{
+          if(self) return;
+          const user = tags['display-name'] || tags.username || 'مشارك';
+          const text = (message||'').trim();
+          state.handlers.message(user, text, 'twitch');
+        });
+
+        await client.connect();
+      }catch(e){
+        setStatus('❌ فشل اتصال Twitch: '+e.message);
+        setBadge('twitch','err');
+      }
+    }
+
+    async function connectKick(channel){
+      try{
+        setBadge('kick','wait');
+        const res = await fetch(`https://kick.com/api/v2/channels/${channel}`);
+        const data = await res.json().catch(()=>null);
+        const roomId = data?.chatroom?.id;
+        if (!roomId){ setStatus('❌ فشل جلب غرفة كيك'); setBadge('kick','err'); return; }
+
+        const ws = new WebSocket("wss://ws-us2.pusher.com/app/32cbd69e4b950bf97679?protocol=7&client=js&version=8.4.0-rc2&flash=false");
+        state.kickSocket = ws;
+
+        ws.onopen = ()=>{
+          ws.send(JSON.stringify({event:"pusher:subscribe",data:{auth:"",channel:`chatrooms.${roomId}.v2`}}));
+          setInterval(()=>{ if(ws.readyState===WebSocket.OPEN){ ws.send(JSON.stringify({event:"pusher:ping",data:{}})); } },12000);
+          state.connected.kick = true;
+          saveChannel('kick', channel);
+          setStatus(`✅ تم الاتصال بـ Kick: ${channel}`);
+          setBadge('kick','ok');
+        };
+
+        ws.onmessage = (event)=>{
+          const pkt = JSON.parse(event.data);
+          if (pkt.event === "App\\Events\\ChatMessageEvent"){
+            const d = JSON.parse(pkt.data);
+            const user = d?.sender?.username || 'مشارك';
+            const text = (d?.content || '').trim();
+            state.handlers.message(user, text, 'kick');
+          }
+        };
+
+        ws.onerror = ()=>{ state.connected.kick = false; setStatus('❌ مشكلة في اتصال Kick'); setBadge('kick','err'); };
+        ws.onclose  = ()=>{ state.connected.kick = false; setStatus('⚠️ تم إغلاق اتصال Kick'); setBadge('kick','err'); };
+      }catch(e){
+        setStatus('❌ فشل الاتصال بـ Kick: '+e.message);
+        setBadge('kick','err');
+      }
+    }
+
+    const ChatBridge = {
+      on({status, message, badge}={}){
+        if (status)  state.handlers.status = status;
+        if (message) state.handlers.message= message;
+        if (badge)   state.handlers.badge  = badge;
+        return this;
+      },
+      connect(platform, channel, {remember=true}={}){
+        if (!channel || !platform) return;
+        if (remember) saveChannel(platform, channel);
+        if (platform==='twitch') connectTwitch(channel);
+        else if (platform==='kick') connectKick(channel);
+      },
+      getSaved(platform){ return loadSaved(platform); },
+      isConnected(){ return {...state.connected}; },
+      disconnect(platform){
+        if (platform==='twitch' && state.twitchClient){
+          try{ state.twitchClient.disconnect(); }catch{}
+          state.connected.twitch=false;
+          setBadge('twitch','err');
+        }
+        if (platform==='kick' && state.kickSocket){
+          try{ state.kickSocket.close(); }catch{}
+          state.connected.kick=false;
+          setBadge('kick','err');
+        }
+      }
+    };
+
+    global.ChatBridge = ChatBridge;
+  })(window);
+  </script>
+
   <script>
   const CATEGORIES = ["اسم", "حيوان", "نبات", "جماد", "مدينة"];
   const LETTERS = ["ا","ب","ت","ث","ج","ح","خ","د","ذ","ر","ز","س","ش","ص","ض","ط","ظ","ع","غ","ف","ق","ك","ل","م","ن","ه","و","ي"];
@@ -302,11 +432,9 @@
     submissionsByWord: new Map(),   // word -> Set(playerName)
     submissionsByPlayer: new Map(), // player -> Set(word)
 
-    twitchClient: null,
-    kickClient: null,
-    disconnectFn: null,
     isConnected: false,
-    connectedPlatform: null
+    connectedPlatform: null,
+    connFlags: { twitch:false, kick:false }
   };
 
   const normalizeArabic = (s="") => s
@@ -324,6 +452,7 @@
     const ss = String(s % 60).padStart(2,"0");
     return `${mm}:${ss}`;
   };
+
   const setConnStatus = (ok, platformName=null) => {
     state.isConnected = !!ok; state.connectedPlatform = ok ? platformName : null;
     UI.connStatus.textContent = ok ? `متصل بـ ${platformName}` : `غير متصل`;
@@ -360,6 +489,7 @@
     while(UI.chatLog.children.length > 200){ UI.chatLog.lastChild?.remove(); }
   };
 
+  // ====== لعبة: دوالك كما هي ======
   const renderPlayers = () => {
     UI.playersList.innerHTML = "";
 
@@ -542,7 +672,7 @@
 
     const keyWord = normalizeArabic(word);
 
-    // 🔒 NEW: منع تكرار نفس الكلمة على مستوى الجولة — أول لاعب فقط يُسجَّل
+    // منع تكرار نفس الكلمة على مستوى الجولة — أول لاعب فقط يُسجَّل
     if (state.submissionsByWord.has(keyWord)) {
       logChat(user, word, 'dup'); // "مكررة"
       return;
@@ -560,121 +690,93 @@
     state.submissionsByWord.get(keyWord).add(user);
 
     UI.letterPill.setAttribute('data-count', String(state.submissionsByWord.size));
-
     logChat(user, word, 'ok'); // تظهر "سُجلت"
   }
   window.onChatMessage = onChatMessage;
 
-  function connectTwitch(channel){
-    if(state.twitchClient){ try{ state.twitchClient.disconnect(); }catch(e){} state.twitchClient = null; }
-    const ch = channel.startsWith('#') ? channel : '#'+channel;
-    const client = new tmi.Client({ connection: { secure: true, reconnect: true }, channels: [ch] });
-    client.connect().catch(console.error);
-    client.on('message', (chName, tags, message, self)=>{
-      if(self) return;
-      const user = (tags['display-name'] || tags.username || "").toString();
-      onChatMessage(user, message);
-    });
-    state.twitchClient = client;
-    state.disconnectFn = () => { try{ client.disconnect(); }catch(e){} };
-    setConnStatus(true, "Twitch");
-  }
+  // ====== ربط ChatBridge مع الواجهة ======
+  ChatBridge.on({
+    status: (txt)=> { UI.roundStatus.textContent = txt; },
+    badge:  (platform, st)=>{
+      // حفظ حالة المنصات
+      if (platform==='twitch') state.connFlags.twitch = (st==='ok');
+      if (platform==='kick')   state.connFlags.kick   = (st==='ok');
 
-function connectKick(channel){
-  const slug = (channel || "").trim().replace(/^@/,"").toLowerCase();
-  if (!slug) {
-    UI.roundStatus.textContent = "اكتب اسم قناة Kick بدون @";
-    setConnStatus(false, null);
-    return;
-  }
-
-  // نلقط أي عميل Kick متوفر من ألعابك الثانية
-  const candidates = [
-    // الشكل الشائع: KickChat.connect(slug, onMessage, opts)
-    (slug, onMessage, hooks) => {
-      if (window.KickChat && typeof window.KickChat.connect === "function") {
-        return window.KickChat.connect(slug, (p)=>onMessage({username:p.username||p.name||"user", text:p.text||p.message||p.content||""}), hooks);
+      // حدّث حالة الواجهة بحسب المنصة المختارة حاليًا
+      const cur = UI.platform.value;
+      if (cur==='twitch'){
+        setConnStatus(state.connFlags.twitch, state.connFlags.twitch ? 'Twitch' : null);
+      } else if (cur==='kick'){
+        setConnStatus(state.connFlags.kick, state.connFlags.kick ? 'Kick' : null);
       }
+      // Manual يبقى كما هو
     },
-    // بعض المشاريع تستخدم KickWS.connect
-    (slug, onMessage, hooks) => {
-      if (window.KickWS && typeof window.KickWS.connect === "function") {
-        return window.KickWS.connect(slug, (p)=>onMessage({username:p.username||"user", text:p.text||p.message||p.content||""}), hooks);
-      }
-    },
-    // أو عميل باسم KickClient(slug, callback)
-    (slug, onMessage, hooks) => {
-      if (typeof window.KickClient === "function") {
-        const c = new window.KickClient(slug, (p)=>onMessage({username:p.username||"user", text:p.text||p.message||p.content||""}));
-        // دعم اختياري للكولباكات
-        hooks?.onOpen && setTimeout(()=>hooks.onOpen(), 0);
-        return { disconnect: ()=>{ try{ c.disconnect && c.disconnect(); }catch(e){} } };
-      }
-    },
-    // بعض الملفات تعطي دالة مباشرة connectKickChat(slug, cb)
-    (slug, onMessage, hooks) => {
-      if (typeof window.connectKickChat === "function") {
-        return window.connectKickChat(slug, (p)=>onMessage({username:p.username||"user", text:p.text||p.message||p.content||""}), hooks);
-      }
+    message: (user, text, platform)=>{
+      // نمرر كل الرسائل للّعبة
+      onChatMessage(user, text);
     }
-  ];
+  });
 
-  // نحاول العثور على عميل شغال
-  let connector = null;
-  for (const tryIt of candidates) {
-    try {
-      const c = tryIt(slug, (msg)=>onChatMessage(msg.username, msg.text), {
-        onOpen: () => {
-          setConnStatus(true, "Kick");
-          UI.roundStatus.textContent = `تم الاتصال بـ Kick (${slug}) — تقدر تبدأ اللعبة.`;
-        },
-        onError: (err) => {
-          console.error("Kick error:", err);
-          setConnStatus(false, null);
-          UI.roundStatus.textContent = "تعذّر الاتصال بـ Kick (تحقق من الاسم أو جرّب ملف kick_chat.js المستخدم في لعبة أخرى).";
-        },
-        onClose: () => {
-          setConnStatus(false, null);
-          UI.roundStatus.textContent = "انقطع اتصال Kick.";
-        }
-      });
-      if (c && typeof c === "object" && typeof c.disconnect === "function") { connector = c; break; }
-    } catch (e) {
-      // جرّب المرشّح التالي
-    }
-  }
+  // زر الاتصال
+  UI.connectBtn.addEventListener('click', ()=>{
+    const platform = UI.platform.value;
+    const channel = (UI.channel.value||"").trim();
 
-  if (!connector) {
-    // ما لقينا عميل مطابق — بنسبة كبيرة ملف kick_chat.js هنا مختلف عن الملف الشغّال بالألعاب الثانية
+    // افصل أي اتصالات سابقة لنظافة الجلسة
+    ChatBridge.disconnect('twitch');
+    ChatBridge.disconnect('kick');
+    state.connFlags = {twitch:false, kick:false};
     setConnStatus(false, null);
-    UI.roundStatus.textContent = "لم يتم العثور على عميل Kick مناسب. استبدل kick_chat.js بنفس الملف الشغّال في الألعاب الثانية.";
-    alert("استبدل kick_chat.js هنا بنفس الملف الذي تستخدمه في الألعاب الثانية (المضمونة).");
-    return;
-  }
 
-  // أغلق اتصال قديم واحفظ الجديد
-  if(state.kickClient){ try{ state.kickClient.disconnect(); }catch(e){} }
-  state.kickClient = connector;
-  state.disconnectFn = () => { try{ connector.disconnect(); }catch(e){} };
-}
+    if(platform==='twitch'){
+      if(!channel){ alert("اكتب اسم قناة Twitch"); return; }
+      ChatBridge.connect('twitch', channel, {remember:true});
+    } else if(platform==='kick'){
+      if(!channel){ alert("اكتب اسم قناة Kick"); return; }
+      ChatBridge.connect('kick', channel, {remember:true});
+    } else {
+      setConnStatus(true, "Manual");
+      UI.roundStatus.textContent = "وضع Manual: استخدم المدخل بالأسفل لمحاكاة رسائل الشات.";
+      UI.manualBox.style.display = 'flex';
+    }
+  });
 
+  // تعبئة اسم القناة من المحفوظ عند تغيير المنصة
+  UI.platform.addEventListener('change', ()=>{
+    if (UI.platform.value==='twitch'){
+      UI.channel.value = ChatBridge.getSaved('twitch') || "";
+      setConnStatus(false, null);
+      UI.manualBox.style.display = 'none';
+    } else if (UI.platform.value==='kick'){
+      UI.channel.value = ChatBridge.getSaved('kick') || "";
+      setConnStatus(false, null);
+      UI.manualBox.style.display = 'none';
+    } else {
+      UI.channel.value = "";
+      setConnStatus(true, "Manual");
+      UI.manualBox.style.display = 'flex';
+    }
+  });
+
+  // املأ فورًا حسب المحفوظ للمنصة الافتراضية
+  window.addEventListener('DOMContentLoaded', ()=>{
+    const initial = UI.platform.value; // twitch افتراضيًا
+    UI.channel.value = ChatBridge.getSaved(initial) || "";
+  });
 
   const startGame = () => {
     const platform = UI.platform.value;
-    if(platform!=='offline' && !state.isConnected){
-      alert("اتصل أولًا بالمنصة عبر زر 'اتصال'. أو اختر Manual.");
-      return;
+    if(platform!=='offline'){
+      const ok = (platform==='twitch') ? state.connFlags.twitch : state.connFlags.kick;
+      if(!ok){ alert("اتصل أولًا بالمنصة عبر زر 'اتصال'. أو اختر Manual."); return; }
     }
     state.running = true;
 
-    // لا نحذف اللاعبين — نصفر النقاط فقط
+    // تصفير النقاط فقط
     if (UI.mode.value === 'solo') {
-      for (const [name, p] of state.soloPlayers) {
-        p.score = 0;
-      }
+      for (const [name, p] of state.soloPlayers) { p.score = 0; }
     } else {
-      state.teamScores.blue = 0;
-      state.teamScores.red  = 0;
+      state.teamScores.blue = 0; state.teamScores.red  = 0;
     }
     renderPlayers();
 
@@ -687,7 +789,6 @@ function connectKick(channel){
     }
 
     UI.manualBox.style.display = (platform==='offline') ? 'flex' : 'none';
-
     startRound();
   };
 
@@ -698,8 +799,7 @@ function connectKick(channel){
     UI.timeLeft.textContent = "00:00";
     UI.roundStatus.textContent = "اللعبة متوقفة.";
     UI.reviewPanel.style.display = "none";
-    if(state.disconnectFn){ try{ state.disconnectFn(); }catch(e){} state.disconnectFn=null; }
-    setConnStatus(false, null);
+    // لا نفصل تلقائيًا — نترك الاتصال قائمًا إلا إذا غيّر المنصة
   };
 
   // احتساب: نقطة لكل كلمة معتمَدة ولكل لاعب كتبها
@@ -725,39 +825,11 @@ function connectKick(channel){
     UI.roundStatus.textContent = "تم الاحتساب — اضغط “التالي” لبدء الجولة التالية.";
   });
 
-  UI.nextRoundBtn.addEventListener('click', ()=>{
-    if(!state.running) return;
-    startRound();
-  });
-
-  UI.connectBtn.addEventListener('click', ()=>{
-    const platform = UI.platform.value;
-    const channel = (UI.channel.value||"").trim();
-    if(state.disconnectFn){ try{ state.disconnectFn(); }catch(e){} state.disconnectFn=null; }
-    setConnStatus(false, null);
-
-    if(platform==='twitch'){
-      if(!channel){ alert("اكتب اسم قناة Twitch"); return; }
-      connectTwitch(channel);
-    } else if(platform==='kick'){
-      if(!channel){ alert("اكتب اسم قناة Kick"); return; }
-      connectKick(channel);
-    } else {
-      setConnStatus(true, "Manual");
-      UI.roundStatus.textContent = "وضع Manual: استخدم المدخل بالأسفل لمحاكاة رسائل الشات.";
-      UI.manualBox.style.display = 'flex';
-    }
-  });
-
+  UI.nextRoundBtn.addEventListener('click', ()=>{ if(!state.running) return; startRound(); });
   UI.startBtn.addEventListener('click', startGame);
   UI.stopBtn.addEventListener('click', stopGame);
-  UI.platform.addEventListener('change', ()=>{
-    UI.manualBox.style.display = (UI.platform.value==='offline') ? 'flex' : 'none';
-    if(state.disconnectFn){ try{ state.disconnectFn(); }catch(e){} state.disconnectFn=null; }
-    setConnStatus(false, null);
-  });
-  UI.mode.addEventListener('change', renderPlayers);
 
+  // Manual
   UI.manualSend.addEventListener('click', ()=>{
     const u = UI.manualUser.value.trim() || "Guest";
     const m = UI.manualMsg.value.trim();
@@ -773,8 +845,3 @@ function connectKick(channel){
   </script>
 </body>
 </html>
-
-
-
-
-
