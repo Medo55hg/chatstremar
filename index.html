@@ -26,9 +26,9 @@
       --success: #00ff80;
 
       /* مقاس بطاقة اللعبة (عرض) — عمودي بنسبة 2:3 = 800x1200 */
-      --game-w: 280px;
+      --game-w: 300px;
     }
-    @media (min-width: 1280px){ :root{ --game-w: 300px; } }
+    @media (max-width: 1280px){ :root{ --game-w: 280px; } }
     @media (max-width: 480px){ :root{ --game-w: 240px; } }
 
     *, *::before, *::after { box-sizing: border-box; }
@@ -108,15 +108,9 @@
     }
     .hero h1 { font-size: clamp(1.8rem, 3.6vw, 2.6rem); margin:.4rem 0 1rem; color: var(--text); }
     .hero p { color: var(--muted); margin: 0 0 1.1rem; font-weight:600 }
-    .divider {
-      height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.16), transparent);
-      margin: 14px 0 18px;
-    }
+    .divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.16), transparent); margin: 14px 0 18px; }
     .hero-actions { display:flex; gap:10px; flex-wrap:wrap }
-    .stat {
-      display:flex; align-items:center; gap:10px; padding:.6rem .8rem; border-radius: 12px; background: rgba(255,255,255,.04);
-      border:1px solid var(--border); font-weight:700; color:#fff;
-    }
+    .stat { display:flex; align-items:center; gap:10px; padding:.6rem .8rem; border-radius: 12px; background: rgba(255,255,255,.04); border:1px solid var(--border); font-weight:700; color:#fff; }
     .stat small { display:block; color: var(--muted); font-weight:600 }
 
     /* القسم العام */
@@ -141,14 +135,16 @@
       box-shadow: 0 14px 36px rgba(0,0,0,.35);
       display:flex; flex-direction:column;
       scroll-snap-align: start;
-      transition: transform .2s ease, box-shadow .25s ease, border-color .25s ease;
+      transition: transform .3s ease, box-shadow .35s ease, border-color .25s ease;
     }
     .game-card::before { /* الصورة الخلفية بدون تغبيش */
       content:""; position:absolute; inset:0; z-index:0; opacity:1;
       background-size: cover; background-position: center; filter: none !important;
-      transition: opacity .25s ease;
+      transition: transform .35s ease, opacity .25s ease;
     }
-    .game-card:hover { transform: translateY(-6px); border-color: rgba(255,255,255,.2); box-shadow: 0 24px 60px rgba(0,0,0,.45); }
+    /* تأثير الهوفر: تكبير خفيف + زيادة التباين */
+    .game-card:hover { transform: translateY(-6px); border-color: rgba(255,255,255,.22); box-shadow: 0 24px 60px rgba(0,0,0,.5); }
+    .game-card:hover::before { transform: scale(1.06); }
 
     /* شارات تويتش وكيك أعلى البطاقة */
     .badges{
@@ -161,7 +157,7 @@
       display:inline-flex; align-items:center; gap:6px;
     }
 
-    /* جسم البطاقة (تظليل خفيف من الأسفل لتحسين وضوح الزر) */
+    /* جسم البطاقة + تظليل سفلي ثابت */
     .game-body{
       position:absolute; inset:0; z-index:1;
       display:flex; flex-direction:column; justify-content:flex-end;
@@ -169,7 +165,27 @@
       background: linear-gradient(180deg, rgba(0,0,0,0.00) 60%, rgba(0,0,0,0.5) 100%);
     }
 
-    /* إخفاء العنوان والشرح نهائيًا */
+    /* وصف مختصر يظهر عند الهوفر/الفوكس */
+    .game-info{
+      position:absolute; left:12px; right:12px; bottom:72px; z-index:2;
+      opacity:0; transform: translateY(6px);
+      transition: opacity .25s ease, transform .25s ease;
+      pointer-events:none;
+    }
+    .game-info p{
+      margin:0;
+      font-size:.9rem; font-weight:800; line-height:1.4;
+      color:#fff;
+      background: rgba(0,0,0,.55);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:.6rem .75rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,.35);
+    }
+    .game-card:hover .game-info,
+    .game-card:focus-within .game-info { opacity:1; transform: translateY(0); }
+
+    /* إخفاء العنوان والشرح الأساسيين */
     .game-title, .game-desc{ display:none !important; }
 
     /* زر ابدأ اللعبة بالأسفل وبعرض البطاقة */
@@ -219,9 +235,6 @@
     .social { display:flex; gap:10px }
     .icon { width:38px; height:38px; display:grid; place-items:center; border-radius: 999px; text-decoration:none; color:#fff; border:1px solid var(--border); background: var(--glass); transition:.2s }
     .icon:hover { transform: translateY(-2px) }
-
-    .floating { position: fixed; inset-inline: 18px; top: 14px; z-index: 45; display:flex; gap:10px; justify-content: space-between; pointer-events:none }
-    .floating > * { pointer-events: auto }
 
     a:focus, button:focus, input:focus { outline:2px solid var(--secondary); outline-offset:2px }
     @media (max-width: 960px){ .hero { grid-template-columns: 1fr; } }
@@ -349,8 +362,8 @@
           <span class="badge"><i class="fa-solid fa-fist-raised"></i> كيك</span>
         </div>
         <div class="game-body">
-          <div class="game-title">الكلمات المبعثرة</div>
-          <div class="game-desc">رتب الحروف بشكل صحيح</div>
+          <!-- وصف مختصر يظهر عند الهوفر -->
+          <div class="game-info"><p>كوّن الكلمات بأسرع وقت من حروف عشوائية وخذ الصدارة في الشات!</p></div>
           <a href="wordgame.html" class="start-btn" data-transition>ابدأ اللعبة</a>
         </div>
       </article>
@@ -362,8 +375,7 @@
           <span class="badge"><i class="fa-solid fa-fist-raised"></i> كيك</span>
         </div>
         <div class="game-body">
-          <div class="game-title">اكشف الصورة</div>
-          <div class="game-desc">خمّن الكلمة من الصورة</div>
+          <div class="game-info"><p>صورة تتكشف تدريجيًا—خمن الكلمة قبل الجميع لتكسب النقاط!</p></div>
           <a href="guessimage.html" class="start-btn" data-transition>ابدأ اللعبة</a>
         </div>
       </article>
@@ -375,8 +387,7 @@
           <span class="badge"><i class="fa-solid fa-fist-raised"></i> كيك</span>
         </div>
         <div class="game-body">
-          <div class="game-title">حرب الدول</div>
-          <div class="game-desc">سيطر على الخريطة</div>
+          <div class="game-info"><p>استولِ على الدول ووسّع نفوذك—استراتيجية وتحدي مباشر مع المشاهدين.</p></div>
           <a href="war-of-nations.html" class="start-btn" data-transition>ابدأ اللعبة</a>
         </div>
       </article>
@@ -388,8 +399,7 @@
           <span class="badge"><i class="fa-solid fa-fist-raised"></i> كيك</span>
         </div>
         <div class="game-body">
-          <div class="game-title">يلا نتعاون</div>
-          <div class="game-desc">تحديات جماعية</div>
+          <div class="game-info"><p>حلّوا التحديات مع بعض—كل مساهمة من الشات تقربكم من الفوز!</p></div>
           <a href="tarkeeb.html" class="start-btn" data-transition>ابدأ اللعبة</a>
         </div>
       </article>
@@ -401,8 +411,7 @@
           <span class="badge"><i class="fa-solid fa-fist-raised"></i> كيك</span>
         </div>
         <div class="game-body">
-          <div class="game-title">لعبة الحروف</div>
-          <div class="game-desc">اكتب كلمات بالحرف المطلوب</div>
+          <div class="game-info"><p>انطلق بحرف محدد وكتب كلمات صحيحة—السريع يسبق!</p></div>
           <a href="huroof-game.html" class="start-btn" data-transition>ابدأ اللعبة</a>
         </div>
       </article>
@@ -516,7 +525,7 @@
       card.style.cursor = 'pointer';
       card.setAttribute('tabindex', '0');
       card.setAttribute('role', 'link');
-      card.setAttribute('aria-label', (card.querySelector('.game-title')?.textContent || 'ابدأ اللعب').trim());
+      card.setAttribute('aria-label', (card.querySelector('.game-info p')?.textContent || 'ابدأ اللعبة').trim());
       card.addEventListener('click', (e) => { if (e.target.closest('.start-btn')) return; link.click(); });
       card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); link.click(); } });
     });
@@ -529,13 +538,6 @@
       el.style.background = 'linear-gradient(180deg, rgba(255,255,255,0.00) 0%, rgba(255,255,255,0.02) 35%, rgba(255,255,255,0.00) 100%)';
       document.body.appendChild(el);
     })();
-
-    // دخول صالح بدون كلمة مرور
-    function openSaleehWithPassword() { window.location.href = "saleeh.html"; }
-    document.getElementById('saleehCard')?.addEventListener('click', function(e){
-      const clickedButton = e.target.closest('button');
-      if (!clickedButton) { openSaleehWithPassword(); }
-    });
 
     // نافذة الدعم
     const supportBtn = document.getElementById('supportBtn');
