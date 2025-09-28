@@ -116,14 +116,16 @@
     .section { position: relative; z-index:1; max-width: 1200px; margin: 8px auto 40px; padding: 0 18px; }
     .section h2 { font-size: 1.2rem; color: var(--muted); font-weight:800; margin: 18px 6px; letter-spacing:.3px }
 
-    /* ========= شبكة الألعاب (بطاقات عمودية 800x1200) ========= */
+    /* ========= شبكة الألعاب (تعديل: صفّين — أول 4 عادي، الباقي أصغر شوي) ========= */
     .games-grid {
-      display:flex; gap:22px; overflow-x:auto; overflow-y:hidden;
-      scroll-behavior:smooth; scroll-snap-type:x mandatory; padding-bottom:6px;
-      -webkit-overflow-scrolling: touch;
+      /* كان سابقًا سكرول أفقي؛ الآن شبكة بصفّين حسب طلبك */
+      display: grid;
+      grid-template-columns: repeat(4, var(--game-w));
+      gap: 22px;
+      justify-content: center;
+      align-content: start;
+      padding-bottom: 6px;
     }
-    .games-grid::-webkit-scrollbar { height: 8px; }
-    .games-grid::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 999px; }
 
     .game-card {
       position:relative; isolation:isolate; overflow:hidden;
@@ -133,7 +135,9 @@
       border-radius: 18px; background: var(--card); border: 1px solid var(--border);
       box-shadow: 0 14px 36px rgba(0,0,0,.35);
       display:flex; flex-direction:column;
-      scroll-snap-align: start;
+      /* استخدام متغير scale حتى ما نخرب تأثير الهوفر */
+      --scale: 1;
+      transform: scale(var(--scale));
       transition: transform .3s ease, box-shadow .35s ease, border-color .25s ease;
     }
     .game-card::before { /* الصورة الخلفية بدون تغبيش */
@@ -141,8 +145,11 @@
       background-size: cover; background-position: center; filter: none !important;
       transition: transform .35s ease, opacity .25s ease;
     }
-    .game-card:hover { transform: translateY(-6px); border-color: rgba(255,255,255,.22); box-shadow: 0 24px 60px rgba(0,0,0,.5); }
+    .game-card:hover { transform: translateY(-6px) scale(var(--scale)); border-color: rgba(255,255,255,.22); box-shadow: 0 24px 60px rgba(0,0,0,.5); }
     .game-card:hover::before { transform: scale(1.06); }
+
+    /* تصغير البطاقات بعد الأولى 4 */
+    .games-grid .game-card:nth-child(n+5){ --scale: .92; transform-origin: top center; }
 
     /* شارات تويتش وكيك أعلى البطاقة */
     .badges{
@@ -197,15 +204,8 @@
     }
     .start-btn:hover{ transform: translateY(-2px); box-shadow: 0 16px 36px rgba(0,216,108,.38); filter: saturate(1.06); }
 
-    /* أزرار تمرير الشبكة */
-    .games-scroller-btn {
-      position: absolute; top: 66px; width: 38px; height: 38px; border-radius: 999px;
-      border: 1px solid var(--border); background: var(--glass); color: #fff;
-      display: grid; place-items: center; cursor: pointer; box-shadow: 0 10px 22px rgba(0,0,0,.35); z-index: 5;
-    }
-    .games-scroller-btn:hover { transform: translateY(-2px); }
-    .games-scroller-prev { inset-inline-start: 6px; }
-    .games-scroller-next { inset-inline-end: 6px; }
+    /* إخفاء أزرار التمرير لأننا صرنا شبكة صفّين */
+    .games-scroller-btn { display:none !important; }
 
     /* ربط صور الألعاب */
     .img-1::before { background-image: url('https://i.postimg.cc/sDmnYMss/1.png'); } /* الكلمات المبعثرة */
@@ -213,6 +213,7 @@
     .img-4::before { background-image: url('https://i.postimg.cc/2jwdJgMY/4.png'); } /* حرب الدول */
     .img-5::before { background-image: url('https://i.postimg.cc/FRXg5vh4/3.png'); } /* يلا نتعاون */
     .img-huroof::before { background-image: url('https://i.postimg.cc/3J81x3mm/2.png'); } /* لعبة الحروف */
+    .img-squares::before { background-image: url('https://i.postimg.cc/XYGZ0j3s/St.png'); } /* لعبة المربعات */
 
     /* ========= بطاقات الستريمر (تحسين صالح ونايف) ========= */
     .streamer-access-grid {
@@ -418,7 +419,7 @@
       <h2 style="margin:0 0 10px; font-size:1.1rem; color:var(--muted)">ملاحظة</h2>
       <p style="margin:0">💡 يمكنك ربط قناتك مع الشات <b>داخل الألعاب فقط</b>.</p>
       <div class="divider"></div>
-      <p style="margin:0">يتم حالياً العمل على: تسجيل الدخول، وخدمة <b>ستريمر بلس</b>.</p>
+      <p style="margin:0">تم اضافة لعبة جديده ،  <b>مربعات الطيبين </b>.</p>
     </div>
   </section>
 
@@ -426,7 +427,7 @@
   <section class="section" id="games">
     <h2>الألعاب المتاحة</h2>
 
-    <!-- أسهم تمرير -->
+    <!-- أسهم تمرير (مخفية الآن) -->
     <button type="button" class="games-scroller-btn games-scroller-prev" id="gamesPrev" aria-label="السابق">
       <i class="fa-solid fa-chevron-right"></i>
     </button>
@@ -490,8 +491,20 @@
           <span class="badge"><i class="fa-solid fa-fist-raised"></i> كيك</span>
         </div>
         <div class="game-body">
-          <div class="game-info"><p>انطلق بحرف محدد وكتب كلمات صحيحة—السريع يسبق!</p></div>
+          <div class="game-info"><p>انطلق بحرف محدد واكتب كلمات صحيحة—السريع يسبق!</p></div>
           <a href="huroof-game.html" class="start-btn" data-transition>ابدأ اللعبة</a>
+        </div>
+      </article>
+
+      <!-- لعبة المربعات (جديدة) -->
+      <article class="game-card img-squares">
+        <div class="badges">
+          <span class="badge"><i class="fa-brands fa-twitch"></i> تويتش</span>
+          <span class="badge"><i class="fa-solid fa-fist-raised"></i> كيك</span>
+        </div>
+        <div class="game-body">
+          <div class="game-info"><p>كوّن أكبر عدد من المربعات خلال الوقت — والمتابعون يساعدونك من الشات!</p></div>
+          <a href="squares-game.html" class="start-btn" data-transition>ابدأ اللعبة</a>
         </div>
       </article>
     </div>
@@ -608,7 +621,7 @@
         e.preventDefault();
         const href = btn.getAttribute('href');
         const card = btn.closest('.game-card');
-        card.style.transform = 'translateY(-6px) scale(1.02)';
+        card.style.transform = 'translateY(-6px) scale(var(--scale))';
         card.style.transition = 'transform .35s ease';
         setTimeout(() => { window.location.href = href; }, 350);
       });
@@ -664,19 +677,15 @@
       if (!clickedButton) { openSaleehWithPassword(); }
     });
 
-    // أسهم تحريك قائمة الألعاب الأفقية
+    // (الأزرار كانت للسكرول الأفقي — ما نحتاجها مع الشبكة الجديدة)
     const gamesGrid = document.getElementById('gamesGrid');
     const gamesPrev = document.getElementById('gamesPrev');
     const gamesNext = document.getElementById('gamesNext');
-    function scrollAmount(){ return Math.max(gamesGrid.clientWidth * 0.9, 300); }
-    gamesPrev?.addEventListener('click', () => { gamesGrid.scrollBy({ left: -scrollAmount(), behavior: 'smooth' }); });
-    gamesNext?.addEventListener('click', () => { gamesGrid.scrollBy({ left:  scrollAmount(), behavior: 'smooth' }); });
+
+    // الحفاظ على سلوك العجلة لمنع تحرك الصفحة عرضيًا بدون داعٍ
     gamesGrid?.addEventListener('wheel', function(e) {
-      if (Math.abs(e.deltaX) < Math.abs(e.deltaY)) {
-        gamesGrid.scrollBy({ left: (e.deltaY > 0 ? 1 : -1) * 60 });
-        e.preventDefault();
-      }
-    }, { passive: false });
+      // لا حاجة لتمرير أفقي الآن
+    }, { passive: true });
   </script>
 </body>
 </html>
