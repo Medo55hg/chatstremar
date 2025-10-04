@@ -24,17 +24,24 @@
       --border: rgba(255,255,255,0.08);
       --glass: rgba(255,255,255,0.06);
       --success: #00ff80;
-
       /* عرض بطاقة اللعبة (عمودي 2:3 = 800x1200) */
       --game-w: 300px;
     }
-    @media (max-width: 1280px){ :root{ --game-w: 280px; } }
-    @media (max-width: 480px){ :root{ --game-w: 240px; } }
-
+    @media (max-width: 1280px){
+      :root{
+        --game-w: 280px;
+      }
+    }
+    @media (max-width: 480px){
+      :root{
+        --game-w: 240px;
+      }
+    }
     *, *::before, *::after { box-sizing: border-box; }
     html, body { height: 100%; }
     body {
       margin: 0;
+      min-height: 100vh;
       font-family: 'Cairo', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       color: var(--text);
       background:
@@ -43,143 +50,284 @@
         linear-gradient(180deg, var(--bg-900), #0a0b14 70%);
       overflow-x: hidden;
     }
-
     .grid-bg {
-      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
       background-image:
         linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
       background-size: 40px 40px, 40px 40px;
     }
     .blob, .blob2 {
-      position: fixed; filter: blur(40px); opacity: .4; z-index: 0; pointer-events:none;
-      width: 420px; height: 420px; border-radius: 50%;
+      position: fixed;
+      filter: blur(40px);
+      opacity: .4;
+      z-index: 0;
+      pointer-events:none;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
       background: radial-gradient(circle at 30% 30%, var(--accent), transparent 60%);
-      top: -120px; left: -120px; transform: rotate(15deg);
+      top: -120px;
+      left: -120px;
+      transform: rotate(15deg);
     }
     .blob2 {
-      width: 720px; height: 720px; right: -220px; bottom: -160px; left: auto; top: auto;
+      width: 720px;
+      height: 720px;
+      right: -220px;
+      bottom: -160px;
+      left: auto;
+      top: auto;
       background: radial-gradient(circle at 70% 50%, var(--primary), transparent 60%);
     }
 
     /* ========= الهيدر ========= */
     header {
-      position: sticky; top: 0; z-index: 40;
+      position: sticky;
+      top: 0;
+      z-index: 40;
       backdrop-filter: saturate(140%) blur(10px);
       background: linear-gradient(180deg, rgba(10,11,20,0.85), rgba(10,11,20,0.5));
       border-bottom: 1px solid var(--border);
+      width: 100%;
     }
     .nav {
-      max-width: 1200px; margin: 0 auto; padding: 14px 18px;
-      display: flex; align-items: center; justify-content: space-between;
+      width: 100%;
+      margin: 0;
+      padding: 14px clamp(16px, 4vw, 48px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
-    .brand { display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing: .2px; }
+    .brand {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:800;
+      letter-spacing: .2px;
+    }
     .logo {
-      width: 38px; height: 38px; border-radius: 10px; display:grid; place-items:center;
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display:grid;
+      place-items:center;
       background: linear-gradient(135deg, var(--primary), #b81f1f);
       box-shadow: 0 8px 24px rgba(255,51,51,.25), inset 0 0 20px rgba(255,255,255,.08);
       border: 1px solid var(--border);
     }
     .brand span { font-size: 1.05rem; }
-
-    .nav-cta { display:flex; align-items:center; gap:10px; }
-    .btn, .chip {
-      display:inline-flex; align-items:center; gap:8px; cursor:pointer; text-decoration:none;
-      font-weight:700; border-radius:12px; padding:.7rem 1rem; border:1px solid var(--border);
-      background: var(--glass); color: var(--text); transition: transform .15s ease, box-shadow .2s ease, background .2s;
+    .nav-cta {
+      display:flex;
+      align-items:center;
+      gap:10px;
     }
-    .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(0,0,0,.35); }
-    .btn.primary { background: linear-gradient(135deg, var(--primary), #b81f1f); border-color: rgba(255,255,255,0.1); }
+    .btn, .chip {
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      cursor:pointer;
+      text-decoration:none;
+      font-weight:700;
+      border-radius:12px;
+      padding:.7rem 1rem;
+      border:1px solid var(--border);
+      background: var(--glass);
+      color: var(--text);
+      transition: transform .15s ease, box-shadow .2s ease, background .2s;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(0,0,0,.35);
+    }
+    .btn.primary {
+      background: linear-gradient(135deg, var(--primary), #b81f1f);
+      border-color: rgba(255,255,255,0.1);
+    }
     .btn.outline { background: transparent; }
-    .chip { padding:.45rem .7rem; font-size:.86rem; opacity:.95 }
+    .chip {
+      padding:.45rem .7rem;
+      font-size:.86rem;
+      opacity:.95
+    }
     .chip.kick { color: var(--kick); border-color: rgba(0,216,0,.35) }
     .chip.twitch { color: var(--accent); border-color: rgba(145,70,255,.35) }
 
     /* ========= الهيرو ========= */
     .hero {
-      position: relative; z-index: 1; margin: 28px auto 8px; max-width: 1200px; padding: 0 18px;
-      display:grid; gap: 18px; grid-template-columns: 1.1fr .9fr;
+      position: relative;
+      z-index: 1;
+      margin: 28px 0 8px;
+      width: 100%;
+      padding: 0 clamp(16px, 4vw, 48px);
+      display:grid;
+      gap: 18px;
+      grid-template-columns: 1.1fr .9fr;
     }
     .hero-card {
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border:1px solid var(--border); border-radius: 22px; padding: 26px; position:relative; overflow:hidden;
+      border:1px solid var(--border);
+      border-radius: 22px;
+      padding: 26px;
+      position:relative;
+      overflow:hidden;
       box-shadow: 0 18px 50px rgba(0,0,0,.35);
     }
-    .hero h1 { font-size: clamp(1.8rem, 3.6vw, 2.6rem); margin:.4rem 0 1rem; color: var(--text); }
-    .hero p { color: var(--muted); margin: 0 0 1.1rem; font-weight:600 }
-    .divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.16), transparent); margin: 14px 0 18px; }
-    .hero-actions { display:flex; gap:10px; flex-wrap:wrap }
-    .stat { display:flex; align-items:center; gap:10px; padding:.6rem .8rem; border-radius: 12px; background: rgba(255,255,255,.04); border:1px solid var(--border); font-weight:700; color:#fff; }
-    .stat small { display:block; color: var(--muted); font-weight:600 }
+    .hero h1 {
+      font-size: clamp(1.8rem, 3.6vw, 2.6rem);
+      margin:.4rem 0 1rem;
+      color: var(--text);
+    }
+    .hero p {
+      color: var(--muted);
+      margin: 0 0 1.1rem;
+      font-weight:600
+    }
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.16), transparent);
+      margin: 14px 0 18px;
+    }
+    .hero-actions {
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap
+    }
+    .stat {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:.6rem .8rem;
+      border-radius: 12px;
+      background: rgba(255,255,255,.04);
+      border:1px solid var(--border);
+      font-weight:700;
+      color:#fff;
+    }
+    .stat small {
+      display:block;
+      color: var(--muted);
+      font-weight:600
+    }
 
     /* ========= أقسام عامة ========= */
-    .section { position: relative; z-index:1; max-width: 1200px; margin: 8px auto 40px; padding: 0 18px; }
-    .section h2 { font-size: 1.2rem; color: var(--muted); font-weight:800; margin: 18px 6px; letter-spacing:.3px }
+    .section {
+      position: relative;
+      z-index:1;
+      width: 100%;
+      margin: 8px 0 40px;
+      padding: 0 clamp(16px, 4vw, 48px);
+    }
+    .section h2 {
+      font-size: 1.2rem;
+      color: var(--muted);
+      font-weight:800;
+      margin: 18px 6px;
+      letter-spacing:.3px
+    }
 
-    /* ========= شبكة الألعاب (تعديل: صفّين — أول 4 عادي، الباقي أصغر شوي) ========= */
+    /* ========= شبكة الألعاب (تمديد على عرض الصفحة) ========= */
     .games-grid {
-      /* كان سابقًا سكرول أفقي؛ الآن شبكة بصفّين حسب طلبك */
       display: grid;
-      grid-template-columns: repeat(4, var(--game-w));
+      grid-template-columns: repeat(auto-fit, minmax(var(--game-w), 1fr));
+      /* تمتد تلقائيًا */
       gap: 22px;
-      justify-content: center;
       align-content: start;
       padding-bottom: 6px;
     }
-
     .game-card {
-      position:relative; isolation:isolate; overflow:hidden;
-      width: var(--game-w);
-      aspect-ratio: 2 / 3;          /* 800x1200 عمودي */
-      min-width: var(--game-w);
-      border-radius: 18px; background: var(--card); border: 1px solid var(--border);
+      position:relative;
+      isolation:isolate;
+      overflow:hidden;
+      width: 100%;
+      /* تأخذ عرض العمود بالكامل */
+      min-width: 0;
+      /* تمنع تمدد غير مرغوب */
+      aspect-ratio: 2 / 3;
+      /* يحافظ على نسبة البطاقة */
+      border-radius: 18px;
+      background: var(--card);
+      border: 1px solid var(--border);
       box-shadow: 0 14px 36px rgba(0,0,0,.35);
-      display:flex; flex-direction:column;
-      /* استخدام متغير scale حتى ما نخرب تأثير الهوفر */
+      display:flex;
+      flex-direction:column;
       --scale: 1;
       transform: scale(var(--scale));
       transition: transform .3s ease, box-shadow .35s ease, border-color .25s ease;
     }
-    .game-card::before { /* الصورة الخلفية بدون تغبيش */
-      content:""; position:absolute; inset:0; z-index:0; opacity:1;
-      background-size: cover; background-position: center; filter: none !important;
+    .game-card::before {
+      content:"";
+      position:absolute;
+      inset:0;
+      z-index:0;
+      opacity:1;
+      background-size: cover;
+      background-position: center;
+      filter: none !important;
       transition: transform .35s ease, opacity .25s ease;
     }
-    .game-card:hover { transform: translateY(-6px) scale(var(--scale)); border-color: rgba(255,255,255,.22); box-shadow: 0 24px 60px rgba(0,0,0,.5); }
+    .game-card:hover {
+      transform: translateY(-6px) scale(var(--scale));
+      border-color: rgba(255,255,255,.22);
+      box-shadow: 0 24px 60px rgba(0,0,0,.5);
+    }
     .game-card:hover::before { transform: scale(1.06); }
 
-    /* تصغير البطاقات بعد الأولى 4 */
-    .games-grid .game-card:nth-child(n+5){ --scale: .92; transform-origin: top center; }
-
-    /* شارات تويتش وكيك أعلى البطاقة */
+    /* (كان فيه تصغير بعد أول 4) — محافظين على توحيد الحجم */
+    .games-grid .game-card:nth-child(n+5){
+      --scale: 1;
+      transform-origin: top center;
+    }
     .badges{
-      position:absolute; top:10px; inset-inline-start:10px; z-index:2;
-      display:flex; gap:8px; flex-wrap:wrap;
+      position:absolute;
+      top:10px;
+      inset-inline-start:10px;
+      z-index:2;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
     }
     .badge{
-      padding:.36rem .6rem; border-radius:999px; border:1px solid var(--border);
-      background: rgba(0,0,0,.48); color:#fff; font-size:.8rem; font-weight:800;
-      display:inline-flex; align-items:center; gap:6px;
+      padding:.36rem .6rem;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.48);
+      color:#fff;
+      font-size:.8rem;
+      font-weight:800;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
     }
-
-    /* جسم البطاقة + تظليل سفلي ثابت */
     .game-body{
-      position:absolute; inset:0; z-index:1;
-      display:flex; flex-direction:column; justify-content:flex-end;
+      position:absolute;
+      inset:0;
+      z-index:1;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-end;
       padding: 12px;
       background: linear-gradient(180deg, rgba(0,0,0,0.00) 60%, rgba(0,0,0,0.5) 100%);
     }
-
-    /* وصف مختصر يظهر عند الهوفر/الفوكس */
     .game-info{
-      position:absolute; left:12px; right:12px; bottom:72px; z-index:2;
-      opacity:0; transform: translateY(6px);
+      position:absolute;
+      left:12px;
+      right:12px;
+      bottom:72px;
+      z-index:2;
+      opacity:0;
+      transform: translateY(6px);
       transition: opacity .25s ease, transform .25s ease;
       pointer-events:none;
     }
     .game-info p{
       margin:0;
-      font-size:.9rem; font-weight:800; line-height:1.4;
+      font-size:.9rem;
+      font-weight:800;
+      line-height:1.4;
       color:#fff;
       background: rgba(0,0,0,.55);
       border:1px solid var(--border);
@@ -188,39 +336,52 @@
       box-shadow: 0 8px 20px rgba(0,0,0,.35);
     }
     .game-card:hover .game-info,
-    .game-card:focus-within .game-info { opacity:1; transform: translateY(0); }
-
-    /* إخفاء العنوان والشرح الأساسيين */
-    .game-title, .game-desc{ display:none !important; }
-
-    /* زر ابدأ اللعبة بالأسفل وبعرض البطاقة */
+    .game-card:focus-within .game-info {
+      opacity:1;
+      transform: translateY(0);
+    }
+    .game-title, .game-desc{
+      display:none !important;
+    }
     .start-btn{
-      display:block; text-align:center; text-decoration:none; cursor:pointer; border:none;
-      font-weight:900; font-size:1rem; letter-spacing:.2px; color:#fff;
-      border-radius:12px; padding:.95rem 1rem; margin-top:8px;
+      display:block;
+      text-align:center;
+      text-decoration:none;
+      cursor:pointer;
+      border:none;
+      font-weight:900;
+      font-size:1rem;
+      letter-spacing:.2px;
+      color:#fff;
+      border-radius:12px;
+      padding:.95rem 1rem;
+      margin-top:8px;
       background: linear-gradient(135deg, var(--secondary), #09a659);
       box-shadow: 0 10px 24px rgba(0,216,108,.28);
       transition: transform .15s ease, box-shadow .25s ease, filter .25s ease;
     }
-    .start-btn:hover{ transform: translateY(-2px); box-shadow: 0 16px 36px rgba(0,216,108,.38); filter: saturate(1.06); }
-
-    /* إخفاء أزرار التمرير لأننا صرنا شبكة صفّين */
+    .start-btn:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 16px 36px rgba(0,216,108,.38);
+      filter: saturate(1.06);
+    }
     .games-scroller-btn { display:none !important; }
 
     /* ربط صور الألعاب */
-    .img-1::before { background-image: url('https://i.postimg.cc/sDmnYMss/1.png'); } /* الكلمات المبعثرة */
-    .img-2::before { background-image: url('https://i.postimg.cc/VNQD1nRY/5.png'); } /* اكشف الصورة */
-    .img-4::before { background-image: url('https://i.postimg.cc/2jwdJgMY/4.png'); } /* حرب الدول */
-    .img-5::before { background-image: url('https://i.postimg.cc/FRXg5vh4/3.png'); } /* يلا نتعاون */
+    .img-1::before { background-image: url('https://i.postimg.cc/sDmnYMss/1.png'); }   /* الكلمات المبعثرة */
+    .img-2::before { background-image: url('https://i.postimg.cc/VNQD1nRY/5.png'); }   /* اكشف الصورة */
+    .img-4::before { background-image: url('https://i.postimg.cc/2jwdJgMY/4.png'); }   /* حرب الدول */
+    .img-5::before { background-image: url('https://i.postimg.cc/FRXg5vh4/3.png'); }   /* يلا نتعاون */
     .img-huroof::before { background-image: url('https://i.postimg.cc/3J81x3mm/2.png'); } /* لعبة الحروف */
     .img-squares::before { background-image: url('https://i.postimg.cc/XYGZ0j3s/St.png'); } /* لعبة المربعات */
 
-    /* ========= بطاقات الستريمر (تحسين صالح ونايف) ========= */
+    /* ========= بطاقات الستريمر ========= */
     .streamer-access-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 18px; margin-top: 12px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 18px;
+      margin-top: 12px;
     }
-
     .creator-card{
       position: relative;
       border-radius: 18px;
@@ -229,12 +390,18 @@
       border: 1px solid var(--border);
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       box-shadow: 0 14px 36px rgba(0,0,0,.35);
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       transition: transform .25s ease, box-shadow .3s ease, border-color .25s ease;
       isolation: isolate;
     }
     .creator-card::before{
-      content:""; position:absolute; inset:0; z-index:0; pointer-events:none;
+      content:"";
+      position:absolute;
+      inset:0;
+      z-index:0;
+      pointer-events:none;
       background:
         radial-gradient(120% 80% at 80% -10%, rgba(145,70,255,.16), transparent 60%),
         radial-gradient(100% 70% at -20% 120%, rgba(255,51,51,.10), transparent 60%);
@@ -245,64 +412,115 @@
       box-shadow: 0 22px 60px rgba(0,0,0,.55);
       border-color: rgba(255,255,255,.18);
     }
-
     .creator-overlay{
-      position: relative; z-index: 1;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       padding: 18px;
-      text-align: center; color: #fff;
+      text-align: center;
+      color: #fff;
     }
-
     .creator-avatar{
-      width: 108px; height: 108px; border-radius: 22px; object-fit: cover;
-      position: relative; display: block;
+      width: 108px;
+      height: 108px;
+      border-radius: 22px;
+      object-fit: cover;
+      position: relative;
+      display: block;
       border: 1px solid rgba(255,255,255,.12);
       box-shadow: 0 10px 28px rgba(0,0,0,.45);
     }
     .creator-avatar-wrap{
-      position: relative; display:inline-grid; place-items:center;
+      position: relative;
+      display:inline-grid;
+      place-items:center;
     }
     .creator-avatar-wrap::before{
-      content:""; position:absolute; inset:-4px; border-radius: 26px; z-index: -1;
+      content:"";
+      position:absolute;
+      inset:-4px;
+      border-radius: 26px;
+      z-index: -1;
       background: conic-gradient(from 0deg, var(--accent), var(--primary), var(--secondary), var(--accent));
       filter: blur(0.5px) saturate(1.1);
       -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-      -webkit-mask-composite: xor; mask-composite: exclude;
-      padding: 2px; opacity:.85; transition: opacity .25s ease, transform .25s ease;
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      padding: 2px;
+      opacity:.85;
+      transition: opacity .25s ease, transform .25s ease;
     }
-    .creator-card:hover .creator-avatar-wrap::before{ opacity:1; transform: rotate(4deg); }
-
+    .creator-card:hover .creator-avatar-wrap::before{
+      opacity:1;
+      transform: rotate(4deg);
+    }
     .creator-name{
-      font-weight: 900; font-size: 1.02rem; margin-top: 10px;
+      font-weight: 900;
+      font-size: 1.02rem;
+      margin-top: 10px;
     }
     .creator-tag{
-      font-size:.85rem; font-weight:700; color: var(--muted);
-      background: rgba(0,0,0,.42); border:1px solid var(--border);
-      padding: 4px 10px; border-radius: 999px; margin-top: 6px;
+      font-size:.85rem;
+      font-weight:700;
+      color: var(--muted);
+      background: rgba(0,0,0,.42);
+      border:1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-top: 6px;
     }
-
-    .creator-actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 12px; }
+    .creator-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 12px;
+    }
     .creator-btn{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:.75rem 1rem; border-radius:12px; font-weight:900; color:#fff;
-      text-decoration:none; cursor:pointer; border:1px solid rgba(255,255,255,.10);
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:.75rem 1rem;
+      border-radius:12px;
+      font-weight:900;
+      color:#fff;
+      text-decoration:none;
+      cursor:pointer;
+      border:1px solid rgba(255,255,255,.10);
       background: linear-gradient(135deg, var(--accent), #6b2dff);
       box-shadow: 0 10px 24px rgba(145,70,255,.28);
       transition: transform .15s ease, box-shadow .25s ease, filter .25s ease;
     }
-    .creator-btn:hover{ transform: translateY(-2px); box-shadow: 0 16px 36px rgba(145,70,255,.36); filter: saturate(1.06) }
-
+    .creator-btn:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 16px 36px rgba(145,70,255,.36);
+      filter: saturate(1.06)
+    }
     .creator-soon{
-      position:absolute; top:10px; inset-inline-end:10px; z-index:2;
+      position:absolute;
+      top:10px;
+      inset-inline-end:10px;
+      z-index:2;
       background: linear-gradient(135deg, var(--accent), #6b2dff);
-      color:#fff; font-size:.82rem; font-weight:900; padding: 5px 11px; border-radius:999px;
+      color:#fff;
+      font-size:.82rem;
+      font-weight:900;
+      padding: 5px 11px;
+      border-radius:999px;
       border: 1px solid rgba(255,255,255,.12);
       box-shadow: 0 10px 22px rgba(145,70,255,.28);
     }
-
     .status-dot{
-      position:absolute; bottom: -2px; inset-inline-end:-2px; width:14px; height:14px; border-radius:999px;
-      background: var(--secondary); border: 2px solid rgba(0,0,0,.55);
+      position:absolute;
+      bottom: -2px;
+      inset-inline-end:-2px;
+      width:14px;
+      height:14px;
+      border-radius:999px;
+      background: var(--secondary);
+      border: 2px solid rgba(0,0,0,.55);
       box-shadow: 0 0 0 3px rgba(0,0,0,.15);
     }
     .status-off{ background: #999; }
@@ -313,10 +531,10 @@
       inset: 0;
       background: rgba(0,0,0,0.55);
       backdrop-filter: blur(4px);
-      display: none;                 /* افتراضي: مخفية */
+      display: none;
       align-items: center;
       justify-content: center;
-      z-index: 10000;                /* عالي لضمان الظهور */
+      z-index: 10000;
     }
     .support-modal-backdrop.is-open{ display: flex; }
     .support-modal{
@@ -332,43 +550,142 @@
     }
     .support-close{
       position: absolute;
-      top: 10px; inset-inline-end: 10px;
-      background: transparent; color: #fff; border: 1px solid var(--border);
-      border-radius: 10px; padding: 6px 10px; cursor: pointer; font-weight: 800;
+      top: 10px;
+      inset-inline-end: 10px;
+      background: transparent;
+      color: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-weight: 800;
     }
     .support-modal-backdrop.is-open .support-modal{ animation: pop .18s ease; }
-    @keyframes pop{ from{ transform: translateY(8px); opacity:.85 } to{ transform: translateY(0); opacity:1 } }
+    @keyframes pop{
+      from{ transform: translateY(8px); opacity:.85 }
+      to{ transform: translateY(0); opacity:1 }
+    }
 
     /* ========= بقية المكونات العامة ========= */
     .streamer {
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border: 1px solid var(--border); border-radius: 18px; padding: 18px; box-shadow: 0 14px 36px rgba(0,0,0,.35);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 14px 36px rgba(0,0,0,.35);
     }
-    .streamer-head { display:flex; align-items:center; justify-content:space-between; cursor:pointer; user-select:none }
-    .streamer-head h3 { margin:0; font-size:1.05rem; color: var(--secondary) }
-    .streamer-body { display:none; margin-top: 16px; animation: fade .25s ease }
-    .list { margin: 12px 0; padding-inline-start: 18px; color: var(--muted); font-weight:600 }
-    .list li { margin:.5rem 0; position:relative; list-style:none; padding-inline-start: 22px }
-    .list li::before { content:"\2713"; position:absolute; inset-inline-start:0; color: var(--secondary); font-weight:800 }
-    .price { font-size: 1.25rem; font-weight: 800; color: var(--accent); margin: 10px 0 14px }
-    .sbtn { display:inline-flex; align-items:center; gap:8px; padding:.8rem 1rem; border-radius:12px; text-decoration:none; font-weight:800; background: linear-gradient(135deg, var(--accent), #6b2dff); color:#fff; border:1px solid rgba(255,255,255,.08) }
+    .streamer-head {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      cursor:pointer;
+      user-select:none
+    }
+    .streamer-head h3 {
+      margin:0;
+      font-size:1.05rem;
+      color: var(--secondary)
+    }
+    .streamer-body {
+      display:none;
+      margin-top: 16px;
+      animation: fade .25s ease
+    }
+    .list {
+      margin: 12px 0;
+      padding-inline-start: 18px;
+      color: var(--muted);
+      font-weight:600
+    }
+    .list li {
+      margin:.5rem 0;
+      position:relative;
+      list-style:none;
+      padding-inline-start: 22px
+    }
+    .list li::before {
+      content:"\2713";
+      position:absolute;
+      inset-inline-start:0;
+      color: var(--secondary);
+      font-weight:800
+    }
+    .price {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin: 10px 0 14px
+    }
+    .sbtn {
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:.8rem 1rem;
+      border-radius:12px;
+      text-decoration:none;
+      font-weight:800;
+      background: linear-gradient(135deg, var(--accent), #6b2dff);
+      color:#fff;
+      border:1px solid rgba(255,255,255,.08)
+    }
     .sbtn:hover { filter: saturate(1.1) }
-
-    footer { max-width:1200px; margin: 24px auto 60px; padding: 0 18px; color: var(--muted); display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap }
-    .social { display:flex; gap:10px }
-    .icon { width:38px; height:38px; display:grid; place-items:center; border-radius: 999px; text-decoration:none; color:#fff; border:1px solid var(--border); background: var(--glass); transition:.2s }
+    footer {
+      width: 100%;
+      margin: 24px 0 60px;
+      padding: 0 clamp(16px, 4vw, 48px);
+      color: var(--muted);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap
+    }
+    .social {
+      display:flex;
+      gap:10px
+    }
+    .icon {
+      width:38px;
+      height:38px;
+      display:grid;
+      place-items:center;
+      border-radius: 999px;
+      text-decoration:none;
+      color:#fff;
+      border:1px solid var(--border);
+      background: var(--glass);
+      transition:.2s
+    }
     .icon:hover { transform: translateY(-2px) }
-
-    .floating { position: fixed; inset-inline: 18px; top: 14px; z-index: 45; display:flex; gap:10px; justify-content: space-between; pointer-events:none }
+    .floating {
+      position: fixed;
+      inset-inline: 18px;
+      top: 14px;
+      z-index: 45;
+      display:flex;
+      gap:10px;
+      justify-content: space-between;
+      pointer-events:none
+    }
     .floating > * { pointer-events: auto }
-
-    a:focus, button:focus, input:focus { outline:2px solid var(--secondary); outline-offset:2px }
-    @media (max-width: 960px){ .hero { grid-template-columns: 1fr; } }
-    @keyframes fade { from{opacity:0} to{opacity:1} }
+    a:focus, button:focus, input:focus {
+      outline:2px solid var(--secondary);
+      outline-offset:2px
+    }
+    @media (max-width: 960px){
+      .hero { grid-template-columns: 1fr; }
+    }
+    @keyframes fade {
+      from{opacity:0}
+      to{opacity:1}
+    }
     @media (prefers-reduced-motion: reduce){
       .btn:hover, .start-btn:hover, .game-card:hover { transform: none }
       .blob, .blob2, .grid-bg { display:none }
     }
+    /* ======= توحيد حجم كل البطاقات ======= */
+    .games-grid .game-card { --scale: 1; }
+    .games-grid .game-card:nth-child(n+5) { --scale: 1; }
   </style>
 </head>
 <body>
@@ -391,7 +708,6 @@
           <i class="fa-solid fa-link"></i> روابط التواصل
         </a>
         <a class="btn primary" href="#games"><i class="fa-solid fa-gamepad"></i> ابدأ الآن</a>
-
         <!-- زر الدعم (بدون href) يفتح النافذة -->
         <button class="btn" type="button" id="supportBtn">
           <i class="fa-solid fa-hand-holding-heart"></i> عشان تدعمنا
@@ -411,15 +727,22 @@
         <a href="#streamer" class="btn"><i class="fa-solid fa-star"></i> فئة ستريمر خاصة</a>
       </div>
       <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap">
-        <div class="stat"><i class="fa-solid fa-plug"></i> يدعم الدمج مع الشات<small>تويتش + كيك</small></div>
-        <div class="stat"><i class="fa-solid fa-shield-heart"></i> تجربة مستقرة<small>تحسينات للأداء</small></div>
+        <div class="stat">
+          <i class="fa-solid fa-plug"></i> يدعم الدمج مع الشات
+          <small>تويتش + كيك</small>
+        </div>
+        <div class="stat">
+          <i class="fa-solid fa-shield-heart"></i> تجربة مستقرة
+          <small>تحسينات للأداء</small>
+        </div>
       </div>
     </div>
+
     <div class="hero-card" role="region" aria-label="ملاحظة مهمة">
       <h2 style="margin:0 0 10px; font-size:1.1rem; color:var(--muted)">ملاحظة</h2>
       <p style="margin:0">💡 يمكنك ربط قناتك مع الشات <b>داخل الألعاب فقط</b>.</p>
       <div class="divider"></div>
-      <p style="margin:0">تم اضافة لعبة جديده ،  <b>مربعات الطيبين </b>.</p>
+      <p style="margin:0">يتم حالياً العمل على: تسجيل الدخول، وخدمة <b>ستريمر بلس</b>.</p>
     </div>
   </section>
 
@@ -491,7 +814,7 @@
           <span class="badge"><i class="fa-solid fa-fist-raised"></i> كيك</span>
         </div>
         <div class="game-body">
-          <div class="game-info"><p>انطلق بحرف محدد واكتب كلمات صحيحة—السريع يسبق!</p></div>
+          <div class="game-info"><p>انطلق بحرف محدد وكتب كلمات صحيحة—السريع يسبق!</p></div>
           <a href="huroof-game.html" class="start-btn" data-transition>ابدأ اللعبة</a>
         </div>
       </article>
@@ -569,8 +892,12 @@
         </ul>
         <div class="price">السعر: 10$ فقط</div>
         <div style="display:flex; gap:10px; flex-wrap:wrap">
-          <a href="https://twitter.com/medo_dv" target="_blank" class="sbtn" rel="noopener"><i class="fa-brands fa-x-twitter"></i> تواصل عبر تويتر</a>
-          <a href="https://instagram.com/medo_dv" target="_blank" class="sbtn" rel="noopener"><i class="fa-brands fa-instagram"></i> تواصل عبر إنستجرام</a>
+          <a href="https://twitter.com/medo_dv" target="_blank" class="sbtn" rel="noopener">
+            <i class="fa-brands fa-x-twitter"></i> تواصل عبر تويتر
+          </a>
+          <a href="https://instagram.com/medo_dv" target="_blank" class="sbtn" rel="noopener">
+            <i class="fa-brands fa-instagram"></i> تواصل عبر إنستجرام
+          </a>
         </div>
       </div>
     </div>
@@ -623,7 +950,9 @@
         const card = btn.closest('.game-card');
         card.style.transform = 'translateY(-6px) scale(var(--scale))';
         card.style.transition = 'transform .35s ease';
-        setTimeout(() => { window.location.href = href; }, 350);
+        setTimeout(() => {
+          window.location.href = href;
+        }, 350);
       });
     });
 
@@ -635,26 +964,40 @@
       card.setAttribute('tabindex', '0');
       card.setAttribute('role', 'link');
       card.setAttribute('aria-label', (card.querySelector('.game-info p')?.textContent || 'ابدأ اللعبة').trim());
-      card.addEventListener('click', (e) => { if (e.target.closest('.start-btn')) return; link.click(); });
-      card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); link.click(); } });
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('.start-btn')) return;
+        link.click();
+      });
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          link.click();
+        }
+      });
     });
 
     // طبقة تدرّج إضافية
     (function(){
       const el = document.createElement('div');
       el.setAttribute('aria-hidden','true');
-      el.style.position='fixed'; el.style.inset='0'; el.style.zIndex='0'; el.style.pointerEvents='none';
+      el.style.position='fixed';
+      el.style.inset='0';
+      el.style.zIndex='0';
+      el.style.pointerEvents='none';
       el.style.background = 'linear-gradient(180deg, rgba(255,255,255,0.00) 0%, rgba(255,255,255,0.02) 35%, rgba(255,255,255,0.00) 100%)';
       document.body.appendChild(el);
     })();
 
     // ===== نافذة الدعم (فتح/غلق عبر is-open) =====
-    const supportBtn    = document.getElementById('supportBtn');
+    const supportBtn = document.getElementById('supportBtn');
     const supportDialog = document.getElementById('supportDialog');
-    const supportClose  = document.getElementById('supportClose');
+    const supportClose = document.getElementById('supportClose');
 
     function openSupportDialog(e){
-      if (e) { e.preventDefault(); e.stopPropagation(); }
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
       if (!supportDialog) return;
       supportDialog.classList.add('is-open');
       supportDialog.setAttribute('aria-hidden', 'false');
@@ -667,22 +1010,28 @@
     }
     supportBtn?.addEventListener('click', openSupportDialog);
     supportClose?.addEventListener('click', closeSupportDialog);
-    supportDialog?.addEventListener('click', (e) => { if (e.target === supportDialog) closeSupportDialog(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSupportDialog(); });
+    supportDialog?.addEventListener('click', (e) => {
+      if (e.target === supportDialog) closeSupportDialog();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeSupportDialog();
+    });
 
     // ===== دخول صالح بدون كلمة مرور =====
-    function openSaleehWithPassword() { window.location.href = "saleeh.html"; }
+    function openSaleehWithPassword() {
+      window.location.href = "saleeh.html";
+    }
     document.getElementById('saleehCard')?.addEventListener('click', function(e){
       const clickedButton = e.target.closest('button');
-      if (!clickedButton) { openSaleehWithPassword(); }
+      if (!clickedButton) {
+        openSaleehWithPassword();
+      }
     });
 
     // (الأزرار كانت للسكرول الأفقي — ما نحتاجها مع الشبكة الجديدة)
     const gamesGrid = document.getElementById('gamesGrid');
     const gamesPrev = document.getElementById('gamesPrev');
     const gamesNext = document.getElementById('gamesNext');
-
-    // الحفاظ على سلوك العجلة لمنع تحرك الصفحة عرضيًا بدون داعٍ
     gamesGrid?.addEventListener('wheel', function(e) {
       // لا حاجة لتمرير أفقي الآن
     }, { passive: true });
