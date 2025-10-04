@@ -12,14 +12,37 @@
       --bg:#0c0f15; --panel:#131827; --panel2:#0f1422; --line:#273149; --muted:#a7b7d6; --text:#f1f5fe;
       --dv:#ff3b4e; --ok:#00e07a; --blue:#3bb8ff; --red:#ff4d5e; --gold:#ffd96b;
       --radius:18px;
+
+      /* ✅ خلفية ستايل2026 */
+      --bg1:#1a1a3d;   /* داكن */
+      --bg2:#004466;   /* داكن */
+      --fgText:#fff;   /* لون النص الافتراضي للخلفية */
     }
+    /* وضع الفاتح لستايل2026 */
+    [data-theme="light"]{
+      --bg1:#f2f6ff;
+      --bg2:#dfe9ff;
+      --fgText:#111;
+    }
+
     *{box-sizing:border-box}
     body{
-      margin:0;background:
-        radial-gradient(1200px 600px at 8% 12%,rgba(255,255,255,.04),transparent 60%),
-        radial-gradient(1200px 600px at 92% 88%,rgba(255,255,255,.05),transparent 60%),
-        linear-gradient(180deg,#0b0e14,#090c12);
-      color:var(--text);font-family:'Cairo',sans-serif
+      margin:0;
+      color:var(--fgText);
+      font-family:'Cairo',sans-serif;
+
+      /* ✅ خلفية متحركة موحّدة */
+      background: linear-gradient(-45deg, var(--bg1), var(--bg2), var(--bg1), var(--bg2));
+      background-size: 400% 400%;
+      animation: gradientBG 20s ease infinite;
+
+      /* كان سابقًا: radial + linear ثابتة — تم الاستبدال */
+    }
+    /* أنيميشن الخلفية */
+    @keyframes gradientBG {
+      0%   { background-position: 0% 50% }
+      50%  { background-position: 100% 50% }
+      100% { background-position: 0% 50% }
     }
 
     /* عرض متناسق (مو كامل المتصفح) */
@@ -228,6 +251,11 @@
 </div>
 
 <script>
+/* ثيم افتراضي داكن للباك قراوند */
+document.documentElement.setAttribute('data-theme','dark');
+</script>
+
+<script>
 /*********** اتصال Twitch & Kick ***********/
 const RABT = (() => {
   let twitchClient = null, kickSocket = null, kickPingTimer = null;
@@ -239,11 +267,11 @@ const RABT = (() => {
     const statusTw = document.getElementById('statusTw'), dotTw = document.getElementById('dotTw');
     try{
       if(!window.tmi) throw new Error('tmi.min.js غير محمَّل');
-      twitchClient = new tmi.Client({ channels:[state.twChannel], connection:{secure:true,reconnect:true} });
-      twitchClient.on('connected', ()=>{ statusTw.textContent='متصل'; setDot(dotTw,true); updateConnectedLabel(); });
-      twitchClient.on('disconnected', ()=>{ statusTw.textContent='غير متصل'; setDot(dotTw,false); });
-      twitchClient.on('message', (ch,tags,msg,self)=>{ if(self) return; const u=tags['display-name']||tags.username||'مشارك'; state.onChat('twitch',u,(msg||'').trim()); });
-      twitchClient.connect();
+      const tmiClient = new tmi.Client({ channels:[state.twChannel], connection:{secure:true,reconnect:true} });
+      tmiClient.on('connected', ()=>{ statusTw.textContent='متصل'; setDot(dotTw,true); updateConnectedLabel(); });
+      tmiClient.on('disconnected', ()=>{ statusTw.textContent='غير متصل'; setDot(dotTw,false); });
+      tmiClient.on('message', (ch,tags,msg,self)=>{ if(self) return; const u=tags['display-name']||tags.username||'مشارك'; state.onChat('twitch',u,(msg||'').trim()); });
+      tmiClient.connect();
     }catch(e){ console.warn(e); statusTw.textContent='فشل الاتصال'; setDot(dotTw,false); }
   }
 
