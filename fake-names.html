@@ -920,6 +920,40 @@
         padding-inline:10px;
       }
     }
+
+    /* بطاقات المنتصف ونتيجة المطابقة */
+    .midcard{
+      min-width:160px;
+      padding:20px;
+      border-radius:14px;
+      background:radial-gradient(circle at top,#262a38,#191c26);
+      border:1px solid rgba(71,79,102,0.95);
+      color:#fff;
+      font-size:26px;
+      font-weight:800;
+      text-align:center;
+      box-shadow:0 10px 26px rgba(0,0,0,0.7);
+      opacity:0;
+      transform:scale(.6);
+      transition:opacity .35s ease,transform .35s ease;
+    }
+    .midcard.show{
+      opacity:1;
+      transform:scale(1);
+    }
+    #matchResultOverlay{
+      font-size:70px;
+      font-weight:900;
+      text-shadow:0 0 30px rgba(0,0,0,0.8);
+    }
+    .result-ok{
+      color:var(--green-soft);
+      text-shadow:0 0 25px rgba(34,197,139,.55);
+    }
+    .result-bad{
+      color:var(--danger);
+      text-shadow:0 0 25px rgba(255,98,98,.55);
+    }
   </style>
 </head>
 <body>
@@ -1091,6 +1125,13 @@
   </div>
   <div class="body" id="lastEventBody">—</div>
 </div>
+
+<!-- بطاقات المنتصف + نتيجة المطابقة -->
+<div id="middleCardsArea" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);display:none;gap:40px;z-index:150;pointer-events:none;">
+  <div id="middleLeftCard" class="midcard"></div>
+  <div id="middleRightCard" class="midcard"></div>
+</div>
+<div id="matchResultOverlay" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:200;pointer-events:none;"></div>
 
 <script>
 /* ===== اتصال المنصات ===== */
@@ -1548,6 +1589,80 @@ function setGmVisibility(show){ els.gm.classList.toggle('open', !!show); }
 els.gmToggle.onclick = ()=> setGmVisibility(!els.gm.classList.contains('open'));
 setGmVisibility(location.hash==='#gm');
 window.addEventListener('keydown',e=>{ if(e.altKey && (e.key.toLowerCase()==='g')) setGmVisibility(!els.gm.classList.contains('open')); });
+
+/* ===== نظام بطاقتين للمنتصف (يمين/يسار) ===== */
+let rightSelectedId = null;
+let leftSelectedId = null;
+
+document.addEventListener('click', function(e){
+  const target = e.target;
+  if (!(target instanceof Element)) return;
+  const playerCard = target.closest('#playersGrid .card');
+  const fakeCard   = target.closest('#cardsGrid .card');
+
+  if (playerCard){
+    rightSelectedId = playerCard.dataset.id || null;
+    maybeAnimateMiddle();
+  }
+  if (fakeCard){
+    leftSelectedId = fakeCard.dataset.id || null;
+    maybeAnimateMiddle();
+  }
+}, true); // capture عشان ما نكسر onClick الأصلي
+
+function maybeAnimateMiddle(){
+  if (!rightSelectedId || !leftSelectedId) return;
+  if (!state.started) return;
+
+  const turnP = currentPlayer();
+  if (!turnP || turnP.eliminated) return;
+
+  const mentioned = byId(state.players, rightSelectedId);
+  const card      = byId(state.cards, leftSelectedId);
+  if (!mentioned || !card) return;
+  if (card.locked || card.revealed) return;
+
+  const middleArea = document.getElementById('middleCardsArea');
+  const leftBox    = document.getElementById('middleLeftCard');
+  const rightBox   = document.getElementById('middleRightCard');
+  if (!middleArea || !leftBox || !rightBox) return;
+
+  leftBox.textContent  = mentioned.name;
+  rightBox.textContent = card.text;
+
+  middleArea.style.display = 'flex';
+  void leftBox.offsetWidth;
+  leftBox.classList.add('show');
+  rightBox.classList.add('show');
+
+  const correct = !!card.ownerId && card.ownerId === mentioned.id;
+  setTimeout(()=>{ showPairResult(correct); }, 450);
+
+  setTimeout(()=>{
+    middleArea.style.display = 'none';
+    leftBox.classList.remove('show');
+    rightBox.classList.remove('show');
+    rightSelectedId = null;
+    leftSelectedId  = null;
+  }, 1200);
+}
+
+function showPairResult(correct){
+  const box = document.getElementById('matchResultOverlay');
+  if (!box) return;
+  box.style.display = 'flex';
+  box.classList.remove('result-ok','result-bad');
+
+  if (correct){
+    box.classList.add('result-ok');
+    box.textContent = '✔ صحيح';
+  } else {
+    box.classList.add('result-bad');
+    box.textContent = '✖ خطأ';
+  }
+
+  setTimeout(()=>{ box.style.display='none'; }, 900);
+}
 </script>
 </body>
 </html>
