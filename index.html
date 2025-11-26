@@ -5,8 +5,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>🎮 ستريمر توب - منصة الألعاب التفاعلية للستريمرز</title>
   <meta name="description" content="منصة ألعاب تفاعلية مصممة خصيصاً للستريمرز، تدعم التكامل مع منصات البث مثل تويتش وكيك" />
+
+  <!-- Performance & Fonts -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:title" content="StreamerTop — منصة الألعاب التفاعلية للستريمرز">
+  <meta property="og:description" content="ألعاب مباشرة مع الشات — اربط تويتش + كيك وخلي المتابعين يلعبون معك!">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://i.postimg.cc/XYGZ0j3s/St.png">
+  <meta property="og:locale" content="ar_SA">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="StreamerTop — منصة الألعاب التفاعلية للستريمرز">
+  <meta name="twitter:description" content="ألعاب مباشرة مع الشات — واجهة احترافية وسرعة عالية.">
+  <meta name="twitter:image" content="https://i.postimg.cc/XYGZ0j3s/St.png">
+
+  <!-- JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebSite",
+    "name":"StreamerTop",
+    "url":"https://www.streamr.top/",
+    "potentialAction":{
+      "@type":"SearchAction",
+      "target":"https://www.streamr.top/?q={search_term_string}",
+      "query-input":"required name=search_term_string"
+    }
+  }
+  </script>
+
+  <!-- Additional global tweaks -->
+  <style>
+    html { color-scheme: dark; scroll-behavior: smooth; }
+    :where(a,button,[tabindex]):focus-visible { 
+      outline: 2px solid #00d86c; /* var(--secondary) without relying before defined */
+      outline-offset: 3px;
+    }
+    .skip-link{
+      position:fixed; inset-inline-start:10px; top:10px; z-index:10001;
+      background:#0b0d16; color:#fff; padding:.6rem .9rem; border-radius:10px;
+      border:1px solid rgba(255,255,255,0.08); transform:translateY(-200%);
+    }
+    .skip-link:focus{ transform:translateY(0); }
+  </style>
+
   <style>
     /* ========= المتغيرات العامة ========= */
     :root {
@@ -28,14 +73,10 @@
       --game-w: 300px;
     }
     @media (max-width: 1280px){
-      :root{
-        --game-w: 280px;
-      }
+      :root{ --game-w: 280px; }
     }
     @media (max-width: 480px){
-      :root{
-        --game-w: 240px;
-      }
+      :root{ --game-w: 240px; }
     }
     *, *::before, *::after { box-sizing: border-box; }
     html, body { height: 100%; }
@@ -50,645 +91,136 @@
         linear-gradient(180deg, var(--bg-900), #0a0b14 70%);
       overflow-x: hidden;
     }
-    .grid-bg {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    .grid-bg { position: fixed; inset: 0; pointer-events: none; z-index: 0; background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
       background-size: 40px 40px, 40px 40px;
     }
-    .blob, .blob2 {
-      position: fixed;
-      filter: blur(40px);
-      opacity: .4;
-      z-index: 0;
-      pointer-events:none;
-      width: 420px;
-      height: 420px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, var(--accent), transparent 60%);
-      top: -120px;
-      left: -120px;
-      transform: rotate(15deg);
-    }
-    .blob2 {
-      width: 720px;
-      height: 720px;
-      right: -220px;
-      bottom: -160px;
-      left: auto;
-      top: auto;
-      background: radial-gradient(circle at 70% 50%, var(--primary), transparent 60%);
-    }
+    .blob, .blob2 { position: fixed; filter: blur(40px); opacity: .4; z-index: 0; pointer-events:none; width: 420px; height: 420px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, var(--accent), transparent 60%); top: -120px; left: -120px; transform: rotate(15deg); }
+    .blob2 { width: 720px; height: 720px; right: -220px; bottom: -160px; left: auto; top: auto; background: radial-gradient(circle at 70% 50%, var(--primary), transparent 60%); }
 
     /* ========= الهيدر ========= */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 40;
-      backdrop-filter: saturate(140%) blur(10px);
-      background: linear-gradient(180deg, rgba(10,11,20,0.85), rgba(10,11,20,0.5));
-      border-bottom: 1px solid var(--border);
-      width: 100%;
-    }
-    .nav {
-      width: 100%;
-      margin: 0;
-      padding: 14px clamp(16px, 4vw, 48px);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .brand {
-      display:flex;
-      align-items:center;
-      gap:10px;
-      font-weight:800;
-      letter-spacing: .2px;
-    }
-    .logo {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      display:grid;
-      place-items:center;
-      background: linear-gradient(135deg, var(--primary), #b81f1f);
-      box-shadow: 0 8px 24px rgba(255,51,51,.25), inset 0 0 20px rgba(255,255,255,.08);
-      border: 1px solid var(--border);
-    }
+    header { position: sticky; top: 0; z-index: 40; backdrop-filter: saturate(140%) blur(10px); background: linear-gradient(180deg, rgba(10,11,20,0.85), rgba(10,11,20,0.5)); border-bottom: 1px solid var(--border); width: 100%; }
+    .nav { width: 100%; margin: 0; padding: 14px clamp(16px, 4vw, 48px); display: flex; align-items: center; justify-content: space-between; }
+    .brand { display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing: .2px; }
+    .logo { width: 38px; height: 38px; border-radius: 10px; display:grid; place-items:center; background: linear-gradient(135deg, var(--primary), #b81f1f); box-shadow: 0 8px 24px rgba(255,51,51,.25), inset 0 0 20px rgba(255,255,255,.08); border: 1px solid var(--border); }
     .brand span { font-size: 1.05rem; }
-    .nav-cta {
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-    .btn, .chip {
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      cursor:pointer;
-      text-decoration:none;
-      font-weight:700;
-      border-radius:12px;
-      padding:.7rem 1rem;
-      border:1px solid var(--border);
-      background: var(--glass);
-      color: var(--text);
-      transition: transform .15s ease, box-shadow .2s ease, background .2s;
-    }
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 22px rgba(0,0,0,.35);
-    }
-    .btn.primary {
-      background: linear-gradient(135deg, var(--primary), #b81f1f);
-      border-color: rgba(255,255,255,0.1);
-    }
+    .nav-cta { display:flex; align-items:center; gap:10px; }
+    .btn, .chip { display:inline-flex; align-items:center; gap:8px; cursor:pointer; text-decoration:none; font-weight:700; border-radius:12px; padding:.7rem 1rem; border:1px solid var(--border); background: var(--glass); color: var(--text); transition: transform .15s ease, box-shadow .2s ease, background .2s; }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(0,0,0,.35); }
+    .btn.primary { background: linear-gradient(135deg, var(--primary), #b81f1f); border-color: rgba(255,255,255,0.1); }
     .btn.outline { background: transparent; }
-    .chip {
-      padding:.45rem .7rem;
-      font-size:.86rem;
-      opacity:.95
-    }
+    .chip { padding:.45rem .7rem; font-size:.86rem; opacity:.95 }
     .chip.kick { color: var(--kick); border-color: rgba(0,216,0,.35) }
     .chip.twitch { color: var(--accent); border-color: rgba(145,70,255,.35) }
 
     /* ========= الهيرو ========= */
-    .hero {
-      position: relative;
-      z-index: 1;
-      margin: 28px 0 8px;
-      width: 100%;
-      padding: 0 clamp(16px, 4vw, 48px);
-      display:grid;
-      gap: 18px;
-      grid-template-columns: 1.1fr .9fr;
-    }
-    .hero-card {
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border:1px solid var(--border);
-      border-radius: 22px;
-      padding: 26px;
-      position:relative;
-      overflow:hidden;
-      box-shadow: 0 18px 50px rgba(0,0,0,.35);
-    }
-    .hero h1 {
-      font-size: clamp(1.8rem, 3.6vw, 2.6rem);
-      margin:.4rem 0 1rem;
-      color: var(--text);
-    }
-    .hero p {
-      color: var(--muted);
-      margin: 0 0 1.1rem;
-      font-weight:600
-    }
-    .divider {
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.16), transparent);
-      margin: 14px 0 18px;
-    }
-    .hero-actions {
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap
-    }
-    .stat {
-      display:flex;
-      align-items:center;
-      gap:10px;
-      padding:.6rem .8rem;
-      border-radius: 12px;
-      background: rgba(255,255,255,.04);
-      border:1px solid var(--border);
-      font-weight:700;
-      color:#fff;
-    }
-    .stat small {
-      display:block;
-      color: var(--muted);
-      font-weight:600
-    }
+    .hero { position: relative; z-index: 1; margin: 28px 0 8px; width: 100%; padding: 0 clamp(16px, 4vw, 48px); display:grid; gap: 18px; grid-template-columns: 1.1fr .9fr; }
+    .hero-card { background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); border:1px solid var(--border); border-radius: 22px; padding: 26px; position:relative; overflow:hidden; box-shadow: 0 18px 50px rgba(0,0,0,.35); }
+    .hero h1 { font-size: clamp(1.8rem, 3.6vw, 2.6rem); margin:.4rem 0 1rem; color: var(--text); }
+    .hero p { color: var(--muted); margin: 0 0 1.1rem; font-weight:600 }
+    .divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.16), transparent); margin: 14px 0 18px; }
+    .hero-actions { display:flex; gap:10px; flex-wrap:wrap }
+    .stat { display:flex; align-items:center; gap:10px; padding:.6rem .8rem; border-radius: 12px; background: rgba(255,255,255,.04); border:1px solid var(--border); font-weight:700; color:#fff; }
+    .stat small { display:block; color: var(--muted); font-weight:600 }
 
     /* ========= أقسام عامة ========= */
-    .section {
-      position: relative;
-      z-index:1;
-      width: 100%;
-      margin: 8px 0 40px;
-      padding: 0 clamp(16px, 4vw, 48px);
-    }
-    .section h2 {
-      font-size: 1.2rem;
-      color: var(--muted);
-      font-weight:800;
-      margin: 18px 6px;
-      letter-spacing:.3px
-    }
+    .section { position: relative; z-index:1; width: 100%; margin: 8px 0 40px; padding: 0 clamp(16px, 4vw, 48px); }
+    .section h2 { font-size: 1.2rem; color: var(--muted); font-weight:800; margin: 18px 6px; letter-spacing:.3px }
 
-    /* ========= شبكة الألعاب (تمديد على عرض الصفحة) ========= */
-    .games-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(var(--game-w), 1fr));
-      /* تمتد تلقائيًا */
-      gap: 22px;
-      align-content: start;
-      padding-bottom: 6px;
-    }
-    .game-card {
-      position:relative;
-      isolation:isolate;
-      overflow:hidden;
-      width: 100%;
-      /* تأخذ عرض العمود بالكامل */
-      min-width: 0;
-      /* تمنع تمدد غير مرغوب */
-      aspect-ratio: 2 / 3;
-      /* يحافظ على نسبة البطاقة */
-      border-radius: 18px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      box-shadow: 0 14px 36px rgba(0,0,0,.35);
-      display:flex;
-      flex-direction:column;
-      --scale: 1;
-      transform: scale(var(--scale));
-      transition: transform .3s ease, box-shadow .35s ease, border-color .25s ease;
-    }
-    .game-card::before {
-      content:"";
-      position:absolute;
-      inset:0;
-      z-index:0;
-      opacity:1;
-      background-size: cover;
-      background-position: center;
-      filter: none !important;
-      transition: transform .35s ease, opacity .25s ease;
-    }
-    .game-card:hover {
-      transform: translateY(-6px) scale(var(--scale));
-      border-color: rgba(255,255,255,.22);
-      box-shadow: 0 24px 60px rgba(0,0,0,.5);
-    }
+    /* ========= شبكة الألعاب ========= */
+    .games-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(var(--game-w), 1fr)); gap: 22px; align-content: start; padding-bottom: 6px; }
+    .game-card { position:relative; isolation:isolate; overflow:hidden; width: 100%; min-width: 0; aspect-ratio: 2 / 3; border-radius: 18px; background: var(--card); border: 1px solid var(--border); box-shadow: 0 14px 36px rgba(0,0,0,.35); display:flex; flex-direction:column; --scale: 1; transform: scale(var(--scale)); transition: transform .3s ease, box-shadow .35s ease, border-color .25s ease; }
+    .game-card::before { content:""; position:absolute; inset:0; z-index:0; opacity:1; background-size: cover; background-position: center; filter: none !important; transition: transform .35s ease, opacity .25s ease; }
+    .game-card:hover { transform: translateY(-6px) scale(var(--scale)); border-color: rgba(255,255,255,.22); box-shadow: 0 24px 60px rgba(0,0,0,.5); }
     .game-card:hover::before { transform: scale(1.06); }
-
-    /* (كان فيه تصغير بعد أول 4) — محافظين على توحيد الحجم */
-    .games-grid .game-card:nth-child(n+5){
-      --scale: 1;
-      transform-origin: top center;
-    }
-    .badges{
-      position:absolute;
-      top:10px;
-      inset-inline-start:10px;
-      z-index:2;
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-    }
-    .badge{
-      padding:.36rem .6rem;
-      border-radius:999px;
-      border:1px solid var(--border);
-      background: rgba(0,0,0,.48);
-      color:#fff;
-      font-size:.8rem;
-      font-weight:800;
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-    }
-    .game-body{
-      position:absolute;
-      inset:0;
-      z-index:1;
-      display:flex;
-      flex-direction:column;
-      justify-content:flex-end;
-      padding: 12px;
-      background: linear-gradient(180deg, rgba(0,0,0,0.00) 60%, rgba(0,0,0,0.5) 100%);
-    }
-    .game-info{
-      position:absolute;
-      left:12px;
-      right:12px;
-      bottom:72px;
-      z-index:2;
-      opacity:0;
-      transform: translateY(6px);
-      transition: opacity .25s ease, transform .25s ease;
-      pointer-events:none;
-    }
-    .game-info p{
-      margin:0;
-      font-size:.9rem;
-      font-weight:800;
-      line-height:1.4;
-      color:#fff;
-      background: rgba(0,0,0,.55);
-      border:1px solid var(--border);
-      border-radius:12px;
-      padding:.6rem .75rem;
-      box-shadow: 0 8px 20px rgba(0,0,0,.35);
-    }
+    .games-grid .game-card:nth-child(n+5){ --scale: 1; transform-origin: top center; }
+    .badges{ position:absolute; top:10px; inset-inline-start:10px; z-index:2; display:flex; gap:8px; flex-wrap:wrap; }
+    .badge{ padding:.36rem .6rem; border-radius:999px; border:1px solid var(--border); background: rgba(0,0,0,.48); color:#fff; font-size:.8rem; font-weight:800; display:inline-flex; align-items:center; gap:6px; }
+    .game-body{ position:absolute; inset:0; z-index:1; display:flex; flex-direction:column; justify-content:flex-end; padding: 12px; background: linear-gradient(180deg, rgba(0,0,0,0.00) 60%, rgba(0,0,0,0.5) 100%); }
+    .game-info{ position:absolute; left:12px; right:12px; bottom:72px; z-index:2; opacity:0; transform: translateY(6px); transition: opacity .25s ease, transform .25s ease; pointer-events:none; }
+    .game-info p{ margin:0; font-size:.9rem; font-weight:800; line-height:1.4; color:#fff; background: rgba(0,0,0,.55); border:1px solid var(--border); border-radius:12px; padding:.6rem .75rem; box-shadow: 0 8px 20px rgba(0,0,0,.35); }
     .game-card:hover .game-info,
-    .game-card:focus-within .game-info {
-      opacity:1;
-      transform: translateY(0);
-    }
-    .game-title, .game-desc{
-      display:none !important;
-    }
-    .start-btn{
-      display:block;
-      text-align:center;
-      text-decoration:none;
-      cursor:pointer;
-      border:none;
-      font-weight:900;
-      font-size:1rem;
-      letter-spacing:.2px;
-      color:#fff;
-      border-radius:12px;
-      padding:.95rem 1rem;
-      margin-top:8px;
-      background: linear-gradient(135deg, var(--secondary), #09a659);
-      box-shadow: 0 10px 24px rgba(0,216,108,.28);
-      transition: transform .15s ease, box-shadow .25s ease, filter .25s ease;
-    }
-    .start-btn:hover{
-      transform: translateY(-2px);
-      box-shadow: 0 16px 36px rgba(0,216,108,.38);
-      filter: saturate(1.06);
-    }
+    .game-card:focus-within .game-info { opacity:1; transform: translateY(0); }
+    .game-title, .game-desc{ display:none !important; }
+    .start-btn{ display:block; text-align:center; text-decoration:none; cursor:pointer; border:none; font-weight:900; font-size:1rem; letter-spacing:.2px; color:#fff; border-radius:12px; padding:.95rem 1rem; margin-top:8px; background: linear-gradient(135deg, var(--secondary), #09a659); box-shadow: 0 10px 24px rgba(0,216,108,.28); transition: transform .15s ease, box-shadow .25s ease, filter .25s ease; }
+    .start-btn:hover{ transform: translateY(-2px); box-shadow: 0 16px 36px rgba(0,216,108,.38); filter: saturate(1.06); }
     .games-scroller-btn { display:none !important; }
 
     /* ربط صور الألعاب */
-    .img-1::before { background-image: url('https://i.postimg.cc/sDmnYMss/1.png'); }   /* الكلمات المبعثرة */
-    .img-2::before { background-image: url('https://i.postimg.cc/VNQD1nRY/5.png'); }   /* اكشف الصورة */
-    .img-4::before { background-image: url('https://i.postimg.cc/2jwdJgMY/4.png'); }   /* حرب الدول */
-    .img-5::before { background-image: url('https://i.postimg.cc/FRXg5vh4/3.png'); }   /* يلا نتعاون */
-    .img-huroof::before { background-image: url('https://i.postimg.cc/3J81x3mm/2.png'); } /* لعبة الحروف */
-    .img-squares::before { background-image: url('https://i.postimg.cc/XYGZ0j3s/St.png'); } /* لعبة المربعات */
+    .img-1::before { background-image: url('https://i.postimg.cc/sDmnYMss/1.png'); }
+    .img-2::before { background-image: url('https://i.postimg.cc/VNQD1nRY/5.png'); }
+    .img-4::before { background-image: url('https://i.postimg.cc/2jwdJgMY/4.png'); }
+    .img-5::before { background-image: url('https://i.postimg.cc/FRXg5vh4/3.png'); }
+    .img-huroof::before { background-image: url('https://i.postimg.cc/3J81x3mm/2.png'); }
+    .img-squares::before { background-image: url('https://i.postimg.cc/XYGZ0j3s/St.png'); }
+    .img-tahadi::before { background-image: url('https://i.postimg.cc/sx7C12Yj/thdy-almfrdat.png'); }
 
     /* ========= بطاقات الستريمر ========= */
-    .streamer-access-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 18px;
-      margin-top: 12px;
-    }
-    .creator-card{
-      position: relative;
-      border-radius: 18px;
-      overflow: hidden;
-      min-height: 220px;
-      border: 1px solid var(--border);
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      box-shadow: 0 14px 36px rgba(0,0,0,.35);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform .25s ease, box-shadow .3s ease, border-color .25s ease;
-      isolation: isolate;
-    }
-    .creator-card::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      z-index:0;
-      pointer-events:none;
-      background:
-        radial-gradient(120% 80% at 80% -10%, rgba(145,70,255,.16), transparent 60%),
-        radial-gradient(100% 70% at -20% 120%, rgba(255,51,51,.10), transparent 60%);
+    .streamer-access-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; margin-top: 12px; }
+    .creator-card{ position: relative; border-radius: 18px; overflow: hidden; min-height: 220px; border: 1px solid var(--border); background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); box-shadow: 0 14px 36px rgba(0,0,0,.35); display: flex; align-items: center; justify-content: center; transition: transform .25s ease, box-shadow .3s ease, border-color .25s ease; isolation: isolate; }
+    .creator-card::before{ content:""; position:absolute; inset:0; z-index:0; pointer-events:none; background:
+      radial-gradient(120% 80% at 80% -10%, rgba(145,70,255,.16), transparent 60%),
+      radial-gradient(100% 70% at -20% 120%, rgba(255,51,51,.10), transparent 60%);
       opacity:.9;
     }
-    .creator-card:hover{
-      transform: translateY(-6px);
-      box-shadow: 0 22px 60px rgba(0,0,0,.55);
-      border-color: rgba(255,255,255,.18);
-    }
-    .creator-overlay{
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 18px;
-      text-align: center;
-      color: #fff;
-    }
-    .creator-avatar{
-      width: 108px;
-      height: 108px;
-      border-radius: 22px;
-      object-fit: cover;
-      position: relative;
-      display: block;
-      border: 1px solid rgba(255,255,255,.12);
-      box-shadow: 0 10px 28px rgba(0,0,0,.45);
-    }
-    .creator-avatar-wrap{
-      position: relative;
-      display:inline-grid;
-      place-items:center;
-    }
-    .creator-avatar-wrap::before{
-      content:"";
-      position:absolute;
-      inset:-4px;
-      border-radius: 26px;
-      z-index: -1;
-      background: conic-gradient(from 0deg, var(--accent), var(--primary), var(--secondary), var(--accent));
-      filter: blur(0.5px) saturate(1.1);
-      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      padding: 2px;
-      opacity:.85;
-      transition: opacity .25s ease, transform .25s ease;
-    }
-    .creator-card:hover .creator-avatar-wrap::before{
-      opacity:1;
-      transform: rotate(4deg);
-    }
-    .creator-name{
-      font-weight: 900;
-      font-size: 1.02rem;
-      margin-top: 10px;
-    }
-    .creator-tag{
-      font-size:.85rem;
-      font-weight:700;
-      color: var(--muted);
-      background: rgba(0,0,0,.42);
-      border:1px solid var(--border);
-      padding: 4px 10px;
-      border-radius: 999px;
-      margin-top: 6px;
-    }
-    .creator-actions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top: 12px;
-    }
-    .creator-btn{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:.75rem 1rem;
-      border-radius:12px;
-      font-weight:900;
-      color:#fff;
-      text-decoration:none;
-      cursor:pointer;
-      border:1px solid rgba(255,255,255,.10);
-      background: linear-gradient(135deg, var(--accent), #6b2dff);
-      box-shadow: 0 10px 24px rgba(145,70,255,.28);
-      transition: transform .15s ease, box-shadow .25s ease, filter .25s ease;
-    }
-    .creator-btn:hover{
-      transform: translateY(-2px);
-      box-shadow: 0 16px 36px rgba(145,70,255,.36);
-      filter: saturate(1.06)
-    }
-    .creator-soon{
-      position:absolute;
-      top:10px;
-      inset-inline-end:10px;
-      z-index:2;
-      background: linear-gradient(135deg, var(--accent), #6b2dff);
-      color:#fff;
-      font-size:.82rem;
-      font-weight:900;
-      padding: 5px 11px;
-      border-radius:999px;
-      border: 1px solid rgba(255,255,255,.12);
-      box-shadow: 0 10px 22px rgba(145,70,255,.28);
-    }
-    .status-dot{
-      position:absolute;
-      bottom: -2px;
-      inset-inline-end:-2px;
-      width:14px;
-      height:14px;
-      border-radius:999px;
-      background: var(--secondary);
-      border: 2px solid rgba(0,0,0,.55);
-      box-shadow: 0 0 0 3px rgba(0,0,0,.15);
-    }
+    .creator-card:hover{ transform: translateY(-6px); box-shadow: 0 22px 60px rgba(0,0,0,.55); border-color: rgba(255,255,255,.18); }
+    .creator-overlay{ position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 18px; text-align: center; color: #fff; }
+    .creator-avatar{ width: 108px; height: 108px; border-radius: 22px; object-fit: cover; position: relative; display: block; border: 1px solid rgba(255,255,255,.12); box-shadow: 0 10px 28px rgba(0,0,0,.45); }
+    .creator-avatar-wrap{ position: relative; display:inline-grid; place-items:center; }
+    .creator-avatar-wrap::before{ content:""; position:absolute; inset:-4px; border-radius: 26px; z-index: -1; background: conic-gradient(from 0deg, var(--accent), var(--primary), var(--secondary), var(--accent)); filter: blur(0.5px) saturate(1.1); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; padding: 2px; opacity:.85; transition: opacity .25s ease, transform .25s ease; }
+    .creator-card:hover .creator-avatar-wrap::before{ opacity:1; transform: rotate(4deg); }
+    .creator-name{ font-weight: 900; font-size: 1.02rem; margin-top: 10px; }
+    .creator-tag{ font-size:.85rem; font-weight:700; color: var(--muted); background: rgba(0,0,0,.42); border:1px solid var(--border); padding: 4px 10px; border-radius: 999px; margin-top: 6px; }
+    .creator-actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 12px; }
+    .creator-btn{ display:inline-flex; align-items:center; gap:8px; padding:.75rem 1rem; border-radius:12px; font-weight:900; color:#fff; text-decoration:none; cursor:pointer; border:1px solid rgba(255,255,255,.10); background: linear-gradient(135deg, var(--accent), #6b2dff); box-shadow: 0 10px 24px rgba(145,70,255,.28); transition: transform .15s ease, box-shadow .25s ease, filter .25s ease; }
+    .creator-btn:hover{ transform: translateY(-2px); box-shadow: 0 16px 36px rgba(145,70,255,.36); filter: saturate(1.06) }
+    .creator-soon{ position:absolute; top:10px; inset-inline-end:10px; z-index:2; background: linear-gradient(135deg, var(--accent), #6b2dff); color:#fff; font-size:.82rem; font-weight:900; padding: 5px 11px; border-radius:999px; border: 1px solid rgba(255,255,255,.12); box-shadow: 0 10px 22px rgba(145,70,255,.28); }
+    .status-dot{ position:absolute; bottom: -2px; inset-inline-end:-2px; width:14px; height:14px; border-radius:999px; background: var(--secondary); border: 2px solid rgba(0,0,0,.55); box-shadow: 0 0 0 3px rgba(0,0,0,.15); }
     .status-off{ background: #999; }
 
     /* ========= نافذة الدعم (is-open) ========= */
-    .support-modal-backdrop{
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.55);
-      backdrop-filter: blur(4px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 10000;
-    }
+    .support-modal-backdrop{ position: fixed; inset: 0; background: rgba(0,0,0,0.55); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 10000; }
     .support-modal-backdrop.is-open{ display: flex; }
-    .support-modal{
-      width: min(520px, 92vw);
-      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-      padding: 20px;
-      text-align: center;
-      color: var(--text);
-      position: relative;
-    }
-    .support-close{
-      position: absolute;
-      top: 10px;
-      inset-inline-end: 10px;
-      background: transparent;
-      color: #fff;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 6px 10px;
-      cursor: pointer;
-      font-weight: 800;
-    }
+    .support-modal{ width: min(520px, 92vw); background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)); border: 1px solid var(--border); border-radius: 18px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); padding: 20px; text-align: center; color: var(--text); position: relative; }
+    .support-close{ position: absolute; top: 10px; inset-inline-end: 10px; background: transparent; color: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 6px 10px; cursor: pointer; font-weight: 800; }
     .support-modal-backdrop.is-open .support-modal{ animation: pop .18s ease; }
-    @keyframes pop{
-      from{ transform: translateY(8px); opacity:.85 }
-      to{ transform: translateY(0); opacity:1 }
-    }
+    @keyframes pop{ from{ transform: translateY(8px); opacity:.85 } to{ transform: translateY(0); opacity:1 } }
 
     /* ========= بقية المكونات العامة ========= */
-    .streamer {
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 18px;
-      box-shadow: 0 14px 36px rgba(0,0,0,.35);
-    }
-    .streamer-head {
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      cursor:pointer;
-      user-select:none
-    }
-    .streamer-head h3 {
-      margin:0;
-      font-size:1.05rem;
-      color: var(--secondary)
-    }
-    .streamer-body {
-      display:none;
-      margin-top: 16px;
-      animation: fade .25s ease
-    }
-    .list {
-      margin: 12px 0;
-      padding-inline-start: 18px;
-      color: var(--muted);
-      font-weight:600
-    }
-    .list li {
-      margin:.5rem 0;
-      position:relative;
-      list-style:none;
-      padding-inline-start: 22px
-    }
-    .list li::before {
-      content:"\2713";
-      position:absolute;
-      inset-inline-start:0;
-      color: var(--secondary);
-      font-weight:800
-    }
-    .price {
-      font-size: 1.25rem;
-      font-weight: 800;
-      color: var(--accent);
-      margin: 10px 0 14px
-    }
-    .sbtn {
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:.8rem 1rem;
-      border-radius:12px;
-      text-decoration:none;
-      font-weight:800;
-      background: linear-gradient(135deg, var(--accent), #6b2dff);
-      color:#fff;
-      border:1px solid rgba(255,255,255,.08)
-    }
+    .streamer { background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); border: 1px solid var(--border); border-radius: 18px; padding: 18px; box-shadow: 0 14px 36px rgba(0,0,0,.35); }
+    .streamer-head { display:flex; align-items:center; justify-content:space-between; cursor:pointer; user-select:none }
+    .streamer-head h3 { margin:0; font-size:1.05rem; color: var(--secondary) }
+    .streamer-body { display:none; margin-top: 16px; animation: fade .25s ease }
+    .list { margin: 12px 0; padding-inline-start: 18px; color: var(--muted); font-weight:600 }
+    .list li { margin:.5rem 0; position:relative; list-style:none; padding-inline-start: 22px }
+    .list li::before { content:"\2713"; position:absolute; inset-inline-start:0; color: var(--secondary); font-weight:800 }
+    .price { font-size: 1.25rem; font-weight: 800; color: var(--accent); margin: 10px 0 14px }
+    .sbtn { display:inline-flex; align-items:center; gap:8px; padding:.8rem 1rem; border-radius:12px; text-decoration:none; font-weight:800; background: linear-gradient(135deg, var(--accent), #6b2dff); color:#fff; border:1px solid rgba(255,255,255,.08) }
     .sbtn:hover { filter: saturate(1.1) }
-    footer {
-      width: 100%;
-      margin: 24px 0 60px;
-      padding: 0 clamp(16px, 4vw, 48px);
-      color: var(--muted);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap
-    }
-    .social {
-      display:flex;
-      gap:10px
-    }
-    .icon {
-      width:38px;
-      height:38px;
-      display:grid;
-      place-items:center;
-      border-radius: 999px;
-      text-decoration:none;
-      color:#fff;
-      border:1px solid var(--border);
-      background: var(--glass);
-      transition:.2s
-    }
+    footer { width: 100%; margin: 24px 0 60px; padding: 0 clamp(16px, 4vw, 48px); color: var(--muted); display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap }
+    .social { display:flex; gap:10px }
+    .icon { width:38px; height:38px; display:grid; place-items:center; border-radius: 999px; text-decoration:none; color:#fff; border:1px solid var(--border); background: var(--glass); transition:.2s }
     .icon:hover { transform: translateY(-2px) }
-    .floating {
-      position: fixed;
-      inset-inline: 18px;
-      top: 14px;
-      z-index: 45;
-      display:flex;
-      gap:10px;
-      justify-content: space-between;
-      pointer-events:none
-    }
+    .floating { position: fixed; inset-inline: 18px; top: 14px; z-index: 45; display:flex; gap:10px; justify-content: space-between; pointer-events:none }
     .floating > * { pointer-events: auto }
-    a:focus, button:focus, input:focus {
-      outline:2px solid var(--secondary);
-      outline-offset:2px
-    }
-    @media (max-width: 960px){
-      .hero { grid-template-columns: 1fr; }
-    }
-    @keyframes fade {
-      from{opacity:0}
-      to{opacity:1}
-    }
-    @media (prefers-reduced-motion: reduce){
-      .btn:hover, .start-btn:hover, .game-card:hover { transform: none }
-      .blob, .blob2, .grid-bg { display:none }
-    }
+    a:focus, button:focus, input:focus { outline:2px solid var(--secondary); outline-offset:2px }
+    @media (max-width: 960px){ .hero { grid-template-columns: 1fr; } }
+    @keyframes fade { from{opacity:0} to{opacity:1} }
+    @media (prefers-reduced-motion: reduce){ .btn:hover, .start-btn:hover, .game-card:hover { transform: none } .blob, .blob2, .grid-bg { display:none } }
     /* ======= توحيد حجم كل البطاقات ======= */
     .games-grid .game-card { --scale: 1; }
     .games-grid .game-card:nth-child(n+5) { --scale: 1; }
+
+    /* تحسينات خفيفة إضافية */
+    .game-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    p, .game-info p { text-wrap: pretty; }
   </style>
 </head>
 <body>
+  <!-- Skip to content -->
+  <a class="skip-link" href="#games">تخطَّ إلى الألعاب</a>
+
   <!-- طبقات الخلفية -->
   <div class="grid-bg"></div>
   <div class="blob"></div>
@@ -708,9 +240,13 @@
           <i class="fa-solid fa-link"></i> روابط التواصل
         </a>
         <a class="btn primary" href="#games"><i class="fa-solid fa-gamepad"></i> ابدأ الآن</a>
-        <!-- زر الدعم (بدون href) يفتح النافذة -->
+        <!-- زر الدعم -->
         <button class="btn" type="button" id="supportBtn">
           <i class="fa-solid fa-hand-holding-heart"></i> عشان تدعمنا
+        </button>
+        <!-- زر من نحن -->
+        <button class="btn" type="button" id="aboutBtn">
+          <i class="fa-solid fa-circle-info"></i> من نحن
         </button>
       </div>
     </nav>
@@ -830,6 +366,20 @@
           <a href="squares-game.html" class="start-btn" data-transition>ابدأ اللعبة</a>
         </div>
       </article>
+
+      <!-- 🎯 تحدّي المفردات -->
+      <article class="game-card img-tahadi">
+        <div class="badges">
+          <span class="badge"><i class="fa-brands fa-twitch"></i> تويتش</span>
+          <span class="badge"><i class="fa-solid fa-fist-raised"></i> كيك</span>
+        </div>
+        <div class="game-body">
+          <div class="game-info">
+            <p>اختبر قوة مفرداتك مع الشات في تحديات كلمات سريعة وممتعة!</p>
+          </div>
+          <a href="tahadi-mofradat.html" class="start-btn" data-transition>ابدأ اللعبة</a>
+        </div>
+      </article>
     </div>
   </section>
 
@@ -841,7 +391,7 @@
       <article class="creator-card" id="saleehCard">
         <div class="creator-overlay">
           <div class="creator-avatar-wrap">
-            <img class="creator-avatar" src="https://i.postimg.cc/qqpqNrBX/74508bb339c7d4b80fdc0dc3d41c8898.webp" alt="Saleeh">
+            <img class="creator-avatar" src="https://i.postimg.cc/qqpqNrBX/74508bb339c7d4b80fdc0dc3d41c8898.webp" alt="Saleeh" width="108" height="108" loading="lazy" decoding="async">
             <span class="status-dot" aria-hidden="true"></span>
           </div>
           <div class="creator-name">Saleeh</div>
@@ -859,7 +409,7 @@
         <span class="creator-soon">قريبًا</span>
         <div class="creator-overlay">
           <div class="creator-avatar-wrap">
-            <img class="creator-avatar" src="https://i.postimg.cc/7LF1TF5W/f3b8e631-7b72-4b24-b638-c24b9c22185b-profile-image-70x70.png" alt="naif_z4">
+            <img class="creator-avatar" src="https://i.postimg.cc/7LF1TF5W/f3b8e631-7b72-4b24-b638-c24b9c22185b-profile-image-70x70.png" alt="naif_z4" width="108" height="108" loading="lazy" decoding="async">
             <span class="status-dot status-off" aria-hidden="true"></span>
           </div>
           <div class="creator-name">naif_z4</div>
@@ -929,11 +479,34 @@
     </div>
   </div>
 
+  <!-- نافذة من نحن -->
+  <div id="aboutDialog" class="support-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="aboutTitle" aria-hidden="true">
+    <div class="support-modal">
+      <button class="support-close" type="button" id="aboutClose"><i class="fa-solid fa-xmark"></i></button>
+      <div class="support-icon"><i class="fa-solid fa-users-viewfinder"></i></div>
+      <h3 id="aboutTitle">من نحن</h3>
+      <p style="text-align: start; line-height: 1.8; margin: 0 0 .6rem;">
+        <b>ستريمر توب</b> منصة ألعاب تفاعلية للستريمرز. هدفنا تقديم تجربة بث حيّ 
+        تخلّي متابعيك جزء من اللعب — بأدوات سريعة، واجهة أنيقة، وتكامل مباشر مع الشات (Twitch + Kick).
+      </p>
+      <ul class="list" style="margin-top:.6rem">
+        <li>رفع تفاعل المشاهدين وإضافة تحديات ممتعة على البث.</li>
+        <li>تجربة مستقرة وخفيفة تعتمد على تقنيات ويب حديثة.</li>
+        <li>تخصيص عميق يلائم هوية كل ستريمر.</li>
+      </ul>
+      <p style="text-align:start; margin:.6rem 0 0;">
+        <b>رسالتنا:</b> نبني منصّة عربية قوية تواكب مستوى المنصّات العالمية وتخدم المبدعين.
+        <br><br>
+        <em>من تصميم: ميدو — @medo_dv</em>
+      </p>
+    </div>
+  </div>
+
   <script>
     // سنة التذييل
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // توسيع/طي قسم ستريمر
+    // توسيع/طي قسم ستريمر (الأصلي)
     const head = document.getElementById('streamerHead');
     const body = document.getElementById('streamerBody');
     head.addEventListener('click', () => {
@@ -950,9 +523,7 @@
         const card = btn.closest('.game-card');
         card.style.transform = 'translateY(-6px) scale(var(--scale))';
         card.style.transition = 'transform .35s ease';
-        setTimeout(() => {
-          window.location.href = href;
-        }, 350);
+        setTimeout(() => { window.location.href = href; }, 350);
       });
     });
 
@@ -994,10 +565,7 @@
     const supportClose = document.getElementById('supportClose');
 
     function openSupportDialog(e){
-      if (e) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
+      if (e) { e.preventDefault(); e.stopPropagation(); }
       if (!supportDialog) return;
       supportDialog.classList.add('is-open');
       supportDialog.setAttribute('aria-hidden', 'false');
@@ -1010,31 +578,112 @@
     }
     supportBtn?.addEventListener('click', openSupportDialog);
     supportClose?.addEventListener('click', closeSupportDialog);
-    supportDialog?.addEventListener('click', (e) => {
-      if (e.target === supportDialog) closeSupportDialog();
-    });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeSupportDialog();
-    });
+    supportDialog?.addEventListener('click', (e) => { if (e.target === supportDialog) closeSupportDialog(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSupportDialog(); });
 
     // ===== دخول صالح بدون كلمة مرور =====
-    function openSaleehWithPassword() {
-      window.location.href = "saleeh.html";
-    }
+    function openSaleehWithPassword() { window.location.href = "saleeh.html"; }
     document.getElementById('saleehCard')?.addEventListener('click', function(e){
       const clickedButton = e.target.closest('button');
-      if (!clickedButton) {
-        openSaleehWithPassword();
-      }
+      if (!clickedButton) { openSaleehWithPassword(); }
     });
 
     // (الأزرار كانت للسكرول الأفقي — ما نحتاجها مع الشبكة الجديدة)
     const gamesGrid = document.getElementById('gamesGrid');
     const gamesPrev = document.getElementById('gamesPrev');
     const gamesNext = document.getElementById('gamesNext');
-    gamesGrid?.addEventListener('wheel', function(e) {
-      // لا حاجة لتمرير أفقي الآن
-    }, { passive: true });
+    gamesGrid?.addEventListener('wheel', function(e) { /* لا حاجة لتمرير أفقي الآن */ }, { passive: true });
+
+    // =================== الإضافات المحسّنة ===================
+    // Focus Trap عام للمودالات
+    function trapFocus(modalEl) {
+      const focusable = modalEl.querySelectorAll('a,button,input,textarea,select,[tabindex]:not([tabindex="-1"])');
+      if (!focusable.length) return null;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      function onKey(e){
+        if (e.key !== 'Tab') return;
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault(); last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault(); first.focus();
+        }
+      }
+      modalEl.addEventListener('keydown', onKey);
+      return () => modalEl.removeEventListener('keydown', onKey);
+    }
+
+    // “من نحن” مودال
+    const aboutBtn   = document.getElementById('aboutBtn');
+    const aboutDlg   = document.getElementById('aboutDialog');
+    const aboutClose = document.getElementById('aboutClose');
+    let undoTrapAbout = null;
+    function openAbout(e){
+      if (e){ e.preventDefault(); e.stopPropagation(); }
+      aboutDlg?.classList.add('is-open');
+      aboutDlg?.setAttribute('aria-hidden','false');
+      setTimeout(()=> aboutClose?.focus(), 0);
+      if (aboutDlg) undoTrapAbout = trapFocus(aboutDlg);
+    }
+    function closeAbout(){
+      aboutDlg?.classList.remove('is-open');
+      aboutDlg?.setAttribute('aria-hidden','true');
+      if (undoTrapAbout) undoTrapAbout();
+    }
+    aboutBtn?.addEventListener('click', openAbout);
+    aboutClose?.addEventListener('click', closeAbout);
+    aboutDlg?.addEventListener('click', (e)=>{ if(e.target===aboutDlg) closeAbout(); });
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeAbout(); });
+
+    // ربط Focus Trap مع نافذة الدعم أيضاً
+    const supportDialogEl = document.getElementById('supportDialog');
+    let undoTrapSupport = null;
+    function openSupportDialogPatched(e){
+      openSupportDialog(e); // الدالة الأصلية
+      if (supportDialogEl) undoTrapSupport = trapFocus(supportDialogEl);
+    }
+    function closeSupportDialogPatched(){
+      closeSupportDialog(); // الدالة الأصلية
+      if (undoTrapSupport) undoTrapSupport();
+    }
+    // استبدال المستمعين لمنع تكرار فتح/غلق
+    document.getElementById('supportBtn')?.removeEventListener('click', openSupportDialog);
+    document.getElementById('supportBtn')?.addEventListener('click', openSupportDialogPatched);
+    document.getElementById('supportClose')?.removeEventListener('click', closeSupportDialog);
+    document.getElementById('supportClose')?.addEventListener('click', closeSupportDialogPatched);
+    supportDialogEl?.addEventListener('click', (e)=>{ if(e.target===supportDialogEl) closeSupportDialogPatched(); });
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeSupportDialogPatched(); });
+
+    // حفظ حالة “فئة ستريمر”
+    const accHead = document.getElementById('streamerHead');
+    const accBody = document.getElementById('streamerBody');
+    const ACC_KEY = 'streamer_section_open';
+    if (localStorage.getItem(ACC_KEY) === '1') {
+      accBody.style.display = 'block';
+      accHead.querySelector('.fa-chevron-down').style.transform = 'rotate(180deg)';
+    }
+    accHead?.addEventListener('click', ()=>{
+      const isOpen = accBody.style.display === 'block';
+      localStorage.setItem(ACC_KEY, isOpen ? '0':'1');
+    });
+
+    // دخول ناعم للبطاقات (يحترم reduced-motion)
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!prefersReduced) {
+      const obs = new IntersectionObserver((entries)=>{
+        entries.forEach(entry=>{
+          if (entry.isIntersecting) {
+            entry.target.style.willChange = 'transform, opacity';
+            entry.target.animate([
+              {opacity:0, transform:'translateY(8px)'},
+              {opacity:1, transform:'translateY(0)'}
+            ], {duration:260, easing:'ease-out', fill:'forwards'});
+            obs.unobserve(entry.target);
+          }
+        })
+      }, {threshold: .12});
+      document.querySelectorAll('.game-card').forEach(el=>obs.observe(el));
+    }
   </script>
 </body>
 </html>
