@@ -7,6 +7,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <script src="tmi.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tmi.js@1.8.5/dist/tmi.min.js"></script>
+  <!-- ربط كيك -->
+  <script src="kick_chat.js"></script>
   <style>
     :root{
       /* ألوان ستايل2026 */
@@ -81,26 +83,25 @@
       box-shadow:0 0 6px rgba(34,197,94,0.8);
     }
 
-    /* زر الشرح – نقله لأعلى اليمين */
-   .help-btn{
-  position:absolute;
-  top:16px;
-  left:50%;
-  transform:translateX(-50%);
-  z-index:50;
-  padding:6px 10px;
-  border-radius:999px;
-  background:rgba(15,23,42,0.9);
-  border:1px solid rgba(148,163,184,0.5);
-  font-size:12px;
-  color:var(--text-muted);
-  cursor:pointer;
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  backdrop-filter:blur(10px);
-}
-
+    /* زر الشرح – وسط فوق */
+    .help-btn{
+      position:absolute;
+      top:16px;
+      left:50%;
+      transform:translateX(-50%);
+      z-index:50;
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(15,23,42,0.9);
+      border:1px solid rgba(148,163,184,0.5);
+      font-size:12px;
+      color:var(--text-muted);
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      backdrop-filter:blur(10px);
+    }
 
     main.layout{
       display:grid;
@@ -274,7 +275,6 @@
       color:var(--text-muted);
       text-align:center;
     }
-
     /* منطقة الطاولة واللاعبين */
     .center-panel{
       position:relative;
@@ -423,7 +423,6 @@
       color:var(--text-muted);
       margin-bottom:4px;
     }
-    /* تمت إزالة الأزرار من هنا ونقلها لليمين */
 
     .players-ring{
       position:absolute;
@@ -778,7 +777,6 @@
               <div class="proposed-label">الكلمة المقترحة من اللاعب:</div>
               <div class="proposed-word" id="proposedWordText">—</div>
               <div class="proposed-meta" id="proposedMeta">—</div>
-              <!-- الأزرار شيلناها من هنا -->
             </div>
           </div>
 
@@ -811,7 +809,6 @@
 
         <div class="divider"></div>
 
-        <!-- ✅ هنا مكان الأزرار الجديدة -->
         <div class="decision-box">
           <div class="decision-box-title">إدارة الكلمة المقترحة</div>
           <div class="decision-buttons">
@@ -870,7 +867,7 @@
           </div>
 
           <div class="cards-row" id="currentPlayerCardsRow">
-            <!-- بطاقات اللاعب الحالي تظهر هنا (مرجع بصري للستريمر) -->
+            <!-- بطاقات اللاعب الحالي تظهر هنا -->
           </div>
 
           <div class="status-bar" id="statusBar">
@@ -942,7 +939,6 @@
       </div>
     </div>
   </div>
-
   <script>
     // ===== بيانات اللعبة العامة =====
     const MAX_PLAYERS = 10;
@@ -969,7 +965,7 @@
     let activePlatform = null;      // 'twitch' | 'kick' | null
     let activeChannel = null;
     let twitchClient = null;
-    let kickSocket = null; // مكان لـ Kick لو حبيت تربطه لاحقًا
+    let kickSocket = null;
 
     // عناصر DOM
     const playersListEl = document.getElementById('playersList');
@@ -1380,7 +1376,6 @@
       setStatus(`تمت إضافة اللاعب: ${name}${platform ? ' ('+platform+')' : ''}`, 'ok');
       return p;
     }
-
     // ===== اتصال المنصات =====
     function updateConnectionUI(){
       if(activePlatform && activeChannel){
@@ -1400,7 +1395,13 @@
         twitchClient = null;
       }
       if(kickSocket){
-        try{ kickSocket.close(); }catch(e){}
+        try{
+          if(typeof kickSocket.disconnect === 'function'){
+            kickSocket.disconnect();
+          }else if(typeof kickSocket.close === 'function'){
+            kickSocket.close();
+          }
+        }catch(e){}
         kickSocket = null;
       }
       activePlatform = null;
@@ -1435,21 +1436,46 @@
       });
     }
 
+    // ✅ ربط Kick باستخدام kick_chat.js
     function connectKick(channel){
-      // ملاحظة: هنا تقدر تربط Kick بنفس نظامك في الألعاب الأخرى
       disconnectAll();
       activePlatform = 'kick';
       activeChannel = channel.toLowerCase();
       updateConnectionUI();
-      setStatus('تم تفعيل وضع Kick (أضف كود الويب سوكيت الخاص بك هنا).', 'warn');
+
+      setStatus('جاري الاتصال بـ Kick...', 'info');
+
+      if(typeof KickChat === 'undefined' || !KickChat || typeof KickChat.connect !== 'function'){
+        setStatus('❌ ملف kick_chat.js غير محمل أو KickChat.connect غير متوفر.', 'err');
+        return;
+      }
+
+      try{
+        kickSocket = KickChat.connect(activeChannel, (msg)=>{
+          if(!msg) return;
+          const user = msg.username || msg.user || 'مشارك';
+          const text = (msg.text || msg.message || '').trim();
+          console.log('[KICK MESSAGE]', user, text);
+          handleChatMessage('kick', user, text);
+        });
+        setStatus(`تم الاتصال بـ Kick — قناة: ${activeChannel}`, 'ok');
+      }catch(e){
+        console.error('Kick connect error:', e);
+        setStatus('فشل الاتصال بـ Kick. تأكد من اسم القناة أو أعد تحميل الصفحة.', 'err');
+        disconnectAll();
+      }
     }
 
+    // ✅ هنا نستقبل فقط !دخول و !رقم رقم
     function handleChatMessage(platform, senderName, rawMessage){
-      const text = (rawMessage || '').trim();
-      if(!text.startsWith('!')) return;
+      // تنظيف HTML لو كيك يرسل رسائل فيها <span> وغيره
+      let text = (rawMessage || '').replace(/<[^>]+>/g,'').trim();
 
-      // !دخول
-      if(/^! ?دخول$/i.test(text)){
+      // السماح بـ ! أو ！
+      if(!/^[!！]/.test(text)) return;
+
+      // ===== الأمر الأول: !دخول =====
+      if(/^([!！])\s*دخول$/i.test(text)){
         if(gameStarted){
           setStatus(`@${senderName} حاول يدخل بعد بدء اللعبة — الانضمام مغلق الآن.`, 'err');
           return;
@@ -1461,15 +1487,17 @@
         return;
       }
 
-      // !رقم رقم  → !مكان_الحرف رقم_البطاقة
-      const match = text.match(/^!(\d+)\s+(\d+)\b/);
+      // ===== الأمر الثاني: !رقم رقم (مثل !1 5) =====
+      const match = text.match(/^([!！])(\d+)\s+(\d+)$/);
       if(match){
-        const pos = parseInt(match[1],10);
-        const cardNum = parseInt(match[2],10);
+        const pos = parseInt(match[2],10);
+        const cardNum = parseInt(match[3],10);
         console.log('[MOVE]', platform, senderName, 'pos=',pos,'card=',cardNum);
         processPlayerMoveFromChat(platform, senderName, pos, cardNum);
         return;
       }
+
+      // أي شيء غير كذا يتجاهل
     }
 
     function processPlayerMoveFromChat(platform, senderName, position, cardNum){
@@ -1528,7 +1556,6 @@
       showPendingSuggestion();
       setStatus(`اقتراح جديد من ${p.name}: "${newWord}" — بانتظار قرارك (قبول/رفض).`, 'info');
     }
-
     // ===== أحداث الأزرار =====
     setInitialWordBtn.addEventListener('click',()=>{
       const w = initialWordInput.value.trim();
