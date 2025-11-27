@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>🎯 تحدّي المفردات</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <!-- tmi.js لتويتش -->
   <script src="tmi.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tmi.js@1.8.5/dist/tmi.min.js"></script>
-  <!-- ربط كيك -->
-  <script src="kick_chat.js"></script>
+
   <style>
     :root{
       /* ألوان ستايل2026 */
@@ -114,7 +114,9 @@
       }
       .help-btn{
         top:8px;
+        left:auto;
         right:8px;
+        transform:none;
       }
     }
 
@@ -275,6 +277,7 @@
       color:var(--text-muted);
       text-align:center;
     }
+
     /* منطقة الطاولة واللاعبين */
     .center-panel{
       position:relative;
@@ -292,7 +295,7 @@
       margin:auto;
     }
 
-    /* شريط الحروف أعلى اللاعبين */
+    /* شريط الحروف للّاعب الحالي */
     .player-cards-bar{
       position:absolute;
       top:6%;
@@ -721,7 +724,7 @@
     <header>
       <div class="title-area">
         <h1>🎯 تحدّي المفردات</h1>
-        <p>كل لاعب لحاله،  من ٨ بطاقات، وأول واحد يخلّص بطاقاته يفوز — التحكم كامل بيدك يا ستريمر.</p>
+        <p>كل لاعب لحاله، من ٨ بطاقات، وأول واحد يخلّص بطاقاته يفوز — التحكم كامل بيدك يا ستريمر.</p>
       </div>
       <div class="pill" id="connectionPill">
         <span class="dot"></span>
@@ -939,6 +942,7 @@
       </div>
     </div>
   </div>
+
   <script>
     // ===== بيانات اللعبة العامة =====
     const MAX_PLAYERS = 10;
@@ -1376,6 +1380,7 @@
       setStatus(`تمت إضافة اللاعب: ${name}${platform ? ' ('+platform+')' : ''}`, 'ok');
       return p;
     }
+
     // ===== اتصال المنصات =====
     function updateConnectionUI(){
       if(activePlatform && activeChannel){
@@ -1396,9 +1401,8 @@
       }
       if(kickSocket){
         try{
-          if(typeof kickSocket.disconnect === 'function'){
-            kickSocket.disconnect();
-          }else if(typeof kickSocket.close === 'function'){
+          if(kickSocket._pingInterval) clearInterval(kickSocket._pingInterval);
+          if(typeof kickSocket.close === 'function'){
             kickSocket.close();
           }
         }catch(e){}
@@ -1436,7 +1440,7 @@
       });
     }
 
-    // ✅ ربط Kick باستخدام kick_chat.js
+    // ✅ ربط Kick مباشرة (نفس فكرة حرب الدول) بدون kick_chat.js
     function connectKick(channel){
       disconnectAll();
       activePlatform = 'kick';
@@ -1445,33 +1449,86 @@
 
       setStatus('جاري الاتصال بـ Kick...', 'info');
 
-      if(typeof KickChat === 'undefined' || !KickChat || typeof KickChat.connect !== 'function'){
-        setStatus('❌ ملف kick_chat.js غير محمل أو KickChat.connect غير متوفر.', 'err');
-        return;
-      }
+      fetch(`https://kick.com/api/v2/channels/${activeChannel}`)
+        .then(res=>{
+          if(!res.ok) throw new Error('HTTP '+res.status);
+          return res.json();
+        })
+        .then(data=>{
+          const roomId = data.chatroom && data.chatroom.id;
+          if(!roomId){
+            throw new Error('لم يتم إيجاد غرفة الشات لهذه القناة.');
+          }
 
-      try{
-        kickSocket = KickChat.connect(activeChannel, (msg)=>{
-          if(!msg) return;
-          const user = msg.username || msg.user || 'مشارك';
-          const text = (msg.text || msg.message || '').trim();
-          console.log('[KICK MESSAGE]', user, text);
-          handleChatMessage('kick', user, text);
+          const wsUrl = "wss://ws-us2.pusher.com/app/32cbd69e4b950bf97679?protocol=7&client=js&version=8.4.0-rc2";
+          const socket = new WebSocket(wsUrl);
+          kickSocket = socket;
+
+          socket.onopen = ()=>{
+            const subPayload = {
+              event:"pusher:subscribe",
+              data:{
+                auth:"",
+                channel:`chatrooms.${roomId}.v2`
+              }
+            };
+            socket.send(JSON.stringify(subPayload));
+
+            socket._pingInterval = setInterval(()=>{
+              if(socket.readyState === WebSocket.OPEN){
+                socket.send(JSON.stringify({event:"pusher:ping",data:{}}));
+              }
+            },12000);
+
+            setStatus(`تم الاتصال بـ Kick — قناة: ${activeChannel}`, 'ok');
+            updateConnectionUI();
+          };
+
+          socket.onmessage = (event)=>{
+            try{
+              const payload = JSON.parse(event.data);
+              if(payload.event === "App\\Events\\ChatMessageEvent"){
+                const d = JSON.parse(payload.data);
+                const user = (d.sender && d.sender.username) || 'مشارك';
+                const raw = (d.content || '').toString();
+                const cleaned = raw.replace(/<[^>]+>/g,'').trim();
+                if(!cleaned) return;
+                console.log('[KICK MESSAGE]', user, cleaned);
+                handleChatMessage('kick', user, cleaned);
+              }
+            }catch(err){
+              console.error('Kick message error:', err);
+            }
+          };
+
+          socket.onerror = (err)=>{
+            console.error('Kick socket error:', err);
+            setStatus('حدث خطأ في اتصال Kick.', 'err');
+          };
+
+          socket.onclose = ()=>{
+            if(socket._pingInterval) clearInterval(socket._pingInterval);
+            if(activePlatform === 'kick'){
+              setStatus('تم إغلاق اتصال Kick.', 'err');
+              activePlatform = null;
+              activeChannel = null;
+              updateConnectionUI();
+            }
+          };
+        })
+        .catch(err=>{
+          console.error('Kick connect error:', err);
+          setStatus('فشل الاتصال بـ Kick. تأكد من اسم القناة أو حاول لاحقًا.', 'err');
+          disconnectAll();
         });
-        setStatus(`تم الاتصال بـ Kick — قناة: ${activeChannel}`, 'ok');
-      }catch(e){
-        console.error('Kick connect error:', e);
-        setStatus('فشل الاتصال بـ Kick. تأكد من اسم القناة أو أعد تحميل الصفحة.', 'err');
-        disconnectAll();
-      }
     }
 
-    // ✅ هنا نستقبل فقط !دخول و !رقم رقم
+    // ✅ استقبال الأوامر من Twitch و Kick
     function handleChatMessage(platform, senderName, rawMessage){
       // تنظيف HTML لو كيك يرسل رسائل فيها <span> وغيره
       let text = (rawMessage || '').replace(/<[^>]+>/g,'').trim();
 
-      // السماح بـ ! أو ！
+      // السماح بـ ! أو ！ (بعض الكيبوردات)
       if(!/^[!！]/.test(text)) return;
 
       // ===== الأمر الأول: !دخول =====
@@ -1556,6 +1613,7 @@
       showPendingSuggestion();
       setStatus(`اقتراح جديد من ${p.name}: "${newWord}" — بانتظار قرارك (قبول/رفض).`, 'info');
     }
+
     // ===== أحداث الأزرار =====
     setInitialWordBtn.addEventListener('click',()=>{
       const w = initialWordInput.value.trim();
