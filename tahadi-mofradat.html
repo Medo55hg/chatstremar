@@ -83,7 +83,7 @@
       box-shadow:0 0 6px rgba(34,197,94,0.8);
     }
 
-    /* زر الشرح – وسط فوق */
+    /* زر الشرح وسط فوق */
     .help-btn{
       position:absolute;
       top:16px;
@@ -102,22 +102,19 @@
       gap:6px;
       backdrop-filter:blur(10px);
     }
-
-    main.layout{
-      display:grid;
-      grid-template-columns: minmax(260px,290px) minmax(0,1fr) minmax(280px,320px);
-      gap:14px;
-    }
-    @media(max-width:1100px){
-      main.layout{
-        grid-template-columns:1fr;
-      }
+    @media(max-width:900px){
       .help-btn{
         top:8px;
         left:auto;
         right:8px;
         transform:none;
       }
+    }
+
+    main.layout{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
     }
 
     .panel{
@@ -128,20 +125,16 @@
       box-shadow:0 18px 40px rgba(0,0,0,0.5);
       backdrop-filter:blur(18px);
     }
-    .panel h2{
+
+    h2{
       font-size:16px;
       margin-bottom:8px;
       display:flex;
       align-items:center;
       gap:8px;
     }
-    .panel h2 span.icon{
-      font-size:17px;
-    }
-    .panel small{
-      font-size:11px;
-      color:var(--text-muted);
-    }
+    h2 span.icon{font-size:17px}
+    small{font-size:11px;color:var(--text-muted);}
 
     .field{
       margin-top:10px;
@@ -150,9 +143,7 @@
       gap:4px;
       font-size:13px;
     }
-    .field label{
-      color:var(--text-muted);
-    }
+    .field label{color:var(--text-muted);}
     .field input[type="text"],
     .field input[type="number"],
     .field select{
@@ -170,17 +161,6 @@
     .field select:focus{
       border-color:var(--accent);
       box-shadow:0 0 0 1px rgba(248,113,113,0.4);
-    }
-
-    .field-inline{
-      display:flex;
-      gap:6px;
-      align-items:flex-end;
-      margin-top:10px;
-    }
-    .field-inline .field{
-      flex:1;
-      margin-top:0;
     }
 
     button{
@@ -209,143 +189,197 @@
       color:var(--text-muted);
       border:1px solid rgba(148,163,184,0.35);
     }
-    button.soft:hover{
-      background:rgba(30,41,59,0.9);
-    }
+    button.soft:hover{background:rgba(30,41,59,0.9);}
     button.danger{
       background:rgba(248,113,113,0.1);
       color:var(--bad);
       border:1px solid rgba(248,113,113,0.35);
     }
-    button.danger:hover{
-      background:rgba(248,113,113,0.18);
-    }
+    button.danger:hover{background:rgba(248,113,113,0.18);}
+    button.small{padding:5px 10px;font-size:12px;}
     button:disabled{
-      opacity:.5;
-      cursor:not-allowed;
-      transform:none;
-      box-shadow:none;
+      opacity:.5;cursor:not-allowed;transform:none;box-shadow:none;
     }
-    button.small{
-      padding:5px 10px;
-      font-size:12px;
+
+    .divider{
+      margin:10px 0;
+      border-top:1px dashed rgba(55,65,81,0.8);
     }
 
     .hint{
-      margin-top:8px;
+      margin-top:6px;
       font-size:11px;
       color:var(--text-muted);
       line-height:1.5;
     }
 
-    .players-list{
-      margin-top:10px;
-      border-radius:12px;
-      border:1px dashed rgba(148,163,184,0.45);
-      background:rgba(15,23,42,0.7);
-      max-height:260px;
-      overflow:auto;
+    /* نخفي قائمة اللاعبين النصية (المنطق فقط يبقى) */
+    .players-list{display:none;}
+
+    /* لوحة التحكم (فوق مربع اللعبة – خارجها) */
+    .control-panel{
+      max-width:1100px;
+      margin:0 auto;
     }
-    .players-list-item{
+
+    /* إعداد وقت الدور + أزرار التحكم */
+    .control-row{
       display:flex;
-      align-items:center;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:flex-end;
+    }
+
+    /* بطاقات اللاعب */
+    .cards-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      margin-top:6px;
+      min-height:40px;
+    }
+    .card{
+  min-width:44px;
+  padding:8px 12px;
+  border-radius:14px;
+  background:radial-gradient(circle at top,#1f2937 0,transparent 60%),
+             linear-gradient(145deg,rgba(15,23,42,0.96),rgba(11,15,25,0.98));
+  border:1px solid rgba(148,163,184,0.7);
+  text-align:center;
+  font-size:22px;       /* ← خط البطاقات صار أكبر */
+  font-weight:900;      /* ← سماكة أكبر */
+  user-select:none;
+}
+.card.star{
+  border-color:var(--warn);
+  box-shadow:0 0 14px rgba(250,204,21,0.55);
+}
+
+    .card.star{
+      border-color:var(--warn);
+      box-shadow:0 0 12px rgba(250,204,21,0.5);
+    }
+
+    .current-row-header{
+      display:flex;
       justify-content:space-between;
-      padding:6px 9px;
-      border-bottom:1px solid rgba(30,41,59,0.8);
-      font-size:13px;
+      align-items:center;
+      font-size:12px;
+      color:var(--text-muted);
+      margin-bottom:4px;
     }
-    .players-list-item:last-child{
-      border-bottom:none;
-    }
-    .players-list-item span.name{
-      font-weight:600;
-    }
-    .players-list-item span.badge{
+    .current-row-header span.name{font-weight:700;color:#e5e7eb;}
+    .current-row-header span.cards{font-size:11px;}
+
+    .status-bar{
+      margin-top:6px;
       font-size:11px;
+      color:var(--text-muted);
+      min-height:16px;
+    }
+    .status-bar span.ok{color:var(--good);}
+    .status-bar span.err{color:var(--bad);}
+
+    .label-badge{
+      margin-top:6px;
       padding:2px 7px;
       border-radius:999px;
       background:rgba(15,23,42,0.9);
       border:1px solid rgba(148,163,184,0.5);
+      font-size:11px;
       color:var(--text-muted);
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
     }
-    .players-list-item span.badge strong{
-      color:var(--accent);
+    .label-badge strong{color:#e5e7eb;}
+
+    /* الكلمة + التايمر + القرار داخل مربع اللعبة */
+    .in-game-header{
+      width:100%;
+      max-width:650px;
+      margin:0 auto 8px auto;
     }
-    .players-list-empty{
-      padding:8px 9px;
+    .top-control-row{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .badge-panel{
+      flex:1;
+      min-width:220px;
+      padding:8px 10px;
+      border-radius:14px;
+      background:rgba(15,23,42,0.96);
+      border:1px solid rgba(148,163,184,0.55);
+      box-shadow:0 10px 25px rgba(0,0,0,0.6);
+      font-size:11px;
+      color:var(--text-muted);
+      backdrop-filter:blur(12px);
+    }
+    .badge-panel-title{
       font-size:12px;
-      color:var(--text-muted);
-      text-align:center;
+      font-weight:700;
+      color:#e5e7eb;
+      margin-bottom:4px;
+      display:flex;
+      align-items:center;
+      gap:4px;
+    }
+    .badge-panel-title span.icon{font-size:13px;}
+
+    .badge-panel .field{margin-top:6px;}
+    .badge-panel .field-inline{
+      display:flex;
+      gap:6px;
+      align-items:flex-end;
+      margin-top:4px;
+    }
+    .badge-panel .field-inline .field{flex:1;margin-top:0;}
+    .badge-panel .decision-buttons{
+      display:flex;
+      gap:6px;
+      margin-top:6px;
+    }
+    .badge-panel .decision-buttons button{
+      flex:1;
+      font-weight:700;
     }
 
-    /* منطقة الطاولة واللاعبين */
-    .center-panel{
-      position:relative;
-      min-height:480px;
+    .timer-box{
+      width:120px;
+      height:120px;
+      border-radius:50%;
+      border:3px solid var(--line);
+      background:rgba(15,23,42,0.96);
       display:flex;
       align-items:center;
       justify-content:center;
-      overflow:hidden;
+      flex-shrink:0;
+      box-shadow:0 10px 30px rgba(0,0,0,0.7);
+    }
+    .timer-box span{
+      font-size:50px;
+      font-weight:800;
+      color:var(--text-muted);
+    }
+
+    /* مربع اللعبة */
+    .center-panel{
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      align-items:center;
     }
     .table{
       position:relative;
       width:100%;
-      max-width:620px;
+      max-width:650px;
       aspect-ratio:1/1;
-      margin:auto;
-    }
-
-    /* شريط الحروف للّاعب الحالي */
-    .player-cards-bar{
-      position:absolute;
-      top:6%;
-      left:50%;
-      transform:translateX(-50%);
-      max-width:100%;
-      padding:4px 8px;
-      border-radius:999px;
-      background:rgba(15,23,42,0.85);
-      border:1px solid rgba(148,163,184,0.45);
-      display:flex;
-      justify-content:center;
-      align-items:flex-end;
-      gap:8px;
-      box-shadow:0 10px 24px rgba(0,0,0,0.6);
-      backdrop-filter:blur(12px);
-    }
-    .player-cards-bar.hidden{
-      display:none;
-    }
-    .card-bubble{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:2px;
-      min-width:32px;
-    }
-    .card-bubble-index{
-      font-size:10px;
-      color:var(--text-muted);
-      line-height:1;
-    }
-    .card-bubble-circle{
-      width:38px;
-      height:38px;
-      border-radius:50%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:20px;
-      font-weight:800;
-      background:radial-gradient(circle at top,#1f2937 0,transparent 60%),
-                 linear-gradient(145deg,rgba(15,23,42,0.96),rgba(11,15,25,0.98));
-      border:1px solid rgba(148,163,184,0.7);
-      box-shadow:0 8px 18px rgba(0,0,0,0.7);
-    }
-    .card-bubble-circle.star{
-      border-color:var(--warn);
-      box-shadow:0 0 12px rgba(250,204,21,0.6);
-      color:#fde68a;
+      margin:0 auto;
     }
 
     .center-word-card{
@@ -466,9 +500,7 @@
       color:var(--text-muted);
       font-size:10px;
     }
-    .player-node-cards-count strong{
-      color:var(--accent);
-    }
+    .player-node-cards-count strong{color:var(--accent);}
     .player-node-status{
       font-size:10px;
       color:var(--text-muted);
@@ -478,9 +510,7 @@
       box-shadow:0 0 0 1px rgba(248,113,113,0.7),0 14px 30px rgba(248,113,113,0.45);
       background:linear-gradient(135deg,rgba(15,23,42,0.98),rgba(30,64,175,0.95));
     }
-    .player-node.active .player-node-name{
-      color:#fff;
-    }
+    .player-node.active .player-node-name{color:#fff;}
     .player-node.winner{
       border-color:var(--good);
       box-shadow:0 0 0 1px rgba(34,197,94,0.8),0 12px 30px rgba(22,163,74,0.5);
@@ -491,103 +521,6 @@
       font-weight:600;
     }
 
-    /* لوحة اللاعب الحالي */
-    .current-player-panel{
-      margin-top:10px;
-      padding:10px;
-      border-radius:12px;
-      background:rgba(15,23,42,0.9);
-      border:1px solid rgba(148,163,184,0.45);
-    }
-    .current-player-header{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      font-size:13px;
-      margin-bottom:6px;
-    }
-    .current-player-header span.name{
-      font-weight:700;
-    }
-    .current-player-header span.cards{
-      font-size:11px;
-      color:var(--text-muted);
-    }
-    .cards-row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:6px;
-      margin-bottom:8px;
-      min-height:40px;
-    }
-    .card{
-      min-width:32px;
-      padding:5px 7px;
-      border-radius:10px;
-      background:radial-gradient(circle at top,#1f2937 0,transparent 60%),
-                 linear-gradient(145deg,rgba(15,23,42,0.96),rgba(11,15,25,0.98));
-      border:1px solid rgba(148,163,184,0.7);
-      text-align:center;
-      font-size:14px;
-      font-weight:800;
-      user-select:none;
-      transition:transform .08s, box-shadow .12s, border-color .12s, background .12s;
-    }
-    .card.star{
-      border-color:var(--warn);
-      box-shadow:0 0 12px rgba(250,204,21,0.5);
-    }
-    .status-bar{
-      margin-top:8px;
-      font-size:11px;
-      color:var(--text-muted);
-      min-height:16px;
-    }
-    .status-bar span.ok{
-      color:var(--good);
-    }
-    .status-bar span.err{
-      color:var(--bad);
-    }
-
-    .control-group{
-      margin-top:10px;
-      padding:8px 9px;
-      border-radius:12px;
-      background:rgba(15,23,42,0.85);
-      border:1px solid rgba(30,64,175,0.6);
-    }
-    .control-group-title{
-      font-size:12px;
-      color:var(--text-muted);
-      margin-bottom:4px;
-    }
-    .control-buttons{
-      display:flex;
-      flex-wrap:wrap;
-      gap:6px;
-    }
-
-    .label-badge{
-      padding:2px 7px;
-      border-radius:999px;
-      background:rgba(15,23,42,0.9);
-      border:1px solid rgba(148,163,184,0.5);
-      font-size:11px;
-      color:var(--text-muted);
-      display:inline-flex;
-      align-items:center;
-      gap:4px;
-    }
-    .label-badge strong{
-      color:#e5e7eb;
-    }
-
-    .divider{
-      margin:10px 0;
-      border-top:1px dashed rgba(55,65,81,0.8);
-    }
-
     .winner-banner{
       margin-top:8px;
       padding:7px 9px;
@@ -596,18 +529,24 @@
       color:#e5f9ee;
       font-size:13px;
       display:none;
+      max-width:650px;
+      margin-inline:auto;
+      text-align:center;
     }
-    .winner-banner span.name{
-      font-weight:800;
-    }
+    .winner-banner span.name{font-weight:800;}
 
+    /* لوحة الاتصال أسفل الصفحة */
+    .bottom-panel h2{margin-bottom:6px;}
     .connection-row{
       display:flex;
       gap:6px;
       align-items:flex-end;
+      flex-wrap:wrap;
     }
     .connection-row .field{
       margin-top:0;
+      min-width:120px;
+      flex:1;
     }
     .connection-status{
       margin-top:6px;
@@ -619,32 +558,7 @@
       font-weight:600;
     }
 
-    /* صندوق قرار القبول/الرفض – هايلايت */
-    .decision-box{
-      margin-top:10px;
-      padding:10px;
-      border-radius:12px;
-      background:rgba(40,45,60,0.85);
-      border:1px solid rgba(255,51,51,0.7);
-      box-shadow:0 10px 28px rgba(255,51,51,0.35);
-    }
-    .decision-box-title{
-      font-size:13px;
-      font-weight:700;
-      color:var(--accent);
-      margin-bottom:6px;
-      text-align:center;
-    }
-    .decision-buttons{
-      display:flex;
-      gap:8px;
-    }
-    .decision-buttons button{
-      flex:1;
-      font-weight:700;
-    }
-
-    /* نافذة شرح اللعبة */
+    /* نافذة الشرح */
     .help-modal-backdrop{
       position:fixed;
       inset:0;
@@ -654,9 +568,7 @@
       justify-content:center;
       z-index:100;
     }
-    .help-modal-backdrop.active{
-      display:flex;
-    }
+    .help-modal-backdrop.active{display:flex;}
     .help-modal{
       max-width:520px;
       width:100%;
@@ -733,42 +645,90 @@
     </header>
 
     <main class="layout">
-      <!-- لوحة إعداد اللاعبين والكلمة الأولى -->
-      <section class="panel">
-        <h2><span class="icon">👥</span> إعداد اللاعبين</h2>
-        <small>اللاعبين يدخلون من التشات عن طريق الأمر <strong>!دخول</strong> (لا يوجد إضافة يدوية في هذه النسخة).</small>
-
-        <div class="players-list" id="playersList"></div>
+      <!-- لوحة التحكم (فوق – خارج مربع اللعبة) -->
+      <section class="panel control-panel">
+        <h2><span class="icon">🎛️</span> لوحة التحكم</h2>
+        <small>من هنا تتحكم بوقت الدور وبداية اللعبة وترتيب الأدوار.</small>
 
         <div class="divider"></div>
 
-        <h2 style="margin-top:4px;"><span class="icon">📝</span> الكلمة الأساسية</h2>
-        <small>هذه الكلمة تظهر في وسط الطاولة كبداية للتحدي.</small>
-
-        <div class="field-inline">
-          <div class="field">
-            <label for="initialWordInput">الكلمة الأولى</label>
-            <input id="initialWordInput" type="text" placeholder="مثال: موز" />
+        <div class="control-row">
+          <div style="flex:1;min-width:200px;">
+            <div class="field">
+              <label for="turnSecondsInput">مدة الدور (ثواني)</label>
+              <input id="turnSecondsInput" type="number" min="5" max="300" value="30" />
+            </div>
+            <button class="soft small" id="updateTurnSecondsBtn" style="margin-top:6px;">تحديث الوقت</button>
+            <div class="hint">
+              أي دور جديد سيستخدم هذه القيمة. الافتراضي <strong>30 ثانية</strong>.
+            </div>
           </div>
-          <button class="soft small" id="setInitialWordBtn">تعيين</button>
-        </div>
 
-        <div class="hint">
-          بعد البدء، الكلمة تتغير حسب الكلمات اللي تقبلها أنت.  
-          اللاعبين يستبدلون حرف واحد فقط باستخدام الصيغة: <strong>!مكان_الحرف رقم_البطاقة</strong> (مثال: <strong>!1 5</strong>).
+          <div style="flex:1.4;min-width:260px;">
+            <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px;">التحكم السريع بالدور</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;">
+              <button class="primary small" id="startGameBtn">🚀 بدء اللعبة وتوزيع البطاقات</button>
+              <button class="soft small" id="nextPlayerBtn">⏭️ اللاعب التالي</button>
+              <button class="soft small" id="restartTurnBtn">🔁 إعادة المؤقت لنفس اللاعب</button>
+              <button class="danger small" id="stopTimerBtn">⏹️ إيقاف المؤقت</button>
+            </div>
+            <div class="hint">
+              اللاعبين يدخلون من التشات بـ <strong>!دخول</strong> قبل البدء. بعد البدء يستخدمون:
+              <strong>!مكان_الحرف رقم_البطاقة</strong> (مثال: <strong>!1 5</strong>).
+            </div>
+          </div>
         </div>
       </section>
 
-      <!-- منطقة الطاولة واللاعبين -->
+      <!-- مربع اللعبة في المنتصف -->
       <section class="panel center-panel">
-        <div class="table">
-          <!-- شريط الحروف للّاعب الحالي -->
-          <div class="player-cards-bar hidden" id="playerCardsBar"></div>
+        <!-- الكلمة + التايمر + القرار داخل مربع اللعبة -->
+        <div class="in-game-header">
+          <div class="top-control-row">
+            <!-- الكلمة الأساسية يمين -->
+            <div class="badge-panel">
+              <div class="badge-panel-title">
+                <span class="icon">📝</span>
+                <span>الكلمة الأساسية</span>
+              </div>
+              <div class="field-inline">
+                <div class="field">
+                  <label for="initialWordInput">الكلمة الأولى</label>
+                  <input id="initialWordInput" type="text" placeholder="مثال: موز" />
+                </div>
+                <button class="soft small" id="setInitialWordBtn">تعيين</button>
+              </div>
+            </div>
 
+            <!-- التايمر في الوسط -->
+            <div class="timer-box">
+              <span id="bigTimerValue">--</span>
+            </div>
+
+            <!-- قرار الكلمة المقترحة يسار -->
+            <div class="badge-panel">
+              <div class="badge-panel-title">
+                <span class="icon">✅</span>
+                <span>قرار الكلمة المقترحة</span>
+              </div>
+              <div class="decision-buttons">
+                <button class="primary small" id="centerAcceptBtn">قبول</button>
+                <button class="danger small" id="centerRejectBtn">رفض</button>
+              </div>
+              <div class="hint" style="font-size:10px;">
+                الكلمة المقترحة تظهر في وسط الطاولة، ومن هنا تقرر قبولها أو رفضها.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider" style="max-width:650px;width:100%;margin:10px auto;"></div>
+
+        <div class="table">
           <div class="center-word-card">
             <div class="center-word-label">الكلمة الحالية</div>
             <div class="center-word" id="centerWord">— — —</div>
-            <div class="center-word-sub">تتعيّن من لوحة الإعداد على اليسار قبل بدء اللعبة</div>
+            <div class="center-word-sub">تتعيّن من الكلمة الأساسية قبل بدء اللعبة</div>
 
             <div class="turn-indicator">
               <span>الدور الحالي:</span>
@@ -785,14 +745,43 @@
 
           <div class="players-ring" id="playersRing"></div>
         </div>
+
+        <!-- شريط الفائز -->
+        <div class="winner-banner" id="winnerBanner">
+          الفائز في هذا التحدي هو: <span class="name" id="winnerName">—</span> 🎉
+        </div>
+
+        <!-- خط فاصل بين الطاولة وحروف اللاعب -->
+        <div class="divider" style="max-width:650px;width:100%;margin:10px auto;"></div>
+
+        <!-- معلومات اللاعب الحالي + الحروف داخل مربع اللعبة -->
+        <div style="max-width:650px;width:100%;margin:0 auto;">
+          <div class="current-row-header">
+            <span class="name" id="currentPlayerName">لا يوجد لاعب نشط</span>
+            <span class="cards" id="currentPlayerCardsInfo">— بطاقات</span>
+          </div>
+          <div class="cards-row" id="currentPlayerCardsRow">
+            <!-- بطاقات اللاعب الحالي -->
+          </div>
+          <div class="status-bar" id="statusBar">
+            أضِف اللاعبين من التشات ثم عيّن الكلمة الأولى واضغط "بدء اللعبة".
+          </div>
+          <div class="label-badge">
+            اللاعب الحالي:
+            <strong id="currentPlayerLabel">لا يوجد</strong>
+          </div>
+        </div>
+
+        <!-- قائمة اللاعبين النصية (منطق فقط) -->
+        <div id="playersList" class="players-list"></div>
       </section>
 
-      <!-- لوحة التحكم + الاتصال + يد اللاعب الحالي -->
-      <section class="panel">
+      <!-- لوحة الاتصال أسفل الصفحة -->
+      <section class="panel bottom-panel">
         <h2><span class="icon">🔌</span> لوحة الاتصال</h2>
-        <small>اختر المنصة واربط الشات. الأوامر المدعومة: <strong>!دخول</strong> و <strong>!مكان_الحرف رقم_البطاقة</strong> (مثال: <strong>!1 5</strong>).</small>
+        <small>اختر المنصة واربط الشات. الأوامر المدعومة: <strong>!دخول</strong> و <strong>!مكان_الحرف رقم_البطاقة</strong>.</small>
 
-        <div class="connection-row">
+        <div class="connection-row" style="margin-top:8px;">
           <div class="field">
             <label for="platformSelect">المنصة</label>
             <select id="platformSelect">
@@ -808,78 +797,6 @@
         </div>
         <div class="connection-status" id="connectionStatus">
           غير متصل بأي منصة حاليًا.
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="decision-box">
-          <div class="decision-box-title">إدارة الكلمة المقترحة</div>
-          <div class="decision-buttons">
-            <button class="primary small" id="centerAcceptBtn">✅ قبول الكلمة</button>
-            <button class="danger small" id="centerRejectBtn">❌ رفض الكلمة</button>
-          </div>
-          <div class="hint">
-            من هنا فقط يتم قبول أو رفض أي كلمة مقترحة من اللاعبين.
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <h2><span class="icon">🎛️</span> لوحة التحكم</h2>
-        <small>من هنا تتحكم بالوقت وبداية اللعبة وترتيب الأدوار.</small>
-
-        <div class="control-group">
-          <div class="control-group-title">وقت الدور</div>
-          <div class="field-inline">
-            <div class="field">
-              <label for="turnSecondsInput">مدة الدور (ثواني)</label>
-              <input id="turnSecondsInput" type="number" min="5" max="300" value="30" />
-            </div>
-            <button class="soft small" id="updateTurnSecondsBtn">تحديث الوقت</button>
-          </div>
-          <div class="hint">
-            أي دور جديد سيستخدم القيمة الحالية. الافتراضي <strong>30 ثانية</strong>.
-          </div>
-        </div>
-
-        <div class="control-group" style="margin-top:8px;">
-          <div class="control-group-title">التحكم السريع بالدور</div>
-          <div class="control-buttons">
-            <button class="primary small" id="startGameBtn">🚀 بدء اللعبة وتوزيع البطاقات</button>
-            <button class="soft small" id="nextPlayerBtn">⏭️ اللاعب التالي</button>
-            <button class="soft small" id="restartTurnBtn">🔁 إعادة المؤقت لنفس اللاعب</button>
-            <button class="danger small" id="stopTimerBtn">⏹️ إيقاف المؤقت</button>
-          </div>
-          <div class="hint">
-            اللاعبين يدخلون من التشات بـ <strong>!دخول</strong> قبل البدء.  
-            بعد البدء، يستخدمون: <strong>!مكان_الحرف رقم_البطاقة</strong> (مثال: <strong>!1 5</strong>).
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="label-badge">
-          اللاعب الحالي:
-          <strong id="currentPlayerLabel">لا يوجد</strong>
-        </div>
-
-        <div class="current-player-panel">
-          <div class="current-player-header">
-            <span class="name" id="currentPlayerName">لا يوجد لاعب نشط</span>
-            <span class="cards" id="currentPlayerCardsInfo">— بطاقات</span>
-          </div>
-
-          <div class="cards-row" id="currentPlayerCardsRow">
-            <!-- بطاقات اللاعب الحالي تظهر هنا -->
-          </div>
-
-          <div class="status-bar" id="statusBar">
-            أضِف اللاعبين من التشات ثم عيّن الكلمة الأولى واضغط "بدء اللعبة".
-          </div>
-        </div>
-
-        <div class="winner-banner" id="winnerBanner">
-          الفائز في هذا التحدي هو: <span class="name" id="winnerName">—</span> 🎉
         </div>
       </section>
     </main>
@@ -906,30 +823,28 @@
         <ul>
           <li>كل لاعب يأخذ <strong>٨ بطاقات</strong> حروف عربية عشوائية.</li>
           <li>بعض البطاقات قد تكون نجمة <strong>⭐</strong> وتمثل أي حرف.</li>
-          <li>الحروف تُعرض في صف واحد أعلى الطاولة للّاعب الذي عليه الدور.</li>
         </ul>
 
         <h4>📝 الكلمة الأساسية</h4>
         <ul>
-          <li>الستريمر يضع الكلمة الأولى يدويًا من لوحة الإعداد.</li>
-          <li>هذه الكلمة تظهر في منتصف الطاولة، ويتم تعديلها خلال اللعب.</li>
+          <li>الستريمر يضع الكلمة الأولى من داخل مربع اللعبة (يمين التايمر).</li>
+          <li>هذه الكلمة تظهر في منتصف الطاولة ويتم تعديلها خلال اللعب.</li>
         </ul>
 
         <h4>⌨️ طريقة اللعب من التشات</h4>
         <p>عندما يكون دور اللاعب، يستخدم الصيغة:</p>
         <p><code>!مكان_الحرف رقم_البطاقة</code></p>
-        <p>مثال:</p>
         <ul>
-          <li><code>!1 5</code> → استبدال <strong>الحرف الأول</strong> من الكلمة الحالية بالحرف الموجود في <strong>البطاقة رقم 5</strong> من يد اللاعب.</li>
+          <li><code>!1 5</code> → استبدال <strong>الحرف الأول</strong> من الكلمة الحالية بالحرف الموجود في <strong>البطاقة رقم 5</strong>.</li>
         </ul>
 
         <h4>✅ / ❌ قبول ورفض الكلمة</h4>
         <ul>
           <li>عندما يرسل اللاعب أمره، يتم اقتراح الكلمة الجديدة في وسط الشاشة تحت الكلمة الحالية.</li>
-          <li>الستريمر يقرر من لوحة التحكم في اليمين:
+          <li>الستريمر يقرر من مربع "قرار الكلمة المقترحة" يسار التايمر:
             <ul>
-              <li><strong>✅ قبول الكلمة</strong> → تثبيت الكلمة الجديدة + حذف البطاقة + الانتقال للّاعب التالي.</li>
-              <li><strong>❌ رفض الكلمة</strong> → تجاهل التغيير والانتقال للّاعب التالي.</li>
+              <li><strong>قبول</strong> → تثبيت الكلمة الجديدة + حذف البطاقة + الانتقال للّاعب التالي.</li>
+              <li><strong>رفض</strong> → تجاهل التغيير والانتقال للّاعب التالي.</li>
             </ul>
           </li>
         </ul>
@@ -937,7 +852,7 @@
         <h4>🏆 الفوز</h4>
         <ul>
           <li>أول لاعب يخلّص كل بطاقاته يصبح الفائز.</li>
-          <li>يظهر شريط فوز أخضر باسم اللاعب في يمين الشاشة.</li>
+          <li>يظهر شريط فوز أخضر باسم اللاعب تحت مربع اللعبة.</li>
         </ul>
       </div>
     </div>
@@ -1012,11 +927,11 @@
     const centerAcceptBtn = document.getElementById('centerAcceptBtn');
     const centerRejectBtn = document.getElementById('centerRejectBtn');
 
-    const playerCardsBarEl = document.getElementById('playerCardsBar');
-
     const helpBtn = document.getElementById('helpBtn');
     const helpModalBackdrop = document.getElementById('helpModalBackdrop');
     const helpModalClose = document.getElementById('helpModalClose');
+
+    const bigTimerValueEl = document.getElementById('bigTimerValue');
 
     // ===== وظائف مساعدة عامة =====
     function setStatus(message,type='info'){
@@ -1051,10 +966,10 @@
     }
 
     function renderPlayersList(){
+      if(!playersListEl) return;
       playersListEl.innerHTML = '';
       if(players.length === 0){
         const empty = document.createElement('div');
-        empty.className = 'players-list-empty';
         empty.textContent = 'لا يوجد لاعبين حتى الآن. استخدم !دخول من التشات.';
         playersListEl.appendChild(empty);
         return;
@@ -1062,17 +977,11 @@
 
       players.forEach((p,idx)=>{
         const item = document.createElement('div');
-        item.className = 'players-list-item';
-
         const nameSpan = document.createElement('span');
-        nameSpan.className = 'name';
         nameSpan.textContent = `${idx+1}. ${p.name} ${p.platform ? '('+p.platform+')' : ''}`;
-
         const badge = document.createElement('span');
-        badge.className = 'badge';
         const cardsCount = p.cards ? p.cards.length : 0;
-        badge.innerHTML = `بطاقات: <strong>${cardsCount}</strong> / ${CARDS_PER_PLAYER}`;
-
+        badge.innerHTML = ` بطاقات: <strong>${cardsCount}</strong> / ${CARDS_PER_PLAYER}`;
         item.appendChild(nameSpan);
         item.appendChild(badge);
         playersListEl.appendChild(item);
@@ -1085,13 +994,13 @@
       if(n === 0) return;
 
       const centerX = 50;
-      const centerY = 55;
-      const radius = 35;
+      const centerY = 50;
+      const radius = 38;
 
       for(let i=0;i<n;i++){
-        const angle = (2 * Math.PI * i / n) - Math.PI/2;
-        const x = centerX + radius * Math.cos(angle);
-        const y = centerY + radius * Math.sin(angle);
+        const angle = (2*Math.PI*i/n) - Math.PI/2;
+        const x = centerX + radius*Math.cos(angle);
+        const y = centerY + radius*Math.sin(angle);
 
         const p = players[i];
         const node = document.createElement('div');
@@ -1136,14 +1045,13 @@
       }
     }
 
-    function renderCurrentPlayerPanel(){
+    function renderCurrentPlayer(){
       currentPlayerCardsRowEl.innerHTML = '';
 
       if(currentPlayerIndex < 0 || currentPlayerIndex >= players.length){
         currentPlayerLabelEl.textContent = 'لا يوجد';
         currentPlayerNameEl.textContent = 'لا يوجد لاعب نشط';
         currentPlayerCardsInfoEl.textContent = '— بطاقات';
-        renderPlayerCardsBar();
         return;
       }
 
@@ -1162,60 +1070,36 @@
         cardEl.title = `البطاقة رقم ${idx+1}`;
         currentPlayerCardsRowEl.appendChild(cardEl);
       });
-
-      renderPlayerCardsBar();
     }
 
-    function renderPlayerCardsBar(){
-      playerCardsBarEl.innerHTML = '';
-      if(!gameStarted || currentPlayerIndex < 0 || currentPlayerIndex >= players.length){
-        playerCardsBarEl.classList.add('hidden');
-        return;
-      }
-      const p = players[currentPlayerIndex];
-      if(!p.cards || p.cards.length === 0){
-        playerCardsBarEl.classList.add('hidden');
-        return;
-      }
-      playerCardsBarEl.classList.remove('hidden');
-
-      p.cards.forEach((cardChar, idx)=>{
-        const bubble = document.createElement('div');
-        bubble.className = 'card-bubble';
-
-        const indexEl = document.createElement('div');
-        indexEl.className = 'card-bubble-index';
-        indexEl.textContent = idx+1;
-
-        const circle = document.createElement('div');
-        circle.className = 'card-bubble-circle';
-        if(cardChar === '⭐'){
-          circle.classList.add('star');
-        }
-        circle.textContent = cardChar;
-
-        bubble.appendChild(indexEl);
-        bubble.appendChild(circle);
-        playerCardsBarEl.appendChild(bubble);
-      });
-    }
-
-    function updateTurnHeader(){
+    function updateTimerHeader(){
       if(currentPlayerIndex < 0 || currentPlayerIndex >= players.length || !gameStarted){
         turnPlayerNameEl.textContent = 'لا يوجد';
         turnTimerEl.textContent = '-- ثانية';
+        bigTimerValueEl.textContent = '--';
+        bigTimerValueEl.style.color = 'var(--text-muted)';
         return;
       }
       const p = players[currentPlayerIndex];
       turnPlayerNameEl.textContent = p.name;
       turnTimerEl.textContent = `${remainingSeconds} ثانية`;
+      bigTimerValueEl.textContent = remainingSeconds;
+
+      let ratio = remainingSeconds / turnSeconds;
+      let color;
+      if(ratio >= 0.7){
+        color = 'var(--good)';
+      }else if(ratio >= 0.4){
+        color = 'var(--warn)';
+      }else{
+        color = 'var(--bad)';
+      }
+      bigTimerValueEl.style.color = color;
     }
 
     function startTurnTimer(){
       clearInterval(timerId);
       remainingSeconds = turnSeconds;
-      updateTurnHeader();
-
       timerId = setInterval(()=>{
         remainingSeconds--;
         if(remainingSeconds < 0){
@@ -1226,14 +1110,15 @@
           goToNextPlayer();
           return;
         }
-        updateTurnHeader();
+        updateTimerHeader();
       },1000);
+      updateTimerHeader();
     }
 
     function stopTurnTimer(){
       clearInterval(timerId);
       timerId = null;
-      updateTurnHeader();
+      updateTimerHeader();
     }
 
     function goToNextPlayer(){
@@ -1252,7 +1137,7 @@
         if(players[idx].cards.length > 0){
           currentPlayerIndex = idx;
           layoutPlayersRing();
-          renderCurrentPlayerPanel();
+          renderCurrentPlayer();
           startTurnTimer();
           setStatus(`الآن دور اللاعب: ${players[idx].name}`, 'info');
           return;
@@ -1272,7 +1157,6 @@
         layoutPlayersRing();
         winnerNameEl.textContent = player.name;
         winnerBannerEl.style.display = 'block';
-        renderPlayerCardsBar();
         setStatus(`الفائز في هذه الجولة هو: ${player.name}`, 'ok');
       }
     }
@@ -1323,7 +1207,7 @@
 
       renderPlayersList();
       layoutPlayersRing();
-      renderCurrentPlayerPanel();
+      renderCurrentPlayer();
       clearPendingSuggestionUI();
 
       setStatus(`تم قبول الكلمة "${word}" للاعب: ${p.name}`, 'ok');
@@ -1440,7 +1324,7 @@
       });
     }
 
-    // ✅ ربط Kick مباشرة (نفس فكرة حرب الدول) بدون kick_chat.js
+    // ربط Kick مباشرة
     function connectKick(channel){
       disconnectAll();
       activePlatform = 'kick';
@@ -1523,7 +1407,7 @@
         });
     }
 
-    // ✅ استقبال الأوامر من Twitch و Kick
+    // استقبال الأوامر من Twitch و Kick
     function handleChatMessage(platform, senderName, rawMessage){
       // تنظيف HTML لو كيك يرسل رسائل فيها <span> وغيره
       let text = (rawMessage || '').replace(/<[^>]+>/g,'').trim();
@@ -1531,7 +1415,7 @@
       // السماح بـ ! أو ！ (بعض الكيبوردات)
       if(!/^[!！]/.test(text)) return;
 
-      // ===== الأمر الأول: !دخول =====
+      // !دخول
       if(/^([!！])\s*دخول$/i.test(text)){
         if(gameStarted){
           setStatus(`@${senderName} حاول يدخل بعد بدء اللعبة — الانضمام مغلق الآن.`, 'err');
@@ -1544,7 +1428,7 @@
         return;
       }
 
-      // ===== الأمر الثاني: !رقم رقم (مثل !1 5) =====
+      // !رقم رقم (مثل !1 5)
       const match = text.match(/^([!！])(\d+)\s+(\d+)$/);
       if(match){
         const pos = parseInt(match[2],10);
@@ -1553,8 +1437,6 @@
         processPlayerMoveFromChat(platform, senderName, pos, cardNum);
         return;
       }
-
-      // أي شيء غير كذا يتجاهل
     }
 
     function processPlayerMoveFromChat(platform, senderName, position, cardNum){
@@ -1634,7 +1516,7 @@
       turnSeconds = val;
       setStatus(`تم تحديث مدة الدور إلى ${val} ثانية.`, 'ok');
       if(timerId){
-        updateTurnHeader();
+        updateTimerHeader();
       }
     });
 
@@ -1655,8 +1537,7 @@
       dealCardsToPlayers();
       currentPlayerIndex = 0;
       layoutPlayersRing();
-      renderCurrentPlayerPanel();
-      remainingSeconds = turnSeconds;
+      renderCurrentPlayer();
       startTurnTimer();
       setStatus(`تم بدء اللعبة! الآن دور اللاعب: ${players[currentPlayerIndex].name}`, 'ok');
     });
@@ -1720,7 +1601,7 @@
     renderPlayersList();
     layoutPlayersRing();
     updateConnectionUI();
-    renderPlayerCardsBar();
+    updateTimerHeader();
     setStatus('أضِف اللاعبين من التشات (!دخول)، عيّن الكلمة الأولى، ثم اضغط "بدء اللعبة".');
   </script>
 </body>
