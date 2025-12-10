@@ -1,0 +1,2127 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام كيلرات ديد باي ديلايت - أفضل البيلدات</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* التنسيقات العامة */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0f172a;
+            color: #e2e8f0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* تنسيق الرأس */
+        header {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            padding: 20px 0;
+            border-bottom: 2px solid #334155;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo i {
+            color: #ef4444;
+            font-size: 2.5rem;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            color: #f8fafc;
+        }
+
+        .logo span {
+            color: #ef4444;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        nav a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+            padding: 8px 12px;
+            border-radius: 5px;
+        }
+
+        nav a:hover, nav a.active {
+            color: #ef4444;
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: #1e293b;
+            padding: 8px 15px;
+            border-radius: 50px;
+        }
+
+        .user-info i {
+            color: #60a5fa;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: #334155;
+            color: #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background-color: #475569;
+        }
+
+        .btn-danger {
+            background-color: #dc2626;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #b91c1c;
+        }
+
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 0.9rem;
+        }
+
+        .btn-discord {
+            background-color: #5865f2;
+            color: white;
+        }
+
+        .btn-discord:hover {
+            background-color: #4752c4;
+        }
+
+        /* تنسيق المحتوى الرئيسي */
+        .hero {
+            background: linear-gradient(to right, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
+            padding: 60px 40px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            text-align: center;
+            border: 2px solid #334155;
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #f8fafc;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            color: #cbd5e1;
+        }
+
+        /* تنسيق قسم الكيلرات */
+        .killers-section, .builds-section, .add-build-section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #f8fafc;
+            border-right: 5px solid #ef4444;
+            padding-right: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: #ef4444;
+        }
+
+        .killers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .killer-card {
+            background-color: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #334155;
+            cursor: pointer;
+        }
+
+        .killer-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+            border-color: #ef4444;
+        }
+
+        .killer-card.active {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.5);
+        }
+
+        .killer-icon {
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .killer-info {
+            padding: 20px;
+        }
+
+        .killer-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #f8fafc;
+        }
+
+        .killer-info p {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+        }
+
+        .killer-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag {
+            background-color: #334155;
+            padding: 5px 10px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            color: #cbd5e1;
+        }
+
+        /* تنسيق قسم البيلدات */
+        .builds-container {
+            display: none;
+        }
+
+        .builds-container.active {
+            display: block;
+        }
+
+        .builds-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .build-card {
+            background-color: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #334155;
+        }
+
+        .build-header {
+            padding: 20px;
+            background-color: #0f172a;
+            border-bottom: 1px solid #334155;
+        }
+
+        .build-header h3 {
+            font-size: 1.5rem;
+            color: #f8fafc;
+            margin-bottom: 10px;
+        }
+
+        .build-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .build-suggested {
+            color: #fbbf24;
+            font-style: italic;
+        }
+
+        .build-body {
+            padding: 20px;
+        }
+
+        .build-killer-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: rgba(15, 23, 42, 0.5);
+            border-radius: 8px;
+            border: 1px solid #334155;
+        }
+
+        .killer-icon-small {
+            font-size: 2rem;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .build-description {
+            color: #cbd5e1;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .build-perks {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .perk {
+            width: 60px;
+            height: 60px;
+            background-color: #0f172a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border: 3px solid #3b82f6;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+        }
+
+        .perk img {
+            width: 85%;
+            height: 85%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #1e293b;
+        }
+
+        .perk-number {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #ef4444;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .build-addons {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .addon {
+            width: 50px;
+            height: 50px;
+            background-color: #0f172a;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #10b981;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
+        }
+
+        .addon img {
+            width: 90%;
+            height: 90%;
+            border-radius: 6px;
+            object-fit: cover;
+            border: 1px solid #1e293b;
+        }
+
+        .build-footer {
+            padding: 15px 20px;
+            background-color: rgba(15, 23, 42, 0.7);
+            border-top: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .build-rating {
+            color: #fbbf24;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .rating-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rating-stars {
+            display: flex;
+            gap: 2px;
+            cursor: pointer;
+        }
+
+        .rating-stars .star {
+            color: #64748b;
+            font-size: 1.2rem;
+            transition: color 0.2s;
+        }
+
+        .rating-stars .star:hover,
+        .rating-stars .star.active {
+            color: #fbbf24;
+        }
+
+        .rating-count {
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        /* تنسيق نموذج إضافة البيلد */
+        .add-build-form {
+            background-color: #1e293b;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            display: none;
+        }
+
+        .add-build-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #f8fafc;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            color: #e2e8f0;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #ef4444;
+        }
+
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .upload-section {
+            margin-bottom: 30px;
+        }
+
+        .upload-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #f8fafc;
+            border-right: 3px solid #ef4444;
+            padding-right: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .perks-upload, .addons-upload {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .perks-upload, .addons-upload {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .perk-upload-item, .addon-upload-item {
+            text-align: center;
+        }
+
+        .perk-upload-box, .addon-upload-box {
+            width: 80px;
+            height: 80px;
+            background-color: #0f172a;
+            border: 3px dashed #334155;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .addon-upload-box {
+            border-radius: 8px;
+            border-color: #10b981;
+        }
+
+        .perk-upload-box:hover, .addon-upload-box:hover {
+            border-color: #ef4444;
+            transform: scale(1.05);
+        }
+
+        .perk-upload-box i, .addon-upload-box i {
+            font-size: 2rem;
+            color: #64748b;
+        }
+
+        .perk-preview, .addon-preview {
+            width: 90%;
+            height: 90%;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto;
+            display: none;
+        }
+
+        .addon-preview {
+            border-radius: 6px;
+        }
+
+        .upload-number {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #3b82f6;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        /* تنسيق نموذج تسجيل الدخول */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            max-width: 500px;
+            background-color: #1e293b;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #f8fafc;
+            font-size: 2rem;
+        }
+
+        .login-message {
+            padding: 15px;
+            background-color: #0f172a;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            text-align: center;
+            color: #94a3b8;
+            border: 1px solid #334155;
+        }
+
+        .login-message.error {
+            color: #f87171;
+            border-color: #f87171;
+            background-color: rgba(248, 113, 113, 0.1);
+        }
+
+        .login-message.success {
+            color: #10b981;
+            border-color: #10b981;
+            background-color: rgba(16, 185, 129, 0.1);
+        }
+
+        /* تنسيق التذييل */
+        footer {
+            background-color: #0f172a;
+            padding: 30px 0;
+            border-top: 2px solid #334155;
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .copyright {
+            color: #94a3b8;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .social-links a {
+            color: #cbd5e1;
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: #ef4444;
+        }
+
+        /* رسالة فارغة */
+        .empty-message {
+            text-align: center;
+            padding: 60px 20px;
+            background-color: #1e293b;
+            border-radius: 12px;
+            border: 2px dashed #334155;
+            margin: 40px 0;
+        }
+
+        .empty-message i {
+            font-size: 4rem;
+            color: #64748b;
+            margin-bottom: 20px;
+        }
+
+        .empty-message h3 {
+            font-size: 1.8rem;
+            color: #f8fafc;
+            margin-bottom: 15px;
+        }
+
+        .empty-message p {
+            color: #94a3b8;
+            max-width: 600px;
+            margin: 0 auto 25px;
+            font-size: 1.1rem;
+        }
+
+        /* إدارة الكيلرات */
+        .manage-killers {
+            margin-bottom: 30px;
+        }
+
+        .killer-form {
+            background-color: #1e293b;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            margin-bottom: 20px;
+        }
+
+        .killer-form h3 {
+            margin-bottom: 20px;
+            color: #f8fafc;
+        }
+
+        /* تنسيق نافذة التقييم */
+        .rating-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1001;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .rating-container {
+            background-color: #1e293b;
+            border-radius: 12px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid #334155;
+        }
+
+        .rating-container h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #f8fafc;
+        }
+
+        .rating-modal-stars {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .rating-modal-stars .star {
+            font-size: 2.5rem;
+            color: #64748b;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .rating-modal-stars .star:hover,
+        .rating-modal-stars .star.active {
+            color: #fbbf24;
+        }
+
+        /* نافذة تأكيد حذف البيلد */
+        .delete-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1002;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .delete-container {
+            background-color: #1e293b;
+            border-radius: 12px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid #334155;
+        }
+
+        .delete-container h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #f8fafc;
+        }
+
+        .delete-container p {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #cbd5e1;
+        }
+
+        /* Discord button */
+        .discord-info {
+            background-color: rgba(88, 101, 242, 0.1);
+            border: 1px solid #5865f2;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .discord-info p {
+            margin-bottom: 10px;
+            color: #cbd5e1;
+        }
+
+        .discord-info strong {
+            color: #5865f2;
+        }
+    </style>
+</head>
+<body>
+    <!-- الرأس -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <i class="fas fa-ghost"></i>
+                <h1>كيلرات <span>ديد باي ديلايت</span></h1>
+            </div>
+            
+            <nav>
+                <ul>
+                    <li><a href="#" class="active" id="nav-killers">الكيلرات</a></li>
+                    <li><a href="#" id="nav-builds">أفضل البيلدات</a></li>
+                    <li><a href="#" id="nav-add-build">إضافة بيلد</a></li>
+                    <li><a href="#" id="nav-manage-killers">إدارة الكيلرات</a></li>
+                </ul>
+            </nav>
+            
+            <div class="user-section">
+                <div class="user-info" id="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span>زائر</span>
+                </div>
+                <button class="btn btn-primary" id="login-btn">تسجيل الدخول</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="container">
+        <!-- قسم المقدمة -->
+        <section class="hero">
+            <h2>أفضل البيلدات لكيلرات ديد باي ديلايت</h2>
+            <p>استعرض قائمة الكيلرات في ديد باي ديلايت واكتشف أفضل البيلدات لكل كيلر مع شرح مفصل لكل بيلد وكيفية استخدامه بشكل فعال.</p>
+            <button class="btn btn-primary" id="view-killers-btn">استعرض الكيلرات</button>
+        </section>
+
+        <!-- قسم الكيلرات -->
+        <section class="killers-section" id="killers-section">
+            <h2 class="section-title"><i class="fas fa-skull-crossbones"></i> قائمة الكيلرات</h2>
+            <div class="killers-grid" id="killers-grid">
+                <!-- سيتم ملء الكيلرات بواسطة JavaScript -->
+            </div>
+        </section>
+
+        <!-- قسم البيلدات -->
+        <section class="builds-section" id="builds-section">
+            <h2 class="section-title"><i class="fas fa-hammer"></i> أفضل البيلدات لـ <span id="selected-killer-name">الكيلر المحدد</span></h2>
+            <div class="builds-container" id="builds-container">
+                <!-- سيتم ملء البيلدات هنا عند اختيار كيلر -->
+            </div>
+        </section>
+
+        <!-- نموذج إضافة بيلد -->
+        <section class="add-build-section" id="add-build-section">
+            <h2 class="section-title"><i class="fas fa-plus-circle"></i> إضافة بيلد جديد</h2>
+            <div class="add-build-form" id="add-build-form">
+                <!-- سيتم إظهار النموذج فقط للمستخدم المسجل -->
+            </div>
+        </section>
+
+        <!-- قسم إدارة الكيلرات -->
+        <section class="manage-killers-section" id="manage-killers-section" style="display: none;">
+            <h2 class="section-title"><i class="fas fa-edit"></i> إدارة الكيلرات</h2>
+            <div class="manage-killers" id="manage-killers">
+                <!-- سيتم عرض واجهة إدارة الكيلرات هنا -->
+            </div>
+        </section>
+
+        <!-- نموذج تسجيل الدخول -->
+        <div class="login-overlay" id="login-overlay">
+            <div class="login-container">
+                <h2><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</h2>
+                <div class="login-message" id="login-message">
+                    أدخل اسم المستخدم وكلمة المرور للوصول إلى ميزات إدارة الموقع.
+                </div>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="username">اسم المستخدم</label>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="أدخل اسم المستخدم" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">كلمة المرور</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="أدخل كلمة المرور" required>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancel-login-btn">إلغاء</button>
+                        <button type="submit" class="btn btn-primary">تسجيل الدخول</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- نافذة التقييم -->
+        <div class="rating-modal" id="rating-modal">
+            <div class="rating-container">
+                <h3>قيم هذا البيلد</h3>
+                <div class="rating-modal-stars" id="rating-modal-stars">
+                    <i class="fas fa-star star" data-rating="1"></i>
+                    <i class="fas fa-star star" data-rating="2"></i>
+                    <i class="fas fa-star star" data-rating="3"></i>
+                    <i class="fas fa-star star" data-rating="4"></i>
+                    <i class="fas fa-star star" data-rating="5"></i>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-rating-btn">إلغاء</button>
+                    <button type="button" class="btn btn-primary" id="submit-rating-btn">تأكيد التقييم</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- نافذة تأكيد حذف البيلد -->
+        <div class="delete-modal" id="delete-modal">
+            <div class="delete-container">
+                <h3><i class="fas fa-exclamation-triangle"></i> تأكيد الحذف</h3>
+                <p>هل أنت متأكد من حذف هذا البيلد؟ هذا الإجراء لا يمكن التراجع عنه.</p>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-delete-btn">إلغاء</button>
+                    <button type="button" class="btn btn-danger" id="confirm-delete-btn">نعم، احذف البيلد</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- التذييل -->
+    <footer>
+        <div class="container footer-content">
+            <div class="copyright">
+                <p>جميع الحقوق محفوظة &copy; 2023 - نظام كيلرات ديد باي ديلايت</p>
+                <p>آخر تحديث: <span id="current-date"></span></p>
+                <p style="margin-top: 10px; color: #94a3b8; font-size: 0.9rem;">لاقتراحات البيلدات: <strong>medo_dv</strong> على ديسكورد</p>
+            </div>
+            
+            <div class="social-links">
+                <a href="#" title="ديسكورد"><i class="fab fa-discord"></i></a>
+                <a href="#" title="يوتيوب"><i class="fab fa-youtube"></i></a>
+                <a href="#" title="تويتر"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // بيانات الكيلرات (تبدأ فارغة - ستضيفها أنت)
+        let killers = JSON.parse(localStorage.getItem('dbdKillers')) || [];
+
+        // بيانات البيلدات (تبدأ فارغة)
+        let builds = JSON.parse(localStorage.getItem('dbdBuilds')) || [];
+
+        // بيانات التقييمات (كل بيلد له تقييماته)
+        let ratings = JSON.parse(localStorage.getItem('dbdRatings')) || {};
+
+        // معلومات تسجيل الدخول (مخفية الآن)
+        const validUsername = "admin";
+        const validPassword = "123456123456";
+
+        // حالة التطبيق
+        let currentUser = JSON.parse(localStorage.getItem('dbdCurrentUser')) || null;
+        let selectedKillerId = null;
+        let selectedKillerName = "";
+        let currentRatingBuildId = null;
+        let currentDeleteBuildId = null;
+
+        // تهيئة التطبيق
+        document.addEventListener('DOMContentLoaded', function() {
+            // عرض التاريخ الحالي
+            const now = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('current-date').textContent = now.toLocaleDateString('ar-EG', options);
+            
+            // تحديث واجهة المستخدم بناءً على حالة تسجيل الدخول
+            updateUIForLogin();
+            
+            // عرض الكيلرات
+            renderKillers();
+            
+            // تعيين معالجي الأحداث
+            setupEventListeners();
+            
+            // إخفاء الأقسام الأخرى في البداية
+            document.getElementById('builds-container').style.display = 'none';
+            document.getElementById('add-build-form').style.display = 'none';
+            
+            // إظهار رسالة أن الموقع فارغ
+            showEmptyMessage();
+        });
+
+        // حفظ الكيلرات في localStorage
+        function saveKillers() {
+            localStorage.setItem('dbdKillers', JSON.stringify(killers));
+        }
+
+        // حفظ البيلدات في localStorage
+        function saveBuilds() {
+            localStorage.setItem('dbdBuilds', JSON.stringify(builds));
+        }
+
+        // حفظ التقييمات في localStorage
+        function saveRatings() {
+            localStorage.setItem('dbdRatings', JSON.stringify(ratings));
+        }
+
+        // عرض رسالة أن الموقع فارغ
+        function showEmptyMessage() {
+            const buildsContainer = document.getElementById('builds-container');
+            buildsContainer.innerHTML = `
+                <div class="empty-message">
+                    <i class="fas fa-box-open"></i>
+                    <h3>لا توجد بيلدات بعد</h3>
+                    <p>لم يتم إضافة أي بيلدات بعد. سجل الدخول لإضافة أول بيلد لك!</p>
+                    <button class="btn btn-primary" id="login-to-add-btn">سجل الدخول الآن</button>
+                </div>
+            `;
+            
+            buildsContainer.style.display = 'block';
+        }
+
+        // عرض الكيلرات
+        function renderKillers() {
+            const killersGrid = document.getElementById('killers-grid');
+            killersGrid.innerHTML = '';
+            
+            if (killers.length === 0) {
+                killersGrid.innerHTML = `
+                    <div class="empty-message" style="grid-column: 1 / -1;">
+                        <i class="fas fa-user-plus"></i>
+                        <h3>لا توجد كيلرات بعد</h3>
+                        <p>سجل الدخول ثم انتقل إلى قسم "إدارة الكيلرات" لإضافة كيلرات جديدة.</p>
+                        <button class="btn btn-primary" id="login-to-manage-btn">سجل الدخول للإدارة</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            killers.forEach(killer => {
+                const killerCard = document.createElement('div');
+                killerCard.className = 'killer-card';
+                killerCard.dataset.id = killer.id;
+                
+                killerCard.innerHTML = `
+                    <div class="killer-icon" style="background-color: ${killer.color}40;">
+                        <i class="${killer.icon}" style="color: ${killer.color};"></i>
+                    </div>
+                    <div class="killer-info">
+                        <h3>${killer.name}</h3>
+                        <p>${killer.description}</p>
+                        <div class="killer-tags">
+                            <span class="tag">الصعوبة: ${killer.difficulty}</span>
+                        </div>
+                    </div>
+                `;
+                
+                killersGrid.appendChild(killerCard);
+            });
+        }
+
+        // حساب متوسط التقييم للبيلد
+        function calculateAverageRating(buildId) {
+            if (!ratings[buildId] || ratings[buildId].length === 0) {
+                return 0;
+            }
+            
+            const sum = ratings[buildId].reduce((total, rating) => total + rating.rating, 0);
+            return (sum / ratings[buildId].length).toFixed(1);
+        }
+
+        // الحصول على تقييم المستخدم الحالي للبيلد
+        function getUserRating(buildId) {
+            if (!currentUser || !ratings[buildId]) return 0;
+            
+            const userRating = ratings[buildId].find(r => r.user === currentUser.username);
+            return userRating ? userRating.rating : 0;
+        }
+
+        // عرض البيلدات لكيلر معين
+        function renderBuildsForKiller(killerId) {
+            const buildsContainer = document.getElementById('builds-container');
+            const killer = killers.find(k => k.id === killerId);
+            
+            if (!killer) return;
+            
+            selectedKillerName = killer.name;
+            document.getElementById('selected-killer-name').textContent = killer.name;
+            
+            // عرض البيلدات الخاصة بهذا الكيلر فقط
+            const killerBuilds = builds.filter(build => build.killerId === killerId);
+            
+            if (killerBuilds.length === 0) {
+                buildsContainer.innerHTML = `
+                    <div class="empty-message">
+                        <i class="fas fa-info-circle"></i>
+                        <h3>لا توجد بيلدات لهذا الكيلر بعد</h3>
+                        <p>لم يتم إضافة أي بيلدات لـ ${killer.name} بعد. ${currentUser ? 'كن أول من يضيف بيلداً لهذا الكيلر!' : 'سجل الدخول لإضافة أول بيلد!'}</p>
+                        ${currentUser ? `<button class="btn btn-primary" id="add-for-killer-btn">أضف بيلد لـ ${killer.name}</button>` : `<button class="btn btn-primary" id="login-to-add-killer-btn">سجل الدخول لإضافة بيلد</button>`}
+                    </div>
+                `;
+            } else {
+                let buildsHTML = '<div class="builds-grid">';
+                
+                killerBuilds.forEach(build => {
+                    const avgRating = calculateAverageRating(build.id);
+                    const userRating = getUserRating(build.id);
+                    const killer = killers.find(k => k.id === build.killerId);
+                    const killerColor = killer ? killer.color : '#3b82f6';
+                    const killerIcon = killer ? killer.icon : 'fas fa-skull';
+                    
+                    buildsHTML += `
+                        <div class="build-card" data-build-id="${build.id}">
+                            <div class="build-header">
+                                <h3>${build.name}</h3>
+                                <div class="build-meta">
+                                    <div>
+                                        <span>بواسطة: ${build.author}</span>
+                                        ${build.suggestedBy ? `<br><span class="build-suggested">اقتراح من: ${build.suggestedBy}</span>` : ''}
+                                    </div>
+                                    <span>${build.date}</span>
+                                </div>
+                            </div>
+                            <div class="build-body">
+                                <div class="build-killer-info">
+                                    <div class="killer-icon-small" style="background-color: ${killerColor}40;">
+                                        <i class="${killerIcon}" style="color: ${killerColor};"></i>
+                                    </div>
+                                    <div>
+                                        <h4 style="color: #f8fafc; margin-bottom: 5px;">${build.killerName}</h4>
+                                        <p style="color: #94a3b8; font-size: 0.9rem;">${build.author === 'admin' ? 'مدير النظام' : 'مستخدم'}</p>
+                                    </div>
+                                </div>
+                                
+                                <p class="build-description">${build.description}</p>
+                                
+                                <div class="upload-section">
+                                    <div class="upload-title"><i class="fas fa-gem"></i> البيركات</div>
+                                    <div class="build-perks">
+                                        ${build.perkImages && build.perkImages.length > 0 ? 
+                                            build.perkImages.map((img, index) => `
+                                                <div class="perk">
+                                                    ${img ? `<img src="${img}" alt="بيرك ${index+1}">` : `<i class="fas fa-question"></i>`}
+                                                    <div class="perk-number">${index+1}</div>
+                                                </div>
+                                            `).join('') : 
+                                            [1,2,3,4].map(i => `
+                                                <div class="perk">
+                                                    <i class="fas fa-question"></i>
+                                                    <div class="perk-number">${i}</div>
+                                                </div>
+                                            `).join('')}
+                                    </div>
+                                    
+                                    <div class="upload-title"><i class="fas fa-plus"></i> الإضافات (Add-ons)</div>
+                                    <div class="build-addons">
+                                        ${build.addonImages && build.addonImages.length > 0 ? 
+                                            build.addonImages.map((img, index) => `
+                                                <div class="addon">
+                                                    ${img ? `<img src="${img}" alt="إضافة ${index+1}">` : `<i class="fas fa-plus"></i>`}
+                                                </div>
+                                            `).join('') : 
+                                            [1,2].map(() => `
+                                                <div class="addon">
+                                                    <i class="fas fa-plus"></i>
+                                                </div>
+                                            `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="build-footer">
+                                <div class="rating-section">
+                                    <div class="build-rating">
+                                        ${renderRatingStars(avgRating)}
+                                        <span>(${avgRating})</span>
+                                    </div>
+                                    <div class="rating-count">
+                                        ${ratings[build.id] ? ratings[build.id].length : 0} تقييم
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 10px;">
+                                    <button class="btn btn-secondary btn-small rate-build-btn" data-build-id="${build.id}">
+                                        ${userRating > 0 ? 'عدّل تقييمك' : 'قيم هذا البيلد'}
+                                    </button>
+                                    ${currentUser && currentUser.username === 'admin' ? 
+                                        `<button class="btn btn-danger btn-small delete-build-btn" data-build-id="${build.id}">
+                                            <i class="fas fa-trash"></i> حذف
+                                        </button>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                buildsHTML += '</div>';
+                buildsContainer.innerHTML = buildsHTML;
+                
+                // إضافة أحداث لأزرار التقييم
+                document.querySelectorAll('.rate-build-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const buildId = parseInt(this.dataset.buildId);
+                        openRatingModal(buildId);
+                    });
+                });
+                
+                // إضافة أحداث لأزرار حذف البيلد (للمدير فقط)
+                if (currentUser && currentUser.username === 'admin') {
+                    document.querySelectorAll('.delete-build-btn').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const buildId = parseInt(this.dataset.buildId);
+                            openDeleteModal(buildId);
+                        });
+                    });
+                }
+            }
+            
+            // إظهار قسم البيلدات
+            buildsContainer.style.display = 'block';
+            buildsContainer.classList.add('active');
+            
+            // إخفاء أقسام أخرى
+            document.getElementById('add-build-form').style.display = 'none';
+            document.getElementById('add-build-form').classList.remove('active');
+            
+            // تحديث التنقل النشط
+            updateActiveNav('nav-builds');
+            
+            // إضافة أحداث للأزرار الجديدة
+            setTimeout(() => {
+                const addForKillerBtn = document.getElementById('add-for-killer-btn');
+                const loginToAddKillerBtn = document.getElementById('login-to-add-killer-btn');
+                
+                if (addForKillerBtn) {
+                    addForKillerBtn.addEventListener('click', function() {
+                        showAddBuildForm();
+                        document.getElementById('build-killer').value = killerId;
+                    });
+                }
+                
+                if (loginToAddKillerBtn) {
+                    loginToAddKillerBtn.addEventListener('click', function() {
+                        document.getElementById('login-overlay').style.display = 'flex';
+                    });
+                }
+            }, 100);
+        }
+
+        // عرض نجوم التقييم
+        function renderRatingStars(rating) {
+            let stars = '';
+            const numericRating = parseFloat(rating) || 0;
+            const fullStars = Math.floor(numericRating);
+            const hasHalfStar = numericRating % 1 >= 0.5;
+            
+            for (let i = 0; i < fullStars; i++) {
+                stars += '<i class="fas fa-star"></i>';
+            }
+            
+            if (hasHalfStar) {
+                stars += '<i class="fas fa-star-half-alt"></i>';
+                for (let i = fullStars + 1; i < 5; i++) {
+                    stars += '<i class="far fa-star"></i>';
+                }
+            } else {
+                for (let i = fullStars; i < 5; i++) {
+                    stars += '<i class="far fa-star"></i>';
+                }
+            }
+            
+            return stars;
+        }
+
+        // فتح نافذة التقييم
+        function openRatingModal(buildId) {
+            currentRatingBuildId = buildId;
+            const userRating = getUserRating(buildId);
+            
+            // إعادة تعيين النجوم
+            document.querySelectorAll('#rating-modal-stars .star').forEach((star, index) => {
+                star.classList.remove('active');
+                if (index < userRating) {
+                    star.classList.add('active');
+                }
+            });
+            
+            // إظهار النافذة
+            document.getElementById('rating-modal').style.display = 'flex';
+        }
+
+        // فتح نافذة تأكيد حذف البيلد
+        function openDeleteModal(buildId) {
+            currentDeleteBuildId = buildId;
+            document.getElementById('delete-modal').style.display = 'flex';
+        }
+
+        // حذف البيلد
+        function deleteBuild(buildId) {
+            // حذف البيلد
+            builds = builds.filter(build => build.id !== buildId);
+            saveBuilds();
+            
+            // حذف التقييمات المرتبطة
+            if (ratings[buildId]) {
+                delete ratings[buildId];
+                saveRatings();
+            }
+            
+            // إعادة عرض البيلدات
+            if (selectedKillerId) {
+                renderBuildsForKiller(selectedKillerId);
+            }
+            
+            alert('تم حذف البيلد بنجاح!');
+        }
+
+        // تحديث واجهة المستخدم بناءً على حالة تسجيل الدخول
+        function updateUIForLogin() {
+            const userInfo = document.getElementById('user-info');
+            const loginBtn = document.getElementById('login-btn');
+            const navManageKillers = document.getElementById('nav-manage-killers');
+            
+            if (currentUser) {
+                userInfo.innerHTML = `<i class="fas fa-user-circle"></i><span>${currentUser.username === 'admin' ? 'مدير' : 'مستخدم'}</span>`;
+                loginBtn.textContent = 'تسجيل الخروج';
+                navManageKillers.style.display = 'block';
+                
+                // إظهار نموذج إضافة البيلد إذا كان المستخدم في قسم إضافة البيلد
+                if (document.getElementById('nav-add-build').classList.contains('active')) {
+                    showAddBuildForm();
+                }
+                
+                // إظهار واجهة إدارة الكيلرات إذا كان في قسم الإدارة
+                if (document.getElementById('nav-manage-killers').classList.contains('active')) {
+                    showManageKillers();
+                }
+            } else {
+                userInfo.innerHTML = '<i class="fas fa-user-circle"></i><span>زائر</span>';
+                loginBtn.textContent = 'تسجيل الدخول';
+                navManageKillers.style.display = 'none';
+                
+                // إخفاء نموذج إضافة البيلد إذا كان زائراً
+                if (document.getElementById('nav-add-build').classList.contains('active')) {
+                    showLoginRequiredMessage();
+                }
+                
+                // إخفاء واجهة إدارة الكيلرات
+                if (document.getElementById('nav-manage-killers').classList.contains('active')) {
+                    document.getElementById('manage-killers-section').style.display = 'none';
+                    document.getElementById('nav-killers').click();
+                }
+            }
+        }
+
+        // إظهار رسالة تسجيل الدخول المطلوب
+        function showLoginRequiredMessage() {
+            const addBuildForm = document.getElementById('add-build-form');
+            addBuildForm.innerHTML = `
+                <div class="empty-message">
+                    <i class="fas fa-lock"></i>
+                    <h3>تسجيل الدخول مطلوب</h3>
+                    <p>يجب تسجيل الدخول لإضافة بيلدات جديدة.</p>
+                    <button class="btn btn-primary" id="login-to-add-form-btn">سجل الدخول الآن</button>
+                </div>
+            `;
+            addBuildForm.style.display = 'block';
+            addBuildForm.classList.add('active');
+        }
+
+        // إظهار نموذج إضافة البيلد
+        function showAddBuildForm() {
+            if (!currentUser) {
+                showLoginRequiredMessage();
+                return;
+            }
+            
+            const addBuildForm = document.getElementById('add-build-form');
+            addBuildForm.innerHTML = `
+                <div class="discord-info">
+                    <p><i class="fab fa-discord"></i> يمكنك إرسال اقتراحات البيلدات إلى <strong>medo_dv</strong> على ديسكورد</p>
+                </div>
+                <form id="new-build-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="build-killer">اختر الكيلر *</label>
+                            <select class="form-control" id="build-killer" name="build-killer" required>
+                                <option value="">-- اختر كيلر --</option>
+                                ${killers.map(killer => `<option value="${killer.id}">${killer.name}</option>`).join('')}
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="build-name">اسم البيلد *</label>
+                            <input type="text" class="form-control" id="build-name" name="build-name" placeholder="مثال: بيلد التخفي والسرعة" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="build-suggested">اقتراح من (اختياري)</label>
+                            <input type="text" class="form-control" id="build-suggested" name="build-suggested" placeholder="مثال: من قناة فلان على اليوتيوب أو medo_dv على ديسكورد">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="build-description">شرح البيلد *</label>
+                        <textarea class="form-control" id="build-description" name="build-description" placeholder="اكتب شرح مفصل للبيلد واستراتيجية استخدامه..." required></textarea>
+                    </div>
+                    
+                    <div class="upload-section">
+                        <div class="upload-title"><i class="fas fa-gem"></i> رفع صور البيركات (4 صور)</div>
+                        <div class="perks-upload">
+                            ${[1,2,3,4].map(i => `
+                                <div class="perk-upload-item">
+                                    <div class="perk-upload-box" data-perk="${i}">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <div class="upload-number">${i}</div>
+                                    </div>
+                                    <span>البيرك ${i}</span>
+                                    <input type="file" class="perk-file-input" data-perk="${i}" accept="image/*" hidden>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="upload-title"><i class="fas fa-plus"></i> رفع صور الإضافات (Add-ons) (2 صورة)</div>
+                        <div class="addons-upload">
+                            ${[1,2].map(i => `
+                                <div class="addon-upload-item">
+                                    <div class="addon-upload-box" data-addon="${i}">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                    </div>
+                                    <span>الإضافة ${i}</span>
+                                    <input type="file" class="addon-file-input" data-addon="${i}" accept="image/*" hidden>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancel-build-btn">إلغاء</button>
+                        <button type="submit" class="btn btn-primary" id="submit-build-btn">إضافة البيلد</button>
+                        <button type="button" class="btn btn-discord" id="discord-suggest-btn">
+                            <i class="fab fa-discord"></i> اقتراح على ديسكورد
+                        </button>
+                    </div>
+                </form>
+            `;
+            addBuildForm.style.display = 'block';
+            addBuildForm.classList.add('active');
+            
+            // إخفاء أقسام أخرى
+            document.getElementById('builds-container').style.display = 'none';
+            document.getElementById('builds-container').classList.remove('active');
+            
+            // إضافة أحداث للنموذج
+            setupAddBuildFormEvents();
+        }
+
+        // إعداد أحداث نموذج إضافة البيلد
+        function setupAddBuildFormEvents() {
+            // زر إرسال إلى ديسكورد
+            document.getElementById('discord-suggest-btn')?.addEventListener('click', function() {
+                alert('يمكنك إرسال اقتراحات البيلدات إلى medo_dv على ديسكورد!\n\n' +
+                      '1. افتح تطبيق ديسكورد\n' +
+                      '2. ابحث عن المستخدم: medo_dv\n' +
+                      '3. أرسل له اقتراح البيلد مع التفاصيل\n' +
+                      '4. سأضيف البيلد لك في الموقع!');
+            });
+            
+            // أحداث رفع صور البيركات
+            document.querySelectorAll('.perk-upload-box').forEach(box => {
+                box.addEventListener('click', function() {
+                    const perkNum = this.dataset.perk;
+                    document.querySelector(`.perk-file-input[data-perk="${perkNum}"]`).click();
+                });
+            });
+            
+            document.querySelectorAll('.perk-file-input').forEach(input => {
+                input.addEventListener('change', function() {
+                    const perkNum = this.dataset.perk;
+                    const file = this.files[0];
+                    
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const box = document.querySelector(`.perk-upload-box[data-perk="${perkNum}"]`);
+                            box.innerHTML = `
+                                <img src="${e.target.result}" class="perk-preview" style="display: block; width: 90%; height: 90%; border-radius: 50%; object-fit: cover; border: 2px solid #3b82f6;">
+                                <div class="upload-number">${perkNum}</div>
+                            `;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            });
+            
+            // أحداث رفع صور الإضافات
+            document.querySelectorAll('.addon-upload-box').forEach(box => {
+                box.addEventListener('click', function() {
+                    const addonNum = this.dataset.addon;
+                    document.querySelector(`.addon-file-input[data-addon="${addonNum}"]`).click();
+                });
+            });
+            
+            document.querySelectorAll('.addon-file-input').forEach(input => {
+                input.addEventListener('change', function() {
+                    const addonNum = this.dataset.addon;
+                    const file = this.files[0];
+                    
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const box = document.querySelector(`.addon-upload-box[data-addon="${addonNum}"]`);
+                            box.innerHTML = `<img src="${e.target.result}" class="addon-preview" style="display: block; width: 90%; height: 90%; border-radius: 6px; object-fit: cover; border: 2px solid #10b981;">`;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            });
+            
+            // إلغاء إضافة البيلد
+            document.getElementById('cancel-build-btn')?.addEventListener('click', function() {
+                document.getElementById('add-build-form').style.display = 'none';
+                document.getElementById('add-build-form').classList.remove('active');
+                updateActiveNav('nav-killers');
+            });
+            
+            // إرسال البيلد
+            document.getElementById('new-build-form')?.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const killerId = parseInt(document.getElementById('build-killer').value);
+                const name = document.getElementById('build-name').value;
+                const description = document.getElementById('build-description').value;
+                const suggestedBy = document.getElementById('build-suggested').value;
+                
+                if (!killerId || !name || !description) {
+                    alert('يرجى ملء جميع الحقول المطلوبة');
+                    return;
+                }
+                
+                const killer = killers.find(k => k.id === killerId);
+                if (!killer) return;
+                
+                // جمع صور البيركات
+                const perkImages = [];
+                const perkPromises = [];
+                
+                document.querySelectorAll('.perk-file-input').forEach(input => {
+                    if (input.files[0]) {
+                        const reader = new FileReader();
+                        perkPromises.push(new Promise(resolve => {
+                            reader.onload = function(e) {
+                                perkImages.push(e.target.result);
+                                resolve();
+                            };
+                            reader.readAsDataURL(input.files[0]);
+                        }));
+                    } else {
+                        perkImages.push('');
+                    }
+                });
+                
+                // جمع صور الإضافات
+                const addonImages = [];
+                const addonPromises = [];
+                
+                document.querySelectorAll('.addon-file-input').forEach(input => {
+                    if (input.files[0]) {
+                        const reader = new FileReader();
+                        addonPromises.push(new Promise(resolve => {
+                            reader.onload = function(e) {
+                                addonImages.push(e.target.result);
+                                resolve();
+                            };
+                            reader.readAsDataURL(input.files[0]);
+                        }));
+                    } else {
+                        addonImages.push('');
+                    }
+                });
+                
+                // انتظار تحميل جميع الصور
+                Promise.all([...perkPromises, ...addonPromises]).then(() => {
+                    // إنشاء البيلد الجديد
+                    const newBuild = {
+                        id: builds.length > 0 ? Math.max(...builds.map(b => b.id)) + 1 : 1,
+                        killerId: killerId,
+                        killerName: killer.name,
+                        name: name,
+                        description: description,
+                        suggestedBy: suggestedBy || null,
+                        perkImages: perkImages,
+                        addonImages: addonImages,
+                        author: currentUser.username,
+                        date: new Date().toLocaleDateString('ar-EG'),
+                        rating: 0
+                    };
+                    
+                    // إضافة البيلد إلى القائمة
+                    builds.push(newBuild);
+                    
+                    // حفظ في localStorage
+                    saveBuilds();
+                    
+                    // إنشاء مصفوفة تقييمات فارغة للبيلد الجديد
+                    if (!ratings[newBuild.id]) {
+                        ratings[newBuild.id] = [];
+                        saveRatings();
+                    }
+                    
+                    // إظهار رسالة نجاح
+                    alert('تم إضافة البيلد بنجاح!');
+                    
+                    // إعادة تعيين النموذج
+                    document.getElementById('new-build-form').reset();
+                    
+                    // إعادة تحميل الصور
+                    document.querySelectorAll('.perk-upload-box').forEach(box => {
+                        const perkNum = box.dataset.perk;
+                        box.innerHTML = `
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <div class="upload-number">${perkNum}</div>
+                        `;
+                    });
+                    
+                    document.querySelectorAll('.addon-upload-box').forEach(box => {
+                        box.innerHTML = '<i class="fas fa-cloud-upload-alt"></i>';
+                    });
+                    
+                    // عرض البيلدات لهذا الكيلر
+                    renderBuildsForKiller(killerId);
+                });
+            });
+        }
+
+        // إظهار واجهة إدارة الكيلرات
+        function showManageKillers() {
+            if (!currentUser) {
+                alert('يجب تسجيل الدخول للوصول إلى إدارة الكيلرات');
+                document.getElementById('login-overlay').style.display = 'flex';
+                return;
+            }
+            
+            const manageSection = document.getElementById('manage-killers-section');
+            manageSection.style.display = 'block';
+            
+            const manageContent = document.getElementById('manage-killers');
+            let html = `
+                <div class="killer-form">
+                    <h3><i class="fas fa-plus-circle"></i> إضافة كيلر جديد</h3>
+                    <form id="add-killer-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="killer-name">اسم الكيلر *</label>
+                                <input type="text" class="form-control" id="killer-name" name="killer-name" placeholder="مثال: The Trapper" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="killer-difficulty">مستوى الصعوبة *</label>
+                                <select class="form-control" id="killer-difficulty" name="killer-difficulty" required>
+                                    <option value="">-- اختر مستوى --</option>
+                                    <option value="سهل">سهل</option>
+                                    <option value="متوسط">متوسط</option>
+                                    <option value="صعب">صعب</option>
+                                    <option value="صعب جداً">صعب جداً</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="killer-description">وصف الكيلر *</label>
+                            <textarea class="form-control" id="killer-description" name="killer-description" placeholder="اكتب وصفاً مختصراً للكيلر وقدراته..." required></textarea>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="killer-icon">أيقونة الكيلر *</label>
+                                <select class="form-control" id="killer-icon" name="killer-icon" required>
+                                    <option value="">-- اختر أيقونة --</option>
+                                    <option value="fas fa-gem">ألماسة</option>
+                                    <option value="fas fa-ghost">شبح</option>
+                                    <option value="fas fa-tachometer-alt">سرعة</option>
+                                    <option value="fas fa-procedures">ممرضة</option>
+                                    <option value="fas fa-hat-cowboy">صياد</option>
+                                    <option value="fas fa-mask">قناع</option>
+                                    <option value="fas fa-users">مجموعة</option>
+                                    <option value="fas fa-fist-raised">قوة</option>
+                                    <option value="fas fa-skull">جمجمة</option>
+                                    <option value="fas fa-spider">عنكبوت</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="killer-color">لون الكيلر *</label>
+                                <input type="color" class="form-control" id="killer-color" name="killer-color" value="#3b82f6" required style="height: 45px; padding: 5px;">
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">إضافة الكيلر</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="killer-form">
+                    <h3><i class="fas fa-list"></i> الكيلرات المضافة (${killers.length})</h3>
+                    <div id="killer-list">
+            `;
+            
+            if (killers.length === 0) {
+                html += `<p style="text-align: center; color: #94a3b8; padding: 20px;">لا توجد كيلرات مضافة بعد.</p>`;
+            } else {
+                killers.forEach(killer => {
+                    html += `
+                        <div class="killer-item" style="background-color: #0f172a; padding: 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background-color: ${killer.color}; display: flex; align-items: center; justify-content: center;">
+                                    <i class="${killer.icon}" style="color: white;"></i>
+                                </div>
+                                <div>
+                                    <h4 style="color: #f8fafc; margin-bottom: 5px;">${killer.name}</h4>
+                                    <p style="color: #94a3b8; font-size: 0.9rem;">${killer.difficulty}</p>
+                                </div>
+                            </div>
+                            <div>
+                                <button class="btn btn-danger btn-small delete-killer-btn" data-id="${killer.id}">حذف</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            
+            html += `
+                    </div>
+                </div>
+            `;
+            
+            manageContent.innerHTML = html;
+            
+            // إضافة أحداث لواجهة إدارة الكيلرات
+            setupManageKillersEvents();
+        }
+
+        // إعداد أحداث واجهة إدارة الكيلرات
+        function setupManageKillersEvents() {
+            // إضافة كيلر جديد
+            document.getElementById('add-killer-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('killer-name').value;
+                const difficulty = document.getElementById('killer-difficulty').value;
+                const description = document.getElementById('killer-description').value;
+                const icon = document.getElementById('killer-icon').value;
+                const color = document.getElementById('killer-color').value;
+                
+                if (!name || !difficulty || !description || !icon || !color) {
+                    alert('يرجى ملء جميع الحقول المطلوبة');
+                    return;
+                }
+                
+                // إنشاء كيلر جديد
+                const newKiller = {
+                    id: killers.length > 0 ? Math.max(...killers.map(k => k.id)) + 1 : 1,
+                    name: name,
+                    description: description,
+                    difficulty: difficulty,
+                    icon: icon,
+                    color: color
+                };
+                
+                // إضافة الكيلر إلى القائمة
+                killers.push(newKiller);
+                
+                // حفظ في localStorage
+                saveKillers();
+                
+                // إعادة تعيين النموذج
+                document.getElementById('add-killer-form').reset();
+                
+                // إعادة عرض الكيلرات
+                renderKillers();
+                
+                // تحديث واجهة الإدارة
+                showManageKillers();
+                
+                alert('تم إضافة الكيلر بنجاح! سيظهر الآن في قائمة الكيلرات.');
+            });
+            
+            // حذف الكيلر
+            document.querySelectorAll('.delete-killer-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const killerId = parseInt(this.dataset.id);
+                    
+                    // التحقق إذا كان هناك بيلدات مرتبطة بهذا الكيلر
+                    const relatedBuilds = builds.filter(b => b.killerId === killerId);
+                    if (relatedBuilds.length > 0) {
+                        if (!confirm(`هذا الكيلر لديه ${relatedBuilds.length} بيلدات مرتبطة به. حذفه سيحذف جميع البيلدات المرتبطة به. هل أنت متأكد من الحذف؟`)) {
+                            return;
+                        }
+                        
+                        // حذف البيلدات المرتبطة
+                        builds = builds.filter(b => b.killerId !== killerId);
+                        saveBuilds();
+                    }
+                    
+                    killers = killers.filter(k => k.id !== killerId);
+                    saveKillers();
+                    renderKillers();
+                    showManageKillers();
+                    alert('تم حذف الكيلر بنجاح!');
+                });
+            });
+        }
+
+        // تحديث التنقل النشط
+        function updateActiveNav(activeId) {
+            document.querySelectorAll('nav a').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.getElementById(activeId)?.classList.add('active');
+        }
+
+        // إعداد معالجي الأحداث
+        function setupEventListeners() {
+            // أحداث أزرار التنقل
+            document.getElementById('nav-killers').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('killers-section').scrollIntoView({ behavior: 'smooth' });
+                updateActiveNav('nav-killers');
+                document.getElementById('manage-killers-section').style.display = 'none';
+            });
+            
+            document.getElementById('nav-builds').addEventListener('click', function(e) {
+                e.preventDefault();
+                if (selectedKillerId) {
+                    document.getElementById('builds-section').scrollIntoView({ behavior: 'smooth' });
+                    updateActiveNav('nav-builds');
+                    document.getElementById('manage-killers-section').style.display = 'none';
+                } else {
+                    alert('يرجى اختيار كيلر أولاً لعرض البيلدات');
+                }
+            });
+            
+            document.getElementById('nav-add-build').addEventListener('click', function(e) {
+                e.preventDefault();
+                if (currentUser) {
+                    showAddBuildForm();
+                    document.getElementById('add-build-section').scrollIntoView({ behavior: 'smooth' });
+                    updateActiveNav('nav-add-build');
+                    document.getElementById('manage-killers-section').style.display = 'none';
+                } else {
+                    document.getElementById('login-overlay').style.display = 'flex';
+                }
+            });
+            
+            document.getElementById('nav-manage-killers').addEventListener('click', function(e) {
+                e.preventDefault();
+                if (currentUser) {
+                    showManageKillers();
+                    document.getElementById('manage-killers-section').scrollIntoView({ behavior: 'smooth' });
+                    updateActiveNav('nav-manage-killers');
+                } else {
+                    document.getElementById('login-overlay').style.display = 'flex';
+                }
+            });
+            
+            // زر عرض الكيلرات
+            document.getElementById('view-killers-btn').addEventListener('click', function() {
+                document.getElementById('killers-section').scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // أحداث الكيلرات
+            document.getElementById('killers-grid').addEventListener('click', function(e) {
+                const killerCard = e.target.closest('.killer-card');
+                if (killerCard) {
+                    const killerId = parseInt(killerCard.dataset.id);
+                    selectedKillerId = killerId;
+                    
+                    // إزالة النشط من جميع الكيلرات
+                    document.querySelectorAll('.killer-card').forEach(card => {
+                        card.classList.remove('active');
+                    });
+                    
+                    // إضافة النشط للكيلر المحدد
+                    killerCard.classList.add('active');
+                    
+                    // عرض البيلدات
+                    renderBuildsForKiller(killerId);
+                    
+                    // التمرير إلى قسم البيلدات
+                    setTimeout(() => {
+                        document.getElementById('builds-section').scrollIntoView({ behavior: 'smooth' });
+                    }, 300);
+                }
+                
+                // أحداث الأزرار الديناميكية
+                if (e.target.id === 'login-to-manage-btn' || e.target.closest('#login-to-manage-btn')) {
+                    document.getElementById('login-overlay').style.display = 'flex';
+                }
+            });
+            
+            // أحداث تسجيل الدخول
+            document.getElementById('login-btn').addEventListener('click', function() {
+                if (currentUser) {
+                    // تسجيل الخروج
+                    currentUser = null;
+                    localStorage.removeItem('dbdCurrentUser');
+                    updateUIForLogin();
+                    this.textContent = 'تسجيل الدخول';
+                } else {
+                    // عرض نموذج تسجيل الدخول
+                    document.getElementById('login-overlay').style.display = 'flex';
+                }
+            });
+            
+            // إلغاء تسجيل الدخول
+            document.getElementById('cancel-login-btn').addEventListener('click', function() {
+                document.getElementById('login-overlay').style.display = 'none';
+                document.getElementById('login-form').reset();
+                document.getElementById('login-message').className = 'login-message';
+                document.getElementById('login-message').innerHTML = 'أدخل اسم المستخدم وكلمة المرور للوصول إلى ميزات إدارة الموقع.';
+            });
+            
+            // تسجيل الدخول
+            document.getElementById('login-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                const loginMessage = document.getElementById('login-message');
+                
+                if (username === validUsername && password === validPassword) {
+                    // تسجيل الدخول ناجح
+                    currentUser = { username: username };
+                    localStorage.setItem('dbdCurrentUser', JSON.stringify(currentUser));
+                    
+                    loginMessage.className = 'login-message success';
+                    loginMessage.textContent = 'تم تسجيل الدخول بنجاح!';
+                    
+                    setTimeout(() => {
+                        document.getElementById('login-overlay').style.display = 'none';
+                        updateUIForLogin();
+                        document.getElementById('login-form').reset();
+                        
+                        // إذا كان في قسم إضافة البيلد، عرض النموذج
+                        if (document.getElementById('nav-add-build').classList.contains('active')) {
+                            showAddBuildForm();
+                        }
+                        
+                        // إذا كان في قسم إدارة الكيلرات، عرض الواجهة
+                        if (document.getElementById('nav-manage-killers').classList.contains('active')) {
+                            showManageKillers();
+                        }
+                    }, 1500);
+                } else {
+                    // فشل تسجيل الدخول
+                    loginMessage.className = 'login-message error';
+                    loginMessage.textContent = 'اسم المستخدم أو كلمة المرور غير صحيحة!';
+                }
+            });
+            
+            // إغلاق نافذة تسجيل الدخول بالنقر خارجها
+            document.getElementById('login-overlay').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                    document.getElementById('login-form').reset();
+                    document.getElementById('login-message').className = 'login-message';
+                    document.getElementById('login-message').innerHTML = 'أدخل اسم المستخدم وكلمة المرور للوصول إلى ميزات إدارة الموقع.';
+                }
+            });
+            
+            // أحداث نافذة التقييم
+            document.querySelectorAll('#rating-modal-stars .star').forEach(star => {
+                star.addEventListener('click', function() {
+                    const rating = parseInt(this.dataset.rating);
+                    
+                    // تحديث النجوم
+                    document.querySelectorAll('#rating-modal-stars .star').forEach((s, index) => {
+                        s.classList.remove('active');
+                        if (index < rating) {
+                            s.classList.add('active');
+                        }
+                    });
+                });
+            });
+            
+            // إلغاء التقييم
+            document.getElementById('cancel-rating-btn').addEventListener('click', function() {
+                document.getElementById('rating-modal').style.display = 'none';
+                currentRatingBuildId = null;
+            });
+            
+            // تأكيد التقييم
+            document.getElementById('submit-rating-btn').addEventListener('click', function() {
+                if (!currentRatingBuildId) return;
+                
+                const activeStars = document.querySelectorAll('#rating-modal-stars .star.active').length;
+                if (activeStars === 0) {
+                    alert('يرجى اختيار تقييم من 1 إلى 5 نجوم');
+                    return;
+                }
+                
+                // حفظ التقييم
+                const ratingValue = activeStars;
+                
+                if (!ratings[currentRatingBuildId]) {
+                    ratings[currentRatingBuildId] = [];
+                }
+                
+                // التحقق إذا كان المستخدم قد قيم بالفعل
+                const userIndex = ratings[currentRatingBuildId].findIndex(r => r.user === (currentUser ? currentUser.username : 'زائر'));
+                
+                if (userIndex !== -1) {
+                    // تحديث التقييم القديم
+                    ratings[currentRatingBuildId][userIndex].rating = ratingValue;
+                } else {
+                    // إضافة تقييم جديد
+                    ratings[currentRatingBuildId].push({
+                        user: currentUser ? currentUser.username : 'زائر',
+                        rating: ratingValue,
+                        date: new Date().toISOString()
+                    });
+                }
+                
+                // حفظ التقييمات
+                saveRatings();
+                
+                // إغلاق النافذة
+                document.getElementById('rating-modal').style.display = 'none';
+                
+                // إعادة عرض البيلدات لتحديث التقييم
+                if (selectedKillerId) {
+                    renderBuildsForKiller(selectedKillerId);
+                }
+                
+                alert('شكراً لتقييمك!');
+                currentRatingBuildId = null;
+            });
+            
+            // إغلاق نافذة التقييم بالنقر خارجها
+            document.getElementById('rating-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                    currentRatingBuildId = null;
+                }
+            });
+            
+            // أحداث نافذة الحذف
+            document.getElementById('cancel-delete-btn').addEventListener('click', function() {
+                document.getElementById('delete-modal').style.display = 'none';
+                currentDeleteBuildId = null;
+            });
+            
+            document.getElementById('confirm-delete-btn').addEventListener('click', function() {
+                if (currentDeleteBuildId) {
+                    deleteBuild(currentDeleteBuildId);
+                    document.getElementById('delete-modal').style.display = 'none';
+                    currentDeleteBuildId = null;
+                }
+            });
+            
+            // إغلاق نافذة الحذف بالنقر خارجها
+            document.getElementById('delete-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                    currentDeleteBuildId = null;
+                }
+            });
+            
+            // أحداث الأزرار الديناميكية
+            document.addEventListener('click', function(e) {
+                if (e.target.id === 'login-to-add-btn' || e.target.closest('#login-to-add-btn')) {
+                    document.getElementById('login-overlay').style.display = 'flex';
+                }
+                
+                if (e.target.id === 'login-to-add-form-btn' || e.target.closest('#login-to-add-form-btn')) {
+                    document.getElementById('login-overlay').style.display = 'flex';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
