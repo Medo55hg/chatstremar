@@ -239,25 +239,37 @@
       min-height:40px;
     }
     .card{
-  min-width:44px;
-  padding:8px 12px;
-  border-radius:14px;
-  background:radial-gradient(circle at top,#1f2937 0,transparent 60%),
-             linear-gradient(145deg,rgba(15,23,42,0.96),rgba(11,15,25,0.98));
-  border:1px solid rgba(148,163,184,0.7);
-  text-align:center;
-  font-size:22px;       /* ← خط البطاقات صار أكبر */
-  font-weight:900;      /* ← سماكة أكبر */
-  user-select:none;
-}
-.card.star{
-  border-color:var(--warn);
-  box-shadow:0 0 14px rgba(250,204,21,0.55);
-}
-
+      min-width:44px;
+      padding:8px 12px;
+      border-radius:14px;
+      background:radial-gradient(circle at top,#1f2937 0,transparent 60%),
+                 linear-gradient(145deg,rgba(15,23,42,0.96),rgba(11,15,25,0.98));
+      border:1px solid rgba(148,163,184,0.7);
+      text-align:center;
+      font-size:22px;
+      font-weight:900;
+      user-select:none;
+      position:relative;
+    }
     .card.star{
       border-color:var(--warn);
-      box-shadow:0 0 12px rgba(250,204,21,0.5);
+      box-shadow:0 0 14px rgba(250,204,21,0.55);
+    }
+
+    .card-number {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      font-size: 10px;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
     }
 
     .current-row-header{
@@ -535,6 +547,104 @@
     }
     .winner-banner span.name{font-weight:800;}
 
+    /* حاوية جديدة للجانب الأيمن (البطاقات بشكل عمودي) */
+    .right-cards-panel {
+      position: absolute;
+      right: -150px; /* خارج مربع اللعبة على اليمين */
+      top: 50%;
+      transform: translateY(-50%);
+      width: 140px;
+      background: var(--panel-soft);
+      border-radius: 16px;
+      border: 1px solid rgba(148,163,184,0.25);
+      padding: 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 10;
+    }
+
+    .right-cards-panel h3 {
+      font-size: 14px;
+      color: var(--accent);
+      text-align: center;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .vertical-cards-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .vertical-card {
+      width: 70px;
+      height: 70px;
+      border-radius: 12px;
+      background: radial-gradient(circle at top,#1f2937 0,transparent 60%),
+                 linear-gradient(145deg,rgba(15,23,42,0.96),rgba(11,15,25,0.98));
+      border: 1px solid rgba(148,163,184,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--text-main);
+      position: relative;
+    }
+
+    .vertical-card.star {
+      border-color: var(--warn);
+      box-shadow: 0 0 12px rgba(250,204,21,0.55);
+    }
+
+    .vertical-card-number {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      font-size: 12px;
+      background: rgba(0,0,0,0.8);
+      color: white;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .player-turn-notification {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      color: white;
+      padding: 20px 40px;
+      border-radius: 20px;
+      font-size: 28px;
+      font-weight: 800;
+      text-align: center;
+      z-index: 100;
+      box-shadow: 0 15px 40px rgba(248,113,113,0.5);
+      animation: fadeInOut 2s ease-in-out;
+      display: none;
+      white-space: nowrap;
+    }
+
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+      20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+    }
+
     /* لوحة الاتصال أسفل الصفحة */
     .bottom-panel h2{margin-bottom:6px;}
     .connection-row{
@@ -626,6 +736,30 @@
       direction:ltr;
       unicode-bidi:plaintext;
     }
+
+    @media (max-width: 1100px) {
+      .right-cards-panel {
+        position: relative;
+        right: auto;
+        top: auto;
+        transform: none;
+        width: 100%;
+        max-width: 650px;
+        margin: 20px auto 0;
+      }
+      
+      .vertical-cards-container {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      .vertical-card {
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -645,7 +779,7 @@
     </header>
 
     <main class="layout">
-      <!-- لوحة التحكم (فوق – خارج مربع اللعبة) -->
+      <!-- لوحة التحكم (فوق مربع اللعبة – خارجها) -->
       <section class="panel control-panel">
         <h2><span class="icon">🎛️</span> لوحة التحكم</h2>
         <small>من هنا تتحكم بوقت الدور وبداية اللعبة وترتيب الأدوار.</small>
@@ -724,56 +858,48 @@
 
         <div class="divider" style="max-width:650px;width:100%;margin:10px auto;"></div>
 
-        <div class="table">
-          <div class="center-word-card">
-            <div class="center-word-label">الكلمة الحالية</div>
-            <div class="center-word" id="centerWord">— — —</div>
-            <div class="center-word-sub">تتعيّن من الكلمة الأساسية قبل بدء اللعبة</div>
+        <!-- منطقة الطاولة الرئيسية مع البطاقات على اليمين -->
+        <div style="position: relative; width: 100%; max-width: 650px; margin: 0 auto;">
+          <div class="table">
+            <div class="center-word-card">
+              <div class="center-word-label">الكلمة الحالية</div>
+              <div class="center-word" id="centerWord">— — —</div>
+              <div class="center-word-sub">تتعيّن من الكلمة الأساسية قبل بدء اللعبة</div>
 
-            <div class="turn-indicator">
-              <span>الدور الحالي:</span>
-              <span class="player-name" id="turnPlayerName">لا يوجد</span>
-              <span class="timer" id="turnTimer">-- ثانية</span>
+              <div class="turn-indicator">
+                <span>الدور الحالي:</span>
+                <span class="player-name" id="turnPlayerName">لا يوجد</span>
+                <span class="timer" id="turnTimer">-- ثانية</span>
+              </div>
+
+              <div class="proposed-block" id="proposedBlock">
+                <div class="proposed-label">الكلمة المقترحة من اللاعب:</div>
+                <div class="proposed-word" id="proposedWordText">—</div>
+                <div class="proposed-meta" id="proposedMeta">—</div>
+              </div>
             </div>
 
-            <div class="proposed-block" id="proposedBlock">
-              <div class="proposed-label">الكلمة المقترحة من اللاعب:</div>
-              <div class="proposed-word" id="proposedWordText">—</div>
-              <div class="proposed-meta" id="proposedMeta">—</div>
-            </div>
+            <div class="players-ring" id="playersRing"></div>
           </div>
 
-          <div class="players-ring" id="playersRing"></div>
+          <!-- لوحة البطاقات على اليمين -->
+          <div class="right-cards-panel" id="rightCardsPanel">
+            <h3><span>🎴 بطاقات اللاعب الحالي</span></h3>
+            <div class="vertical-cards-container" id="verticalCardsContainer">
+              <!-- البطاقات ستظهر هنا بشكل عمودي -->
+            </div>
+          </div>
+        </div>
+
+        <!-- إشعار بداية الدور -->
+        <div class="player-turn-notification" id="playerTurnNotification">
+          <!-- سيتم تعبئته بالجافاسكريبت -->
         </div>
 
         <!-- شريط الفائز -->
         <div class="winner-banner" id="winnerBanner">
           الفائز في هذا التحدي هو: <span class="name" id="winnerName">—</span> 🎉
         </div>
-
-        <!-- خط فاصل بين الطاولة وحروف اللاعب -->
-        <div class="divider" style="max-width:650px;width:100%;margin:10px auto;"></div>
-
-        <!-- معلومات اللاعب الحالي + الحروف داخل مربع اللعبة -->
-        <div style="max-width:650px;width:100%;margin:0 auto;">
-          <div class="current-row-header">
-            <span class="name" id="currentPlayerName">لا يوجد لاعب نشط</span>
-            <span class="cards" id="currentPlayerCardsInfo">— بطاقات</span>
-          </div>
-          <div class="cards-row" id="currentPlayerCardsRow">
-            <!-- بطاقات اللاعب الحالي -->
-          </div>
-          <div class="status-bar" id="statusBar">
-            أضِف اللاعبين من التشات ثم عيّن الكلمة الأولى واضغط "بدء اللعبة".
-          </div>
-          <div class="label-badge">
-            اللاعب الحالي:
-            <strong id="currentPlayerLabel">لا يوجد</strong>
-          </div>
-        </div>
-
-        <!-- قائمة اللاعبين النصية (منطق فقط) -->
-        <div id="playersList" class="players-list"></div>
       </section>
 
       <!-- لوحة الاتصال أسفل الصفحة -->
@@ -876,6 +1002,7 @@
     let remainingSeconds = 0;
     let gameStarted = false;
     let winnerFound = false;
+    let isPlayerTurnNotification = false;
 
     // pendingSuggestion: {playerIndex, cardIndex, word, position, fromPlatform, fromName}
     let pendingSuggestion = null;
@@ -911,11 +1038,6 @@
     const restartTurnBtn = document.getElementById('restartTurnBtn');
     const stopTimerBtn = document.getElementById('stopTimerBtn');
 
-    const currentPlayerLabelEl = document.getElementById('currentPlayerLabel');
-    const currentPlayerNameEl = document.getElementById('currentPlayerName');
-    const currentPlayerCardsInfoEl = document.getElementById('currentPlayerCardsInfo');
-    const currentPlayerCardsRowEl = document.getElementById('currentPlayerCardsRow');
-
     const statusBarEl = document.getElementById('statusBar');
 
     const winnerBannerEl = document.getElementById('winnerBanner');
@@ -932,6 +1054,8 @@
     const helpModalClose = document.getElementById('helpModalClose');
 
     const bigTimerValueEl = document.getElementById('bigTimerValue');
+    const verticalCardsContainerEl = document.getElementById('verticalCardsContainer');
+    const playerTurnNotificationEl = document.getElementById('playerTurnNotification');
 
     // ===== وظائف مساعدة عامة =====
     function setStatus(message,type='info'){
@@ -1045,30 +1169,30 @@
       }
     }
 
-    function renderCurrentPlayer(){
-      currentPlayerCardsRowEl.innerHTML = '';
+    function renderVerticalCards(){
+      verticalCardsContainerEl.innerHTML = '';
 
-      if(currentPlayerIndex < 0 || currentPlayerIndex >= players.length){
-        currentPlayerLabelEl.textContent = 'لا يوجد';
-        currentPlayerNameEl.textContent = 'لا يوجد لاعب نشط';
-        currentPlayerCardsInfoEl.textContent = '— بطاقات';
+      if(currentPlayerIndex < 0 || currentPlayerIndex >= players.length || !gameStarted){
         return;
       }
 
       const p = players[currentPlayerIndex];
-      currentPlayerLabelEl.textContent = p.name;
-      currentPlayerNameEl.textContent = p.name;
-      currentPlayerCardsInfoEl.textContent = `${p.cards.length} بطاقة متبقية`;
-
+      
       p.cards.forEach((cardChar,idx)=>{
         const cardEl = document.createElement('div');
-        cardEl.className = 'card';
+        cardEl.className = 'vertical-card';
         if(cardChar === '⭐'){
           cardEl.classList.add('star');
         }
         cardEl.textContent = cardChar;
-        cardEl.title = `البطاقة رقم ${idx+1}`;
-        currentPlayerCardsRowEl.appendChild(cardEl);
+        
+        // إضافة رقم البطاقة
+        const numberEl = document.createElement('div');
+        numberEl.className = 'vertical-card-number';
+        numberEl.textContent = idx + 1;
+        cardEl.appendChild(numberEl);
+        
+        verticalCardsContainerEl.appendChild(cardEl);
       });
     }
 
@@ -1097,22 +1221,44 @@
       bigTimerValueEl.style.color = color;
     }
 
+    function showPlayerTurnNotification(playerName){
+      isPlayerTurnNotification = true;
+      playerTurnNotificationEl.textContent = `🎮 دور: ${playerName}`;
+      playerTurnNotificationEl.style.display = 'block';
+      
+      // إخفاء الإشعار بعد ثانيتين
+      setTimeout(() => {
+        playerTurnNotificationEl.style.display = 'none';
+        isPlayerTurnNotification = false;
+      }, 2000);
+    }
+
     function startTurnTimer(){
       clearInterval(timerId);
       remainingSeconds = turnSeconds;
-      timerId = setInterval(()=>{
-        remainingSeconds--;
-        if(remainingSeconds < 0){
-          clearInterval(timerId);
-          timerId = null;
-          setStatus('انتهى وقت اللاعب، الانتقال إلى اللاعب التالي تلقائيًا.', 'err');
-          clearPendingSuggestionUI();
-          goToNextPlayer();
-          return;
-        }
-        updateTimerHeader();
-      },1000);
-      updateTimerHeader();
+      
+      // إظهار إشعار بداية الدور للاعب
+      if(currentPlayerIndex >= 0 && currentPlayerIndex < players.length) {
+        const p = players[currentPlayerIndex];
+        showPlayerTurnNotification(p.name);
+        
+        // بدء المؤقت بعد انتهاء الإشعار
+        setTimeout(() => {
+          timerId = setInterval(()=>{
+            remainingSeconds--;
+            if(remainingSeconds < 0){
+              clearInterval(timerId);
+              timerId = null;
+              setStatus('انتهى وقت اللاعب، الانتقال إلى اللاعب التالي تلقائيًا.', 'err');
+              clearPendingSuggestionUI();
+              goToNextPlayer();
+              return;
+            }
+            updateTimerHeader();
+          },1000);
+          updateTimerHeader();
+        }, 2100); // بعد ثانيتين من إظهار الإشعار + 100ms تأخير إضافي
+      }
     }
 
     function stopTurnTimer(){
@@ -1137,7 +1283,7 @@
         if(players[idx].cards.length > 0){
           currentPlayerIndex = idx;
           layoutPlayersRing();
-          renderCurrentPlayer();
+          renderVerticalCards();
           startTurnTimer();
           setStatus(`الآن دور اللاعب: ${players[idx].name}`, 'info');
           return;
@@ -1174,6 +1320,10 @@
         clearPendingSuggestionUI();
         return;
       }
+      
+      // إيقاف المؤقت عند وجود اقتراح
+      stopTurnTimer();
+      
       const p = players[pendingSuggestion.playerIndex];
       proposedBlockEl.style.display = 'block';
       proposedWordTextEl.textContent = pendingSuggestion.word;
@@ -1207,7 +1357,7 @@
 
       renderPlayersList();
       layoutPlayersRing();
-      renderCurrentPlayer();
+      renderVerticalCards();
       clearPendingSuggestionUI();
 
       setStatus(`تم قبول الكلمة "${word}" للاعب: ${p.name}`, 'ok');
@@ -1537,7 +1687,7 @@
       dealCardsToPlayers();
       currentPlayerIndex = 0;
       layoutPlayersRing();
-      renderCurrentPlayer();
+      renderVerticalCards();
       startTurnTimer();
       setStatus(`تم بدء اللعبة! الآن دور اللاعب: ${players[currentPlayerIndex].name}`, 'ok');
     });
