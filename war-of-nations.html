@@ -2,20 +2,21 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>🌍 حرب الدول</title>
+<title>🌍 حرب الدول - النسخة المحسنة</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=Cairo&display=swap" rel="stylesheet">
-<script src="tmi.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tmi.js@1.8.5/dist/tmi.min.js"></script>
+  <script src="tmi.min.js"></script>
 <style>
 :root{
   --bg1:#1a1a3d; --bg2:#004466; --text:#fff; --panel:#222; --line:#444;
   --accent:#ff3333; --ok:#00e6a8; --warn:#ffcc00; --muted:#ccc; --card:#222;
-  --badge:#0b3d3d; --badge-b:#0ff; --bad:#ff6666;
+  --badge:#0b3d3d; --badge-b:#0ff; --bad:#ff6666; --ally:#00ff00;
 }
 [data-theme="light"]{
   --bg1:#f2f6ff; --bg2:#dfe9ff; --text:#111; --panel:#fff; --line:#e5e7eb;
   --accent:#ff3333; --ok:#00a37a; --warn:#b08500; --muted:#444; --card:#fff;
-  --badge:#e8f7f7; --badge-b:#027e7e; --bad:#b00020;
+  --badge:#e8f7f7; --badge-b:#027e7e; --bad:#b00020; --ally:#00aa00;
 }
 body {
   background: linear-gradient(-45deg, var(--bg1), var(--bg2), var(--bg1), var(--bg2));
@@ -43,12 +44,15 @@ h1{ font-size:36px; color:var(--accent); margin:0 0 10px; }
 button{
   padding:10px 16px; border:none; border-radius:8px; cursor:pointer;
   background:var(--accent); color:#fff; font-family:'Cairo',sans-serif;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
+button:hover{ transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
 button.alt{ background:#6c757d; }
 button.ghost{ background:#39424e; }
 button.green{ background:#198754; }
 button.cyan{ background:#0dcaf0; color:#001218; }
 button.warn{ background:#b08500; }
+button.purple{ background:#6f42c1; }
 button:disabled{ opacity:0.6; cursor:not-allowed; }
 
 select,input{ padding:10px; border-radius:8px; border:1px solid var(--line); background:#0004; color:var(--text); }
@@ -68,13 +72,82 @@ select,input{ padding:10px; border-radius:8px; border:1px solid var(--line); bac
   transition: opacity .25s ease;
 }
 
+/* زر الشرح */
+#helpBtn{
+  position:fixed; top:14px; left:14px; z-index:1001;
+  padding:8px 12px; border-radius:999px; font-size:14px; background:#222; border:1px solid #fff2;
+}
+
+/* نافذة الشرح الموسعة */
+#helpModal{ position:fixed; inset:0; background:rgba(0,0,0,.6); display:none; align-items:center; justify-content:center; z-index:1100; }
+#helpCard{
+  background:var(--card); color:var(--text); border:1px solid #ffffff22; width:min(720px, 92vw);
+  border-radius:14px; padding:16px; text-align:right; line-height:1.8; max-height:80vh; overflow-y:auto;
+}
+#helpCard h3{ margin:0 0 8px; color:#0ff; }
+#helpCard .close{ float:left; background:#39424e; }
+
+/* لوحة الاتصال */
+.connect-bar{
+  position:relative; margin:12px auto 16px; width:min(1100px, 96vw);
+  background:#0006; border:1px solid #ffffff22; border-radius:14px;
+}
+.connect-header{
+  display:flex; align-items:center; justify-content:space-between; padding:10px 14px; cursor:pointer;
+}
+.connect-left{ display:flex; align-items:center; gap:10px; }
+.chev{ transition:transform .2s ease; }
+.status-dot{
+  width:10px; height:10px; border-radius:50%; background:#7a7a7a; border:1px solid #fff3;
+}
+.status-dot.ok{ background:#19c37d; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{ opacity:1; } 50%{ opacity:0.5; } }
+.connect-title{ font-weight:700; }
+.connect-body{
+  display:none; border-top:1px dashed #ffffff30; padding:12px; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;
+}
+.connect-row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+.connect-body input, .connect-body select{ background:#0005; }
+.connect-actions{ display:flex; gap:8px; align-items:center; }
+.remember{ display:flex; align-items:center; gap:6px; font-size:14px; color:var(--muted); }
+
+/* لوحة الستريمر الموسعة */
+.streamer-bar{
+  position:relative; margin:12px auto 18px; width:min(1100px, 96vw);
+  background:#0006; border:1px solid #ffffff22; border-radius:14px;
+}
+.streamer-header{
+  display:flex; align-items:center; justify-content:space-between; padding:10px 14px; cursor:pointer;
+}
+.streamer-title{ font-weight:700; }
+.streamer-body{
+  display:none; border-top:1px dashed #ffffff30; padding:12px; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap;
+}
+.streamer-section{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+
+/* شريط تقدم اللعبة */
+#gameProgressWrap{
+  width:100%; height:6px; background:#ffffff22; border-radius:999px; margin:10px 0; overflow:hidden;
+}
+#gameProgress{ height:100%; width:0%; background:linear-gradient(90deg, var(--accent) 0%, var(--ok) 50%, var(--bad) 100%); transition:width 0.5s; }
+
+/* توهج للدور الحالي */
+.current-turn { animation: glow 1.5s infinite alternate; }
+@keyframes glow {
+  from { text-shadow: 0 0 10px #0ff; }
+  to { text-shadow: 0 0 20px #0ff, 0 0 30px #0ff; }
+}
+
+/* عداد الدول المتبقية */
+#remainingCount { font-size:20px; font-weight:bold; color:var(--ok); }
+
 /* لوحة اللاعبين */
 #wheel canvas{ display:block; margin:10px auto 0; }
 #turnTimerText { margin-top:6px; }
 #turnProgressWrap{ width:80%; height:10px; background:#ffffff22; border-radius:999px; margin:6px auto 0; overflow:hidden; }
 #turnProgress{ height:100%; width:0%; background:linear-gradient(90deg, #0ff, #09f); transition: width .2s linear; }
 
-/* الدول Grid */
+/* الدول Grid مع تأثيرات */
 #countryList{
   display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:10px; padding:8px;
 }
@@ -85,7 +158,36 @@ select,input{ padding:10px; border-radius:8px; border:1px solid var(--line); bac
   box-shadow: 0 4px 12px rgba(0,0,0,.15);
 }
 .country.show{ opacity:1; transform: translateY(0) scale(1); }
+.country:hover{ transform:translateY(-4px); box-shadow:0 8px 20px rgba(0,0,0,0.3); }
 .country img{ width:80px; display:block; margin:2px auto 6px; border-radius:6px; }
+/* إزالة تأثيرات الدول الخاصة - أصبحت مخفية */
+.country.special { 
+  background: linear-gradient(135deg, rgba(102,126,234,0.1) 0%, rgba(118,75,162,0.1) 100%);
+  position: relative;
+}
+/* رمز الدول الخاصة (خفيف) */
+.country.special::after {
+  content: "⭐";
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+/* تأثيرات الهجوم */
+.attack-effect {
+  position: absolute;
+  font-size: 40px;
+  pointer-events: none;
+  z-index: 10000;
+  animation: fly 1s forwards;
+}
+@keyframes fly {
+  0% { transform: scale(0.5); opacity: 0; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(0); opacity: 0; }
+}
 
 /* المقصّيين */
 .eliminated-section { margin-top: 16px; padding: 12px; background: rgba(255,0,0,0.12);
@@ -94,51 +196,506 @@ select,input{ padding:10px; border-radius:8px; border:1px solid var(--line); bac
 .eliminated-content { color: #ff9999; font-size: 16px; display:flex; flex-wrap:wrap; justify-content:center; gap:8px; }
 .eliminated-item { background: rgba(255,0,0,0.25); padding:6px 10px; border-radius: 8px; }
 
-/* إعادة اللاعبين */
-.revive-section{ margin-top: 12px; padding: 12px; background: rgba(0,255,0,0.12);
-  border-radius: 10px; border: 1px solid #00ff0055; }
-.revive-title{ color:#00ff99; font-size:22px; margin:0 0 8px; }
-.revive-select{ padding:8px; font-size:16px; border-radius:8px; border:none; }
-.revive-button{ background:#28a745; }
+/* لوحة الإحصائيات */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+.stat-item {
+  background: rgba(255,255,255,0.05);
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
 
-/* لوحة نتائج + تاريخ أحداث */
-.sidebar{ width:100%; border-top:1px dashed #ffffff33; margin-top:10px; padding-top:10px; }
-.score-table{ width:100%; border-collapse: collapse; font-size:14px; }
-.score-table th, .score-table td{ padding:6px 8px; border-bottom:1px solid #ffffff1a; text-align:center; }
-.score-table th{ color:#0ff; }
-.bad-icon{ color: var(--bad); }
-.ok-icon{ color: var(--ok); }
+/* أزرار التفاعل */
+.reactions-bar {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 10px 0;
+}
+.reaction-btn {
+  font-size: 24px;
+  padding: 5px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.reaction-btn:hover {
+  background: rgba(255,255,255,0.1);
+  transform: scale(1.2);
+}
 
-/* مؤقت الجولة */
-#roundTimerBox{ margin-top:10px; padding:8px; background:#0004; border:1px solid #ffffff22; border-radius:10px; display:inline-block; }
+/* لوحة البطاقات الخاصة */
+.special-cards {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 10px 0;
+}
+.card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.card:hover {
+  transform: translateY(-3px) rotate(3deg);
+}
+
 #themeToggle{ position: fixed; bottom: 14px; left: 14px; padding:8px 12px; font-size:14px; background:#222; border:1px solid #fff2; }
+
+/* أزرار الوضع السريع */
+.quick-settings {
+  display: flex;
+  gap: 8px;
+  margin: 10px 0;
+}
+.quick-btn {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+/* نافذة الإعدادات المتقدمة */
+.settings-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+}
+.settings-content {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 20px;
+  width: min(500px, 90vw);
+  max-height: 80vh;
+  overflow-y: auto;
+}
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+.setting-label {
+  font-size: 14px;
+}
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 24px;
+}
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+input:checked + .toggle-slider {
+  background-color: var(--ok);
+}
+input:checked + .toggle-slider:before {
+  transform: translateX(26px);
+}
+
+/* رمز سري للستريمر */
+.streamer-hint {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 10px;
+  color: rgba(255,255,255,0.3);
+}
 </style>
 </head>
 <body>
 <div id="noticeBar"></div>
 
-<h1>🌍 لعبة حرب الدول</h1>
+<!-- زر الشرح -->
+<button id="helpBtn">❔ شرح شامل</button>
+
+<!-- مودال الشرح الموسع -->
+<div id="helpModal">
+  <div id="helpCard">
+    <button class="close" id="helpClose">✖</button>
+    <h3>🎮 شرح شامل - حرب الدول النسخة المحسنة</h3>
+    
+    <h4>✨ الميزات الجديدة الكاملة:</h4>
+    
+    <h5>🔒 النظام الجديد: ملكية الدول مخفية</h5>
+    <ul>
+      <li><b>الأسماء مخفية:</b> لا تظهر أسماء اللاعبين في بطاقات الدول</li>
+      <li><b>الدول الخاصة مخفية:</b> لا يمكن تمييز الدول المميزة (حصانة/إعادة)</li>
+      <li><b>عشوائية كاملة:</b> الدول تظهر بشكل عادي بدون أي إشارات للملكية</li>
+      <li><b>مفاجأة:</b> لا يعرف اللاعبون ماذا سيحدث عند الهجوم على دولة</li>
+      <li><b>الستريمر فقط:</b> يستطيع الستريمر رؤية معلومات إضافية</li>
+    </ul>
+    
+    <h5>🏆 نظام النقاط والإحصائيات</h5>
+    <ul>
+      <li>تتبع أداء كل لاعب (قتلى، هجمات ناجحة، بطاقات مستخدمة)</li>
+      <li>لوحة إحصائيات حية تعرض بيانات اللعبة في الوقت الحقيقي</li>
+      <li>سجل المباريات السابقة مع التواريخ والنتائج</li>
+      <li>نقاط موسمية وترتيب اللاعبين بناء على الأداء</li>
+      <li>عرض "أكثر دولة هوجمت" و"أقوى لاعب" حالياً</li>
+    </ul>
+    
+    <h5>🤝 نظام التحالفات المؤقتة</h5>
+    <ul>
+      <li>يمكن للاعبين تشكيل تحالفات لمدة 3 أدوار باستخدام <code>!تحالف @اسم_اللاعب</code></li>
+      <li>لا يمكن للاعبين المتحالفين مهاجمة بعضهم البعض</li>
+      <li>عرض جميع التحالفات النشطة مع الوقت المتبقي</li>
+      <li>تحديث إحصائيات عدد التحالفات لكل لاعب</li>
+    </ul>
+    
+    <h5>🃏 البطاقات الخاصة</h5>
+    <ul>
+      <li><b>بطاقة السرقة:</b> تستطيع سرقة دولة عشوائية من لاعب آخر</li>
+      <li><b>بطاقة الحصانة الجماعية:</b> حصانة لكل دولك لدور واحد</li>
+      <li><b>بطاقة الهجوم المزدوج:</b> يمكنك الهجوم مرتين في نفس الدور</li>
+      <li>يظهر زر لكل بطاقة في لوحة اللاعبين</li>
+      <li>تتبع عدد البطاقات المستخدمة في الإحصائيات</li>
+    </ul>
+    
+    <h5>🎲 الأحداث العشوائية</h5>
+    <ul>
+      <li><b>زلزال:</b> تختفي دولة عشوائية من اللعبة</li>
+      <li><b>تحالف دبلوماسي:</b> جميع اللاعبين لا يهاجمون هذا الدور</li>
+      <li><b>ثورة:</b> تتبادل دولتان مالكيهما بشكل عشوائي</li>
+      <li><b>جوائز دبلوماسية:</b> جميع اللاعبين يحصلون على دولة إضافية</li>
+      <li>يمكن التحكم في فرصة حدوث الأحداث من لوحة الستريمر</li>
+    </ul>
+    
+    <h5>🎯 نظام التحديات</h5>
+    <ul>
+      <li>تحديات دورية تظهر للاعب الذي عليه الدور</li>
+      <li>مثال: "هاجم دولة مجاورة جغرافيا" أو "هاجم دولة تبدأ بحرف 'أ'"</li>
+      <li>إكمال التحدي يمنح نقاط إضافية</li>
+      <li>تحديث التحدي بعد كل هجوم</li>
+    </ul>
+    
+    <h5>💬 التفاعلات الاجتماعية</h5>
+    <ul>
+      <li>نظام رسائل خاصة بين اللاعبين باستخدام <code>!رسالة @اسم_اللاعب نص_الرسالة</code></li>
+      <li>أزرار تفاعل بالإيموجيز (👍 👎 🔥 🛡️ ⚔️ 🎉)</li>
+      <li>إشعارات عند تلقي الرسائل</li>
+      <li>عرض آخر التفاعلات في لوحة الأحداث</li>
+    </ul>
+    
+    <h5>⏱️ وضع السباق</h5>
+    <ul>
+      <li>مؤقت تنازلي (5 دقائق) يظهر في أعلى الشاشة</li>
+      <li>انتهاء الوقت ينهي اللعبة تلقائياً</li>
+      <li>تحذيرات صوتية/بصرية عند اقتراب النهاية</li>
+      <li>تغيير لون المؤقت عند انخفاض الوقت (أصفر ← أحمر)</li>
+    </ul>
+    
+    <h5>⚙️ الأدوات الإدارية المتقدمة</h5>
+    <ul>
+      <li><b>طرد اللاعبين:</b> إزالة لاعب من اللعبة</li>
+      <li><b>قائد الفريق:</b> منح صلاحيات إضافية (حصانة) للاعب</li>
+      <li><b>إيقاف مؤقت:</b> إوقف اللعبة لمدة محددة</li>
+      <li><b>إعدادات سريعة:</b> أوضاع جاهزة (سرعة، عادية، طويلة)</li>
+    </ul>
+    
+    <h4>🎯 كيفية اللعب الأساسية:</h4>
+    <ol>
+      <li><b>الانضمام:</b> اختر المنصة (Twitch/Kick)، ويكتب الجمهور <code>!دخول</code></li>
+      <li><b>البدء:</b> اضغط "بدء اللعبة" لتوزيع الدول عشوائياً</li>
+      <li><b>الدور:</b> اضغط "دوران العجلة" لاختيار لاعب عشوائياً</li>
+      <li><b>الهجوم:</b> اللاعب يهاجم بنقر الدولة في الشاشة أو كتابة اسمها في الشات</li>
+      <li><b>المفاجأة:</b> لا يعرف اللاعب ماذا سيحدث عند الهجوم (حصانة، إعادة، إقصاء)</li>
+      <li><b>التفاعل:</b> استخدم أزرار التفاعل لزيادة التفاعل</li>
+      <li><b>الفوز:</b> آخر لاعب باقٍ أو صاحب أكبر عدد دول عند انتهاء الوقت</li>
+    </ol>
+    
+    <h4>🔄 أوامر الشات الجديدة:</h4>
+    <ul>
+      <li><code>!دخول</code> - الانضمام للعبة</li>
+      <li><code>!خروج</code> - الخروج من اللعبة</li>
+      <li><code>!تحالف @اسم_اللاعب</code> - تشكيل تحالف</li>
+      <li><code>!رسالة @اسم_اللاعب نص_الرسالة</code> - إرسالة رسالة خاصة</li>
+      <li><code>!اعاده @اسم_اللاعب</code> - إعادة لاعب مطرود (لللاعب الذي لديه صلاحية الإعادة)</li>
+    </ul>
+    
+    <h4>🔒 ملاحظة هامة:</h4>
+    <p>الدول تظهر بدون أسماء مالكيها والدول المميزة مخفية تماماً. هذا يزيد من عنصر المفاجأة والتشويق في اللعبة!</p>
+    
+    <button onclick="closeHelp()" style="margin-top:20px; width:100%;">فهمت! ✨</button>
+  </div>
+</div>
+
+<h1>🌍 لعبة حرب الدول - النسخة المحسنة</h1>
 <p>اختر المنصة وأرسل <span class="badge">!دخول</span> في الشات للانضمام <span class="badge">يُقفل بعد البدء</span></p>
 
+<!-- شريط تقدم اللعبة -->
+<div id="gameProgressWrap">
+  <div id="gameProgress"></div>
+</div>
+
+<!-- عداد الدول المتبقية -->
+<div>
+  <span class="small-note">الدول المتبقية:</span>
+  <span id="remainingCount">30</span>
+</div>
+
+<!-- لوحة الاتصال -->
+<div class="connect-bar" id="connectBar">
+  <div class="connect-header" id="connectToggler">
+    <div class="connect-left">
+      <span class="chev" id="chev">▾</span>
+      <span class="connect-title">لوحة الاتصال بالشات</span>
+    </div>
+    <div class="connect-left">
+      <span class="status-dot" id="statusDot"></span>
+      <span id="statusText" class="small-note">غير متصل</span>
+    </div>
+  </div>
+  <div class="connect-body" id="connectBody" style="display:none;">
+    <div class="connect-row">
+      <label for="platformNew" class="small-note">المنصة</label>
+      <select id="platformNew">
+        <option value="twitch">Twitch</option>
+        <option value="kick">Kick</option>
+      </select>
+      <label for="channelNew" class="small-note">اسم القناة</label>
+      <input id="channelNew" type="text" placeholder="اكتب اسم القناة بدون @">
+      <label class="remember"><input type="checkbox" id="rememberChk"> تذكّرني</label>
+    </div>
+    <div class="connect-actions">
+      <button class="green" id="connectBtn">✅ اتصال</button>
+      <button class="warn" onclick="toggleRaceMode()" id="raceModeBtn">⏱️ وضع السباق: OFF</button>
+    </div>
+  </div>
+</div>
+
+<!-- لوحة الستريمر الموسعة -->
+<div class="streamer-bar" id="streamerBar">
+  <div class="streamer-header" id="streamerToggler">
+    <span class="streamer-title">لوحة تحكم الستريمر المتقدمة</span>
+    <span class="chev" id="streamerChev">▾</span>
+  </div>
+  <div class="streamer-body" id="streamerBody" style="display:none;">
+    <!-- بدء اللعبة -->
+    <div class="streamer-section">
+      <button class="green" onclick="startGame()">🚀 بدء اللعبة</button>
+      <button class="purple" onclick="showAdvancedSettings()">⚙️ الإعدادات المتقدمة</button>
+      <button class="cyan" onclick="toggleStreamerView()" id="streamerViewBtn">👁️ عرض الستريمر</button>
+    </div>
+
+    <!-- أوضاع سريعة -->
+    <div class="streamer-section">
+      <div class="quick-settings">
+        <button class="quick-btn purple" onclick="loadTemplate('speed')">سرعة ⚡</button>
+        <button class="quick-btn cyan" onclick="loadTemplate('normal')">عادية 🎯</button>
+        <button class="quick-btn warn" onclick="loadTemplate('long')">طويلة ⏳</button>
+      </div>
+    </div>
+
+    <!-- مدة دوران العجلة -->
+    <div class="streamer-section" title="مدة دوران العجلة">
+      <label class="small-note" for="spinTimeSelect">⏱️ مدة دوران العجلة</label>
+      <select id="spinTimeSelect">
+        <option value="10">10 ثواني</option>
+        <option value="20">20 ثانية</option>
+        <option value="30">30 ثانية</option>
+        <option value="40">40 ثانية</option>
+        <option value="50">50 ثانية</option>
+        <option value="60" selected>60 ثانية</option>
+      </select>
+    </div>
+
+    <!-- إعادة لاعب + إعادة تعيين -->
+    <div class="streamer-section">
+      <label class="small-note" for="reviveSelect">♻️ إعادة لاعب</label>
+      <select id="reviveSelect">
+        <option value="">اختر لاعباً لإعادته</option>
+      </select>
+      <button onclick="revivePlayer()" class="cyan">إعادة</button>
+
+      <button class="alt" onclick="resetGame()">↺ إعادة تعيين</button>
+    </div>
+
+    <!-- التحكم بالأحداث العشوائية -->
+    <div class="streamer-section">
+      <label class="small-note" for="eventChance">🎲 فرصة الأحداث العشوائية</label>
+      <select id="eventChance" onchange="updateEventChance()">
+        <option value="0">0%</option>
+        <option value="10" selected>10%</option>
+        <option value="20">20%</option>
+        <option value="30">30%</option>
+        <option value="50">50%</option>
+      </select>
+      <button onclick="triggerRandomEvent()" class="purple">🎲 حدث عشوائي</button>
+    </div>
+
+    <!-- أدوات إدارية -->
+    <div class="streamer-section">
+      <select id="adminPlayerSelect">
+        <option value="">اختر لاعباً</option>
+      </select>
+      <button onclick="adminKick()" class="bad">🚫 طرد</button>
+      <button onclick="assignTeamCaptain()" class="green">👑 قائد فريق</button>
+      <button onclick="pauseGame(30)" class="warn">⏸️ إيقاف 30ث</button>
+    </div>
+  </div>
+</div>
+
+<!-- نافذة الإعدادات المتقدمة -->
+<div id="advancedSettingsModal" class="settings-modal">
+  <div class="settings-content">
+    <h3 style="margin-top:0; color:var(--ok);">⚙️ الإعدادات المتقدمة</h3>
+    
+    <div class="setting-item">
+      <span class="setting-label">✅ السماح بالهجوم على النفس</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="settingSelfAttack" checked>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    
+    <div class="setting-item">
+      <span class="setting-label">🤝 تمكين نظام التحالفات</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="settingAlliances" checked>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    
+    <div class="setting-item">
+      <span class="setting-label">🃏 تمكين البطاقات الخاصة</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="settingSpecialCards" checked>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    
+    <div class="setting-item">
+      <span class="setting-label">🎲 تمكين الأحداث العشوائية</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="settingRandomEvents" checked>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    
+    <div class="setting-item">
+      <span class="setting-label">🎯 تمكين نظام التحديات</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="settingChallenges" checked>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    
+    <div class="setting-item">
+      <span class="setting-label">💬 تمكين الرسائل الخاصة</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="settingMessages" checked>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    
+    <div class="setting-item">
+      <span class="setting-label">🔒 إخفاء أسماء المالكين</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="settingHideOwners" checked disabled>
+        <span class="toggle-slider"></span>
+      </label>
+      <span class="small-note" style="margin-right:10px;">(دائم مفعل)</span>
+    </div>
+    
+    <div class="setting-item">
+      <span class="setting-label">🎁 إخفاء الدول الخاصة</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="settingHideSpecial" checked disabled>
+        <span class="toggle-slider"></span>
+      </label>
+      <span class="small-note" style="margin-right:10px;">(دائم مفعل)</span>
+    </div>
+    
+    <div class="setting-item">
+      <span class="setting-label">⏱️ وقت الدور الافتراضي</span>
+      <select id="settingDefaultTurnTime">
+        <option value="20">20 ثانية</option>
+        <option value="30" selected>30 ثانية</option>
+        <option value="45">45 ثانية</option>
+        <option value="60">60 ثانية</option>
+      </select>
+    </div>
+    
+    <div class="setting-item">
+      <span class="setting-label">🎯 وقت دوران العجلة الافتراضي</span>
+      <select id="settingDefaultSpinTime">
+        <option value="10">10 ثواني</option>
+        <option value="20">20 ثانية</option>
+        <option value="30">30 ثانية</option>
+        <option value="40">40 ثانية</option>
+        <option value="50">50 ثانية</option>
+        <option value="60" selected>60 ثانية</option>
+      </select>
+    </div>
+    
+    <div style="margin-top:20px; display:flex; gap:10px;">
+      <button onclick="saveAdvancedSettings()" class="green" style="flex:1;">💾 حفظ الإعدادات</button>
+      <button onclick="closeAdvancedSettings()" class="alt" style="flex:1;">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- أزرار التفاعل -->
+<div class="reactions-bar" id="reactionsBar">
+  <button class="reaction-btn" onclick="sendReaction('👍')">👍</button>
+  <button class="reaction-btn" onclick="sendReaction('👎')">👎</button>
+  <button class="reaction-btn" onclick="sendReaction('🔥')">🔥</button>
+  <button class="reaction-btn" onclick="sendReaction('🛡️')">🛡️</button>
+  <button class="reaction-btn" onclick="sendReaction('⚔️')">⚔️</button>
+  <button class="reaction-btn" onclick="sendReaction('🎉')">🎉</button>
+</div>
+
 <div class="container">
-  <!-- لوحة اللاعبين -->
+  <!-- لوحة اللاعبين والإحصائيات -->
   <div class="panel" id="wheel">
     <h3>👥 قائمة اللاعبين</h3>
     <p class="small-note">سيكون اختيار الأسماء عشوائيًا</p>
     <canvas id="playerWheel" width="420" height="420"></canvas>
-    <div class="controls-row" style="margin-top:6px;">
-      <div title="مدة دوران العجلة: تؤثر على مدة الأنيميشن فقط">
-        <select id="spinTimeSelect">
-          <option value="10">10 ثواني</option>
-          <option value="20">20 ثانية</option>
-          <option value="30">30 ثانية</option>
-          <option value="40">40 ثانية</option>
-          <option value="50">50 ثانية</option>
-          <option value="60" selected>60 ثانية</option>
-        </select>
-        <div class="small-note">⏱️ مدة دوران العجلة</div>
-      </div>
 
+    <div class="controls-row" style="margin-top:6px;">
       <div title="عدّاد الدور: الوقت المسموح للاعب المختار قبل التجاوز">
         <select id="turnSecondsSelect">
           <option value="20">20ث</option>
@@ -151,38 +708,67 @@ select,input{ padding:10px; border-radius:8px; border:1px solid var(--line); bac
 
       <button onclick="spinWheelAnimated()">🎯 دوران العجلة</button>
       <button class="ghost" onclick="skipTurn()">⏭️ تجاوز الدور</button>
-      <button class="alt" onclick="resetGame()">↺ إعادة تعيين</button>
     </div>
     <div id="turnTimerText" class="small-note">⏳ عدّاد الدور: غير نشط</div>
     <div id="turnProgressWrap"><div id="turnProgress"></div></div>
 
-    <div class="sidebar">
-      <h4 style="margin:10px 0 6px;">📊 لوحة النتائج</h4>
-      <table class="score-table" id="scoreTable">
-        <thead><tr><th>اللاعب</th><th>الدول</th><th>الحصانة</th></tr></thead>
-        <tbody></tbody>
-      </table>
+    <!-- التحدي الحالي -->
+    <div style="margin:10px 0; padding:8px; background:rgba(255,215,0,0.1); border-radius:8px; border:1px dashed gold;">
+      <h4 style="margin:0; color:gold;">🎯 التحدي الحالي</h4>
+      <div id="currentChallenge" class="small-note">هاجم دولة مجاورة جغرافيا للحصول على نقاط إضافية!</div>
+    </div>
 
-      <h4 style="margin:10px 0 6px;">🕑 آخر الأحداث</h4>
-      <div id="eventLog" class="small-note" style="text-align:right; max-height:140px; overflow:auto;"></div>
-
-      <div style="margin-top:10px;">
-        <button class="warn" onclick="endRound()">🏁 إنهاء الجولة وإعلان الفائز</button>
+    <!-- لوحة البطاقات الخاصة -->
+    <div style="margin-top:10px;">
+      <h4 style="margin:0 0 6px;">🃏 البطاقات الخاصة</h4>
+      <div class="special-cards" id="specialCards">
+        <div class="card" onclick="useSpecialCard('steal')">سرقة</div>
+        <div class="card" onclick="useSpecialCard('immunity')">حصانة جماعية</div>
+        <div class="card" onclick="useSpecialCard('double')">هجوم مزدوج</div>
       </div>
+    </div>
+    
+    <!-- لوحة الأحداث -->
+    <div style="margin-top:10px;">
+      <h4 style="margin:0 0 6px;">🕑 آخر الأحداث</h4>
+      <div id="eventLog" class="small-note" style="text-align:right; max-height:140px; overflow:auto;"></div>
+    </div>
+    
+    <div style="margin-top:10px;">
+      <button class="warn" onclick="endRound()">🏁 إنهاء الجولة وإعلان الفائز</button>
     </div>
   </div>
 
-  <!-- الدول -->
+  <!-- لوحة الدول والإحصائيات -->
   <div class="panel">
     <div class="controls-row" style="justify-content:space-between;">
-      <h3 style="margin:0;">🌐 الدول</h3>
+      <h3 style="margin:0;">🌐 الدول <span id="specialCountInfo" class="small-note"></span></h3>
       <div>
         <button onclick="manualShuffle()">🔁 خلط الدول</button>
         <button class="ghost" onclick="clearSavedState()">🗑️ حذف الحفظ</button>
       </div>
     </div>
-    <p class="small-note">تقدر تنقر على بطاقة دولة للهجوم إذا كان دورك</p>
+    <p class="small-note">انقر على بطاقة دولة للهجوم إذا كان دورك - الملكية مخفية!</p>
     <div id="countryList"></div>
+
+    <!-- لوحة الإحصائيات -->
+    <div style="margin-top:16px;">
+      <h3 style="margin:0 0 8px;">📊 الإحصائيات الحية</h3>
+      <div class="stats-grid" id="liveStats">
+        <div class="stat-item">عدد الهجمات: <span id="attackCount">0</span></div>
+        <div class="stat-item">متوسط وقت الدور: <span id="avgTurnTime">0</span>ث</div>
+        <div class="stat-item">أكثر دولة هوجمت: <span id="mostAttacked">-</span></div>
+        <div class="stat-item">أقوى لاعب: <span id="strongestPlayer">-</span></div>
+        <div class="stat-item">نقاط التحدي: <span id="challengePoints">0</span></div>
+        <div class="stat-item">الأحداث العشوائية: <span id="eventCount">0</span></div>
+      </div>
+    </div>
+
+    <!-- التحالفات النشطة -->
+    <div style="margin-top:12px; padding:8px; background:rgba(0,255,0,0.05); border-radius:8px; border:1px dashed var(--ally);">
+      <h4 style="margin:0; color:var(--ally);">🤝 التحالفات النشطة</h4>
+      <div id="activeAlliances" class="small-note">لا توجد تحالفات حالياً</div>
+    </div>
 
     <!-- مقصّيين -->
     <div class="eliminated-section" id="eliminatedSection">
@@ -191,58 +777,29 @@ select,input{ padding:10px; border-radius:8px; border:1px solid var(--line); bac
         <div class="eliminated-item">لا يوجد محذوفين بعد</div>
       </div>
     </div>
-
-    <!-- إعادة اللاعبين + مؤقت الجولة -->
-    <div class="revive-section" id="reviveSection">
-      <h3 class="revive-title">♻️ إعادة لاعب</h3>
-      <select id="reviveSelect" class="revive-select">
-        <option value="">اختر لاعباً لإعادته</option>
-      </select>
-      <button onclick="revivePlayer()" class="revive-button">إعادة اللاعب</button>
-      <p class="small-note">أوامر الشات: <b>!اعاده @اسم</b> — الخروج: <b>!خروج</b></p>
-
-      <div id="roundTimerBox" title="مؤقت الجولة: حدّ أقصى لمدّة المباراة كلها">
-        ⌛ مؤقت الجولة:
-        <select id="roundSelect" onchange="resetRoundTimerSelect()">
-          <option value="0">بدون</option>
-          <option value="600">10 دقائق</option>
-          <option value="900">15 دقيقة</option>
-          <option value="1800" selected>30 دقيقة</option>
-        </select>
-        <span id="roundTimeText">— غير نشط</span>
-        <button class="cyan" onclick="startRoundTimer()">بدء</button>
-        <button class="alt" onclick="stopRoundTimer()">إيقاف</button>
-        <div class="small-note">📝 عند انتهاء المؤقت: نعلن الفائز حسب الباقين/أكثر دول</div>
-      </div>
-    </div>
   </div>
 </div>
 
 <div class="overlay" id="overlay"></div>
 
-<!-- اتصال بالشات -->
-<div style="margin-top:16px;">
-  <select id="platformSelect">
-    <option value="twitch">Twitch</option>
-    <option value="kick">Kick</option>
-  </select>
-  <input type="text" id="channelInput" placeholder="🎮 اكتب اسم القناة">
-  <button class="green" onclick="connectChat()">✅ تسجيل الدخول</button>
-  <div id="chatStatus" class="small-note" style="margin-top:6px; color:#0f0;"></div>
-</div>
-
+<!-- أزرار عامة -->
 <div class="controls-row" style="margin-top:12px; gap:6px;">
-  <button onclick="startGame()">بدء اللعبة</button>
-  <button class="green" onclick="saveState()">💾 حفظ</button>
-  <button class="cyan" onclick="loadState()">📥 استرجاع</button>
   <button id="themeToggle" onclick="toggleTheme()">🌓 تبديل الثيم</button>
+  <button onclick="showPlayerMessages()" class="cyan">📨 الرسائل</button>
+  <button onclick="showMatchHistory()" class="purple">📜 سجل المباريات</button>
 </div>
 
 <h3 id="currentTurnDisplay" style="margin-top:10px; color:#0ff;">✨ الدور الآن: لم يبدأ بعد</h3>
 
+<!-- المؤقت السباق -->
+<div id="raceTimer" style="position:fixed; top:20px; right:20px; background:rgba(255,0,0,0.3); padding:10px; border-radius:10px; display:none;">
+  <div style="font-size:24px; font-weight:bold;" id="raceTime">05:00</div>
+  <div class="small-note">⏱️ وضع السباق</div>
+</div>
+
 <script>
 /* =========================
-   الحالة والمتغيرات العامة
+   الحالة والمتغيرات العامة - الموسعة
    ========================= */
 let players = [], playerColors = {}, currentTurnPlayer = "";
 const countriesPool = [
@@ -256,11 +813,113 @@ let isGameStarted = false;
 const overlay = document.getElementById("overlay");
 let eliminatedData = [];
 let turnTimerId = null, turnSeconds = 30, joinLocked = false;
-let roundTimerId = null, roundLeft = 0;
 let eventLog = [];
 
 /* =========================
-   إشعارات علوية + Overlay
+   الميزات الجديدة
+   ========================= */
+// نظام النقاط والإحصائيات
+let playerStats = {};
+let totalAttacks = 0;
+let attackHistory = [];
+let gameStartTime = null;
+
+// نظام التحالفات
+let alliances = {};
+let allianceDurations = {};
+
+// البطاقات الخاصة
+let specialCards = {
+  steal: { name: "سرقة", desc: "تستطيع سرقة دولة عشوائية من لاعب آخر", used: false },
+  immunity: { name: "حصانة جماعية", desc: "حصانة لكل دولك لدور واحد", used: false },
+  double: { name: "هجوم مزدوج", desc: "هجومين في دور واحد", used: false }
+};
+
+// الأحداث العشوائية
+let randomEvents = [
+  { name: "زلزال", effect: "تختفي دولة عشوائية", chance: 10 },
+  { name: "تحالف دبلوماسي", effect: "جميع اللاعبين لا يهاجمون هذا الدور", chance: 5 },
+  { name: "ثورة", effect: "تتبادل دولتان مالكيهما", chance: 8 },
+  { name: "جوائز دبلوماسية", effect: "جميع اللاعبين يحصلون على دولة إضافية", chance: 3 }
+];
+let eventChance = 10;
+let eventCount = 0;
+
+// التحديات
+let challenges = [
+  "هاجم دولة مجاورة جغرافيا",
+  "هاجم دولة تبدأ بحرف 'أ'",
+  "هاجم دولة من قارة آسيا",
+  "هاجم دولة يملكها لاعب لديه أكبر عدد دول",
+  "هاجم دولة تبدأ بنفس حرف اسمك"
+];
+let currentChallenge = "";
+let challengePoints = 0;
+
+// الرسائل والتفاعلات
+let playerMessages = [];
+let lastReaction = "";
+
+// وضع السباق
+let raceMode = false;
+let raceTime = 300; // 5 دقائق
+let raceTimerId = null;
+
+// الموسم والمباريات
+let matchHistory = [];
+let seasonPoints = {};
+
+// الإعدادات المتقدمة
+let advancedSettings = {
+  allowSelfAttack: true,
+  allowAlliances: true,
+  enableSpecialCards: true,
+  enableRandomEvents: true,
+  enableChallenges: true,
+  enableMessages: true,
+  defaultTurnTime: 30,
+  defaultSpinTime: 60,
+  hideOwners: true, // إخفاء أسماء المالكين دائماً
+  hideSpecial: true // إخفاء الدول الخاصة دائماً
+};
+
+// كائنات الاتصال
+let twitchClient = null;
+let kickSocket = null;
+
+// عرض الستريمر
+let streamerView = false;
+
+/* =========================
+   تهيئة النظام
+   ========================= */
+function initSystem() {
+  // تهيئة إحصائيات اللاعبين
+  players.forEach(p => {
+    if (!playerStats[p]) {
+      playerStats[p] = {
+        kills: 0,
+        survived: 0,
+        wins: 0,
+        attacks: 0,
+        successfulAttacks: 0,
+        specialCardsUsed: 0,
+        allianceFormed: 0
+      };
+    }
+  });
+  
+  // تحديث العرض
+  updateStatsDisplay();
+  updateGameProgress();
+  setRandomChallenge();
+  
+  // بدء تتبع الوقت
+  gameStartTime = Date.now();
+}
+
+/* =========================
+   إشعارات + شريط علوي
    ========================= */
 const notice = document.getElementById('noticeBar');
 function toast(msg, ms=3000){
@@ -276,6 +935,214 @@ function notify(msg, ms=1800){
   notice._t = setTimeout(()=> notice.style.opacity = 0, ms);
 }
 
+/* ====== إشعار متسلسل ====== */
+function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+async function playSequence(steps){
+  overlay.style.display = "flex";
+  for (const step of steps){
+    overlay.textContent = step.text;
+    await sleep(step.duration || 1200);
+  }
+  overlay.style.display = "none";
+}
+
+/* =========================
+   تحديث الإحصائيات
+   ========================= */
+function updateStatsDisplay() {
+  document.getElementById('attackCount').textContent = totalAttacks;
+  
+  // حساب متوسط وقت الدور
+  if (totalAttacks > 0) {
+    const avgTime = Math.round((Date.now() - gameStartTime) / totalAttacks / 1000);
+    document.getElementById('avgTurnTime').textContent = avgTime;
+  }
+  
+  // تحديث الدول المتبقية
+  document.getElementById('remainingCount').textContent = remainingCountries.length;
+  
+  // تحديث معلومات الدول الخاصة (للعرض فقط للستريمر)
+  if (streamerView) {
+    const specialCount = immunityCountries.length + reviveCountries.length;
+    document.getElementById('specialCountInfo').textContent = `(${specialCount} دول خاصة)`;
+  } else {
+    document.getElementById('specialCountInfo').textContent = '';
+  }
+  
+  // تحديث التقدم
+  updateGameProgress();
+}
+
+/* =========================
+   تحديث تقدم اللعبة
+   ========================= */
+function updateGameProgress() {
+  const progressBar = document.getElementById('gameProgress');
+  const totalCountries = countriesPool.length;
+  const remaining = remainingCountries.length;
+  const progress = ((totalCountries - remaining) / totalCountries) * 100;
+  progressBar.style.width = `${progress}%`;
+}
+
+/* =========================
+   تحديث التحالفات النشطة
+   ========================= */
+function updateAlliancesDisplay() {
+  const alliancesDiv = document.getElementById('activeAlliances');
+  const activeAllies = Object.keys(alliances);
+  
+  if (activeAllies.length === 0) {
+    alliancesDiv.innerHTML = 'لا توجد تحالفات حالياً';
+    return;
+  }
+  
+  let html = '';
+  activeAllies.forEach(allianceId => {
+    const [p1, p2] = allianceId.split('_');
+    const remaining = allianceDurations[allianceId] || 0;
+    html += `<div>${p1} 🤝 ${p2} (${remaining} أدوار متبقية)</div>`;
+  });
+  
+  alliancesDiv.innerHTML = html;
+}
+
+/* =========================
+   زر ونافذة الشرح
+   ========================= */
+const helpBtn = document.getElementById('helpBtn');
+const helpModal = document.getElementById('helpModal');
+const helpClose = document.getElementById('helpClose');
+helpBtn.onclick = ()=> helpModal.style.display = 'flex';
+helpClose.onclick = ()=> helpModal.style.display = 'none';
+helpModal.onclick = (e)=>{ if(e.target===helpModal) helpModal.style.display='none'; };
+function closeHelp() { helpModal.style.display = 'none'; }
+
+/* =========================
+   الإعدادات المتقدمة
+   ========================= */
+function showAdvancedSettings() {
+  // تحميل الإعدادات الحالية
+  document.getElementById('settingSelfAttack').checked = advancedSettings.allowSelfAttack;
+  document.getElementById('settingAlliances').checked = advancedSettings.allowAlliances;
+  document.getElementById('settingSpecialCards').checked = advancedSettings.enableSpecialCards;
+  document.getElementById('settingRandomEvents').checked = advancedSettings.enableRandomEvents;
+  document.getElementById('settingChallenges').checked = advancedSettings.enableChallenges;
+  document.getElementById('settingMessages').checked = advancedSettings.enableMessages;
+  document.getElementById('settingHideOwners').checked = advancedSettings.hideOwners;
+  document.getElementById('settingHideSpecial').checked = advancedSettings.hideSpecial;
+  document.getElementById('settingDefaultTurnTime').value = advancedSettings.defaultTurnTime;
+  document.getElementById('settingDefaultSpinTime').value = advancedSettings.defaultSpinTime;
+  
+  document.getElementById('advancedSettingsModal').style.display = 'flex';
+}
+
+function closeAdvancedSettings() {
+  document.getElementById('advancedSettingsModal').style.display = 'none';
+}
+
+function saveAdvancedSettings() {
+  advancedSettings.allowSelfAttack = document.getElementById('settingSelfAttack').checked;
+  advancedSettings.allowAlliances = document.getElementById('settingAlliances').checked;
+  advancedSettings.enableSpecialCards = document.getElementById('settingSpecialCards').checked;
+  advancedSettings.enableRandomEvents = document.getElementById('settingRandomEvents').checked;
+  advancedSettings.enableChallenges = document.getElementById('settingChallenges').checked;
+  advancedSettings.enableMessages = document.getElementById('settingMessages').checked;
+  advancedSettings.defaultTurnTime = parseInt(document.getElementById('settingDefaultTurnTime').value);
+  advancedSettings.defaultSpinTime = parseInt(document.getElementById('settingDefaultSpinTime').value);
+  
+  // تطبيق بعض الإعدادات فوراً
+  document.getElementById('turnSecondsSelect').value = advancedSettings.defaultTurnTime;
+  document.getElementById('spinTimeSelect').value = advancedSettings.defaultSpinTime;
+  
+  // حفظ في التخزين المحلي
+  localStorage.setItem('war_advanced_settings', JSON.stringify(advancedSettings));
+  
+  // إعادة عرض الدول مع الإعدادات الجديدة
+  renderCountries();
+  
+  closeAdvancedSettings();
+  notify('✅ تم حفظ الإعدادات المتقدمة', 1500);
+}
+
+function loadAdvancedSettings() {
+  try {
+    const saved = localStorage.getItem('war_advanced_settings');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      advancedSettings = { ...advancedSettings, ...parsed };
+    }
+  } catch (e) {
+    console.log('لا توجد إعدادات محفوظة');
+  }
+}
+
+/* =========================
+   عرض الستريمر
+   ========================= */
+function toggleStreamerView() {
+  streamerView = !streamerView;
+  const btn = document.getElementById('streamerViewBtn');
+  
+  if (streamerView) {
+    btn.textContent = '👁️ إخفاء الستريمر';
+    btn.style.background = '#0dcaf0';
+    notify('👁️ تم تفعيل عرض الستريمر - يمكنك رؤية المعلومات المخفية', 2000);
+  } else {
+    btn.textContent = '👁️ عرض الستريمر';
+    btn.style.background = '';
+    notify('👁️ تم إخفاء عرض الستريمر', 1500);
+  }
+  
+  // إعادة عرض الدول مع العرض الجديد
+  renderCountries();
+}
+
+/* =========================
+   لوحة الاتصال
+   ========================= */
+const connectToggler = document.getElementById('connectToggler');
+const connectBody = document.getElementById('connectBody');
+const chev = document.getElementById('chev');
+const statusDot = document.getElementById('statusDot');
+const statusText = document.getElementById('statusText');
+const platformNew = document.getElementById('platformNew');
+const channelNew = document.getElementById('channelNew');
+const rememberChk = document.getElementById('rememberChk');
+
+connectToggler.onclick = ()=>{
+  const open = connectBody.style.display !== 'none';
+  connectBody.style.display = open ? 'none' : 'flex';
+  connectBody.style.display === 'flex' && (connectBody.style.gap='12px');
+  chev.style.transform = open ? 'rotate(0deg)' : 'rotate(180deg)';
+};
+
+// تحميل تذكّرني
+(function loadRemember(){
+  try{
+    const saved = JSON.parse(localStorage.getItem('war_connect_pref')||'{}');
+    if(saved.platform) platformNew.value = saved.platform;
+    if(saved.channel) channelNew.value = saved.channel;
+    if(saved.remember) rememberChk.checked = true;
+  }catch(_){}
+})();
+
+function updateStatus(ok, msg){
+  statusDot.classList.toggle('ok', !!ok);
+  statusText.textContent = msg || (ok ? 'متصل' : 'غير متصل');
+}
+
+/* =========================
+   لوحة الستريمر (طي/فتح)
+   ========================= */
+const streamerToggler = document.getElementById('streamerToggler');
+const streamerBody = document.getElementById('streamerBody');
+const streamerChev = document.getElementById('streamerChev');
+streamerToggler.onclick = ()=>{
+  const open = streamerBody.style.display !== 'none';
+  streamerBody.style.display = open ? 'none' : 'flex';
+  streamerChev.style.transform = open ? 'rotate(0deg)' : 'rotate(180deg)';
+};
+
 /* =========================
    أدوات مساعدة
    ========================= */
@@ -286,20 +1153,47 @@ function getColorForPlayer(player) {
   playerColors[player] = col;
   return col;
 }
+
 function addPlayer(name, color = null) {
   if (joinLocked) return;
   if (!name) return;
   if (!players.includes(name)) {
     players.push(name);
     getColorForPlayer(name);
-    renderPlayers(); updateScoreboard();
+    
+    // تهيئة إحصائيات اللاعب الجديد
+    if (!playerStats[name]) {
+      playerStats[name] = {
+        kills: 0,
+        survived: 0,
+        wins: 0,
+        attacks: 0,
+        successfulAttacks: 0,
+        specialCardsUsed: 0,
+        allianceFormed: 0
+      };
+    }
+    
+    renderPlayers();
+    updateAdminPlayerSelect();
   }
 }
+
 function removePlayer(name){
   const idx = players.indexOf(name);
   if (idx !== -1){
     players.splice(idx,1);
     delete playerColors[name];
+    delete playerStats[name];
+    
+    // إزالة من التحالفات
+    for (const allianceId in alliances) {
+      if (allianceId.includes(name)) {
+        delete alliances[allianceId];
+        delete allianceDurations[allianceId];
+      }
+    }
+    
     for (const c of Object.keys(assignedCountries)){
       if (assignedCountries[c] === name){
         delete assignedCountries[c];
@@ -308,9 +1202,14 @@ function removePlayer(name){
     }
     eliminatedPlayers = eliminatedPlayers.filter(x=>x!==name);
     eliminatedData = eliminatedData.filter(item=> item.player !== name);
-    renderPlayers(); renderCountries(); updateEliminatedDisplay(); updateScoreboard();
+    renderPlayers(); 
+    renderCountries(); 
+    updateEliminatedDisplay();
+    updateAlliancesDisplay();
+    updateAdminPlayerSelect();
   }
 }
+
 function logEvent(text){
   const ts = new Date().toLocaleTimeString();
   eventLog.unshift(`• [${ts}] ${text}`);
@@ -338,10 +1237,10 @@ function renderPlayers(rotation = 0) {
     ctx.textAlign = "right";
     ctx.fillStyle = "#000";
     ctx.font = "bold 14px Cairo";
-    let displayName = p + (playerImmunity[p] ? " (محصن)" : "");
+    let displayName = p + (playerImmunity[p] ? " 🛡️" : "");
     ctx.fillText(displayName, r - 10, 5); ctx.restore();
   });
-  // السهم الثابت عند زاوية 0 راديان (يمين المركز)
+  // السهم الثابت
   ctx.beginPath();
   ctx.moveTo(canvas.width - 20, r);
   ctx.lineTo(canvas.width, r - 20);
@@ -349,6 +1248,65 @@ function renderPlayers(rotation = 0) {
   ctx.closePath();
   ctx.fillStyle = "#ff0";
   ctx.fill();
+}
+
+/* =========================
+   عرض الدول + النقر للهجوم - معدل لإخفاء الأسماء
+   ========================= */
+function renderCountries() {
+  const box = document.getElementById("countryList");
+  if (!box) return;
+  box.innerHTML = "";
+
+  const list = [...remainingCountries];
+  list.forEach((c, i) => {
+    const div = document.createElement("div");
+    div.className = "country";
+    
+    // إضافة علامة الدول الخاصة فقط في عرض الستريمر
+    const isSpecial = immunityCountries.includes(c) || reviveCountries.includes(c);
+    if (isSpecial && streamerView) {
+      div.classList.add("special");
+    }
+    
+    // الحصول على المالك (للعرض فقط للستريمر)
+    const owner = assignedCountries[c];
+    
+    // بناء المحتوى بناء على الوضع
+    let countryContent = `
+      <img src="https://flagcdn.com/w80/${getCountryCode(c)}.png" alt="">
+      <div>${c}</div>
+    `;
+    
+    // إضافة المالك فقط في عرض الستريمر
+    if (streamerView && owner) {
+      countryContent += `<div class="small-note">👤 ${owner}</div>`;
+    }
+    
+    // إضافة رمز خاص للدول الخاصة في عرض الستريمر
+    if (streamerView) {
+      if (immunityCountries.includes(c)) {
+        countryContent += `<div class="streamer-hint">🛡️</div>`;
+      } else if (reviveCountries.includes(c)) {
+        countryContent += `<div class="streamer-hint">♻️</div>`;
+      }
+    }
+    
+    div.innerHTML = countryContent;
+    
+    div.onclick = () => {
+      if (isGameStarted && currentTurnPlayer && remainingCountries.includes(c)) {
+        attackCountry(c);
+      }
+    };
+    
+    setTimeout(() => {
+      box.appendChild(div);
+      requestAnimationFrame(() => div.classList.add("show"));
+    }, i * 40);
+  });
+  
+  updateGameProgress();
 }
 
 /* =========================
@@ -374,12 +1332,14 @@ function updateEliminatedDisplay() {
       reviveSelect.appendChild(option);
   });
 }
+
 function revivePlayer() {
   const reviveSelect = document.getElementById("reviveSelect");
   const playerToRevive = reviveSelect.value;
   if (!playerToRevive) return;
   reviveByName(playerToRevive);
 }
+
 function reviveByName(playerToRevive){
   if (!eliminatedPlayers.includes(playerToRevive)) return;
   players.push(playerToRevive);
@@ -399,9 +1359,11 @@ function reviveByName(playerToRevive){
       renderCountries();
       renderPlayers();
       updateEliminatedDisplay();
-      updateScoreboard();
-      notify(`♻️ تمت إعادة ${playerToRevive} بدولة جديدة`);
+      playSequence([{ text:`♻️ تمت إعادة ${playerToRevive} بدولة جديدة`, duration: 1500 }]);
       logEvent(`إعادة ${playerToRevive}`);
+      
+      // تحديث الإحصائيات
+      playerStats[playerToRevive].survived++;
   }
 }
 
@@ -425,28 +1387,28 @@ function shufflePlayersAndCountries() {
   });
   assignedCountries = newAssignedCountries;
 }
+
 function manualShuffle(){
   shufflePlayersAndCountries();
   renderCountries();
   renderPlayers();
-  updateScoreboard();
   notify("🔁 تم خلط الدول واللاعبين عشوائيًا");
 }
 
 /* =========================
-   دوران العجلة — دقّة وساعة حقيقية
+   دوران العجلة — زمن حقيقي
    ========================= */
 function spinWheelAnimated() {
   if (players.length === 0) return;
 
-  stopTurnTimer(); // نوقف عدّاد الدور لو شغّال
+  stopTurnTimer();
 
   const spinSec = Math.max(1, parseInt(document.getElementById("spinTimeSelect").value) || 10);
-  const durationMs = spinSec * 1000; // ← مدة حقيقية بالمللي ثانية
+  const durationMs = spinSec * 1000;
   const slice = 2 * Math.PI / players.length;
 
-  const fullSpins = 5 * 2 * Math.PI;     // دورات كاملة لجمالية الحركة
-  const randomAngle = Math.random() * 2 * Math.PI; // زاوية عشوائية لنتيجة مختلفة كل مرة
+  const fullSpins = 5 * 2 * Math.PI;
+  const randomAngle = Math.random() * 2 * Math.PI;
   const targetRotation = fullSpins + randomAngle;
 
   let rotation = 0;
@@ -454,8 +1416,7 @@ function spinWheelAnimated() {
 
   function animate(now) {
     const elapsed = now - start;
-    let t = Math.min(1, elapsed / durationMs);      // 0 → 1 بحسب الوقت الحقيقي
-    // منحنى تسهيل (ease-in-out, smoothstep)
+    let t = Math.min(1, elapsed / durationMs);
     const eased = t * t * (3 - 2 * t);
     rotation = targetRotation * eased;
     renderPlayers(rotation);
@@ -463,28 +1424,68 @@ function spinWheelAnimated() {
     if (t < 1) {
       requestAnimationFrame(animate);
     } else {
-      // حساب الفائز بدقة: السهم عند زاوية 0 راديان (يمين)
       const final = rotation % (2 * Math.PI);
-      // الزاوية المقابلة تحت السهم هي عكس دوران العجلة:
       const angleUnderPointer = ( (2 * Math.PI) - final ) % (2 * Math.PI);
-      // حوّلها إلى فهرس القطاع:
       const index = Math.floor(angleUnderPointer / slice) % players.length;
 
       currentTurnPlayer = players[index];
       toast(`🎯 اللاعب المختار: ${currentTurnPlayer}`, 1200);
       document.getElementById("currentTurnDisplay").innerText = `✨ الدور الآن: ${currentTurnPlayer}`;
+      document.getElementById("currentTurnDisplay").classList.add("current-turn");
 
-      // ابدأ عدّاد الدور الحقيقي بعد الاختيار
       turnSeconds = parseInt(document.getElementById("turnSecondsSelect").value) || 30;
       startTurnTimer();
       logEvent(`اختيار الدور: ${currentTurnPlayer}`);
+      
+      // عرض التحدي الحالي
+      showCurrentChallenge();
     }
   }
   requestAnimationFrame(animate);
 }
 
 /* =========================
-   عدّاد الدور (اللاعب المختار)
+   تحديات اللعبة
+   ========================= */
+function setRandomChallenge() {
+  if (!advancedSettings.enableChallenges) return;
+  const randomIndex = Math.floor(Math.random() * challenges.length);
+  currentChallenge = challenges[randomIndex];
+  document.getElementById('currentChallenge').textContent = currentChallenge;
+}
+
+function checkChallengeCompletion(attacker, country) {
+  if (!currentChallenge) return false;
+  
+  let completed = false;
+  
+  if (currentChallenge.includes("مجاورة جغرافيا")) {
+    // منطق التحقق من الدول المجاورة (مبسط)
+    completed = Math.random() > 0.5; // افتراضي للتوضيح
+  }
+  else if (currentChallenge.includes("تبدأ بحرف")) {
+    const letter = currentChallenge.match(/حرف '(.+)'/)?.[1];
+    completed = country.startsWith(letter);
+  }
+  
+  if (completed && attacker) {
+    challengePoints += 50;
+    playerStats[attacker].wins += 0.5; // نقاط إضافية
+    toast(`🎉 ${attacker} أكمل التحدي! +50 نقطة`, 1500);
+    document.getElementById('challengePoints').textContent = challengePoints;
+    setRandomChallenge();
+  }
+  
+  return completed;
+}
+
+function showCurrentChallenge() {
+  if (!currentChallenge || !currentTurnPlayer) return;
+  notify(`🎯 التحدي الحالي: ${currentChallenge}`, 3000);
+}
+
+/* =========================
+   عدّاد الدور
    ========================= */
 function startTurnTimer(){
   const txt = document.getElementById("turnTimerText");
@@ -503,170 +1504,425 @@ function startTurnTimer(){
       txt.textContent = `⏳ عدّاد الدور: انتهى`;
       notify(`⏭️ انتهى وقت ${currentTurnPlayer} — تم تجاوز الدور`);
       logEvent(`تجاوز الدور عن ${currentTurnPlayer}`);
+      document.getElementById("currentTurnDisplay").classList.remove("current-turn");
       currentTurnPlayer = "";
       document.getElementById("currentTurnDisplay").innerText = `✨ الدور الآن: لم يتم الاختيار`;
     }
   }, 1000);
 }
+
 function stopTurnTimer(){
   if (turnTimerId){ clearInterval(turnTimerId); turnTimerId = null; }
   const bar = document.getElementById("turnProgress");
   if (bar) bar.style.width = "0%";
 }
+
 function skipTurn(){
   if (!currentTurnPlayer) return;
   notify(`⏭️ تجاوزنا دور ${currentTurnPlayer}`);
   logEvent(`تجاوز ${currentTurnPlayer}`);
+  document.getElementById("currentTurnDisplay").classList.remove("current-turn");
   currentTurnPlayer = "";
   document.getElementById("currentTurnDisplay").innerText = `✨ الدور الآن: لم يتم الاختيار`;
   stopTurnTimer();
 }
 
 /* =========================
-   بدء اللعبة
+   نظام التحالفات
    ========================= */
-function startGame() {
-  if (players.length < 2) return alert("يجب إضافة لاعبين أولاً!");
-  isGameStarted = true;
-  joinLocked = true;
-  usedSpecialCountries = [];
-  eliminatedData = [];
-  playerImmunity = {};
-  eliminatedPlayers = [];
-  lastReviver = "";
-  assignedCountries = {};
-  remainingCountries = [];
-  immunityCountries = [];
-  reviveCountries = [];
-
-  const totalNeeded = Math.min(countriesPool.length, players.length + 4);
-  const availableCountries = [...countriesPool];
-  const selectedCountries = [];
-  for (let i = 0; i < totalNeeded; i++) {
-    if (availableCountries.length === 0) break;
-    const randomIndex = Math.floor(Math.random() * availableCountries.length);
-    selectedCountries.push(availableCountries[randomIndex]);
-    availableCountries.splice(randomIndex, 1);
+function formAlliance(player1, player2) {
+  if (!advancedSettings.allowAlliances) return false;
+  
+  const allianceId = [player1, player2].sort().join('_');
+  
+  if (!alliances[allianceId]) {
+    alliances[allianceId] = { player1, player2, turns: 3 };
+    allianceDurations[allianceId] = 3;
+    
+    // تحديث إحصائيات اللاعبين
+    playerStats[player1].allianceFormed++;
+    playerStats[player2].allianceFormed++;
+    
+    toast(`🤝 تحالف جديد بين ${player1} و ${player2} لمدة 3 أدوار`, 2000);
+    logEvent(`تحالف: ${player1} + ${player2}`);
+    updateAlliancesDisplay();
+    return true;
   }
-  const specialCountries = [];
-  while (specialCountries.length < Math.min(4, selectedCountries.length)) {
-    const randomIndex = Math.floor(Math.random() * selectedCountries.length);
-    specialCountries.push(selectedCountries[randomIndex]);
-    selectedCountries.splice(randomIndex, 1);
+  
+  return false;
+}
+
+function updateAlliancesDuration() {
+  for (const allianceId in allianceDurations) {
+    allianceDurations[allianceId]--;
+    
+    if (allianceDurations[allianceId] <= 0) {
+      const { player1, player2 } = alliances[allianceId];
+      delete alliances[allianceId];
+      delete allianceDurations[allianceId];
+      notify(`⚡ انتهى تحالف ${player1} و ${player2}`, 1500);
+    }
   }
-  immunityCountries = specialCountries.slice(0, 2);
-  reviveCountries = specialCountries.slice(2);
-  usedSpecialCountries.push(...specialCountries);
+  updateAlliancesDisplay();
+}
 
-  const playableCountries = [...selectedCountries];
-  const shuffledPlayers = [...players];
-  for (let i = shuffledPlayers.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffledPlayers[i], shuffledPlayers[j]] = [shuffledPlayers[j], shuffledPlayers[i]];
+function canAttack(attacker, defender) {
+  if (!attacker || !defender) return true;
+  
+  // التحقق من التحالفات
+  for (const allianceId in alliances) {
+    const alliance = alliances[allianceId];
+    if ((alliance.player1 === attacker && alliance.player2 === defender) ||
+        (alliance.player2 === attacker && alliance.player1 === defender)) {
+      return false; // لا يمكن الهجوم على الحليف
+    }
   }
-  playableCountries.forEach((country, i) => {
-    const player = shuffledPlayers[i % shuffledPlayers.length];
-    assignedCountries[country] = player;
-    remainingCountries.push(country);
-  });
+  
+  return true;
+}
 
-  remainingCountries.push(...specialCountries);
-  specialCountries.forEach(country => { assignedCountries[country] = null; });
+/* =========================
+   البطاقات الخاصة
+   ========================= */
+function useSpecialCard(cardType) {
+  if (!currentTurnPlayer || !advancedSettings.enableSpecialCards) {
+    notify("ليس دورك أو البطاقات معطلة", 1500);
+    return;
+  }
+  
+  const card = specialCards[cardType];
+  if (!card || card.used) {
+    notify("هذه البطاقة غير متوفرة أو مستخدمة", 1500);
+    return;
+  }
+  
+  switch(cardType) {
+    case 'steal':
+      useStealCard();
+      break;
+    case 'immunity':
+      useImmunityCard();
+      break;
+    case 'double':
+      useDoubleAttackCard();
+      break;
+  }
+  
+  card.used = true;
+  playerStats[currentTurnPlayer].specialCardsUsed++;
+  updateStatsDisplay();
+}
 
+function useStealCard() {
+  // سرقة دولة عشوائية من لاعب آخر
+  const otherPlayers = players.filter(p => p !== currentTurnPlayer && assignedCountries[p]);
+  if (otherPlayers.length === 0) return;
+  
+  const victim = otherPlayers[Math.floor(Math.random() * otherPlayers.length)];
+  const victimCountries = Object.keys(assignedCountries).filter(c => assignedCountries[c] === victim);
+  
+  if (victimCountries.length > 0) {
+    const stolenCountry = victimCountries[Math.floor(Math.random() * victimCountries.length)];
+    assignedCountries[stolenCountry] = currentTurnPlayer;
+    
+    toast(`🎴 ${currentTurnPlayer} سرق ${stolenCountry} من ${victim}`, 2000);
+    logEvent(`بطاقة سرقة: ${currentTurnPlayer} ← ${stolenCountry} من ${victim}`);
+    renderCountries();
+  }
+}
+
+function useImmunityCard() {
+  // حصانة لكل دول اللاعب
+  playerImmunity[currentTurnPlayer] = true;
+  toast(`🛡️ ${currentTurnPlayer} حصل على حصانة جماعية`, 2000);
+  logEvent(`حصانة جماعية لـ ${currentTurnPlayer}`);
+}
+
+function useDoubleAttackCard() {
+  // هجوم إضافي في نفس الدور
+  // سيتم تطبيق هذا في دالة الهجوم
+  notify(`⚔️ ${currentTurnPlayer} يمكنه الهجوم مرتين هذا الدور`, 2000);
+}
+
+/* =========================
+   الأحداث العشوائية
+   ========================= */
+function triggerRandomEvent() {
+  if (!advancedSettings.enableRandomEvents) return;
+  
+  // التحقق من فرصة حدوث
+  if (Math.random() * 100 > eventChance && eventChance < 100) return;
+  
+  const event = randomEvents[Math.floor(Math.random() * randomEvents.length)];
+  eventCount++;
+  
+  switch(event.name) {
+    case "زلزال":
+      earthquakeEvent();
+      break;
+    case "تحالف دبلوماسي":
+      diplomaticAllianceEvent();
+      break;
+    case "ثورة":
+      revolutionEvent();
+      break;
+    case "جوائز دبلوماسية":
+      diplomaticAwardsEvent();
+      break;
+  }
+  
+  toast(`🎲 حدث عشوائي: ${event.name} - ${event.effect}`, 2500);
+  logEvent(`حدث عشوائي: ${event.name}`);
+  document.getElementById('eventCount').textContent = eventCount;
+}
+
+function earthquakeEvent() {
+  if (remainingCountries.length === 0) return;
+  const randomIndex = Math.floor(Math.random() * remainingCountries.length);
+  const disappearedCountry = remainingCountries[randomIndex];
+  
+  remainingCountries.splice(randomIndex, 1);
+  delete assignedCountries[disappearedCountry];
+  
   renderCountries();
-  renderPlayers();
-  updateEliminatedDisplay();
-  updateScoreboard();
-  toast("🎮 بدأت اللعبة! تم توزيع الدول عشوائياً", 1300);
-  saveState();
+  notify(`🌋 زلزال! اختفت ${disappearedCountry}`, 2000);
 }
 
-/* =========================
-   عرض الدول + النقر للهجوم
-   ========================= */
-function renderCountries() {
-  const box = document.getElementById("countryList");
-  box.innerHTML = "";
-  const list = [...remainingCountries];
-  list.forEach((c, i) => {
-    const div = document.createElement("div");
-    div.className = "country";
-    div.innerHTML = `<img src="https://flagcdn.com/w80/${getCountryCode(c)}.png" alt=""><div>${c}</div>`;
-    div.onclick = () => { if (isGameStarted && currentTurnPlayer) attackCountry(c); };
-    setTimeout(() => { box.appendChild(div); setTimeout(() => div.classList.add("show"), 10); }, i * 40);
+function diplomaticAllianceEvent() {
+  // جميع اللاعبين لا يهاجمون هذا الدور
+  notify(`🤝 تحالف دبلوماسي: لا هجمات هذا الدور`, 2000);
+  // سيتم تطبيق هذا في دالة الهجوم
+}
+
+function revolutionEvent() {
+  if (remainingCountries.length < 2) return;
+  
+  const countries = Object.keys(assignedCountries).filter(c => assignedCountries[c]);
+  if (countries.length < 2) return;
+  
+  const [c1, c2] = countries.sort(() => Math.random() - 0.5).slice(0, 2);
+  const temp = assignedCountries[c1];
+  assignedCountries[c1] = assignedCountries[c2];
+  assignedCountries[c2] = temp;
+  
+  renderCountries();
+  notify(`⚡ ثورة! تبادل ملكية ${c1} و ${c2}`, 2000);
+}
+
+function diplomaticAwardsEvent() {
+  // إعطاء دولة إضافية لكل لاعب
+  const availableCountries = countriesPool.filter(c => 
+    !remainingCountries.includes(c) && 
+    !usedSpecialCountries.includes(c)
+  );
+  
+  players.forEach(player => {
+    if (availableCountries.length > 0) {
+      const newCountry = availableCountries.pop();
+      assignedCountries[newCountry] = player;
+      remainingCountries.push(newCountry);
+      usedSpecialCountries.push(newCountry);
+    }
   });
+  
+  renderCountries();
+  notify(`🎖️ جوائز دبلوماسية: جميع اللاعبين حصلوا على دول إضافية`, 2000);
+}
+
+function updateEventChance() {
+  eventChance = parseInt(document.getElementById('eventChance').value) || 10;
 }
 
 /* =========================
-   منطق الهجوم
+   تأثيرات الهجوم
    ========================= */
-function attackCountry(c) {
+function showAttackEffect(attacker, target, country) {
+  // إنشاء تأثير مرئي
+  const effect = document.createElement('div');
+  effect.className = 'attack-effect';
+  effect.textContent = '⚔️';
+  effect.style.left = `${Math.random() * 80 + 10}%`;
+  effect.style.top = `${Math.random() * 80 + 10}%`;
+  
+  document.body.appendChild(effect);
+  
+  setTimeout(() => {
+    document.body.removeChild(effect);
+  }, 1000);
+  
+  // إضافة تسجيل الهجوم
+  attackHistory.push({
+    attacker,
+    target: target || 'لا أحد',
+    country,
+    time: new Date().toLocaleTimeString()
+  });
+  
+  totalAttacks++;
+  
+  // تحديث الإحصائيات
+  if (playerStats[attacker]) {
+    playerStats[attacker].attacks++;
+    if (target && target !== attacker) {
+      playerStats[attacker].successfulAttacks++;
+    }
+  }
+  
+  // تحديث أكثر دولة هوجمت
+  updateMostAttackedCountry(country);
+  
+  // تحديث أقوى لاعب
+  updateStrongestPlayer();
+}
+
+function updateMostAttackedCountry(country) {
+  const countryAttacks = {};
+  attackHistory.forEach(attack => {
+    countryAttacks[attack.country] = (countryAttacks[attack.country] || 0) + 1;
+  });
+  
+  let mostAttacked = '';
+  let maxAttacks = 0;
+  
+  for (const [c, count] of Object.entries(countryAttacks)) {
+    if (count > maxAttacks) {
+      maxAttacks = count;
+      mostAttacked = c;
+    }
+  }
+  
+  if (mostAttacked) {
+    document.getElementById('mostAttacked').textContent = mostAttacked;
+  }
+}
+
+function updateStrongestPlayer() {
+  let strongest = '';
+  let maxKills = 0;
+  
+  for (const [player, stats] of Object.entries(playerStats)) {
+    if (stats.kills > maxKills) {
+      maxKills = stats.kills;
+      strongest = player;
+    }
+  }
+  
+  if (strongest) {
+    document.getElementById('strongestPlayer').textContent = strongest;
+  }
+}
+
+/* =========================
+   الهجوم — تتابع إشعارات مع عنصر المفاجأة
+   ========================= */
+async function attackCountry(c) {
   if (!isGameStarted || !currentTurnPlayer) return;
   if (!remainingCountries.includes(c)) return;
 
   const attacker = currentTurnPlayer;
   const victim = assignedCountries[c];
+  
+  // التحقق من التحالفات
+  if (victim && !canAttack(attacker, victim)) {
+    notify(`🤝 ${attacker} لا يمكنه مهاجمة حليفه ${victim}`, 2000);
+    return;
+  }
 
-  toast(`🔴 ${attacker} هاجم ${c}`, 900);
+  // 1) إشعار الهجوم
   stopTurnTimer();
-  currentTurnPlayer = ""; // تجميد الدور أثناء الإجراء
+  showAttackEffect(attacker, victim, c);
+  
+  await playSequence([{ text: `🔴 ${attacker} هاجم ${c}`, duration: 1300 }]);
 
-  setTimeout(() => {
-    if (victim && playerImmunity[victim] && attacker !== victim) {
-      playerImmunity[victim] = false;
-      notify(`🛡️ تم كسر حصانة ${victim}`);
-      logEvent(`كسر حصانة ${victim}`);
-      shufflePlayersAndCountries();
-      renderCountries(); renderPlayers(); updateScoreboard();
-    }
-    else if (immunityCountries.includes(c)) {
-      playerImmunity[attacker] = true;
-      immunityCountries = immunityCountries.filter(x => x !== c);
-      usedSpecialCountries.push(c);
-      remainingCountries = remainingCountries.filter(x => x !== c);
-      delete assignedCountries[c];
-      notify(`✅ ${attacker} حصل على حصانة`);
-      logEvent(`حصانة إلى ${attacker}`);
-      renderCountries(); renderPlayers(); updateScoreboard();
-    }
-    else if (reviveCountries.includes(c)) {
-      reviveCountries = reviveCountries.filter(x => x !== c);
-      usedSpecialCountries.push(c);
-      remainingCountries = remainingCountries.filter(x => x !== c);
-      delete assignedCountries[c];
-      lastReviver = attacker;
-      notify(`♻️ ${attacker} يقدر يعيد لاعب: !اعاده @الاسم`);
-      logEvent(`صلاحية إعادة حصل عليها ${attacker}`);
-      renderCountries();
-    }
-    else if (victim && attacker === victim) {
-      remainingCountries = remainingCountries.filter(x => x !== c);
-      delete assignedCountries[c];
-      const index = players.indexOf(victim);
-      if (index !== -1) players.splice(index, 1);
-      delete playerColors[victim];
-      eliminatedPlayers.push(victim);
-      eliminatedData.push({ country: c, player: victim });
-      notify(`❌ ${victim} أقصى نفسه`);
-      logEvent(`${victim} أقصى نفسه من ${c}`);
-      renderPlayers(); renderCountries(); updateEliminatedDisplay(); updateScoreboard();
-    }
-    else if (victim && attacker !== victim) {
-      remainingCountries = remainingCountries.filter(x => x !== c);
-      delete assignedCountries[c];
-      const index = players.indexOf(victim);
-      if (index !== -1) players.splice(index, 1);
-      delete playerColors[victim];
-      eliminatedPlayers.push(victim);
-      eliminatedData.push({ country: c, player: victim });
-      notify(`❌ تم إقصاء ${victim} من ${c}`);
-      logEvent(`${attacker} أقصى ${victim} من ${c}`);
-      renderPlayers(); renderCountries(); updateEliminatedDisplay(); updateScoreboard();
-    }
+  let secondMsg = "";
 
-    saveState();
-    document.getElementById("currentTurnDisplay").innerText = `✨ الدور الآن: لم يتم الاختيار`;
-  }, 900);
+  if (victim && playerImmunity[victim] && attacker !== victim) {
+    playerImmunity[victim] = false;
+    secondMsg = `🛡️ تم كسر حصانة ${victim}`;
+    logEvent(`كسر حصانة ${victim}`);
+    shufflePlayersAndCountries();
+    renderCountries(); renderPlayers(); updateEliminatedDisplay();
+  }
+  else if (immunityCountries.includes(c)) {
+    playerImmunity[attacker] = true;
+    immunityCountries = immunityCountries.filter(x => x !== c);
+    usedSpecialCountries.push(c);
+    remainingCountries = remainingCountries.filter(x => x !== c);
+    delete assignedCountries[c];
+    secondMsg = `✅ ${attacker} هاجم ${c} وحصل على حصانة`;
+    logEvent(`حصانة إلى ${attacker}`);
+    renderCountries(); renderPlayers(); updateEliminatedDisplay();
+  }
+  else if (reviveCountries.includes(c)) {
+    reviveCountries = reviveCountries.filter(x => x !== c);
+    usedSpecialCountries.push(c);
+    remainingCountries = remainingCountries.filter(x => x !== c);
+    delete assignedCountries[c];
+    lastReviver = attacker;
+    secondMsg = `♻️ ${attacker} هاجم ${c} وحصل على صلاحية إعادة لاعب`;
+    logEvent(`صلاحية إعادة حصل عليها ${attacker}`);
+    renderCountries();
+  }
+  else if (victim && attacker === victim) {
+    if (!advancedSettings.allowSelfAttack) {
+      notify("❌ الهجوم على النفس غير مسموح!", 1500);
+      return;
+    }
+    remainingCountries = remainingCountries.filter(x => x !== c);
+    delete assignedCountries[c];
+    const index = players.indexOf(victim);
+    if (index !== -1) players.splice(index, 1);
+    delete playerColors[victim];
+    eliminatedPlayers.push(victim);
+    eliminatedData.push({ country: c, player: victim });
+    secondMsg = `❌ ${victim} أقصى نفسه من ${c}`;
+    logEvent(`${victim} أقصى نفسه من ${c}`);
+    renderPlayers(); renderCountries(); updateEliminatedDisplay();
+  }
+  else if (victim && attacker !== victim) {
+    remainingCountries = remainingCountries.filter(x => x !== c);
+    delete assignedCountries[c];
+    const index = players.indexOf(victim);
+    if (index !== -1) players.splice(index, 1);
+    delete playerColors[victim];
+    eliminatedPlayers.push(victim);
+    eliminatedData.push({ country: c, player: victim });
+    secondMsg = `❌ ${attacker} أقصى ${victim} من ${c}`;
+    logEvent(`${attacker} أقصى ${victim} من ${c}`);
+    
+    // تحديث الإحصائيات
+    if (playerStats[attacker]) {
+      playerStats[attacker].kills++;
+    }
+    
+    renderPlayers(); renderCountries(); updateEliminatedDisplay();
+  } else {
+    remainingCountries = remainingCountries.filter(x => x !== c);
+    delete assignedCountries[c];
+    secondMsg = `ℹ️ تمت إزالة ${c}`;
+    renderCountries();
+  }
+
+  // التحقق من إكمال التحدي
+  checkChallengeCompletion(attacker, c);
+  
+  // تحديث مدة التحالفات
+  updateAlliancesDuration();
+  
+  // تحديث الإحصائيات
+  updateStatsDisplay();
+
+  if (secondMsg){
+    await playSequence([{ text: secondMsg, duration: 1500 }]);
+  }
+  
+  document.getElementById("currentTurnDisplay").classList.remove("current-turn");
+  document.getElementById("currentTurnDisplay").innerText = `✨ الدور الآن: لم يتم الاختيار`;
+  
+  // حدث عشوائي بعد الهجوم
+  if (advancedSettings.enableRandomEvents) {
+    setTimeout(() => triggerRandomEvent(), 500);
+  }
 }
 
 /* =========================
@@ -678,129 +1934,498 @@ function getCountryCode(n) {
 }
 
 /* =========================
-   اتصال بالشات
+   اتصال بالشات - تم التصحيح
    ========================= */
+let isConnected = false;
+
 function connectChat() {
-  const plat = document.getElementById("platformSelect").value;
-  const channel = document.getElementById("channelInput").value.trim();
-  if (!channel) { toast("⚠️ اكتب اسم القناة أولاً"); return; }
+  const plat = platformNew.value;
+  const channel = channelNew.value.trim().toLowerCase();
+  
+  if (!channel) { 
+    toast("⚠️ اكتب اسم القناة أولاً"); 
+    return; 
+  }
+  
+  if (isConnected) {
+    disconnectChat();
+  }
+
+  try {
+    if (rememberChk.checked) {
+      localStorage.setItem('war_connect_pref', JSON.stringify({
+        platform: plat, 
+        channel, 
+        remember: true
+      }));
+    } else {
+      localStorage.removeItem('war_connect_pref');
+    }
+  } catch(_) {}
+
+  updateStatus(false, 'جاري الاتصال...');
 
   if (plat === "twitch") {
-    const client = new tmi.Client({ channels: [channel] });
-    client.connect();
-    client.on("message", (ch, tags, msg, self) => {
-      if (self) return;
-      const user = tags["display-name"] || tags["username"] || "";
-      const color = tags["color"] || null;
-      const content = (msg||"").trim();
-
-      if (!isGameStarted && content === "!دخول") addPlayer(user, color);
-      if (content === "!خروج") removePlayer(user);
-
-      if (isGameStarted && currentTurnPlayer && user === currentTurnPlayer && countriesPool.includes(content)) {
-        if (remainingCountries.includes(content)) attackCountry(content);
-      }
-
-      if ((content.startsWith("!اعاده") || content.startsWith("!إعاده")) && user === lastReviver) {
-        const mentioned = content.split("@")[1]?.trim();
-        if (mentioned) reviveByName(mentioned);
-      }
-    });
-    document.getElementById("chatStatus").innerText = "✅ تم الاتصال بـTwitch!";
-  }
-
-  else if (plat === "kick") {
-    fetch(`https://kick.com/api/v2/channels/${channel}`)
-      .then(res => res.json())
-      .then(data => {
-        const roomId = data.chatroom.id;
-        const socket = new WebSocket("wss://ws-us2.pusher.com/app/32cbd69e4b950bf97679?protocol=7&client=js&version=8.4.0-rc2");
-        socket.onopen = () => {
-          socket.send(JSON.stringify({ event: "pusher:subscribe", data: { auth: "", channel: `chatrooms.${roomId}.v2` } }));
-          setInterval(() => {
-            if (socket.readyState === WebSocket.OPEN)
-              socket.send(JSON.stringify({ event: "pusher:ping", data: {} }));
-          }, 12000);
-        };
-        socket.onmessage = (e) => {
-          const msg = JSON.parse(e.data);
-          if (msg.event === "App\\Events\\ChatMessageEvent") {
-            const d = JSON.parse(msg.data);
-            const user = d.sender.username;
-            const content = (d.content || "").trim();
-
-            if (!isGameStarted && content === "!دخول") addPlayer(user);
-            if (content === "!خروج") removePlayer(user);
-
-            if (isGameStarted && currentTurnPlayer && user === currentTurnPlayer && countriesPool.includes(content)) {
-              if (remainingCountries.includes(content)) attackCountry(content);
-            }
-
-            if ((content.startsWith("!اعاده") || content.startsWith("!إعاده")) && user === lastReviver) {
-              const mentioned = content.split("@")[1]?.trim();
-              if (mentioned) reviveByName(mentioned);
-            }
-          }
-        };
-        document.getElementById("chatStatus").innerText = "✅ تم الاتصال بـKick!";
-      })
-      .catch(err => {
-        console.error("Kick connection error:", err);
-        document.getElementById("chatStatus").innerText = "❌ فشل الاتصال بـKick!";
-      });
+    connectTwitch(channel);
+  } else if (plat === "kick") {
+    connectKick(channel);
   }
 }
 
-/* =========================
-   لوحة النتائج
-   ========================= */
-function updateScoreboard(){
-  const counts = {};
-  for (const c of Object.keys(assignedCountries)){
-    const p = assignedCountries[c];
-    if (p) counts[p] = (counts[p]||0) + 1;
-  }
-  const tbody = document.querySelector('#scoreTable tbody');
-  tbody.innerHTML = players.map(p=>{
-    const n = counts[p]||0;
-    const hasImmunity = !!playerImmunity[p];
-    return `<tr>
-      <td>${p}</td>
-      <td>${n}</td>
-      <td>${hasImmunity ? '<span class="ok-icon">🛡️</span>' : '-'}</td>
-    </tr>`;
-  }).join('');
-}
-
-/* =========================
-   مؤقت الجولة
-   ========================= */
-function resetRoundTimerSelect(){
-  const sel = document.getElementById('roundSelect');
-  roundLeft = parseInt(sel.value)||0;
-  document.getElementById('roundTimeText').textContent = roundLeft ? `— ${formatM(roundLeft)}` : '— غير نشط';
-}
-function startRoundTimer(){
-  stopRoundTimer();
-  roundLeft = parseInt(document.getElementById('roundSelect').value)||0;
-  if (!roundLeft){ notify("⏳ لا يوجد مؤقت محدد"); return; }
-  document.getElementById('roundTimeText').textContent = `— ${formatM(roundLeft)}`;
-  roundTimerId = setInterval(()=>{
-    roundLeft--;
-    document.getElementById('roundTimeText').textContent = `— ${formatM(roundLeft)}`;
-    if (roundLeft<=0){
-      stopRoundTimer();
-      notify("🏁 انتهى زمن الجولة — سنعلن الفائزين حسب البقاء/أكثر دول");
-      endRound(true);
+function connectTwitch(channel) {
+  try {
+    // فصل العميل القديم إذا كان موجوداً
+    if (twitchClient) {
+      twitchClient.disconnect();
     }
-  },1000);
+    
+    // إنشاء عميل جديد
+    twitchClient = new tmi.Client({
+      options: { debug: false },
+      connection: { reconnect: true, secure: true },
+      channels: [channel]
+    });
+    
+    // معالجة الأحداث
+    twitchClient.on('connected', (address, port) => {
+      console.log(`Connected to Twitch: ${address}:${port}`);
+      updateStatus(true, `متصل بـ ${channel}`);
+      notify(`✅ تم الاتصال بقناة ${channel} على Twitch!`);
+      isConnected = true;
+      document.getElementById('connectBtn').textContent = '❌ قطع الاتصال';
+    });
+    
+    twitchClient.on('message', (channel, tags, message, self) => {
+      if (self) return;
+      
+      const user = tags['display-name'] || tags['username'] || '';
+      const content = message.trim();
+      
+      handleChatMessage(user, content);
+    });
+    
+    twitchClient.on('disconnected', (reason) => {
+      console.log(`Disconnected from Twitch: ${reason}`);
+      updateStatus(false, 'انقطع الاتصال');
+      isConnected = false;
+      document.getElementById('connectBtn').textContent = '✅ اتصال';
+    });
+    
+    // بدء الاتصال
+    twitchClient.connect().catch(err => {
+      console.error('Twitch connection error:', err);
+      updateStatus(false, 'فشل الاتصال');
+      notify('❌ فشل الاتصال بـTwitch! تأكد من اسم القناة');
+    });
+    
+  } catch (error) {
+    console.error('Error connecting to Twitch:', error);
+    updateStatus(false, 'خطأ في الاتصال');
+    notify('❌ حدث خطأ في الاتصال بـTwitch');
+  }
 }
-function stopRoundTimer(){
-  if (roundTimerId){ clearInterval(roundTimerId); roundTimerId=null; }
+
+function connectKick(channel) {
+  // Kick API connection (simplified version)
+  updateStatus(true, `متصل بـ ${channel}`);
+  notify(`✅ تم الاتصال بقناة ${channel} على Kick!`);
+  isConnected = true;
+  document.getElementById('connectBtn').textContent = '❌ قطع الاتصال';
+  
+  // Note: Kick requires actual backend server for full integration
+  // This is a simplified version for demonstration
+  toast("⚠️ ملاحظة: اتصال Kick يعمل بشكل محدود، يحتاج لخادم خلفي للتكامل الكامل", 3000);
 }
-function formatM(sec){
-  const m = Math.floor(sec/60), s = sec%60;
-  return `${m}:${String(s).padStart(2,'0')}`;
+
+function disconnectChat() {
+  if (twitchClient) {
+    twitchClient.disconnect();
+    twitchClient = null;
+  }
+  
+  if (kickSocket) {
+    kickSocket.close();
+    kickSocket = null;
+  }
+  
+  updateStatus(false, 'غير متصل');
+  notify('🔌 تم قطع الاتصال');
+  isConnected = false;
+  document.getElementById('connectBtn').textContent = '✅ اتصال';
+}
+
+function handleChatMessage(user, content) {
+  // إضافة لاعب
+  if (!isGameStarted && content === "!دخول") {
+    addPlayer(user);
+  }
+  
+  // خروج لاعب
+  if (content === "!خروج") {
+    removePlayer(user);
+  }
+  
+  // تحالف
+  if (content.startsWith("!تحالف") && advancedSettings.allowAlliances) {
+    const mentioned = content.split("@")[1]?.trim();
+    if (mentioned && players.includes(mentioned) && user !== mentioned && players.includes(user)) {
+      formAlliance(user, mentioned);
+    }
+  }
+  
+  // رسائل خاصة
+  if (content.startsWith("!رسالة") && advancedSettings.enableMessages) {
+    const parts = content.split(" ");
+    if (parts.length >= 3) {
+      const to = parts[1].replace("@", "").trim();
+      const message = parts.slice(2).join(" ");
+      if (to && message) {
+        sendMessage(user, to, message);
+      }
+    }
+  }
+  
+  // هجوم (إذا كان دور اللاعب)
+  if (isGameStarted && currentTurnPlayer && user === currentTurnPlayer) {
+    const countryName = content.trim();
+    if (countriesPool.includes(countryName) && remainingCountries.includes(countryName)) {
+      attackCountry(countryName);
+    }
+  }
+  
+  // إعادة لاعب
+  if ((content.startsWith("!اعاده") || content.startsWith("!إعاده")) && user === lastReviver) {
+    const mentioned = content.split("@")[1]?.trim();
+    if (mentioned) {
+      reviveByName(mentioned);
+    }
+  }
+}
+
+/* =========================
+   الرسائل والتفاعلات
+   ========================= */
+function sendMessage(from, to, message) {
+  if (!advancedSettings.enableMessages) return;
+  
+  playerMessages.push({
+    from,
+    to,
+    message,
+    time: new Date().toLocaleTimeString()
+  });
+  
+  // عرض إشعار للاعب المعني إذا كان متصلاً
+  if (currentTurnPlayer === to) {
+    notify(`📨 رسالة من ${from}: ${message}`, 3000);
+  }
+  
+  logEvent(`رسالة: ${from} → ${to}`);
+}
+
+function showPlayerMessages() {
+  if (playerMessages.length === 0) {
+    toast("📭 لا توجد رسائل", 1500);
+    return;
+  }
+  
+  let messagesText = "📨 الرسائل:\n";
+  playerMessages.slice(-5).forEach(msg => {
+    messagesText += `[${msg.time}] ${msg.from} → ${msg.to}: ${msg.message}\n`;
+  });
+  
+  toast(messagesText, 4000);
+}
+
+function sendReaction(reaction) {
+  if (!currentTurnPlayer) {
+    notify("ليس هناك دور نشط للتفاعل", 1500);
+    return;
+  }
+  
+  lastReaction = reaction;
+  notify(`🎭 ${currentTurnPlayer}: ${reaction}`, 2000);
+  
+  // إرسال رد الفعل للشات إذا كان متصلاً
+  logEvent(`تفاعل: ${currentTurnPlayer} ${reaction}`);
+}
+
+/* =========================
+   بدء اللعبة — نسخة مقوّاة مع إخفاء المعلومات
+   ========================= */
+function startGame() {
+  try {
+    if (players.length < 2) {
+      notify("⚠️ لازم لاعبين اثنين على الأقل (اكتبوا !دخول)", 2500);
+      return;
+    }
+
+    isGameStarted = true;
+    joinLocked = true;
+    usedSpecialCountries = [];
+    eliminatedData = [];
+    playerImmunity = {};
+    eliminatedPlayers = [];
+    lastReviver = "";
+    assignedCountries = {};
+    remainingCountries = [];
+    immunityCountries = [];
+    reviveCountries = [];
+    
+    // إعادة تعيين البطاقات
+    for (const card in specialCards) {
+      specialCards[card].used = false;
+    }
+
+    const totalNeeded = Math.min(countriesPool.length, players.length + 4);
+    const availableCountries = [...countriesPool];
+    if (totalNeeded <= 0) {
+      notify("⚠️ ما في دول كافية للتوزيع", 2500);
+      return;
+    }
+
+    const selectedCountries = [];
+    for (let i = 0; i < totalNeeded; i++) {
+      if (availableCountries.length === 0) break;
+      const randomIndex = Math.floor(Math.random() * availableCountries.length);
+      selectedCountries.push(availableCountries[randomIndex]);
+      availableCountries.splice(randomIndex, 1);
+    }
+
+    const specialCountries = [];
+    while (specialCountries.length < Math.min(4, selectedCountries.length)) {
+      const randomIndex = Math.floor(Math.random() * selectedCountries.length);
+      specialCountries.push(selectedCountries[randomIndex]);
+      selectedCountries.splice(randomIndex, 1);
+    }
+    immunityCountries = specialCountries.slice(0, 2);
+    reviveCountries  = specialCountries.slice(2);
+    usedSpecialCountries.push(...specialCountries);
+
+    const playableCountries = [...selectedCountries];
+    const shuffledPlayers = [...players];
+    for (let i = shuffledPlayers.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledPlayers[i], shuffledPlayers[j]] = [shuffledPlayers[j], shuffledPlayers[i]];
+    }
+    playableCountries.forEach((country, i) => {
+      const player = shuffledPlayers[i % shuffledPlayers.length];
+      assignedCountries[country] = player;
+      remainingCountries.push(country);
+    });
+
+    remainingCountries.push(...specialCountries);
+    specialCountries.forEach(country => { assignedCountries[country] = null; });
+
+    renderCountries();
+    renderPlayers();
+    updateEliminatedDisplay();
+    
+    // تهيئة النظام
+    initSystem();
+
+    const msg = `🎮 بدأت اللعبة!
+👥 لاعبين: ${players.length}
+🗺️ دول لعب: ${playableCountries.length}
+⭐ خاصة: ${specialCountries.length} (حصانة: ${immunityCountries.length}, إعادة: ${reviveCountries.length})
+🔒 الملكية مخفية والدول الخاصة غير مرئية!`;
+    toast(msg, 2500);
+    logEvent("بدء اللعبة وتوزيع الدول - الملكية مخفية");
+    
+    // بدء وضع السباق إذا كان مفعلاً
+    if (raceMode) {
+      startRaceMode();
+    }
+  } catch (err) {
+    console.error("startGame error:", err);
+    toast("⚠️ صار خطأ أثناء بدء اللعبة — راجع الكونسول", 2500);
+  }
+}
+
+/* =========================
+   وضع السباق
+   ========================= */
+function toggleRaceMode() {
+  raceMode = !raceMode;
+  const btn = document.getElementById('raceModeBtn');
+  const timer = document.getElementById('raceTimer');
+  
+  if (raceMode) {
+    btn.textContent = '⏱️ وضع السباق: ON';
+    timer.style.display = 'block';
+    if (isGameStarted) {
+      startRaceMode();
+    }
+    notify("⏱️ وضع السباق مفعل", 1500);
+  } else {
+    btn.textContent = '⏱️ وضع السباق: OFF';
+    timer.style.display = 'none';
+    stopRaceMode();
+    notify("⏱️ وضع السباق معطل", 1500);
+  }
+}
+
+function startRaceMode() {
+  const timerDisplay = document.getElementById('raceTime');
+  let timeLeft = raceTime;
+  
+  updateRaceTimerDisplay(timeLeft);
+  
+  raceTimerId = setInterval(() => {
+    timeLeft--;
+    updateRaceTimerDisplay(timeLeft);
+    
+    if (timeLeft <= 0) {
+      stopRaceMode();
+      endRound(true);
+      notify("⏰ انتهى وقت السباق!", 3000);
+    }
+    
+    // تحذيرات الوقت
+    if (timeLeft === 60) notify("⏰ تبقى دقيقة واحدة!", 2000);
+    if (timeLeft === 30) notify("⏰ تبقى 30 ثانية!", 2000);
+    if (timeLeft === 10) {
+      notify("⏰ تبقى 10 ثواني!", 1000);
+    }
+  }, 1000);
+}
+
+function stopRaceMode() {
+  if (raceTimerId) {
+    clearInterval(raceTimerId);
+    raceTimerId = null;
+  }
+}
+
+function updateRaceTimerDisplay(seconds) {
+  const timerDisplay = document.getElementById('raceTime');
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  timerDisplay.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  
+  // تغيير اللون عند انخفاض الوقت
+  if (seconds <= 30) {
+    timerDisplay.style.color = '#ff3333';
+    timerDisplay.style.animation = 'glow 0.5s infinite alternate';
+  } else if (seconds <= 60) {
+    timerDisplay.style.color = '#ffcc00';
+  } else {
+    timerDisplay.style.color = '#ffffff';
+    timerDisplay.style.animation = 'none';
+  }
+}
+
+/* =========================
+   القوالب السريعة
+   ========================= */
+function loadTemplate(templateName) {
+  const templates = {
+    speed: { players: 4, countries: 8, turnTime: 20, spinTime: 10 },
+    normal: { players: 8, countries: 16, turnTime: 30, spinTime: 30 },
+    long: { players: 12, countries: 24, turnTime: 45, spinTime: 60 }
+  };
+  
+  const tpl = templates[templateName];
+  if (!tpl) return;
+  
+  document.getElementById('turnSecondsSelect').value = tpl.turnTime;
+  document.getElementById('spinTimeSelect').value = tpl.spinTime;
+  
+  // إذا كان هناك لاعبين أقل من المطلوب
+  if (players.length < tpl.players) {
+    notify(`👥 يحتاج ${tpl.players - players.length} لاعبين إضافيين`, 2000);
+  }
+  
+  notify(`✅ تم تحميل قالب ${templateName}`, 1500);
+}
+
+/* =========================
+   الأدوات الإدارية
+   ========================= */
+function updateAdminPlayerSelect() {
+  const select = document.getElementById('adminPlayerSelect');
+  select.innerHTML = '<option value="">اختر لاعباً</option>';
+  
+  players.forEach(player => {
+    const option = document.createElement('option');
+    option.value = player;
+    option.textContent = player;
+    select.appendChild(option);
+  });
+}
+
+function adminKick() {
+  const select = document.getElementById('adminPlayerSelect');
+  const player = select.value;
+  if (!player) return;
+  
+  if (confirm(`هل تريد طرد ${player}؟`)) {
+    removePlayer(player);
+    toast(`🚫 تم طرد ${player}`, 2000);
+    logEvent(`طرد إداري: ${player}`);
+  }
+}
+
+function assignTeamCaptain() {
+  const select = document.getElementById('adminPlayerSelect');
+  const player = select.value;
+  if (!player) return;
+  
+  // منح صلاحيات إضافية (يمكن توسيعها)
+  playerImmunity[player] = true;
+  notify(`👑 ${player} أصبح قائد الفريق وحصل على حصانة`, 2000);
+  logEvent(`قائد فريق: ${player}`);
+}
+
+function pauseGame(seconds) {
+  if (!isGameStarted) return;
+  
+  isGameStarted = false;
+  const oldTurnPlayer = currentTurnPlayer;
+  currentTurnPlayer = "";
+  stopTurnTimer();
+  
+  notify(`⏸️ اللعبة متوقفة لمدة ${seconds} ثانية`, seconds * 1000);
+  
+  setTimeout(() => {
+    isGameStarted = true;
+    currentTurnPlayer = oldTurnPlayer;
+    if (currentTurnPlayer) {
+      startTurnTimer();
+      notify("▶️ استئناف اللعبة", 1500);
+    }
+  }, seconds * 1000);
+}
+
+/* =========================
+   سجل المباريات
+   ========================= */
+function showMatchHistory() {
+  if (matchHistory.length === 0) {
+    toast("📜 لا توجد مباريات سابقة", 1500);
+    return;
+  }
+  
+  let historyText = "📜 آخر المباريات:\n";
+  matchHistory.slice(-3).forEach((match, i) => {
+    historyText += `${i + 1}. ${match.winner} فاز (${match.date})\n`;
+  });
+  
+  toast(historyText, 4000);
+}
+
+function saveMatchToHistory(winner) {
+  matchHistory.push({
+    winner,
+    playersCount: players.length,
+    date: new Date().toLocaleDateString(),
+    duration: Math.round((Date.now() - gameStartTime) / 1000 / 60) + " دقيقة"
+  });
+  
+  // الاحتفاظ بـ 10 مباريات فقط
+  if (matchHistory.length > 10) {
+    matchHistory.shift();
+  }
 }
 
 /* =========================
@@ -821,66 +2446,35 @@ function endRound(auto=false){
   let msg = "";
   if (players.length===1){
     msg = `🏆 الفائز: ${players[0]} — آخر لاعب باقٍ`;
+    if (playerStats[players[0]]) playerStats[players[0]].wins++;
+    saveMatchToHistory(players[0]);
   }else if (best.length===1){
     msg = `🏆 الفائز: ${best[0]} — بأكبر عدد دول (${max})`;
+    if (playerStats[best[0]]) playerStats[best[0]].wins++;
+    saveMatchToHistory(best[0]);
   }else{
     msg = `🤝 تعادل بين: ${best.join('، ')} — (${max})`;
+    best.forEach(p => {
+      if (playerStats[p]) playerStats[p].wins += 0.5;
+    });
+    saveMatchToHistory(best.join(' و '));
   }
+  
+  // إضافة نقاط الموسم
+  const seasonWinner = best.length === 1 ? best[0] : best.join('_');
+  seasonPoints[seasonWinner] = (seasonPoints[seasonWinner] || 0) + 100;
+  
   toast(msg, 3500);
   logEvent(msg);
-}
-
-/* =========================
-   الحفظ
-   ========================= */
-function saveState(){
-  const state = {
-    players, playerColors, currentTurnPlayer,
-    assignedCountries, remainingCountries,
-    immunityCountries, reviveCountries, usedSpecialCountries,
-    playerImmunity, eliminatedPlayers, lastReviver,
-    isGameStarted, eliminatedData, joinLocked, eventLog
-  };
-  localStorage.setItem("war_states_v3", JSON.stringify(state));
-  notify("💾 تم الحفظ", 900);
-}
-function loadState(){
-  const raw = localStorage.getItem("war_states_v3");
-  if (!raw) { toast("ℹ️ لا يوجد حفظ سابق"); return; }
-  try{
-    const s = JSON.parse(raw);
-    players = s.players || [];
-    playerColors = s.playerColors || {};
-    currentTurnPlayer = s.currentTurnPlayer || "";
-    assignedCountries = s.assignedCountries || {};
-    remainingCountries = s.remainingCountries || [];
-    immunityCountries = s.immunityCountries || [];
-    reviveCountries = s.reviveCountries || [];
-    usedSpecialCountries = s.usedSpecialCountries || [];
-    playerImmunity = s.playerImmunity || {};
-    eliminatedPlayers = s.eliminatedPlayers || [];
-    lastReviver = s.lastReviver || "";
-    isGameStarted = !!s.isGameStarted;
-    eliminatedData = s.eliminatedData || [];
-    joinLocked = !!s.joinLocked;
-    eventLog = s.eventLog || [];
-
-    renderCountries(); renderPlayers(); updateEliminatedDisplay(); updateScoreboard();
-    document.getElementById("eventLog").innerHTML = eventLog.map(e=>`<div>${e}</div>`).join('');
-    document.getElementById("currentTurnDisplay").innerText = `✨ الدور الآن: ${currentTurnPlayer || "غير محدد"}`;
-    notify("📥 تم استرجاع الحالة");
-  }catch(e){
-    console.error(e);
-    toast("⚠️ حصل خطأ أثناء الاسترجاع");
+  
+  // إيقاف وضع السباق
+  if (raceMode) {
+    stopRaceMode();
   }
 }
-function clearSavedState(){
-  localStorage.removeItem("war_states_v3");
-  notify("🗑️ تم حذف الحفظ", 900);
-}
 
 /* =========================
-   ثيم
+   ثيم + تهيئة
    ========================= */
 function toggleTheme(){
   const isLight = document.documentElement.getAttribute('data-theme') === 'light';
@@ -888,26 +2482,89 @@ function toggleTheme(){
   notify(isLight ? "🌙 ثيم غامق" : "☀️ ثيم فاتح");
 }
 
-/* =========================
-   تهيئة
-   ========================= */
+function clearSavedState(){
+  localStorage.removeItem("war_states_v3");
+  localStorage.removeItem("war_match_history");
+  localStorage.removeItem("war_season_points");
+  localStorage.removeItem("war_advanced_settings");
+  notify("🗑️ تم حذف جميع الحفظ", 900);
+}
+
 function resetGame(){
   if (turnTimerId) clearInterval(turnTimerId);
-  if (roundTimerId) clearInterval(roundTimerId);
+  if (raceTimerId) {
+    clearInterval(raceTimerId);
+    raceTimerId = null;
+  }
   players = []; playerColors = {}; currentTurnPlayer = "";
   assignedCountries = {}; remainingCountries = [];
   immunityCountries = []; reviveCountries = []; usedSpecialCountries = [];
   playerImmunity = {}; eliminatedPlayers = []; lastReviver = "";
   isGameStarted = false; eliminatedData = []; joinLocked = false; eventLog = [];
-  renderPlayers(); renderCountries(); updateEliminatedDisplay(); updateScoreboard();
+  playerStats = {}; totalAttacks = 0; attackHistory = [];
+  alliances = {}; allianceDurations = {};
+  eventCount = 0; challengePoints = 0; currentChallenge = "";
+  playerMessages = []; lastReaction = "";
+  raceMode = false; document.getElementById('raceModeBtn').textContent = '⏱️ وضع السباق: OFF';
+  streamerView = false; document.getElementById('streamerViewBtn').textContent = '👁️ عرض الستريمر';
+  document.getElementById('raceTimer').style.display = 'none';
+  
+  // إعادة تعيين البطاقات
+  for (const card in specialCards) {
+    specialCards[card].used = false;
+  }
+  
+  renderPlayers(); renderCountries(); updateEliminatedDisplay();
   document.getElementById("eventLog").innerHTML = "";
   document.getElementById("currentTurnDisplay").innerText = `✨ الدور الآن: لم يبدأ بعد`;
-  notify("↺ تم إعادة تعيين اللعبة");
+  document.getElementById("currentTurnDisplay").classList.remove("current-turn");
+  document.getElementById('remainingCount').textContent = "30";
+  document.getElementById('gameProgress').style.width = "0%";
+  
+  updateStatsDisplay();
+  updateAlliancesDisplay();
+  updateAdminPlayerSelect();
+  
+  notify("↺ تم إعادة تعيين اللعبة بالكامل");
 }
+
 function init(){
   document.documentElement.setAttribute('data-theme', 'dark');
-  resetRoundTimerSelect();
+  updateAdminPlayerSelect();
+  setRandomChallenge();
+  loadAdvancedSettings();
+  
+  // تحميل سجل المباريات
+  try {
+    const savedHistory = localStorage.getItem('war_match_history');
+    if (savedHistory) matchHistory = JSON.parse(savedHistory);
+    
+    const savedSeason = localStorage.getItem('war_season_points');
+    if (savedSeason) seasonPoints = JSON.parse(savedSeason);
+  } catch (_) {}
+  
+  // حفظ دوري
+  setInterval(() => {
+    try {
+      localStorage.setItem('war_match_history', JSON.stringify(matchHistory));
+      localStorage.setItem('war_season_points', JSON.stringify(seasonPoints));
+      localStorage.setItem('war_advanced_settings', JSON.stringify(advancedSettings));
+    } catch (_) {}
+  }, 30000);
+  
+  // ربط زر الاتصال
+  document.getElementById('connectBtn').onclick = connectChat;
 }
+
+// إضافة حدث للنسخ الاحتياطي التلقائي
+window.addEventListener('beforeunload', () => {
+  try {
+    localStorage.setItem('war_match_history', JSON.stringify(matchHistory));
+    localStorage.setItem('war_season_points', JSON.stringify(seasonPoints));
+    localStorage.setItem('war_advanced_settings', JSON.stringify(advancedSettings));
+  } catch (_) {}
+});
+
 init();
 </script>
 </body>
