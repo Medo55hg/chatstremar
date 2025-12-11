@@ -45,6 +45,108 @@
       100% { background-position: 0% 50% }
     }
 
+    /* ============= تحسينات جديدة ============= */
+    /* 1. تكبير الأرقام والاختيارات */
+    .large-numbers {
+      font-size: 18px !important;
+      font-weight: 800 !important;
+      padding: 14px !important;
+    }
+    
+    /* 2. تكبير اسم الشخص والوقت */
+    .player-turn-display {
+      font-size: 24px !important;
+      font-weight: 900;
+      padding: 16px 24px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #2a2a5c, #1a1a3d);
+      border: 3px solid var(--gold);
+      box-shadow: 0 0 25px rgba(255, 217, 107, 0.4);
+      margin: 10px 0;
+      text-align: center;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+    }
+    
+    .player-turn-display.red-turn {
+      border-color: var(--red);
+      box-shadow: 0 0 25px rgba(255, 77, 94, 0.4);
+      background: linear-gradient(135deg, #5c2a2a, #3d1a1a);
+    }
+    
+    .player-turn-display.blue-turn {
+      border-color: var(--blue);
+      box-shadow: 0 0 25px rgba(59, 184, 255, 0.4);
+      background: linear-gradient(135deg, #2a4c5c, #1a2e3d);
+    }
+    
+    .time-display {
+      font-size: 28px !important;
+      font-weight: 900;
+      color: var(--gold);
+      text-shadow: 0 2px 10px rgba(255, 217, 107, 0.7);
+      padding: 5px 15px;
+      border-radius: 15px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 2px solid var(--gold);
+    }
+    
+    /* 3. عرض اسم اللاعب الكبير في المنتصف */
+    .turn-notification {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 72px;
+      font-weight: 900;
+      color: white;
+      text-align: center;
+      padding: 40px 80px;
+      border-radius: 30px;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      text-shadow: 0 5px 15px rgba(0, 0, 0, 0.7);
+      animation: pulseGlow 2s infinite alternate;
+    }
+    
+    .turn-notification.red-notify {
+      background: linear-gradient(135deg, rgba(255, 77, 94, 0.95), rgba(255, 0, 30, 0.9));
+      border: 5px solid #ff4d5e;
+    }
+    
+    .turn-notification.blue-notify {
+      background: linear-gradient(135deg, rgba(59, 184, 255, 0.95), rgba(0, 100, 255, 0.9));
+      border: 5px solid #3bb8ff;
+    }
+    
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 30px rgba(255, 255, 255, 0.3); }
+      100% { box-shadow: 0 0 60px rgba(255, 255, 255, 0.6); }
+    }
+    
+    .turn-notification.show {
+      opacity: 1;
+      animation: popIn 0.5s ease forwards;
+    }
+    
+    @keyframes popIn {
+      0% { transform: translate(-50%, -50%) scale(0.5); }
+      70% { transform: translate(-50%, -50%) scale(1.1); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+    
+    /* 4. تحسين الأرقام على اللوحة */
+    .board-numbers {
+      font-size: 20px !important;
+      font-weight: 900;
+      fill: #ffd96b;
+      text-shadow: 1px 1px 3px #000;
+    }
+    
+    /* ========================================== */
+
     /* عرض متناسق (مو كامل المتصفح) */
     .wrap{max-width:1400px;width:95vw;margin:16px auto;padding:16px}
 
@@ -64,11 +166,17 @@
     input,select,button{font-family:'Cairo',sans-serif}
     input[type="number"],input[type="text"],select{
       width:100%;padding:10px 12px;border:1px solid var(--line);
-      border-radius:12px;background:#0f1524;color:var(--text)
+      border-radius:12px;background:#0f1524;color:var(--text);
+      /* تحسين حجم الخط */
+      font-size: 16px;
+      font-weight: 600;
     }
     button{
       padding:10px 14px;border:1px solid var(--line);background:#0f1524;color:var(--text);
-      border-radius:12px;cursor:pointer;transition:.15s;box-shadow:0 2px 0 rgba(0,0,0,.25)
+      border-radius:12px;cursor:pointer;transition:.15s;box-shadow:0 2px 0 rgba(0,0,0,.25);
+      /* تحسين حجم الخط */
+      font-size: 16px;
+      font-weight: 600;
     }
     button:hover{transform:translateY(-1px)}
     button:active{transform:translateY(0)}
@@ -81,12 +189,12 @@
     .panel.open{display:block}
 
     /* عناصر صغيرة */
-    .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:linear-gradient(180deg,#151c2e,#101728);font-size:12px}
+    .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:linear-gradient(180deg,#151c2e,#101728);font-size:14px;font-weight:600}
     .status-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-inline-start:6px;background:#777}
     .status-ok{background:var(--ok)}
     .status-bad{background:var(--dv)}
-    .kbd{font-family:ui-monospace,monospace;background:#0c1019;border:1px solid var(--line);padding:0 6px;border-radius:6px}
-    .help{font-size:13px;color:var(--muted);line-height:1.7}
+    .kbd{font-family:ui-monospace,monospace;background:#0c1019;border:1px solid var(--line);padding:0 6px;border-radius:6px;font-size:14px}
+    .help{font-size:14px;color:var(--muted);line-height:1.7}
 
     /* لوحة تحكم الستريمر */
     .control .body{display:flex;flex-direction:column;gap:12px}
@@ -106,26 +214,64 @@
     /* عنصر لاعب + زر حذف */
     .chip{
       display:flex;align-items:center;justify-content:space-between;gap:10px;
-      padding:6px 10px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,#152035,#0f1729);font-size:13px
+      padding:8px 12px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,#152035,#0f1729);font-size:15px;font-weight:600
     }
-    .chip b{font-weight:600}
+    .chip b{font-weight:800}
     .del{
       flex:0 0 auto; border:1px solid #3a4360; background:#0d1322; color:#ff7a86;
-      border-radius:10px; padding:4px 8px; cursor:pointer
+      border-radius:10px; padding:6px 10px; cursor:pointer; font-size:14px
     }
     .del:hover{background:#131a2c}
 
     /* اللوحة */
     .board-col{display:flex;flex-direction:column;gap:10px}
     .topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,#151e34,#0f172a)}
-    .teamScore{display:flex;align-items:center;gap:10px}
-    .turninfo{display:flex;gap:14px;align-items:center;color:var(--muted)}
-    .turninfo b{color:var(--text)}
+    .teamScore{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:700}
+    .turninfo{display:flex;gap:14px;align-items:center;color:var(--muted);font-size:16px}
+    .turninfo b{color:var(--text);font-size:18px}
     .canvas-wrap{position:relative;overflow:hidden;border-radius:16px;border:1px solid var(--line);background:linear-gradient(180deg,#141b2d,#0f1524)}
     canvas{display:block;width:100%;height:auto;background:radial-gradient(600px 300px at 20% 0%,rgba(255,255,255,.04),transparent 50%)}
 
+    /* مؤثرات صوتية */
+    .sound-controls {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 100;
+    }
+    
+    .sound-btn {
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      border: 2px solid var(--gold);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    
+    .sound-btn:hover {
+      background: rgba(255, 217, 107, 0.2);
+      transform: scale(1.1);
+    }
+
     @media (max-width:1100px){
       .stage{grid-template-columns:1fr}
+      .turn-notification {
+        font-size: 48px;
+        padding: 20px 40px;
+      }
+      .player-turn-display {
+        font-size: 18px !important;
+      }
+      .time-display {
+        font-size: 22px !important;
+      }
     }
   </style>
 </head>
@@ -140,7 +286,7 @@
     <div class="bar">
       <div class="bar-left">
         <div id="chevConn" class="chev" title="إظهار/إخفاء">▾</div>
-        <b>لوحة الاتصال بالشات</b>
+        <b style="font-size:18px">لوحة الاتصال بالشات</b>
       </div>
       <div class="row" style="gap:8px;flex:0 0 auto">
         <span class="pill">Twitch: <span id="statusTw">غير متصل</span> <span id="dotTw" class="status-dot"></span></span>
@@ -151,12 +297,12 @@
       <div class="body">
         <div class="row">
           <div>
-            <label>اسم القناة:</label>
-            <input type="text" id="twChannel" placeholder="مثال: medo_dv" value="YOUR_TWITCH_CHANNEL">
+            <label style="font-size:15px;font-weight:600">اسم القناة:</label>
+            <input type="text" id="twChannel" class="large-numbers" placeholder="مثال: medo_dv" value="YOUR_TWITCH_CHANNEL">
           </div>
           <div>
-            <label>نوع المنصة:</label>
-            <select id="platformSelect">
+            <label style="font-size:15px;font-weight:600">نوع المنصة:</label>
+            <select id="platformSelect" class="large-numbers">
               <option value="twitch" selected>تويتش</option>
               <option value="kick">كيك</option>
               <option value="both">الكل (تويتش + كيك)</option>
@@ -165,12 +311,12 @@
         </div>
 
         <div class="row" style="margin-top:8px">
-          <label class="pill" style="flex:0 0 auto"><input id="rememberConn" type="checkbox"> تذكّرني</label>
-          <button id="btnConnect">اتصال</button>
-          <span class="pill">متصل بـ: <b id="connectedTo">—</b></span>
+          <label class="pill" style="flex:0 0 auto;font-size:15px"><input id="rememberConn" type="checkbox"> تذكّرني</label>
+          <button id="btnConnect" style="font-size:18px;padding:12px 20px">🚀 اتصال</button>
+          <span class="pill" style="font-size:15px">متصل بـ: <b id="connectedTo">—</b></span>
         </div>
 
-        <div class="help" style="margin-top:8px">
+        <div class="help" style="margin-top:8px;font-size:15px">
           الأوامر: <span class="kbd">!دخول</span>، <span class="kbd">!أحمر/!ازرق</span>، <span class="kbd">!اختر @اسم</span>، <span class="kbd">!وقت 25</span> — اللعب بصاحب الدور فقط.
         </div>
       </div>
@@ -182,7 +328,7 @@
     <div class="bar">
       <div class="bar-left">
         <div id="chevCtrl" class="chev" title="إظهار/إخفاء">▾</div>
-        <b>لوحة تحكم الستريمر</b>
+        <b style="font-size:18px">لوحة تحكم الستريمر</b>
       </div>
       <div class="pill">إعدادات الجولة</div>
     </div>
@@ -190,29 +336,29 @@
       <div class="body">
         <div class="quickbar">
           <div class="quick-right">
-            <button id="btnStart">▶️ ابدأ / إعادة</button>
+            <button id="btnStart" style="font-size:18px;padding:12px 24px">▶️ ابدأ / إعادة</button>
           </div>
           <div class="quick-left">
-            <label class="pill" style="flex:0 0 auto"><input id="showDotNumbers" type="checkbox"> إظهار ترقيم النقاط</label>
-            <input type="number" id="dotStart" min="1" value="1" style="max-width:120px" title="بدء الترقيم من">
+            <label class="pill" style="flex:0 0 auto;font-size:15px"><input id="showDotNumbers" type="checkbox"> إظهار ترقيم النقاط</label>
+            <input type="number" id="dotStart" min="1" value="1" class="large-numbers" style="max-width:140px" title="بدء الترقيم من">
           </div>
         </div>
 
         <div class="row">
           <div>
-            <label>حجم الشبكة (نقاط × نقاط)</label>
+            <label style="font-size:15px;font-weight:600">حجم الشبكة (نقاط × نقاط)</label>
             <div class="row">
-              <input type="number" id="gridW" min="2" max="12" value="5" />
-              <input type="number" id="gridH" min="2" max="12" value="5" />
+              <input type="number" id="gridW" min="2" max="12" value="5" class="large-numbers" />
+              <input type="number" id="gridH" min="2" max="12" value="5" class="large-numbers" />
             </div>
           </div>
           <div>
-            <label>ثواني الدور</label>
-            <input type="number" id="turnSecs" min="5" max="120" value="20" />
+            <label style="font-size:15px;font-weight:600">ثواني الدور</label>
+            <input type="number" id="turnSecs" min="5" max="120" value="20" class="large-numbers" />
           </div>
           <div>
-            <label>نقاط الفوز (اختياري)</label>
-            <input type="number" id="targetScore" min="1" value="0" />
+            <label style="font-size:15px;font-weight:600">نقاط الفوز (اختياري)</label>
+            <input type="number" id="targetScore" min="1" value="0" class="large-numbers" />
           </div>
         </div>
       </div>
@@ -223,7 +369,7 @@
   <section class="stage">
     <!-- يسار: الأحمر -->
     <aside class="team-card red">
-      <div class="head"><span class="dot"></span><b>فريق الأحمر</b> — <small>اللاعبون: <b id="redCount">0</b></small></div>
+      <div class="head"><span class="dot"></span><b style="font-size:18px">فريق الأحمر</b> — <small>اللاعبون: <b id="redCount">0</b></small></div>
       <div id="redList" class="list"></div>
     </aside>
 
@@ -231,9 +377,14 @@
     <main class="board-col">
       <div class="topbar">
         <div class="teamScore red"><span class="dot"></span> أحمر: <b id="scoreRed">0</b></div>
-        <div class="turninfo">
-          <span>⏱️ الوقت: <b id="timeLeft">--</b>s</span>
-          <span>🎯 الدور: <b id="currentTurnPlayer">غير محدد</b> (<span id="turnTeamLabel">أزرق</span>)</span>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:5px">
+          <!-- عرض اسم اللاعب الحالي بشكل مميز -->
+          <div id="currentTurnPlayerDisplay" class="player-turn-display">
+            الدور: <span id="currentTurnPlayer">غير محدد</span>
+          </div>
+          <div class="turninfo">
+            <span>⏱️ الوقت: <b id="timeLeft" class="time-display">--</b>s</span>
+          </div>
         </div>
         <div class="teamScore blue"><span class="dot"></span> أزرق: <b id="scoreBlue">0</b></div>
       </div>
@@ -244,10 +395,18 @@
 
     <!-- يمين: الأزرق -->
     <aside class="team-card blue">
-      <div class="head"><span class="dot"></span><b>فريق الأزرق</b> — <small>اللاعبون: <b id="blueCount">0</b></small></div>
+      <div class="head"><span class="dot"></span><b style="font-size:18px">فريق الأزرق</b> — <small>اللاعبون: <b id="blueCount">0</b></small></div>
       <div id="blueList" class="list"></div>
     </aside>
   </section>
+</div>
+
+<!-- إشعار تغيير الدور (يظهر في المنتصف) -->
+<div id="turnNotification" class="turn-notification"></div>
+
+<!-- تحكم الصوت -->
+<div class="sound-controls">
+  <button id="soundToggle" class="sound-btn" title="تشغيل/إيقاف الصوت">🔊</button>
 </div>
 
 <script>
@@ -256,6 +415,77 @@ document.documentElement.setAttribute('data-theme','dark');
 </script>
 
 <script>
+/*********** إدارة الصوت ***********/
+class SoundManager {
+  constructor() {
+    this.enabled = true;
+    this.boxCompleteSound = null;
+    this.initSounds();
+  }
+
+  initSounds() {
+    // إنشاء صوت إكمال المربع باستخدام Web Audio API
+    try {
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      
+      // صوت إكمال مربع (نغمة انتصار)
+      const playBoxComplete = () => {
+        if (!this.enabled) return;
+        
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+        oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
+        oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5
+        
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.5);
+      };
+      
+      this.boxCompleteSound = playBoxComplete;
+    } catch (e) {
+      console.log("Web Audio API غير مدعوم, استخدام الصوت البديل");
+      this.boxCompleteSound = () => {
+        if (!this.enabled) return;
+        // صوت بسيط باستخدام beep
+        const beep = () => {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const oscillator = ctx.createOscillator();
+          oscillator.type = 'sine';
+          oscillator.frequency.value = 800;
+          oscillator.connect(ctx.destination);
+          oscillator.start();
+          oscillator.stop(ctx.currentTime + 0.3);
+        };
+        beep();
+      };
+    }
+  }
+
+  playBoxComplete() {
+    if (this.boxCompleteSound) {
+      this.boxCompleteSound();
+    }
+  }
+
+  toggle() {
+    this.enabled = !this.enabled;
+    const btn = document.getElementById('soundToggle');
+    btn.textContent = this.enabled ? '🔊' : '🔇';
+    btn.style.borderColor = this.enabled ? 'var(--gold)' : 'var(--muted)';
+    return this.enabled;
+  }
+}
+
+const soundManager = new SoundManager();
+
 /*********** اتصال Twitch & Kick ***********/
 const RABT = (() => {
   let twitchClient = null, kickSocket = null, kickPingTimer = null;
@@ -402,8 +632,12 @@ function drawBoard(){
     const rx=PAD+x*cellW, ry=PAD+y*cellH;
     ctx.fillStyle='#f1f5fe'; ctx.beginPath(); ctx.arc(rx,ry,5,0,Math.PI*2); ctx.fill();
     if(SHOW_NUMBERS){
-      const idx=DOT_START+y*GW+x; ctx.fillStyle='#d8e0f3'; ctx.font='16px Cairo, sans-serif';
-      ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillText(String(idx), rx+6, ry+6);
+      const idx=DOT_START+y*GW+x;
+      ctx.fillStyle='#ffd96b';
+      ctx.font='bold 20px Cairo, sans-serif';
+      ctx.textAlign='center';
+      ctx.textBaseline='middle';
+      ctx.fillText(String(idx), rx, ry-15);
     }
   }
 }
@@ -427,16 +661,23 @@ function playLine(line,team){
   let g=0;
   if(line.type==='H'){ const y=line.y,x=line.x; if(y>0&&isBoxClosed(x,y-1)){boxes[y-1][x]=team; g++;} if(y<GH-1&&isBoxClosed(x,y)){boxes[y][x]=team; g++;} }
   else{ const x=line.x,y=line.y; if(x>0&&isBoxClosed(x-1,y)){boxes[y][x-1]=team; g++;} if(x<GW-1&&isBoxClosed(x,y)){boxes[y][x]=team; g++;} }
-  if(g>0){ addScore(team,g); checkWin(); } drawBoard(); return {ok:true,gained:g};
+  if(g>0){
+    addScore(team,g);
+    checkWin();
+    // تشغيل صوت إكمال المربع
+    soundManager.playBoxComplete();
+  }
+  drawBoard(); return {ok:true,gained:g};
 }
 function isBoxClosed(x,y){ return HLines[y][x] && HLines[y+1][x] && VLines[x][y] && VLines[x+1][y]; }
 
 /*********** الدور والمؤقت ***********/
 let turnTeam='blue', timeLeft=0, timerId=null, gameActive=false, currentPlayer=null, redIdx=0, blueIdx=0;
-const timeEl=document.getElementById('timeLeft'), turnTeamLabel=document.getElementById('turnTeamLabel'), currentTurnPlayerEl=document.getElementById('currentTurnPlayer');
+const timeEl=document.getElementById('timeLeft'), currentTurnPlayerEl=document.getElementById('currentTurnPlayer'),
+      playerTurnDisplayEl = document.getElementById('currentTurnPlayerDisplay');
 
 function setTurn(team,advance=false){
-  turnTeam=team; turnTeamLabel.textContent=(team==='red'?'أحمر':'أزرق');
+  turnTeam=team;
   const arr=getTeamPlayers(team);
   if(arr.length===0){ currentPlayer=null; }
   else{
@@ -444,16 +685,57 @@ function setTurn(team,advance=false){
     const idx=(team==='red'?redIdx:blueIdx)%arr.length; currentPlayer=arr[idx];
   }
   updateTurnUI();
+  
+  // إظهار إشعار تغيير الدور
+  if(currentPlayer && advance){
+    showTurnNotification(currentPlayer, team);
+  }
+  
   if(gameActive) resetTimer();
 }
-function updateTurnUI(){ currentTurnPlayerEl.textContent=currentPlayer? '@'+currentPlayer : 'غير محدد'; }
+function updateTurnUI(){
+  currentTurnPlayerEl.textContent=currentPlayer? '@'+currentPlayer : 'غير محدد';
+  
+  // تحديث عرض اللاعب الحالي
+  playerTurnDisplayEl.textContent = currentPlayer? `🎮 الدور: @${currentPlayer}` : '⏳ انتظار اللاعبين';
+  playerTurnDisplayEl.className = `player-turn-display ${turnTeam}-turn`;
+}
 function resetTimer(){
   if(timerId) clearInterval(timerId);
   timeLeft=Math.max(5, +document.getElementById('turnSecs').value|0);
   timeEl.textContent=timeLeft;
-  timerId=setInterval(()=>{ timeLeft--; timeEl.textContent=timeLeft; if(timeLeft<=0){ clearInterval(timerId); timerId=null; switchTeam(true); } },1000);
+  timerId=setInterval(()=>{
+    timeLeft--;
+    timeEl.textContent=timeLeft;
+    
+    // تغيير لون المؤقت عند الاقتراب من النهاية
+    if(timeLeft <= 5) {
+      timeEl.style.color = '#ff4d5e';
+      timeEl.style.animation = 'pulse 1s infinite';
+    } else {
+      timeEl.style.color = '#ffd96b';
+      timeEl.style.animation = 'none';
+    }
+    
+    if(timeLeft<=0){ clearInterval(timerId); timerId=null; switchTeam(true); }
+  },1000);
 }
 function switchTeam(){ setTurn(turnTeam==='red'?'blue':'red', true); }
+
+/*********** إظهار إشعار تغيير الدور ***********/
+function showTurnNotification(playerName, team) {
+  const notification = document.getElementById('turnNotification');
+  notification.textContent = `🎮 ${playerName}`;
+  notification.className = `turn-notification ${team}-notify`;
+  
+  // إظهار الإشعار
+  notification.classList.add('show');
+  
+  // إخفاء الإشعار بعد ثانيتين
+  setTimeout(() => {
+    notification.classList.remove('show');
+  }, 2000);
+}
 
 /*********** النقاط والفوز ***********/
 let scoreRed=0, scoreBlue=0; const sr=document.getElementById('scoreRed'), sb=document.getElementById('scoreBlue');
@@ -539,6 +821,12 @@ function handleCommand(user,text){
 (function(){
   try{ const sCh=localStorage.getItem('st_ch'); if(sCh) twChannel.value=sCh; const sMd=localStorage.getItem('st_mode'); if(sMd) platformSelect.value=sMd; }catch{}
   initBoard(GW,GH); setTurn('blue');
+  
+  // زر تشغيل/إيقاف الصوت
+  document.getElementById('soundToggle').addEventListener('click', () => {
+    soundManager.toggle();
+  });
+  
   document.getElementById('btnStart').onclick=()=>{
     // بدء/إعادة
     scoreRed=scoreBlue=0; sr.textContent='0'; sb.textContent='0';
