@@ -22,36 +22,35 @@
   <meta name="twitter:description" content="ألعاب مباشرة مع الشات — واجهة احترافية وسرعة عالية.">
   <meta name="twitter:image" content="https://i.postimg.cc/XYGZ0j3s/St.png">
 
-  <!-- JSON-LD -->
+  <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
   {
-    "@context":"https://schema.org",
-    "@type":"WebSite",
-    "name":"StreamerTop",
-    "url":"https://www.streamr.top/",
-    "potentialAction":{
-      "@type":"SearchAction",
-      "target":"https://www.streamr.top/?q={search_term_string}",
-      "query-input":"required name=search_term_string"
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "ستريمر توب",
+    "description": "منصة ألعاب تفاعلية للستريمرز العربية",
+    "applicationCategory": "Game",
+    "operatingSystem": "Web",
+    "url": "https://www.streamr.top/",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "creator": {
+      "@type": "Person",
+      "name": "ميدو",
+      "url": "https://twitter.com/medo_dv"
+    },
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://www.streamr.top/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
     }
   }
   </script>
 
-  <!-- Additional global tweaks -->
-  <style>
-    html { color-scheme: dark; scroll-behavior: smooth; }
-    :where(a,button,[tabindex]):focus-visible { 
-      outline: 2px solid #00d86c; /* var(--secondary) without relying before defined */
-      outline-offset: 3px;
-    }
-    .skip-link{
-      position:fixed; inset-inline-start:10px; top:10px; z-index:10001;
-      background:#0b0d16; color:#fff; padding:.6rem .9rem; border-radius:10px;
-      border:1px solid rgba(255,255,255,0.08); transform:translateY(-200%);
-    }
-    .skip-link:focus{ transform:translateY(0); }
-  </style>
-
+  <!-- Global Styles -->
   <style>
     /* ========= المتغيرات العامة ========= */
     :root {
@@ -60,6 +59,7 @@
       --secondary: #00d86c;
       --accent: #9146ff;
       --kick: #00d800;
+      --rest-break: #ff9500;
       --bg-900: #0e0f1a;
       --bg-800: #13142a;
       --bg-700: #1a1b39;
@@ -69,19 +69,34 @@
       --border: rgba(255,255,255,0.08);
       --glass: rgba(255,255,255,0.06);
       --success: #00ff80;
-      /* عرض بطاقة اللعبة (عمودي 2:3 = 800x1200) */
       --game-w: 300px;
     }
+    
+    /* Light Mode Variables */
+    :root.light-mode {
+      --bg-900: #f8f9fa;
+      --bg-800: #ffffff;
+      --bg-700: #e9ecef;
+      --card: rgba(255, 255, 255, 0.9);
+      --text: #212529;
+      --muted: #6c757d;
+      --border: rgba(0, 0, 0, 0.1);
+      --glass: rgba(0, 0, 0, 0.03);
+    }
+
     @media (max-width: 1280px){
       :root{ --game-w: 280px; }
     }
     @media (max-width: 480px){
       :root{ --game-w: 240px; }
     }
-    *, *::before, *::after { box-sizing: border-box; }
-    html, body { height: 100%; }
+
+    /* ========= Reset & Base Styles ========= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { color-scheme: dark; scroll-behavior: smooth; }
+    html.light-mode { color-scheme: light; }
+    
     body {
-      margin: 0;
       min-height: 100vh;
       font-family: 'Cairo', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       color: var(--text);
@@ -89,63 +104,751 @@
         radial-gradient(1200px 600px at 85% -10%, rgba(145,70,255,0.18), transparent 60%),
         radial-gradient(900px 500px at -10% 110%, rgba(255,51,51,0.14), transparent 60%),
         linear-gradient(180deg, var(--bg-900), #0a0b14 70%);
-      overflow-x: hidden;
+      transition: background 0.3s ease;
     }
-    .grid-bg { position: fixed; inset: 0; pointer-events: none; z-index: 0; background-image:
-      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+
+    body.light-mode {
+      background:
+        radial-gradient(1200px 600px at 85% -10%, rgba(145,70,255,0.08), transparent 60%),
+        radial-gradient(900px 500px at -10% 110%, rgba(255,51,51,0.06), transparent 60%),
+        linear-gradient(180deg, var(--bg-900), #f0f2f5 70%);
+    }
+
+    /* ========= Accessibility ========= */
+    :where(a, button, [tabindex]):focus-visible { 
+      outline: 3px solid var(--secondary);
+      outline-offset: 3px;
+    }
+
+    .skip-link {
+      position: fixed;
+      inset-inline-start: 10px;
+      top: 10px;
+      z-index: 10001;
+      background: var(--bg-800);
+      color: var(--text);
+      padding: .6rem .9rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      transform: translateY(-200%);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* ========= Layout Components ========= */
+    .grid-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
       background-size: 40px 40px, 40px 40px;
     }
-    .blob, .blob2 { position: fixed; filter: blur(40px); opacity: .4; z-index: 0; pointer-events:none; width: 420px; height: 420px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, var(--accent), transparent 60%); top: -120px; left: -120px; transform: rotate(15deg); }
-    .blob2 { width: 720px; height: 720px; right: -220px; bottom: -160px; left: auto; top: auto; background: radial-gradient(circle at 70% 50%, var(--primary), transparent 60%); }
 
-    /* ========= الهيدر ========= */
-    header { position: sticky; top: 0; z-index: 40; backdrop-filter: saturate(140%) blur(10px); background: linear-gradient(180deg, rgba(10,11,20,0.85), rgba(10,11,20,0.5)); border-bottom: 1px solid var(--border); width: 100%; }
-    .nav { width: 100%; margin: 0; padding: 14px clamp(16px, 4vw, 48px); display: flex; align-items: center; justify-content: space-between; }
-    .brand { display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing: .2px; }
-    .logo { width: 38px; height: 38px; border-radius: 10px; display:grid; place-items:center; background: linear-gradient(135deg, var(--primary), #b81f1f); box-shadow: 0 8px 24px rgba(255,51,51,.25), inset 0 0 20px rgba(255,255,255,.08); border: 1px solid var(--border); }
-    .brand span { font-size: 1.05rem; }
-    .nav-cta { display:flex; align-items:center; gap:10px; }
-    .btn, .chip { display:inline-flex; align-items:center; gap:8px; cursor:pointer; text-decoration:none; font-weight:700; border-radius:12px; padding:.7rem 1rem; border:1px solid var(--border); background: var(--glass); color: var(--text); transition: transform .15s ease, box-shadow .2s ease, background .2s; }
-    .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(0,0,0,.35); }
-    .btn.primary { background: linear-gradient(135deg, var(--primary), #b81f1f); border-color: rgba(255,255,255,0.1); }
-    .btn.outline { background: transparent; }
-    .chip { padding:.45rem .7rem; font-size:.86rem; opacity:.95 }
-    .chip.kick { color: var(--kick); border-color: rgba(0,216,0,.35) }
-    .chip.twitch { color: var(--accent); border-color: rgba(145,70,255,.35) }
+    .blob, .blob2 {
+      position: fixed;
+      filter: blur(40px);
+      opacity: .4;
+      z-index: 0;
+      pointer-events: none;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, var(--accent), transparent 60%);
+      top: -120px;
+      left: -120px;
+      transform: rotate(15deg);
+    }
 
-    /* ========= الهيرو ========= */
-    .hero { position: relative; z-index: 1; margin: 28px 0 8px; width: 100%; padding: 0 clamp(16px, 4vw, 48px); display:grid; gap: 18px; grid-template-columns: 1.1fr .9fr; }
-    .hero-card { background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); border:1px solid var(--border); border-radius: 22px; padding: 26px; position:relative; overflow:hidden; box-shadow: 0 18px 50px rgba(0,0,0,.35); }
-    .hero h1 { font-size: clamp(1.8rem, 3.6vw, 2.6rem); margin:.4rem 0 1rem; color: var(--text); }
-    .hero p { color: var(--muted); margin: 0 0 1.1rem; font-weight:600 }
-    .divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.16), transparent); margin: 14px 0 18px; }
-    .hero-actions { display:flex; gap:10px; flex-wrap:wrap }
-    .stat { display:flex; align-items:center; gap:10px; padding:.6rem .8rem; border-radius: 12px; background: rgba(255,255,255,.04); border:1px solid var(--border); font-weight:700; color:#fff; }
-    .stat small { display:block; color: var(--muted); font-weight:600 }
+    .blob2 {
+      width: 720px;
+      height: 720px;
+      right: -220px;
+      bottom: -160px;
+      left: auto;
+      top: auto;
+      background: radial-gradient(circle at 70% 50%, var(--primary), transparent 60%);
+    }
 
-    /* ========= أقسام عامة ========= */
-    .section { position: relative; z-index:1; width: 100%; margin: 8px 0 40px; padding: 0 clamp(16px, 4vw, 48px); }
-    .section h2 { font-size: 1.2rem; color: var(--muted); font-weight:800; margin: 18px 6px; letter-spacing:.3px }
+    /* ========= Header & Navigation ========= */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: saturate(140%) blur(10px);
+      background: linear-gradient(180deg, rgba(10,11,20,0.85), rgba(10,11,20,0.5));
+      border-bottom: 1px solid var(--border);
+      width: 100%;
+    }
 
-    /* ========= شبكة الألعاب ========= */
-    .games-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(var(--game-w), 1fr)); gap: 22px; align-content: start; padding-bottom: 6px; }
-    .game-card { position:relative; isolation:isolate; overflow:hidden; width: 100%; min-width: 0; aspect-ratio: 2 / 3; border-radius: 18px; background: var(--card); border: 1px solid var(--border); box-shadow: 0 14px 36px rgba(0,0,0,.35); display:flex; flex-direction:column; --scale: 1; transform: scale(var(--scale)); transition: transform .3s ease, box-shadow .35s ease, border-color .25s ease; }
-    .game-card::before { content:""; position:absolute; inset:0; z-index:0; opacity:1; background-size: cover; background-position: center; filter: none !important; transition: transform .35s ease, opacity .25s ease; }
-    .game-card:hover { transform: translateY(-6px) scale(var(--scale)); border-color: rgba(255,255,255,.22); box-shadow: 0 24px 60px rgba(0,0,0,.5); }
-    .game-card:hover::before { transform: scale(1.06); }
-    .games-grid .game-card:nth-child(n+5){ --scale: 1; transform-origin: top center; }
-    .badges{ position:absolute; top:10px; inset-inline-start:10px; z-index:2; display:flex; gap:8px; flex-wrap:wrap; }
-    .badge{ padding:.36rem .6rem; border-radius:999px; border:1px solid var(--border); background: rgba(0,0,0,.48); color:#fff; font-size:.8rem; font-weight:800; display:inline-flex; align-items:center; gap:6px; }
-    .game-body{ position:absolute; inset:0; z-index:1; display:flex; flex-direction:column; justify-content:flex-end; padding: 12px; background: linear-gradient(180deg, rgba(0,0,0,0.00) 60%, rgba(0,0,0,0.5) 100%); }
-    .game-info{ position:absolute; left:12px; right:12px; bottom:72px; z-index:2; opacity:0; transform: translateY(6px); transition: opacity .25s ease, transform .25s ease; pointer-events:none; }
-    .game-info p{ margin:0; font-size:.9rem; font-weight:800; line-height:1.4; color:#fff; background: rgba(0,0,0,.55); border:1px solid var(--border); border-radius:12px; padding:.6rem .75rem; box-shadow: 0 8px 20px rgba(0,0,0,.35); }
-    .game-card:hover .game-info,
-    .game-card:focus-within .game-info { opacity:1; transform: translateY(0); }
-    .game-title, .game-desc{ display:none !important; }
-    .start-btn{ display:block; text-align:center; text-decoration:none; cursor:pointer; border:none; font-weight:900; font-size:1rem; letter-spacing:.2px; color:#fff; border-radius:12px; padding:.95rem 1rem; margin-top:8px; background: linear-gradient(135deg, var(--secondary), #09a659); box-shadow: 0 10px 24px rgba(0,216,108,.28); transition: transform .15s ease, box-shadow .25s ease, filter .25s ease; }
-    .start-btn:hover{ transform: translateY(-2px); box-shadow: 0 16px 36px rgba(0,216,108,.38); filter: saturate(1.06); }
-    .games-scroller-btn { display:none !important; }
+    body.light-mode header {
+      background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.5));
+    }
+
+    .nav {
+      width: 100%;
+      margin: 0;
+      padding: 14px clamp(16px, 4vw, 48px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      letter-spacing: .2px;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--primary), #b81f1f);
+      box-shadow: 0 8px 24px rgba(255,51,51,.25), inset 0 0 20px rgba(255,255,255,.08);
+      border: 1px solid var(--border);
+      color: white;
+    }
+
+    .brand span {
+      font-size: 1.05rem;
+    }
+
+    .nav-cta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    /* ========= Buttons & Chips ========= */
+    .btn, .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 700;
+      border-radius: 12px;
+      padding: .7rem 1rem;
+      border: 1px solid var(--border);
+      background: var(--glass);
+      color: var(--text);
+      transition: transform .15s ease, box-shadow .2s ease, background .2s;
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+
+    .btn:hover, .chip:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(0,0,0,.35);
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, var(--primary), #b81f1f);
+      border-color: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    .btn.outline {
+      background: transparent;
+    }
+
+    .btn.rest-break {
+      background: linear-gradient(135deg, var(--rest-break), #ff7b00);
+      border-color: rgba(255,149,0,0.3);
+      color: white;
+    }
+
+    .chip {
+      padding: .45rem .7rem;
+      font-size: .86rem;
+      opacity: .95;
+    }
+
+    .chip.kick {
+      color: var(--kick);
+      border-color: rgba(0,216,0,.35);
+    }
+
+    .chip.twitch {
+      color: var(--accent);
+      border-color: rgba(145,70,255,.35);
+    }
+
+    .chip.rest-break {
+      color: var(--rest-break);
+      border-color: rgba(255,149,0,.35);
+      animation: pulse 2s infinite;
+    }
+
+    .theme-toggle {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--glass);
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .theme-toggle:hover {
+      transform: translateY(-2px);
+    }
+
+    /* ========= Hero Section ========= */
+    .hero {
+      position: relative;
+      z-index: 1;
+      margin: 28px 0 8px;
+      width: 100%;
+      padding: 0 clamp(16px, 4vw, 48px);
+      display: grid;
+      gap: 18px;
+      grid-template-columns: 1.1fr .9fr;
+    }
+
+    .hero-card {
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 26px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 18px 50px rgba(0,0,0,.35);
+    }
+
+    body.light-mode .hero-card {
+      background: linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.8));
+      box-shadow: 0 18px 50px rgba(0,0,0,.1);
+    }
+
+    .hero h1 {
+      font-size: clamp(1.8rem, 3.6vw, 2.6rem);
+      margin: .4rem 0 1rem;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .hero p {
+      color: var(--muted);
+      margin: 0 0 1.1rem;
+      font-weight: 600;
+      line-height: 1.6;
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.16), transparent);
+      margin: 14px 0 18px;
+    }
+
+    body.light-mode .divider {
+      background: linear-gradient(90deg, transparent, rgba(0,0,0,.1), transparent);
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    /* ========= Live Stats ========= */
+    .live-stats {
+      display: flex;
+      gap: 16px;
+      margin: 24px 0;
+      flex-wrap: wrap;
+    }
+
+    .stat-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 16px;
+      border-radius: 16px;
+      background: var(--glass);
+      border: 1px solid var(--border);
+      min-width: 120px;
+      transition: transform 0.2s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .stat-card i {
+      font-size: 1.5rem;
+      color: var(--accent);
+    }
+
+    .stat-number {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    /* ========= Breadcrumbs ========= */
+    .breadcrumb {
+      margin: 16px clamp(16px, 4vw, 48px);
+      padding: 12px 0;
+    }
+
+    .breadcrumb ol {
+      display: flex;
+      gap: 8px;
+      list-style: none;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .breadcrumb li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+    }
+
+    .breadcrumb a {
+      color: var(--text);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .breadcrumb a:hover {
+      color: var(--primary);
+    }
+
+    .breadcrumb li:not(:last-child)::after {
+      content: "/";
+      margin-left: 8px;
+      opacity: 0.5;
+    }
+
+    .breadcrumb li[aria-current="page"] {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    /* ========= Search Container ========= */
+    .search-container {
+      position: relative;
+      max-width: 500px;
+      margin: 20px auto 30px;
+      padding: 0 clamp(16px, 4vw, 48px);
+    }
+
+    #gameSearch {
+      width: 100%;
+      padding: 14px 20px;
+      padding-left: 50px;
+      border-radius: 16px;
+      border: 2px solid var(--border);
+      background: var(--glass);
+      color: var(--text);
+      font-size: 1rem;
+      font-family: inherit;
+      transition: all 0.3s ease;
+    }
+
+    #gameSearch:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(145,70,255,0.1);
+    }
+
+    #gameSearch::placeholder {
+      color: var(--muted);
+    }
+
+    .search-container::before {
+      content: "🔍";
+      position: absolute;
+      right: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    #clearSearch {
+      position: absolute;
+      left: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      display: none;
+    }
+
+    #clearSearch:hover {
+      color: var(--primary);
+      background: rgba(255,51,51,0.1);
+    }
+
+    /* ========= Game Filters ========= */
+    .game-filters {
+      display: flex;
+      gap: 10px;
+      margin: 0 clamp(16px, 4vw, 48px) 20px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .filter-btn {
+      padding: 8px 20px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--primary);
+      color: var(--text);
+    }
+
+    .filter-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* ========= Games Grid ========= */
+    .section {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      margin: 8px 0 40px;
+      padding: 0 clamp(16px, 4vw, 48px);
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      color: var(--text);
+      font-weight: 800;
+      margin: 18px 6px;
+      letter-spacing: .3px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section h2 {
+      font-size: 1.2rem;
+      color: var(--muted);
+      font-weight: 800;
+      margin: 18px 6px;
+      letter-spacing: .3px;
+    }
+
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(var(--game-w), 1fr));
+      gap: 22px;
+      align-content: start;
+      padding-bottom: 6px;
+    }
+
+    /* ========= Game Cards ========= */
+    .game-card {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      width: 100%;
+      min-width: 0;
+      aspect-ratio: 2 / 3;
+      border-radius: 18px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: 0 14px 36px rgba(0,0,0,.35);
+      display: flex;
+      flex-direction: column;
+      transform: scale(1);
+      transition: transform .3s ease, box-shadow .35s ease, border-color .25s ease;
+      cursor: pointer;
+    }
+
+    /* بطاقة اللعبة المغلقة */
+    .game-card.disabled {
+      opacity: 0.7;
+      filter: grayscale(0.8);
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .game-card.disabled::before {
+      filter: grayscale(0.8) brightness(0.5);
+    }
+
+    .game-card.disabled::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 3;
+      border-radius: 18px;
+    }
+
+    .game-card.disabled .start-btn {
+      background: linear-gradient(135deg, #666, #444);
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .closed-badge {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 4;
+      background: rgba(255, 51, 51, 0.9);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 1.1rem;
+      text-align: center;
+      border: 2px solid white;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      width: 80%;
+    }
+
+    .closed-badge i {
+      display: block;
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .game-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      opacity: 1;
+      background-size: cover;
+      background-position: center;
+      filter: none !important;
+      transition: transform .35s ease, opacity .25s ease;
+    }
+
+    .game-card:hover:not(.disabled) {
+      transform: translateY(-6px) scale(1.02);
+      border-color: rgba(255,255,255,.22);
+      box-shadow: 0 24px 60px rgba(0,0,0,.5);
+    }
+
+    .game-card:hover:not(.disabled)::before {
+      transform: scale(1.06);
+    }
+
+    .badges {
+      position: absolute;
+      top: 10px;
+      inset-inline-start: 10px;
+      z-index: 2;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      padding: .36rem .6rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,.48);
+      color: #fff;
+      font-size: .8rem;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      backdrop-filter: blur(4px);
+    }
+
+    .maintenance-badge {
+      background: linear-gradient(135deg, #ff3333, #b81f1f);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .coming-soon-badge {
+      background: linear-gradient(135deg, var(--rest-break), #ff7b00);
+      animation: pulse 2s infinite;
+    }
+
+    .group-only-badge {
+      background: linear-gradient(135deg, #00b4d8, #0077b6);
+      border-color: rgba(0,180,216,0.3);
+    }
+
+    .favorite-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 3;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: rgba(0,0,0,.6);
+      border: 1px solid var(--border);
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(4px);
+    }
+
+    .favorite-btn:hover {
+      background: rgba(255,51,51,.3);
+      transform: scale(1.1);
+    }
+
+    .favorite-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .favorite-btn.active i {
+      animation: heartBeat 0.5s ease;
+    }
+
+    @keyframes heartBeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+
+    .game-body {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 12px;
+      background: linear-gradient(180deg, rgba(0,0,0,0.00) 60%, rgba(0,0,0,0.5) 100%);
+    }
+
+    .game-info {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 72px;
+      z-index: 2;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity .25s ease, transform .25s ease;
+      pointer-events: none;
+    }
+
+    .game-info p {
+      margin: 0;
+      font-size: .9rem;
+      font-weight: 800;
+      line-height: 1.4;
+      color: #fff;
+      background: rgba(0,0,0,.55);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: .6rem .75rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,.35);
+      text-align: center;
+    }
+
+    .game-card:hover:not(.disabled) .game-info,
+    .game-card:focus-within:not(.disabled) .game-info {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .start-btn {
+      display: block;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      font-weight: 900;
+      font-size: 1rem;
+      letter-spacing: .2px;
+      color: #fff;
+      border-radius: 12px;
+      padding: .95rem 1rem;
+      margin-top: 8px;
+      background: linear-gradient(135deg, var(--secondary), #09a659);
+      box-shadow: 0 10px 24px rgba(0,216,108,.28);
+      transition: transform .15s ease, box-shadow .25s ease, filter .25s ease;
+      font-family: inherit;
+    }
+
+    .start-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 36px rgba(0,216,108,.38);
+      filter: saturate(1.06);
+    }
 
     /* ربط صور الألعاب */
     .img-1::before { background-image: url('https://i.postimg.cc/sDmnYMss/1.png'); }
@@ -156,65 +859,744 @@
     .img-squares::before { background-image: url('https://i.postimg.cc/XYGZ0j3s/St.png'); }
     .img-tahadi::before { background-image: url('https://i.postimg.cc/sx7C12Yj/thdy-almfrdat.png'); }
 
-    /* ========= بطاقات الستريمر ========= */
-    .streamer-access-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; margin-top: 12px; }
-    .creator-card{ position: relative; border-radius: 18px; overflow: hidden; min-height: 220px; border: 1px solid var(--border); background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); box-shadow: 0 14px 36px rgba(0,0,0,.35); display: flex; align-items: center; justify-content: center; transition: transform .25s ease, box-shadow .3s ease, border-color .25s ease; isolation: isolate; }
-    .creator-card::before{ content:""; position:absolute; inset:0; z-index:0; pointer-events:none; background:
-      radial-gradient(120% 80% at 80% -10%, rgba(145,70,255,.16), transparent 60%),
-      radial-gradient(100% 70% at -20% 120%, rgba(255,51,51,.10), transparent 60%);
-      opacity:.9;
+    /* ========= Rest Break Section ========= */
+    .rest-break-section {
+      margin: 60px 0;
+      padding: 0 clamp(16px, 4vw, 48px);
     }
-    .creator-card:hover{ transform: translateY(-6px); box-shadow: 0 22px 60px rgba(0,0,0,.55); border-color: rgba(255,255,255,.18); }
-    .creator-overlay{ position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 18px; text-align: center; color: #fff; }
-    .creator-avatar{ width: 108px; height: 108px; border-radius: 22px; object-fit: cover; position: relative; display: block; border: 1px solid rgba(255,255,255,.12); box-shadow: 0 10px 28px rgba(0,0,0,.45); }
-    .creator-avatar-wrap{ position: relative; display:inline-grid; place-items:center; }
-    .creator-avatar-wrap::before{ content:""; position:absolute; inset:-4px; border-radius: 26px; z-index: -1; background: conic-gradient(from 0deg, var(--accent), var(--primary), var(--secondary), var(--accent)); filter: blur(0.5px) saturate(1.1); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; padding: 2px; opacity:.85; transition: opacity .25s ease, transform .25s ease; }
-    .creator-card:hover .creator-avatar-wrap::before{ opacity:1; transform: rotate(4deg); }
-    .creator-name{ font-weight: 900; font-size: 1.02rem; margin-top: 10px; }
-    .creator-tag{ font-size:.85rem; font-weight:700; color: var(--muted); background: rgba(0,0,0,.42); border:1px solid var(--border); padding: 4px 10px; border-radius: 999px; margin-top: 6px; }
-    .creator-actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 12px; }
-    .creator-btn{ display:inline-flex; align-items:center; gap:8px; padding:.75rem 1rem; border-radius:12px; font-weight:900; color:#fff; text-decoration:none; cursor:pointer; border:1px solid rgba(255,255,255,.10); background: linear-gradient(135deg, var(--accent), #6b2dff); box-shadow: 0 10px 24px rgba(145,70,255,.28); transition: transform .15s ease, box-shadow .25s ease, filter .25s ease; }
-    .creator-btn:hover{ transform: translateY(-2px); box-shadow: 0 16px 36px rgba(145,70,255,.36); filter: saturate(1.06) }
-    .creator-soon{ position:absolute; top:10px; inset-inline-end:10px; z-index:2; background: linear-gradient(135deg, var(--accent), #6b2dff); color:#fff; font-size:.82rem; font-weight:900; padding: 5px 11px; border-radius:999px; border: 1px solid rgba(255,255,255,.12); box-shadow: 0 10px 22px rgba(145,70,255,.28); }
-    .status-dot{ position:absolute; bottom: -2px; inset-inline-end:-2px; width:14px; height:14px; border-radius:999px; background: var(--secondary); border: 2px solid rgba(0,0,0,.55); box-shadow: 0 0 0 3px rgba(0,0,0,.15); }
-    .status-off{ background: #999; }
 
-    /* ========= نافذة الدعم (is-open) ========= */
-    .support-modal-backdrop{ position: fixed; inset: 0; background: rgba(0,0,0,0.55); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 10000; }
-    .support-modal-backdrop.is-open{ display: flex; }
-    .support-modal{ width: min(520px, 92vw); background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)); border: 1px solid var(--border); border-radius: 18px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); padding: 20px; text-align: center; color: var(--text); position: relative; }
-    .support-close{ position: absolute; top: 10px; inset-inline-end: 10px; background: transparent; color: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 6px 10px; cursor: pointer; font-weight: 800; }
-    .support-modal-backdrop.is-open .support-modal{ animation: pop .18s ease; }
-    @keyframes pop{ from{ transform: translateY(8px); opacity:.85 } to{ transform: translateY(0); opacity:1 } }
+    .rest-break-card {
+      background: linear-gradient(135deg, rgba(255,149,0,0.1), rgba(255,149,0,0.05));
+      border: 2px solid rgba(255,149,0,0.3);
+      border-radius: 24px;
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(255,149,0,0.15);
+      animation: glow 3s infinite alternate;
+    }
 
-    /* ========= بقية المكونات العامة ========= */
-    .streamer { background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); border: 1px solid var(--border); border-radius: 18px; padding: 18px; box-shadow: 0 14px 36px rgba(0,0,0,.35); }
-    .streamer-head { display:flex; align-items:center; justify-content:space-between; cursor:pointer; user-select:none }
-    .streamer-head h3 { margin:0; font-size:1.05rem; color: var(--secondary) }
-    .streamer-body { display:none; margin-top: 16px; animation: fade .25s ease }
-    .list { margin: 12px 0; padding-inline-start: 18px; color: var(--muted); font-weight:600 }
-    .list li { margin:.5rem 0; position:relative; list-style:none; padding-inline-start: 22px }
-    .list li::before { content:"\2713"; position:absolute; inset-inline-start:0; color: var(--secondary); font-weight:800 }
-    .price { font-size: 1.25rem; font-weight: 800; color: var(--accent); margin: 10px 0 14px }
-    .sbtn { display:inline-flex; align-items:center; gap:8px; padding:.8rem 1rem; border-radius:12px; text-decoration:none; font-weight:800; background: linear-gradient(135deg, var(--accent), #6b2dff); color:#fff; border:1px solid rgba(255,255,255,.08) }
-    .sbtn:hover { filter: saturate(1.1) }
-    footer { width: 100%; margin: 24px 0 60px; padding: 0 clamp(16px, 4vw, 48px); color: var(--muted); display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap }
-    .social { display:flex; gap:10px }
-    .icon { width:38px; height:38px; display:grid; place-items:center; border-radius: 999px; text-decoration:none; color:#fff; border:1px solid var(--border); background: var(--glass); transition:.2s }
-    .icon:hover { transform: translateY(-2px) }
-    .floating { position: fixed; inset-inline: 18px; top: 14px; z-index: 45; display:flex; gap:10px; justify-content: space-between; pointer-events:none }
-    .floating > * { pointer-events: auto }
-    a:focus, button:focus, input:focus { outline:2px solid var(--secondary); outline-offset:2px }
-    @media (max-width: 960px){ .hero { grid-template-columns: 1fr; } }
-    @keyframes fade { from{opacity:0} to{opacity:1} }
-    @media (prefers-reduced-motion: reduce){ .btn:hover, .start-btn:hover, .game-card:hover { transform: none } .blob, .blob2, .grid-bg { display:none } }
-    /* ======= توحيد حجم كل البطاقات ======= */
-    .games-grid .game-card { --scale: 1; }
-    .games-grid .game-card:nth-child(n+5) { --scale: 1; }
+    @keyframes glow {
+      0% { box-shadow: 0 20px 60px rgba(255,149,0,0.15); }
+      100% { box-shadow: 0 20px 80px rgba(255,149,0,0.25); }
+    }
 
-    /* تحسينات خفيفة إضافية */
-    .game-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-    p, .game-info p { text-wrap: pretty; }
+    .rest-break-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 80% 20%, rgba(255,149,0,0.1), transparent 50%),
+                  radial-gradient(circle at 20% 80%, rgba(255,149,0,0.1), transparent 50%);
+      z-index: 0;
+    }
+
+    .rest-break-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .rest-break-info h2 {
+      font-size: 2rem;
+      color: var(--rest-break);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .rest-break-info p {
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 24px;
+      font-size: 1.1rem;
+    }
+
+    .rest-break-features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin: 32px 0;
+    }
+
+    .feature {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      background: rgba(255,149,0,0.1);
+      border-radius: 16px;
+      border: 1px solid rgba(255,149,0,0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .feature:hover {
+      transform: translateY(-4px);
+      background: rgba(255,149,0,0.15);
+    }
+
+    .feature i {
+      color: var(--rest-break);
+      font-size: 1.5rem;
+      width: 50px;
+      height: 50px;
+      display: grid;
+      place-items: center;
+      background: rgba(255,149,0,0.2);
+      border-radius: 12px;
+    }
+
+    .feature-content h3 {
+      margin: 0 0 6px;
+      color: var(--text);
+      font-size: 1.1rem;
+    }
+
+    .feature-content p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .countdown-timer {
+      display: flex;
+      gap: 16px;
+      margin: 32px 0;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .countdown-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: rgba(255,149,0,0.2);
+      padding: 20px;
+      border-radius: 16px;
+      min-width: 90px;
+      border: 2px solid rgba(255,149,0,0.3);
+    }
+
+    .countdown-number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--rest-break);
+      line-height: 1;
+      text-shadow: 0 0 20px rgba(255,149,0,0.3);
+    }
+
+    .countdown-label {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-top: 8px;
+      font-weight: 600;
+    }
+
+    /* ========= How It Works ========= */
+    .how-it-works {
+      margin: 60px 0;
+      padding: 0 clamp(16px, 4vw, 48px);
+    }
+
+    .steps-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    .step {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 30px;
+      text-align: center;
+      transition: transform 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .step:hover {
+      transform: translateY(-8px);
+    }
+
+    .step-number {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, var(--accent), var(--primary));
+      color: white;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin: 0 auto 20px;
+    }
+
+    .step h3 {
+      font-size: 1.3rem;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+
+    .step p {
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ========= Streamer Access Grid ========= */
+    .streamer-access-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 18px;
+      margin-top: 12px;
+    }
+
+    .creator-card {
+      position: relative;
+      border-radius: 18px;
+      overflow: hidden;
+      min-height: 220px;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      box-shadow: 0 14px 36px rgba(0,0,0,.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .25s ease, box-shadow .3s ease, border-color .25s ease;
+      isolation: isolate;
+      cursor: pointer;
+    }
+
+    .creator-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(120% 80% at 80% -10%, rgba(145,70,255,.16), transparent 60%),
+        radial-gradient(100% 70% at -20% 120%, rgba(255,51,51,.10), transparent 60%);
+      opacity: .9;
+    }
+
+    .creator-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 22px 60px rgba(0,0,0,.55);
+      border-color: rgba(255,255,255,.18);
+    }
+
+    .creator-overlay {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      text-align: center;
+      color: #fff;
+    }
+
+    .creator-avatar {
+      width: 108px;
+      height: 108px;
+      border-radius: 22px;
+      object-fit: cover;
+      position: relative;
+      display: block;
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 10px 28px rgba(0,0,0,.45);
+    }
+
+    .creator-avatar-wrap {
+      position: relative;
+      display: inline-grid;
+      place-items: center;
+    }
+
+    .creator-avatar-wrap::before {
+      content: "";
+      position: absolute;
+      inset: -4px;
+      border-radius: 26px;
+      z-index: -1;
+      background: conic-gradient(from 0deg, var(--accent), var(--primary), var(--secondary), var(--accent));
+      filter: blur(0.5px) saturate(1.1);
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      padding: 2px;
+      opacity: .85;
+      transition: opacity .25s ease, transform .25s ease;
+    }
+
+    .creator-card:hover .creator-avatar-wrap::before {
+      opacity: 1;
+      transform: rotate(4deg);
+    }
+
+    .creator-name {
+      font-weight: 900;
+      font-size: 1.02rem;
+      margin-top: 10px;
+      color: var(--text);
+    }
+
+    .creator-tag {
+      font-size: .85rem;
+      font-weight: 700;
+      color: var(--muted);
+      background: rgba(0,0,0,.42);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-top: 6px;
+    }
+
+    .creator-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .creator-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: .75rem 1rem;
+      border-radius: 12px;
+      font-weight: 900;
+      color: #fff;
+      text-decoration: none;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,.10);
+      background: linear-gradient(135deg, var(--accent), #6b2dff);
+      box-shadow: 0 10px 24px rgba(145,70,255,.28);
+      transition: transform .15s ease, box-shadow .25s ease, filter .25s ease;
+      font-family: inherit;
+    }
+
+    .creator-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 36px rgba(145,70,255,.36);
+      filter: saturate(1.06);
+    }
+
+    .creator-soon {
+      position: absolute;
+      top: 10px;
+      inset-inline-end: 10px;
+      z-index: 2;
+      background: linear-gradient(135deg, var(--accent), #6b2dff);
+      color: #fff;
+      font-size: .82rem;
+      font-weight: 900;
+      padding: 5px 11px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 10px 22px rgba(145,70,255,.28);
+    }
+
+    .status-dot {
+      position: absolute;
+      bottom: -2px;
+      inset-inline-end: -2px;
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      background: var(--secondary);
+      border: 2px solid rgba(0,0,0,.55);
+      box-shadow: 0 0 0 3px rgba(0,0,0,.15);
+    }
+
+    .status-off {
+      background: #999;
+    }
+
+    /* ========= Streamer Section ========= */
+    .streamer {
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 14px 36px rgba(0,0,0,.35);
+    }
+
+    body.light-mode .streamer {
+      background: linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.8));
+    }
+
+    .streamer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+      padding: 10px 0;
+    }
+
+    .streamer-head h3 {
+      margin: 0;
+      font-size: 1.05rem;
+      color: var(--secondary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .streamer-body {
+      display: none;
+      margin-top: 16px;
+      animation: fade .25s ease;
+    }
+
+    .list {
+      margin: 12px 0;
+      padding-inline-start: 18px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .list li {
+      margin: .5rem 0;
+      position: relative;
+      list-style: none;
+      padding-inline-start: 22px;
+    }
+
+    .list li::before {
+      content: "\2713";
+      position: absolute;
+      inset-inline-start: 0;
+      color: var(--secondary);
+      font-weight: 800;
+    }
+
+    .price {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin: 10px 0 14px;
+    }
+
+    .sbtn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: .8rem 1rem;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), #6b2dff);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.08);
+      transition: all 0.2s ease;
+    }
+
+    .sbtn:hover {
+      filter: saturate(1.1);
+      transform: translateY(-2px);
+    }
+
+    /* ========= Footer ========= */
+    footer {
+      width: 100%;
+      margin: 24px 0 60px;
+      padding: 0 clamp(16px, 4vw, 48px);
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 0.9rem;
+    }
+
+    .social {
+      display: flex;
+      gap: 10px;
+    }
+
+    .icon {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      text-decoration: none;
+      color: var(--text);
+      border: 1px solid var(--border);
+      background: var(--glass);
+      transition: .2s;
+    }
+
+    .icon:hover {
+      transform: translateY(-2px);
+      background: var(--primary);
+      color: white;
+    }
+
+    /* ========= Modals ========= */
+    .support-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+    }
+
+    .support-modal-backdrop.is-open {
+      display: flex;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .support-modal {
+      width: min(520px, 92vw);
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      padding: 20px;
+      text-align: center;
+      color: var(--text);
+      position: relative;
+      animation: pop .18s ease;
+    }
+
+    body.light-mode .support-modal {
+      background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.9));
+    }
+
+    .support-close {
+      position: absolute;
+      top: 10px;
+      inset-inline-end: 10px;
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-weight: 800;
+      transition: all 0.2s ease;
+    }
+
+    .support-close:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .support-icon {
+      font-size: 3rem;
+      color: var(--primary);
+      margin-bottom: 16px;
+    }
+
+    .support-modal h3 {
+      margin: 0 0 16px;
+      color: var(--text);
+      font-size: 1.4rem;
+    }
+
+    .support-modal p {
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .support-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, var(--primary), #b81f1f);
+      color: white;
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: all 0.2s ease;
+    }
+
+    .support-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(255,51,51,0.3);
+    }
+
+    .support-note {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @keyframes pop {
+      from { transform: translateY(8px) scale(0.95); opacity: .85; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    /* ========= Skeleton Loading ========= */
+    .skeleton-card {
+      aspect-ratio: 2 / 3;
+      border-radius: 18px;
+      background: linear-gradient(90deg, var(--glass) 25%, var(--border) 50%, var(--glass) 75%);
+      background-size: 200% 100%;
+      animation: loading 1.5s infinite;
+      border: 1px solid var(--border);
+    }
+
+    @keyframes loading {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* ========= Animations ========= */
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-in {
+      animation: fade 0.6s ease forwards;
+    }
+
+    /* ========= Responsive Design ========= */
+    @media (max-width: 960px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+      
+      .nav-cta {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--bg-800);
+        padding: 20px;
+        border-bottom: 1px solid var(--border);
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .nav-cta.active {
+        display: flex;
+      }
+      
+      .mobile-menu-btn {
+        display: block;
+      }
+      
+      .btn, .chip {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .games-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 16px;
+      }
+      
+      .steps-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .rest-break-features {
+        grid-template-columns: 1fr;
+      }
+      
+      .countdown-item {
+        min-width: 70px;
+        padding: 16px;
+      }
+      
+      .countdown-number {
+        font-size: 2rem;
+      }
+      
+      .live-stats {
+        justify-content: center;
+      }
+      
+      footer {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-card {
+        padding: 20px;
+      }
+      
+      .rest-break-card {
+        padding: 25px;
+      }
+      
+      .section {
+        padding: 0 16px;
+      }
+      
+      .game-filters {
+        justify-content: center;
+      }
+      
+      .countdown-timer {
+        gap: 10px;
+      }
+      
+      .countdown-item {
+        min-width: 60px;
+        padding: 12px;
+      }
+      
+      .countdown-number {
+        font-size: 1.5rem;
+      }
+    }
+
+    /* ========= Reduced Motion Support ========= */
+    @media (prefers-reduced-motion: reduce) {
+      .btn:hover,
+      .start-btn:hover,
+      .game-card:hover,
+      .creator-card:hover,
+      .step:hover,
+      .stat-card:hover,
+      .feature:hover {
+        transform: none;
+      }
+      
+      .blob,
+      .blob2,
+      .grid-bg {
+        display: none;
+      }
+      
+      .game-card::before,
+      .creator-avatar-wrap::before {
+        transition: none;
+      }
+      
+      .animate-in {
+        animation: none;
+        opacity: 1;
+      }
+    }
   </style>
 </head>
 <body>
@@ -229,28 +1611,50 @@
   <!-- هيدر -->
   <header>
     <nav class="nav" aria-label="التنقل الرئيسي">
-      <div class="brand">
+      <a href="#top" class="brand">
         <div class="logo" aria-hidden="true"><i class="fa-solid fa-bolt"></i></div>
         <span>ستريمر توب</span>
-      </div>
+      </a>
+      
+      <button class="mobile-menu-btn" aria-label="فتح القائمة">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      
       <div class="nav-cta">
         <span class="chip twitch"><i class="fa-brands fa-twitch"></i> تويتش</span>
         <span class="chip kick"><i class="fa-solid fa-fist-raised"></i> كيك</span>
+        <span class="chip rest-break"><i class="fa-solid fa-mug-hot"></i> قادم قريباً</span>
         <a href="https://linktr.ee/medo_dv" class="btn outline" target="_blank" rel="noopener">
           <i class="fa-solid fa-link"></i> روابط التواصل
         </a>
         <a class="btn primary" href="#games"><i class="fa-solid fa-gamepad"></i> ابدأ الآن</a>
+        
         <!-- زر الدعم -->
         <button class="btn" type="button" id="supportBtn">
           <i class="fa-solid fa-hand-holding-heart"></i> عشان تدعمنا
         </button>
+        
         <!-- زر من نحن -->
         <button class="btn" type="button" id="aboutBtn">
           <i class="fa-solid fa-circle-info"></i> من نحن
         </button>
+        
+        <!-- زر تبديل الثيم -->
+        <button class="theme-toggle" type="button" id="themeToggle" aria-label="تبديل الثيم">
+          <i class="fa-solid fa-moon"></i>
+        </button>
       </div>
     </nav>
   </header>
+
+  <!-- Breadcrumbs -->
+  <nav aria-label="breadcrumb" class="breadcrumb">
+    <ol>
+      <li><a href="#top">الرئيسية</a></li>
+      <li><a href="#games">الألعاب</a></li>
+      <li aria-current="page">جميع الألعاب</li>
+    </ol>
+  </nav>
 
   <!-- الهيرو -->
   <section class="hero" id="top">
@@ -258,128 +1662,158 @@
       <h1>🎮 أهلاً بك في <span style="color:var(--primary)">ستريمر توب</span></h1>
       <p>منصة الألعاب التفاعلية المصممة خصيصاً للستريمرز — اربط الشات وخَلِّ المتابعين يلعبون معك مباشرة!</p>
       <div class="divider"></div>
+      
+      <!-- إحصاءات حية - تم تقليلها -->
+      <div class="live-stats">
+        <div class="stat-card">
+          <i class="fa-solid fa-users"></i>
+          <span class="stat-number" id="activeUsers">87</span>
+          <span class="stat-label">مستخدم نشط</span>
+        </div>
+        <div class="stat-card">
+          <i class="fa-solid fa-gamepad"></i>
+          <span class="stat-number">6</span>
+          <span class="stat-label">لعبة تفاعلية</span>
+        </div>
+        <div class="stat-card">
+          <i class="fa-solid fa-rocket"></i>
+          <span class="stat-number" id="gamesPlayed">4,231</span>
+          <span class="stat-label">لعبة تم لعبها</span>
+        </div>
+      </div>
+      
       <div class="hero-actions">
         <a href="#games" class="btn primary"><i class="fa-solid fa-rocket"></i> اكتشف الألعاب</a>
+        <a href="#rest-break" class="btn rest-break"><i class="fa-solid fa-mug-hot"></i> الاستراحة</a>
         <a href="#streamer" class="btn"><i class="fa-solid fa-star"></i> فئة ستريمر خاصة</a>
-      </div>
-      <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap">
-        <div class="stat">
-          <i class="fa-solid fa-plug"></i> يدعم الدمج مع الشات
-          <small>تويتش + كيك</small>
-        </div>
-        <div class="stat">
-          <i class="fa-solid fa-shield-heart"></i> تجربة مستقرة
-          <small>تحسينات للأداء</small>
-        </div>
+        <a href="#how-it-works" class="btn outline"><i class="fa-solid fa-play-circle"></i> كيف تعمل</a>
       </div>
     </div>
 
     <div class="hero-card" role="region" aria-label="ملاحظة مهمة">
-      <h2 style="margin:0 0 10px; font-size:1.1rem; color:var(--muted)">ملاحظة</h2>
+      <h2 style="margin:0 0 10px; font-size:1.1rem; color:var(--text)">ملاحظة</h2>
       <p style="margin:0">💡 يمكنك ربط قناتك مع الشات <b>داخل الألعاب فقط</b>.</p>
       <div class="divider"></div>
       <p style="margin:0">يتم حالياً العمل على: تسجيل الدخول، وخدمة <b>ستريمر بلس</b>.</p>
+      <div style="margin-top:16px; padding:12px; background:rgba(255,51,51,0.1); border-radius:12px; border:1px solid rgba(255,51,51,0.3);">
+        <p style="margin:0; color:var(--primary); font-weight:600;">
+          <i class="fa-solid fa-tools"></i> تنويه: لعبة "يلا نتعاون" مغلقة مؤقتاً للتطوير
+        </p>
+      </div>
     </div>
   </section>
 
+  <!-- قسم الاستراحة -->
+  <section class="rest-break-section" id="rest-break">
+    <div class="rest-break-card animate-in">
+      <div class="rest-break-content">
+        <div class="rest-break-info">
+          <h2><i class="fa-solid fa-mug-hot"></i> الاستراحة</h2>
+          <p>مساحة جديدة مخصصة للجلسات الجماعية فقط! استمتع بألعاب هادئة مع أصدقائك في جو ممتع بعيداً عن ضغوط البث المباشر.</p>
+          
+          <div class="rest-break-features">
+            <div class="feature">
+              <i class="fa-solid fa-users"></i>
+              <div class="feature-content">
+                <h3>مخصص للجلسات الجماعية</h3>
+                <p>مساحة مخصصة فقط للجلسات الجماعية مع الأصدقاء</p>
+              </div>
+            </div>
+            <div class="feature">
+              <i class="fa-solid fa-wifi-slash"></i>
+              <div class="feature-content">
+                <h3>غير مرتبط بالبث</h3>
+                <p>استمتع بدون ضغوط البث المباشر أو التفاعل مع المشاهدين</p>
+              </div>
+            </div>
+            <div class="feature">
+              <i class="fa-solid fa-couch"></i>
+              <div class="feature-content">
+                <h3>جو هادئ ومريح</h3>
+                <p>ألعاب خفيفة وممتعة في جو مريح للترفيه عن النفس</p>
+              </div>
+            </div>
+            <div class="feature">
+              <i class="fa-solid fa-gamepad"></i>
+              <div class="feature-content">
+                <h3>ألعاب اجتماعية</h3>
+                <p>ألعاب مصممة خصيصاً للتفاعل الاجتماعي الجماعي</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- مؤشر العد التنازلي -->
+          <div class="countdown-timer">
+            <div class="countdown-item">
+              <span class="countdown-number" id="days">14</span>
+              <span class="countdown-label">يوم</span>
+            </div>
+            <div class="countdown-item">
+              <span class="countdown-number" id="hours">06</span>
+              <span class="countdown-label">ساعة</span>
+            </div>
+            <div class="countdown-item">
+              <span class="countdown-number" id="minutes">45</span>
+              <span class="countdown-label">دقيقة</span>
+            </div>
+            <div class="countdown-item">
+              <span class="countdown-number" id="seconds">22</span>
+              <span class="countdown-label">ثانية</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works" id="how-it-works">
+    <h2 class="section-title"><i class="fa-solid fa-play-circle"></i> كيف تعمل المنصة؟</h2>
+    <div class="steps-container">
+      <div class="step animate-in">
+        <div class="step-number">1</div>
+        <h3>اختر اللعبة</h3>
+        <p>اختر لعبة من مكتبتنا التفاعلية المتنوعة التي تناسب جمهورك</p>
+      </div>
+      <div class="step animate-in">
+        <div class="step-number">2</div>
+        <h3>اربط الشات</h3>
+        <p>سجل الدخول بحسابك في تويتش أو كيك لربط اللعبة مع شات القناة</p>
+      </div>
+      <div class="step animate-in">
+        <div class="step-number">3</div>
+        <h3>ابدأ البث</h3>
+        <p>شارك الرابط مع مشاهديك وابدأ التفاعل المباشر في اللحظة</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search & Filters -->
+  <div class="search-container">
+    <input type="search" 
+           id="gameSearch" 
+           placeholder="🔍 ابحث عن لعبة..."
+           aria-label="بحث عن الألعاب">
+    <button type="button" id="clearSearch" aria-label="مسح البحث">
+      <i class="fa-solid fa-times"></i>
+    </button>
+  </div>
+
+  <div class="game-filters">
+    <span style="color: var(--muted); font-weight: 600;">تصفية:</span>
+    <button class="filter-btn active" data-filter="all">الكل</button>
+    <button class="filter-btn" data-filter="twitch">تويتش</button>
+    <button class="filter-btn" data-filter="kick">كيك</button>
+    <button class="filter-btn" data-filter="favorites">المفضلة</button>
+    <button class="filter-btn" data-filter="available">المتاحة فقط</button>
+  </div>
+
   <!-- الألعاب -->
   <section class="section" id="games">
-    <h2>الألعاب المتاحة</h2>
-
-    <!-- أسهم تمرير (مخفية الآن) -->
-    <button type="button" class="games-scroller-btn games-scroller-prev" id="gamesPrev" aria-label="السابق">
-      <i class="fa-solid fa-chevron-right"></i>
-    </button>
-    <button type="button" class="games-scroller-btn games-scroller-next" id="gamesNext" aria-label="التالي">
-      <i class="fa-solid fa-chevron-left"></i>
-    </button>
+    <h2>الألعاب المتاحة <span style="color:var(--muted); font-size:0.9rem;">(6 ألعاب متاحة)</span></h2>
 
     <div class="games-grid" id="gamesGrid">
-      <!-- الكلمات المبعثرة -->
-      <article class="game-card img-1">
-        <div class="badges">
-          <span class="badge"><i class="fa-brands fa-twitch"></i> تويتش</span>
-          <span class="badge"><i class="fa-solid fa-fist-raised"></i> كيك</span>
-        </div>
-        <div class="game-body">
-          <div class="game-info"><p>كوّن الكلمات بأسرع وقت من حروف عشوائية وخذ الصدارة في الشات!</p></div>
-          <a href="wordgame.html" class="start-btn" data-transition>ابدأ اللعبة</a>
-        </div>
-      </article>
-
-      <!-- اكشف الصورة -->
-      <article class="game-card img-2">
-        <div class="badges">
-          <span class="badge"><i class="fa-brands fa-twitch"></i> تويتش</span>
-          <span class="badge"><i class="fa-solid fa-fist-raised"></i> كيك</span>
-        </div>
-        <div class="game-body">
-          <div class="game-info"><p>صورة تتكشف تدريجيًا—خمن الكلمة قبل الجميع لتكسب النقاط!</p></div>
-          <a href="guessimage.html" class="start-btn" data-transition>ابدأ اللعبة</a>
-        </div>
-      </article>
-
-      <!-- حرب الدول -->
-      <article class="game-card img-4">
-        <div class="badges">
-          <span class="badge"><i class="fa-brands fa-twitch"></i> تويتش</span>
-          <span class="badge"><i class="fa-solid fa-fist-raised"></i> كيك</span>
-        </div>
-        <div class="game-body">
-          <div class="game-info"><p>استولِ على الدول ووسّع نفوذك—استراتيجية وتحدي مباشر مع المشاهدين.</p></div>
-          <a href="war-of-nations.html" class="start-btn" data-transition>ابدأ اللعبة</a>
-        </div>
-      </article>
-
-      <!-- يلا نتعاون -->
-      <article class="game-card img-5">
-        <div class="badges">
-          <span class="badge"><i class="fa-brands fa-twitch"></i> تويتش</span>
-          <span class="badge"><i class="fa-solid fa-fist-raised"></i> كيك</span>
-        </div>
-        <div class="game-body">
-          <div class="game-info"><p>حلّوا التحديات مع بعض—كل مساهمة من الشات تقربكم من الفوز!</p></div>
-          <a href="tarkeeb.html" class="start-btn" data-transition>ابدأ اللعبة</a>
-        </div>
-      </article>
-
-      <!-- لعبة الحروف -->
-      <article class="game-card img-huroof">
-        <div class="badges">
-          <span class="badge"><i class="fa-brands fa-twitch"></i> تويتش</span>
-          <span class="badge"><i class="fa-solid fa-fist-raised"></i> كيك</span>
-        </div>
-        <div class="game-body">
-          <div class="game-info"><p>انطلق بحرف محدد وكتب كلمات صحيحة—السريع يسبق!</p></div>
-          <a href="huroof-game.html" class="start-btn" data-transition>ابدأ اللعبة</a>
-        </div>
-      </article>
-
-      <!-- لعبة المربعات (جديدة) -->
-      <article class="game-card img-squares">
-        <div class="badges">
-          <span class="badge"><i class="fa-brands fa-twitch"></i> تويتش</span>
-          <span class="badge"><i class="fa-solid fa-fist-raised"></i> كيك</span>
-        </div>
-        <div class="game-body">
-          <div class="game-info"><p>كوّن أكبر عدد من المربعات خلال الوقت — والمتابعون يساعدونك من الشات!</p></div>
-          <a href="squares-game.html" class="start-btn" data-transition>ابدأ اللعبة</a>
-        </div>
-      </article>
-
-      <!-- 🎯 تحدّي المفردات -->
-      <article class="game-card img-tahadi">
-        <div class="badges">
-          <span class="badge"><i class="fa-brands fa-twitch"></i> تويتش</span>
-          <span class="badge"><i class="fa-solid fa-fist-raised"></i> كيك</span>
-        </div>
-        <div class="game-body">
-          <div class="game-info">
-            <p>اختبر قوة مفرداتك مع الشات في تحديات كلمات سريعة وممتعة!</p>
-          </div>
-          <a href="tahadi-mofradat.html" class="start-btn" data-transition>ابدأ اللعبة</a>
-        </div>
-      </article>
+      <!-- سيتم تحميل الألعاب ديناميكياً -->
     </div>
   </section>
 
@@ -387,40 +1821,7 @@
   <section class="section" id="streamer-access">
     <h2>الستريمر</h2>
     <div class="streamer-access-grid">
-      <!-- بطاقة صالح -->
-      <article class="creator-card" id="saleehCard">
-        <div class="creator-overlay">
-          <div class="creator-avatar-wrap">
-            <img class="creator-avatar" src="https://i.postimg.cc/qqpqNrBX/74508bb339c7d4b80fdc0dc3d41c8898.webp" alt="Saleeh" width="108" height="108" loading="lazy" decoding="async">
-            <span class="status-dot" aria-hidden="true"></span>
-          </div>
-          <div class="creator-name">Saleeh</div>
-          <div class="creator-tag">@saleeh • فئة خاصة</div>
-          <div class="creator-actions">
-            <button type="button" class="creator-btn" onclick="openSaleehWithPassword()">
-              <i class="fa-solid fa-lock"></i> دخول
-            </button>
-          </div>
-        </div>
-      </article>
-
-      <!-- بطاقة نايف -->
-      <article class="creator-card">
-        <span class="creator-soon">قريبًا</span>
-        <div class="creator-overlay">
-          <div class="creator-avatar-wrap">
-            <img class="creator-avatar" src="https://i.postimg.cc/7LF1TF5W/f3b8e631-7b72-4b24-b638-c24b9c22185b-profile-image-70x70.png" alt="naif_z4" width="108" height="108" loading="lazy" decoding="async">
-            <span class="status-dot status-off" aria-hidden="true"></span>
-          </div>
-          <div class="creator-name">naif_z4</div>
-          <div class="creator-tag">@naif_z4 • قريبًا</div>
-          <div class="creator-actions">
-            <button type="button" class="creator-btn" disabled style="cursor:not-allowed; opacity:.8;">
-              <i class="fa-solid fa-ban"></i> غير متاح
-            </button>
-          </div>
-        </div>
-      </article>
+      <!-- سيتم تحميل البطاقات ديناميكياً -->
     </div>
   </section>
 
@@ -457,16 +1858,25 @@
   <footer>
     <div>© <span id="year"></span> ستريمر توب — كل الحقوق محفوظة</div>
     <div class="social">
-      <a class="icon" href="https://twitter.com/medo_dv" target="_blank" rel="noopener"><i class="fa-brands fa-x-twitter"></i></a>
-      <a class="icon" href="https://instagram.com/medo_dv" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i></a>
-      <a class="icon" href="https://linktr.ee/medo_dv" target="_blank" rel="noopener"><i class="fa-solid fa-link"></i></a>
+      <a class="icon" href="https://twitter.com/medo_dv" target="_blank" rel="noopener" aria-label="تويتر">
+        <i class="fa-brands fa-x-twitter"></i>
+      </a>
+      <a class="icon" href="https://instagram.com/medo_dv" target="_blank" rel="noopener" aria-label="إنستجرام">
+        <i class="fa-brands fa-instagram"></i>
+      </a>
+      <a class="icon" href="https://linktr.ee/medo_dv" target="_blank" rel="noopener" aria-label="روابط">
+        <i class="fa-solid fa-link"></i>
+      </a>
+      <a class="icon" href="https://github.com" target="_blank" rel="noopener" aria-label="جيت هاب">
+        <i class="fa-brands fa-github"></i>
+      </a>
     </div>
   </footer>
 
   <!-- نافذة الدعم -->
   <div id="supportDialog" class="support-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="supportTitle" aria-hidden="true">
     <div class="support-modal">
-      <button class="support-close" type="button" id="supportClose"><i class="fa-solid fa-xmark"></i></button>
+      <button class="support-close" type="button" id="supportClose" aria-label="إغلاق"><i class="fa-solid fa-xmark"></i></button>
       <div class="support-icon"><i class="fa-solid fa-heart"></i></div>
       <h3 id="supportTitle">شكراً لدعمك! 🤍</h3>
       <p>كل دعمك يساعدنا نطوّر ألعاب جديدة ونحسّن الأداء لكل الستريمرز والمشاهدين 🙌</p>
@@ -482,7 +1892,7 @@
   <!-- نافذة من نحن -->
   <div id="aboutDialog" class="support-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="aboutTitle" aria-hidden="true">
     <div class="support-modal">
-      <button class="support-close" type="button" id="aboutClose"><i class="fa-solid fa-xmark"></i></button>
+      <button class="support-close" type="button" id="aboutClose" aria-label="إغلاق"><i class="fa-solid fa-xmark"></i></button>
       <div class="support-icon"><i class="fa-solid fa-users-viewfinder"></i></div>
       <h3 id="aboutTitle">من نحن</h3>
       <p style="text-align: start; line-height: 1.8; margin: 0 0 .6rem;">
@@ -502,187 +1912,710 @@
     </div>
   </div>
 
+  <!-- JavaScript -->
   <script>
-    // سنة التذييل
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    // توسيع/طي قسم ستريمر (الأصلي)
-    const head = document.getElementById('streamerHead');
-    const body = document.getElementById('streamerBody');
-    head.addEventListener('click', () => {
-      const isOpen = body.style.display === 'block';
-      body.style.display = isOpen ? 'none' : 'block';
-      head.querySelector('.fa-chevron-down').style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
-    });
-
-    // انتقال لطيف عند فتح لعبة
-    document.querySelectorAll('[data-transition]')?.forEach(btn => {
-      btn.addEventListener('click', e => {
-        e.preventDefault();
-        const href = btn.getAttribute('href');
-        const card = btn.closest('.game-card');
-        card.style.transform = 'translateY(-6px) scale(var(--scale))';
-        card.style.transition = 'transform .35s ease';
-        setTimeout(() => { window.location.href = href; }, 350);
-      });
-    });
-
-    // جعل البطاقة قابلة للنقر + كيبورد
-    document.querySelectorAll('.game-card').forEach(card => {
-      const link = card.querySelector('.start-btn');
-      if (!link) return;
-      card.style.cursor = 'pointer';
-      card.setAttribute('tabindex', '0');
-      card.setAttribute('role', 'link');
-      card.setAttribute('aria-label', (card.querySelector('.game-info p')?.textContent || 'ابدأ اللعبة').trim());
-      card.addEventListener('click', (e) => {
-        if (e.target.closest('.start-btn')) return;
-        link.click();
-      });
-      card.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          link.click();
+    // ========= App State Management =========
+    const AppState = {
+      currentFilter: 'all',
+      favorites: JSON.parse(localStorage.getItem('streamerTop_favorites')) || [],
+      gamesPlayed: 4231,
+      activeUsers: 87,
+      restBreakSubscribed: JSON.parse(localStorage.getItem('streamerTop_restBreakSubscribed')) || false,
+      
+      toggleFavorite(gameId) {
+        const index = this.favorites.indexOf(gameId);
+        if (index > -1) {
+          this.favorites.splice(index, 1);
+        } else {
+          this.favorites.push(gameId);
+          const btn = document.querySelector(`[data-id="${gameId}"] .favorite-btn`);
+          if (btn) btn.classList.add('active');
         }
-      });
-    });
-
-    // طبقة تدرّج إضافية
-    (function(){
-      const el = document.createElement('div');
-      el.setAttribute('aria-hidden','true');
-      el.style.position='fixed';
-      el.style.inset='0';
-      el.style.zIndex='0';
-      el.style.pointerEvents='none';
-      el.style.background = 'linear-gradient(180deg, rgba(255,255,255,0.00) 0%, rgba(255,255,255,0.02) 35%, rgba(255,255,255,0.00) 100%)';
-      document.body.appendChild(el);
-    })();
-
-    // ===== نافذة الدعم (فتح/غلق عبر is-open) =====
-    const supportBtn = document.getElementById('supportBtn');
-    const supportDialog = document.getElementById('supportDialog');
-    const supportClose = document.getElementById('supportClose');
-
-    function openSupportDialog(e){
-      if (e) { e.preventDefault(); e.stopPropagation(); }
-      if (!supportDialog) return;
-      supportDialog.classList.add('is-open');
-      supportDialog.setAttribute('aria-hidden', 'false');
-      setTimeout(() => supportClose?.focus(), 0);
-    }
-    function closeSupportDialog(){
-      if (!supportDialog) return;
-      supportDialog.classList.remove('is-open');
-      supportDialog.setAttribute('aria-hidden', 'true');
-    }
-    supportBtn?.addEventListener('click', openSupportDialog);
-    supportClose?.addEventListener('click', closeSupportDialog);
-    supportDialog?.addEventListener('click', (e) => { if (e.target === supportDialog) closeSupportDialog(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSupportDialog(); });
-
-    // ===== دخول صالح بدون كلمة مرور =====
-    function openSaleehWithPassword() { window.location.href = "saleeh.html"; }
-    document.getElementById('saleehCard')?.addEventListener('click', function(e){
-      const clickedButton = e.target.closest('button');
-      if (!clickedButton) { openSaleehWithPassword(); }
-    });
-
-    // (الأزرار كانت للسكرول الأفقي — ما نحتاجها مع الشبكة الجديدة)
-    const gamesGrid = document.getElementById('gamesGrid');
-    const gamesPrev = document.getElementById('gamesPrev');
-    const gamesNext = document.getElementById('gamesNext');
-    gamesGrid?.addEventListener('wheel', function(e) { /* لا حاجة لتمرير أفقي الآن */ }, { passive: true });
-
-    // =================== الإضافات المحسّنة ===================
-    // Focus Trap عام للمودالات
-    function trapFocus(modalEl) {
-      const focusable = modalEl.querySelectorAll('a,button,input,textarea,select,[tabindex]:not([tabindex="-1"])');
-      if (!focusable.length) return null;
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      function onKey(e){
-        if (e.key !== 'Tab') return;
-        if (e.shiftKey && document.activeElement === first) {
-          e.preventDefault(); last.focus();
-        } else if (!e.shiftKey && document.activeElement === last) {
-          e.preventDefault(); first.focus();
-        }
-      }
-      modalEl.addEventListener('keydown', onKey);
-      return () => modalEl.removeEventListener('keydown', onKey);
-    }
-
-    // “من نحن” مودال
-    const aboutBtn   = document.getElementById('aboutBtn');
-    const aboutDlg   = document.getElementById('aboutDialog');
-    const aboutClose = document.getElementById('aboutClose');
-    let undoTrapAbout = null;
-    function openAbout(e){
-      if (e){ e.preventDefault(); e.stopPropagation(); }
-      aboutDlg?.classList.add('is-open');
-      aboutDlg?.setAttribute('aria-hidden','false');
-      setTimeout(()=> aboutClose?.focus(), 0);
-      if (aboutDlg) undoTrapAbout = trapFocus(aboutDlg);
-    }
-    function closeAbout(){
-      aboutDlg?.classList.remove('is-open');
-      aboutDlg?.setAttribute('aria-hidden','true');
-      if (undoTrapAbout) undoTrapAbout();
-    }
-    aboutBtn?.addEventListener('click', openAbout);
-    aboutClose?.addEventListener('click', closeAbout);
-    aboutDlg?.addEventListener('click', (e)=>{ if(e.target===aboutDlg) closeAbout(); });
-    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeAbout(); });
-
-    // ربط Focus Trap مع نافذة الدعم أيضاً
-    const supportDialogEl = document.getElementById('supportDialog');
-    let undoTrapSupport = null;
-    function openSupportDialogPatched(e){
-      openSupportDialog(e); // الدالة الأصلية
-      if (supportDialogEl) undoTrapSupport = trapFocus(supportDialogEl);
-    }
-    function closeSupportDialogPatched(){
-      closeSupportDialog(); // الدالة الأصلية
-      if (undoTrapSupport) undoTrapSupport();
-    }
-    // استبدال المستمعين لمنع تكرار فتح/غلق
-    document.getElementById('supportBtn')?.removeEventListener('click', openSupportDialog);
-    document.getElementById('supportBtn')?.addEventListener('click', openSupportDialogPatched);
-    document.getElementById('supportClose')?.removeEventListener('click', closeSupportDialog);
-    document.getElementById('supportClose')?.addEventListener('click', closeSupportDialogPatched);
-    supportDialogEl?.addEventListener('click', (e)=>{ if(e.target===supportDialogEl) closeSupportDialogPatched(); });
-    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeSupportDialogPatched(); });
-
-    // حفظ حالة “فئة ستريمر”
-    const accHead = document.getElementById('streamerHead');
-    const accBody = document.getElementById('streamerBody');
-    const ACC_KEY = 'streamer_section_open';
-    if (localStorage.getItem(ACC_KEY) === '1') {
-      accBody.style.display = 'block';
-      accHead.querySelector('.fa-chevron-down').style.transform = 'rotate(180deg)';
-    }
-    accHead?.addEventListener('click', ()=>{
-      const isOpen = accBody.style.display === 'block';
-      localStorage.setItem(ACC_KEY, isOpen ? '0':'1');
-    });
-
-    // دخول ناعم للبطاقات (يحترم reduced-motion)
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!prefersReduced) {
-      const obs = new IntersectionObserver((entries)=>{
-        entries.forEach(entry=>{
-          if (entry.isIntersecting) {
-            entry.target.style.willChange = 'transform, opacity';
-            entry.target.animate([
-              {opacity:0, transform:'translateY(8px)'},
-              {opacity:1, transform:'translateY(0)'}
-            ], {duration:260, easing:'ease-out', fill:'forwards'});
-            obs.unobserve(entry.target);
+        localStorage.setItem('streamerTop_favorites', JSON.stringify(this.favorites));
+        this.updateUI();
+        return !(index > -1);
+      },
+      
+      incrementGamesPlayed() {
+        this.gamesPlayed++;
+        document.getElementById('gamesPlayed').textContent = this.gamesPlayed.toLocaleString();
+      },
+      
+      subscribeToRestBreak(email) {
+        this.restBreakSubscribed = true;
+        localStorage.setItem('streamerTop_restBreakSubscribed', JSON.stringify(true));
+        localStorage.setItem('streamerTop_restBreakEmail', email);
+        return true;
+      },
+      
+      updateUI() {
+        document.querySelectorAll('.game-card').forEach(card => {
+          const gameId = card.dataset.id;
+          const favBtn = card.querySelector('.favorite-btn');
+          if (favBtn) {
+            const icon = favBtn.querySelector('i');
+            if (this.favorites.includes(gameId)) {
+              icon?.classList.replace('fa-regular', 'fa-solid');
+              favBtn.classList.add('active');
+            } else {
+              icon?.classList.replace('fa-solid', 'fa-regular');
+              favBtn.classList.remove('active');
+            }
           }
-        })
-      }, {threshold: .12});
-      document.querySelectorAll('.game-card').forEach(el=>obs.observe(el));
+        });
+        
+        if (this.currentFilter === 'favorites' || this.currentFilter === 'available') {
+          this.filterGames();
+        }
+      },
+      
+      filterGames() {
+        const games = document.querySelectorAll('.game-card');
+        games.forEach(game => {
+          const gameId = game.dataset.id;
+          const hasTwitch = game.querySelector('.badge.twitch');
+          const hasKick = game.querySelector('.badge.kick');
+          const isDisabled = game.classList.contains('disabled');
+          
+          let shouldShow = true;
+          
+          switch(this.currentFilter) {
+            case 'twitch':
+              shouldShow = hasTwitch !== null && !isDisabled;
+              break;
+            case 'kick':
+              shouldShow = hasKick !== null && !isDisabled;
+              break;
+            case 'favorites':
+              shouldShow = this.favorites.includes(gameId) && !isDisabled;
+              break;
+            case 'available':
+              shouldShow = !isDisabled;
+              break;
+            default:
+              shouldShow = true;
+          }
+          
+          game.style.display = shouldShow ? 'block' : 'none';
+        });
+      }
+    };
+
+    // ========= Game Data =========
+    const gamesData = [
+      {
+        id: 'wordgame',
+        title: 'الكلمات المبعثرة',
+        description: 'كوّن الكلمات بأسرع وقت من حروف عشوائية وخذ الصدارة في الشات!',
+        image: 'img-1',
+        link: 'wordgame.html',
+        badges: ['twitch', 'kick'],
+        available: true
+      },
+      {
+        id: 'guessimage',
+        title: 'اكشف الصورة',
+        description: 'صورة تتكشف تدريجيًا—خمن الكلمة قبل الجميع لتكسب النقاط!',
+        image: 'img-2',
+        link: 'guessimage.html',
+        badges: ['twitch', 'kick'],
+        available: true
+      },
+      {
+        id: 'war-of-nations',
+        title: 'حرب الدول',
+        description: 'استولِ على الدول ووسّع نفوذك—استراتيجية وتحدي مباشر مع المشاهدين.',
+        image: 'img-4',
+        link: 'war-of-nations.html',
+        badges: ['twitch', 'kick'],
+        available: true
+      },
+      {
+        id: 'tarkeeb',
+        title: 'يلا نتعاون',
+        description: 'حلّوا التحديات مع بعض—كل مساهمة من الشات تقربكم من الفوز!',
+        image: 'img-5',
+        link: 'tarkeeb.html',
+        badges: ['twitch', 'kick'],
+        available: false,
+        maintenance: true
+      },
+      {
+        id: 'huroof-game',
+        title: 'لعبة الحروف',
+        description: 'انطلق بحرف محدد وكتب كلمات صحيحة—السريع يسبق!',
+        image: 'img-huroof',
+        link: 'huroof-game.html',
+        badges: ['twitch', 'kick'],
+        available: true
+      },
+      {
+        id: 'squares-game',
+        title: 'لعبة المربعات',
+        description: 'كوّن أكبر عدد من المربعات خلال الوقت — والمتابعون يساعدونك من الشات!',
+        image: 'img-squares',
+        link: 'squares-game.html',
+        badges: ['twitch', 'kick'],
+        available: true
+      },
+      {
+        id: 'tahadi-mofradat',
+        title: 'تحدّي المفردات',
+        description: 'اختبر قوة مفرداتك مع الشات في تحديات كلمات سريعة وممتعة!',
+        image: 'img-tahadi',
+        link: 'tahadi-mofradat.html',
+        badges: ['twitch', 'kick'],
+        available: true
+      }
+    ];
+
+    const streamersData = [
+      {
+        id: 'saleeh',
+        name: 'Saleeh',
+        tag: '@saleeh • فئة خاصة',
+        avatar: 'https://i.postimg.cc/qqpqNrBX/74508bb339c7d4b80fdc0dc3d41c8898.webp',
+        online: true,
+        link: 'saleeh.html',
+        soon: false
+      },
+      {
+        id: 'naif_z4',
+        name: 'naif_z4',
+        tag: '@naif_z4 • قريبًا',
+        avatar: 'https://i.postimg.cc/7LF1TF5W/f3b8e631-7b72-4b24-b638-c24b9c22185b-profile-image-70x70.png',
+        online: false,
+        link: '#',
+        soon: true
+      }
+    ];
+
+    // ========= Initialize Application =========
+    document.addEventListener('DOMContentLoaded', () => {
+      // Set current year
+      document.getElementById('year').textContent = new Date().getFullYear();
+      
+      // Initialize stats with reduced numbers
+      document.getElementById('gamesPlayed').textContent = AppState.gamesPlayed.toLocaleString();
+      document.getElementById('activeUsers').textContent = AppState.activeUsers;
+      
+      // Initialize countdown timer for Rest Break
+      initializeCountdown();
+      
+      // Simulate slight user count changes
+      setInterval(() => {
+        const activeUsers = document.getElementById('activeUsers');
+        const current = parseInt(activeUsers.textContent);
+        const change = Math.floor(Math.random() * 5) - 2;
+        const newValue = Math.max(80, Math.min(95, current + change));
+        activeUsers.textContent = newValue;
+        AppState.activeUsers = newValue;
+      }, 10000);
+      
+      // Load games dynamically
+      loadGames();
+      
+      // Load streamers
+      loadStreamers();
+      
+      // Initialize components
+      initNavigation();
+      initModals();
+      initSearch();
+      initFilters();
+      initTheme();
+      initAccessibility();
+      initAnimations();
+      
+      // تحسينات الأداء
+      initPerformance();
+    });
+
+    // ========= Initialize Countdown Timer =========
+    function initializeCountdown() {
+      // Set launch date to 14 days from now
+      const launchDate = new Date();
+      launchDate.setDate(launchDate.getDate() + 14);
+      launchDate.setHours(18, 0, 0, 0); // 6:00 PM
+      
+      function updateCountdown() {
+        const now = new Date();
+        const diff = launchDate - now;
+        
+        if (diff <= 0) {
+          // Launch time reached
+          document.getElementById('days').textContent = '00';
+          document.getElementById('hours').textContent = '00';
+          document.getElementById('minutes').textContent = '00';
+          document.getElementById('seconds').textContent = '00';
+          return;
+        }
+        
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        
+        document.getElementById('days').textContent = days.toString().padStart(2, '0');
+        document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+        document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+        document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+      }
+      
+      // Update every second
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+    }
+
+    // ========= Load Games =========
+    function loadGames() {
+      const gamesGrid = document.getElementById('gamesGrid');
+      if (!gamesGrid) return;
+      
+      gamesGrid.innerHTML = '';
+      
+      gamesData.forEach(game => {
+        const gameCard = document.createElement('article');
+        gameCard.className = `game-card ${game.image} animate-in`;
+        if (!game.available) {
+          gameCard.classList.add('disabled');
+        }
+        gameCard.dataset.id = game.id;
+        gameCard.setAttribute('role', 'article');
+        gameCard.setAttribute('aria-labelledby', `game-${game.id}-title`);
+        
+        const isFavorite = AppState.favorites.includes(game.id);
+        const isDisabled = !game.available;
+        
+        let badgesHTML = '';
+        if (isDisabled) {
+          badgesHTML = `
+            <span class="badge maintenance-badge">
+              <i class="fa-solid fa-tools"></i>
+              مغلقة مؤقتاً
+            </span>
+          `;
+        } else {
+          badgesHTML = game.badges.map(badge => `
+            <span class="badge ${badge}">
+              <i class="fa-brands fa-${badge === 'twitch' ? 'twitch' : 'kick'}"></i>
+              ${badge === 'twitch' ? 'تويتش' : 'كيك'}
+            </span>
+          `).join('');
+        }
+        
+        gameCard.innerHTML = `
+          <div class="badges">
+            ${badgesHTML}
+          </div>
+          ${!isDisabled ? `
+            <button class="favorite-btn" aria-label="${isFavorite ? 'إزالة من المفضلة' : 'إضافة إلى المفضلة'}" data-id="${game.id}">
+              <i class="fa-${isFavorite ? 'solid' : 'regular'} fa-heart"></i>
+            </button>
+          ` : ''}
+          <div class="game-body">
+            ${isDisabled ? `
+              <div class="closed-badge">
+                <i class="fa-solid fa-tools"></i>
+                مغلقة مؤقتاً للتطوير
+              </div>
+            ` : ''}
+            <div class="game-info">
+              <p>${game.description}</p>
+            </div>
+            <button class="start-btn" data-game-id="${game.id}" ${isDisabled ? 'disabled' : ''}>
+              ${isDisabled ? 'مغلقة مؤقتاً' : 'ابدأ اللعبة'}
+            </button>
+          </div>
+          <h3 id="game-${game.id}-title" class="visually-hidden">${game.title}</h3>
+        `;
+        
+        gamesGrid.appendChild(gameCard);
+        
+        // Add click handlers only if game is available
+        if (game.available) {
+          const favBtn = gameCard.querySelector('.favorite-btn');
+          const startBtn = gameCard.querySelector('.start-btn');
+          
+          favBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const wasAdded = AppState.toggleFavorite(game.id);
+            favBtn.setAttribute('aria-label', wasAdded ? 'إزالة من المفضلة' : 'إضافة إلى المفضلة');
+            
+            favBtn.style.animation = 'none';
+            setTimeout(() => {
+              favBtn.style.animation = 'heartBeat 0.5s ease';
+            }, 10);
+          });
+          
+          startBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            AppState.incrementGamesPlayed();
+            
+            gameCard.style.transform = 'translateY(-6px) scale(1.02)';
+            gameCard.style.transition = 'transform .35s ease';
+            
+            if (window.gtag) {
+              gtag('event', 'game_start', {
+                'game_name': game.title,
+                'event_category': 'engagement'
+              });
+            }
+            
+            setTimeout(() => {
+              window.location.href = game.link;
+            }, 350);
+          });
+          
+          gameCard.addEventListener('click', (e) => {
+            if (!e.target.closest('.favorite-btn') && !e.target.closest('.start-btn')) {
+              startBtn.click();
+            }
+          });
+          
+          gameCard.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              startBtn.click();
+            }
+          });
+        } else {
+          gameCard.addEventListener('click', () => {
+            showMaintenanceMessage(game.title);
+          });
+          
+          gameCard.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              showMaintenanceMessage(game.title);
+            }
+          });
+        }
+      });
+    }
+
+    function showMaintenanceMessage(gameTitle) {
+      alert(`🎮 ${gameTitle}\n\nهذه اللعبة مغلقة مؤقتاً للتطوير والتحسينات.\n\nنعمل على تحسين تجربة اللعبة لإعادتها بأفضل صورة قريباً!`);
+    }
+
+    // ========= Load Streamers =========
+    function loadStreamers() {
+      const streamersGrid = document.querySelector('.streamer-access-grid');
+      if (!streamersGrid) return;
+      
+      streamersData.forEach(streamer => {
+        const card = document.createElement('article');
+        card.className = 'creator-card animate-in';
+        card.id = `${streamer.id}Card`;
+        
+        card.innerHTML = `
+          ${streamer.soon ? '<span class="creator-soon">قريبًا</span>' : ''}
+          <div class="creator-overlay">
+            <div class="creator-avatar-wrap">
+              <img class="creator-avatar" 
+                   src="${streamer.avatar}" 
+                   alt="${streamer.name}" 
+                   width="108" 
+                   height="108" 
+                   loading="lazy" 
+                   decoding="async">
+              <span class="status-dot ${streamer.online ? '' : 'status-off'}" aria-hidden="true"></span>
+            </div>
+            <div class="creator-name">${streamer.name}</div>
+            <div class="creator-tag">${streamer.tag}</div>
+            <div class="creator-actions">
+              ${streamer.soon ? `
+                <button type="button" class="creator-btn" disabled style="cursor:not-allowed; opacity:.8;">
+                  <i class="fa-solid fa-ban"></i> غير متاح
+                </button>
+              ` : `
+                <button type="button" class="creator-btn" onclick="openStreamer('${streamer.id}')">
+                  <i class="fa-solid fa-lock"></i> دخول
+                </button>
+              `}
+            </div>
+          </div>
+        `;
+        
+        streamersGrid.appendChild(card);
+        
+        if (!streamer.soon) {
+          card.addEventListener('click', (e) => {
+            if (!e.target.closest('button')) {
+              openStreamer(streamer.id);
+            }
+          });
+        }
+      });
+    }
+
+    function openStreamer(streamerId) {
+      if (streamerId === 'saleeh') {
+        window.location.href = "saleeh.html";
+      }
+    }
+
+    // ========= Navigation =========
+    function initNavigation() {
+      // Mobile menu toggle
+      const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+      const navCta = document.querySelector('.nav-cta');
+      
+      if (mobileMenuBtn && navCta) {
+        mobileMenuBtn.addEventListener('click', () => {
+          navCta.classList.toggle('active');
+          mobileMenuBtn.setAttribute('aria-expanded', navCta.classList.contains('active'));
+        });
+        
+        document.addEventListener('click', (e) => {
+          if (!navCta.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+            navCta.classList.remove('active');
+            mobileMenuBtn.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+      
+      // Streamer section toggle
+      const streamerHead = document.getElementById('streamerHead');
+      const streamerBody = document.getElementById('streamerBody');
+      const ACC_KEY = 'streamer_section_open';
+      
+      if (streamerHead && streamerBody) {
+        if (localStorage.getItem(ACC_KEY) === '1') {
+          streamerBody.style.display = 'block';
+          streamerHead.querySelector('.fa-chevron-down').style.transform = 'rotate(180deg)';
+        }
+        
+        streamerHead.addEventListener('click', () => {
+          const isOpen = streamerBody.style.display === 'block';
+          streamerBody.style.display = isOpen ? 'none' : 'block';
+          streamerHead.querySelector('.fa-chevron-down').style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+          localStorage.setItem(ACC_KEY, isOpen ? '0' : '1');
+        });
+      }
+    }
+
+    // ========= Modals =========
+    function initModals() {
+      // Support modal
+      const supportBtn = document.getElementById('supportBtn');
+      const supportDialog = document.getElementById('supportDialog');
+      const supportClose = document.getElementById('supportClose');
+      
+      function openSupportDialog(e) {
+        if (e) { e.preventDefault(); e.stopPropagation(); }
+        if (!supportDialog) return;
+        supportDialog.classList.add('is-open');
+        supportDialog.setAttribute('aria-hidden', 'false');
+        trapFocus(supportDialog);
+        setTimeout(() => supportClose?.focus(), 0);
+      }
+      
+      function closeSupportDialog() {
+        if (!supportDialog) return;
+        supportDialog.classList.remove('is-open');
+        supportDialog.setAttribute('aria-hidden', 'true');
+      }
+      
+      supportBtn?.addEventListener('click', openSupportDialog);
+      supportClose?.addEventListener('click', closeSupportDialog);
+      supportDialog?.addEventListener('click', (e) => { if (e.target === supportDialog) closeSupportDialog(); });
+      
+      // About modal
+      const aboutBtn = document.getElementById('aboutBtn');
+      const aboutDialog = document.getElementById('aboutDialog');
+      const aboutClose = document.getElementById('aboutClose');
+      
+      function openAboutDialog(e) {
+        if (e) { e.preventDefault(); e.stopPropagation(); }
+        if (!aboutDialog) return;
+        aboutDialog.classList.add('is-open');
+        aboutDialog.setAttribute('aria-hidden', 'false');
+        trapFocus(aboutDialog);
+        setTimeout(() => aboutClose?.focus(), 0);
+      }
+      
+      function closeAboutDialog() {
+        if (!aboutDialog) return;
+        aboutDialog.classList.remove('is-open');
+        aboutDialog.setAttribute('aria-hidden', 'true');
+      }
+      
+      aboutBtn?.addEventListener('click', openAboutDialog);
+      aboutClose?.addEventListener('click', closeAboutDialog);
+      aboutDialog?.addEventListener('click', (e) => { if (e.target === aboutDialog) closeAboutDialog(); });
+      
+      // Close modals with Escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeSupportDialog();
+          closeAboutDialog();
+        }
+      });
+    }
+
+    // ========= Search Functionality =========
+    function initSearch() {
+      const searchInput = document.getElementById('gameSearch');
+      const clearBtn = document.getElementById('clearSearch');
+      
+      if (!searchInput || !clearBtn) return;
+      
+      searchInput.addEventListener('input', debounce(function(e) {
+        const searchTerm = e.target.value.toLowerCase().trim();
+        clearBtn.style.display = searchTerm ? 'block' : 'none';
+        
+        const games = document.querySelectorAll('.game-card');
+        games.forEach(game => {
+          const title = game.querySelector('h3')?.textContent.toLowerCase() || '';
+          
+          if (title.includes(searchTerm)) {
+            game.style.display = 'block';
+          } else {
+            game.style.display = 'none';
+          }
+        });
+      }, 300));
+      
+      clearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        clearBtn.style.display = 'none';
+        const games = document.querySelectorAll('.game-card');
+        games.forEach(game => game.style.display = 'block');
+        searchInput.focus();
+      });
+    }
+
+    // ========= Filters =========
+    function initFilters() {
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          
+          AppState.currentFilter = btn.dataset.filter;
+          AppState.filterGames();
+          
+          if (window.gtag) {
+            gtag('event', 'filter_games', {
+              'filter_type': AppState.currentFilter,
+              'event_category': 'engagement'
+            });
+          }
+        });
+      });
+    }
+
+    // ========= Theme Toggle =========
+    function initTheme() {
+      const themeToggle = document.getElementById('themeToggle');
+      const themeIcon = themeToggle?.querySelector('i');
+      
+      if (!themeToggle || !themeIcon) return;
+      
+      const savedTheme = localStorage.getItem('streamerTop_theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      
+      if (savedTheme === 'light' || (!savedTheme && !prefersDark)) {
+        document.documentElement.classList.add('light-mode');
+        themeIcon.className = 'fa-solid fa-sun';
+      }
+      
+      themeToggle.addEventListener('click', () => {
+        const isLight = document.documentElement.classList.toggle('light-mode');
+        themeIcon.className = isLight ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        localStorage.setItem('streamerTop_theme', isLight ? 'light' : 'dark');
+        
+        if (window.gtag) {
+          gtag('event', 'theme_toggle', {
+            'theme': isLight ? 'light' : 'dark',
+            'event_category': 'preferences'
+          });
+        }
+      });
+    }
+
+    // ========= Accessibility =========
+    function initAccessibility() {
+      // Focus trap for modals
+      function trapFocus(modalEl) {
+        const focusable = modalEl.querySelectorAll('a, button, input, textarea, select, [tabindex]:not([tabindex="-1"])');
+        if (!focusable.length) return null;
+        
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        
+        function onKey(e) {
+          if (e.key !== 'Tab') return;
+          
+          if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+        
+        modalEl.addEventListener('keydown', onKey);
+        return () => modalEl.removeEventListener('keydown', onKey);
+      }
+    }
+
+    // ========= Animations =========
+    function initAnimations() {
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      
+      if (!prefersReduced) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('animate-in');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+        
+        document.querySelectorAll('.game-card, .creator-card, .step, .rest-break-card').forEach(el => {
+          observer.observe(el);
+        });
+      }
+    }
+
+    // ========= Performance Optimizations =========
+    function initPerformance() {
+      const imageObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const img = entry.target;
+            if (img.dataset.src) {
+              img.src = img.dataset.src;
+              img.classList.add('loaded');
+            }
+            imageObserver.unobserve(img);
+          }
+        });
+      }, { rootMargin: '50px' });
+      
+      document.querySelectorAll('img[data-src]').forEach(img => {
+        imageObserver.observe(img);
+      });
+      
+      function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+          const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+          };
+          clearTimeout(timeout);
+          timeout = setTimeout(later, wait);
+        };
+      }
     }
   </script>
 </body>
