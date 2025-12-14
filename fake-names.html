@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>🎭 الأسماء الوهمية</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" />
-  <!-- tmi.js لتويتش -->
-  <script src="tmi.min.js"></script>
+ <script src="tmi.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tmi.js@1.8.5/dist/tmi.min.js"></script>
   <style>
     :root{
@@ -332,15 +331,51 @@
       text-shadow:0 0 14px rgba(0,0,0,0.7);
     }
 
-    .turn-banner .right{
-      position:relative;
-      z-index:1;
-      font-size:12px;
-      color:var(--muted-soft);
+    /* مؤقت الدور */
+    .turn-timer {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 6px;
     }
-    .turn-hint{
-      font-size:12px;
-      color:var(--muted-soft);
+
+    .timer-circle {
+        position: relative;
+        width: 36px;
+        height: 36px;
+    }
+
+    .timer-circle svg {
+        width: 36px;
+        height: 36px;
+        transform: rotate(-90deg);
+    }
+
+    .timer-bg {
+        fill: none;
+        stroke: var(--line-soft);
+        stroke-width: 3;
+    }
+
+    .timer-progress {
+        fill: none;
+        stroke: var(--green);
+        stroke-width: 3;
+        stroke-linecap: round;
+        stroke-dasharray: 113;
+        stroke-dashoffset: 113;
+        transition: stroke-dashoffset 1s linear;
+    }
+
+    .timer-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 11px;
+        font-weight: 800;
+        color: var(--text);
+        text-shadow: 0 1px 3px rgba(0,0,0,0.8);
     }
 
     /* الأزرار العامة */
@@ -496,6 +531,33 @@
       text-shadow:0 0 12px rgba(0,0,0,0.8);
     }
 
+    /* بطاقات اللاعبين المحسنة */
+    .player-score {
+        position: absolute;
+        bottom: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 11px;
+        color: var(--yellow);
+        background: rgba(0,0,0,0.3);
+        padding: 2px 8px;
+        border-radius: 999px;
+        border: 1px solid rgba(241, 199, 92, 0.3);
+        white-space: nowrap;
+    }
+
+    .player-level {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        font-size: 10px;
+        color: var(--blue-soft);
+        background: rgba(0,0,0,0.4);
+        padding: 1px 6px;
+        border-radius: 999px;
+        border: 1px solid rgba(58, 143, 255, 0.3);
+    }
+
     .card.selected{
       outline:2px solid var(--blue-soft);
       box-shadow:0 0 0 1px rgba(90,164,255,0.55),0 14px 32px rgba(26,115,232,0.55);
@@ -593,6 +655,53 @@
     .hint{
       font-size:12px;
       color:var(--muted-soft);
+    }
+
+    /* شريط تقدم الجولة */
+    .round-progress {
+        grid-column: 1/-1;
+        background: linear-gradient(135deg, rgba(30,33,43,.96), rgba(22,25,34,.96));
+        border-radius: var(--radius-md);
+        padding: 10px 14px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-top: 10px;
+        border: 1px solid rgba(67,74,92,0.95);
+        box-shadow: var(--shadow-subtle);
+    }
+
+    .progress-bar {
+        flex: 1;
+        height: 8px;
+        background: var(--line);
+        border-radius: 4px;
+        overflow: hidden;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent), var(--yellow));
+        border-radius: 4px;
+        width: 0%;
+        transition: width 0.5s ease;
+        box-shadow: 0 0 10px rgba(255, 59, 59, 0.4);
+    }
+
+    .round-label {
+        font-size: 12px;
+        color: var(--muted-soft);
+        white-space: nowrap;
+    }
+
+    .round-label span {
+        color: var(--text);
+        font-weight: 800;
+        background: var(--accent);
+        padding: 2px 8px;
+        border-radius: 999px;
+        margin-right: 4px;
     }
 
     /* أسطورة ألوان */
@@ -719,6 +828,54 @@
 
     .gm .hint{
       color:var(--muted-soft);
+    }
+
+    /* لوحة الإحصائيات */
+    .stats-panel {
+        grid-column: 1/-1;
+        background: linear-gradient(135deg, rgba(30,33,43,.96), rgba(22,25,34,.96));
+        border-radius: var(--radius-lg);
+        padding: 12px;
+        margin-top: 10px;
+        border: 1px solid rgba(67,74,92,0.95);
+        box-shadow: var(--shadow-soft);
+    }
+
+    .stats-panel h4 {
+        margin: 0 0 10px;
+        font-size: 14px;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 8px;
+    }
+
+    .stat-card {
+        background: radial-gradient(circle at top, #222736, #181b24);
+        border: 1px solid rgba(83,92,116,0.95);
+        border-radius: var(--radius-md);
+        padding: 10px;
+        text-align: center;
+    }
+
+    .stat-label {
+        font-size: 11px;
+        color: var(--muted-soft);
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .stat-value {
+        font-size: 16px;
+        font-weight: 800;
+        color: var(--text);
+        display: block;
     }
 
     /* زر فتح لوحة الستريمر */
@@ -919,6 +1076,9 @@
       .turn-banner{
         padding-inline:10px;
       }
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     /* بطاقات المنتصف ونتيجة المطابقة */
@@ -954,6 +1114,271 @@
       color:var(--danger);
       text-shadow:0 0 25px rgba(255,98,98,.55);
     }
+
+    /* ===== نافذة المشتركين (تصميم بسيط) ===== */
+    .viewer-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.85);
+        backdrop-filter: blur(12px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        padding: 20px;
+    }
+
+    .viewer-card {
+        background: radial-gradient(circle at top, #252938, #191b25);
+        border-radius: var(--radius-lg);
+        padding: 30px;
+        width: min(400px, 90vw);
+        border: 1px solid rgba(82,90,116,0.95);
+        box-shadow: 0 30px 80px rgba(0,0,0,0.95);
+        text-align: center;
+    }
+
+    .viewer-card h2 {
+        margin: 0 0 25px;
+        color: var(--text);
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .viewer-form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .form-group {
+        text-align: right;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--muted-soft);
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 14px 16px;
+        border-radius: var(--radius-md);
+        border: 1px solid rgba(73,81,104,0.95);
+        background: radial-gradient(circle at top,#191c25,#13151d);
+        color: var(--text);
+        font-size: 15px;
+        font-family: 'Cairo';
+        box-shadow: 0 6px 18px rgba(0,0,0,0.55) inset;
+        outline: none;
+        transition: border-color 0.2s ease;
+    }
+
+    .form-group input:focus {
+        border-color: var(--accent-soft);
+        box-shadow: 0 0 0 2px rgba(255, 59, 59, 0.2);
+    }
+
+    .viewer-btn {
+        background: linear-gradient(180deg, #1b3a30, #12241e);
+        border: 1px solid rgba(47,133,95,0.95);
+        color: #c5f7e5;
+        padding: 16px;
+        border-radius: var(--radius-md);
+        font-weight: 800;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: all 0.2s ease;
+    }
+
+    .viewer-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(15,118,84,0.65);
+    }
+
+    .viewer-btn:active {
+        transform: translateY(0);
+    }
+
+    .success-message {
+        text-align: center;
+        padding: 30px 20px;
+        color: var(--text);
+        font-size: 16px;
+    }
+
+    .success-message h3 {
+        color: var(--green-soft);
+        font-size: 22px;
+        margin-bottom: 15px;
+    }
+
+    .success-message p {
+        color: var(--muted-soft);
+        line-height: 1.6;
+        margin-bottom: 10px;
+    }
+
+    .success-btn {
+        background: linear-gradient(180deg, #28344a, #1a2130);
+        border: 1px solid rgba(90,164,255,0.95);
+        color: #d7e1ff;
+        padding: 12px 24px;
+        border-radius: var(--radius-md);
+        font-weight: 800;
+        font-size: 14px;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: all 0.2s ease;
+    }
+
+    .success-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(90,164,255,0.4);
+    }
+
+    /* زر رابط المشاهدين */
+    .viewer-link-btn {
+        background: linear-gradient(180deg, #28344a, #1a2130);
+        border: 1px solid rgba(90,164,255,0.95);
+        color: #d7e1ff;
+    }
+
+    .link-copied {
+        background: var(--green) !important;
+        color: white !important;
+        border-color: var(--green-soft) !important;
+    }
+
+    /* ===== نافذة شير الرابط ===== */
+    .share-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.85);
+        backdrop-filter: blur(12px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1001;
+        padding: 20px;
+    }
+
+    .share-card {
+        background: radial-gradient(circle at top, #252938, #191b25);
+        border-radius: var(--radius-lg);
+        padding: 24px;
+        width: min(500px, 100%);
+        border: 1px solid rgba(82,90,116,0.95);
+        box-shadow: 0 30px 80px rgba(0,0,0,0.95);
+        text-align: center;
+    }
+
+    .share-card h3 {
+        margin: 0 0 20px;
+        color: var(--text);
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .url-box {
+        background: rgba(0,0,0,0.3);
+        border: 1px solid rgba(73,81,104,0.95);
+        border-radius: var(--radius-md);
+        padding: 12px;
+        margin: 20px 0;
+        font-family: monospace;
+        font-size: 14px;
+        word-break: break-all;
+        color: var(--text);
+        text-align: center;
+    }
+
+    .copy-btn {
+        background: linear-gradient(180deg, #222634, #181b26);
+        border: 1px solid rgba(74,82,103,0.95);
+        color: var(--text);
+        padding: 12px 24px;
+        border-radius: var(--radius-md);
+        font-weight: 800;
+        font-size: 14px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin: 10px;
+        transition: all 0.2s ease;
+    }
+
+    .copy-btn:hover {
+        background: linear-gradient(180deg, #28344a, #1a2130);
+        transform: translateY(-2px);
+    }
+
+    .copy-btn.copied {
+        background: var(--green);
+        color: white;
+        border-color: var(--green-soft);
+    }
+
+    .share-options {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+    }
+
+    .share-option {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: var(--radius-md);
+        padding: 8px 16px;
+        color: var(--text);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s ease;
+    }
+
+    .share-option:hover {
+        background: rgba(255,255,255,0.1);
+        transform: translateY(-2px);
+    }
+    
+    /* إشعارات */
+    .notification {
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        background: var(--green);
+        color: white;
+        padding: 12px 16px;
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-soft);
+        z-index: 1000;
+        animation: slideIn 0.3s ease;
+    }
+    
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+    }
   </style>
 </head>
 <body>
@@ -965,6 +1390,7 @@
   </div>
   <div class="right">
     <span class="status-pill">الدور الآن: <b id="turnLabel">-</b></span>
+    <button id="viewerLinkBtn" class="btn viewer-link-btn">🔗 رابط المشاهدين</button>
     <button id="helpBtn" class="help-btn">❔ تعليمات</button>
     <div class="conn-badges">
       <div id="twitchBadge" class="conn"><span class="led"></span><span>Twitch</span></div>
@@ -999,15 +1425,32 @@
       <div class="status" id="chatStatus">💡 اختر المنصّة وأدخل اسم القناة ثم اضغط تسجيل الدخول. يمكنك تكرارها للمنصّة الأخرى.</div>
     </div>
 
-    <!-- بانر اللاعب الحالي (تحت تسجيل الدخول مباشرة) -->
+    <!-- بانر اللاعب الحالي -->
     <div id="turnBanner" class="turn-banner">
       <div class="left">
         <span class="turn-badge">الدور الآن</span>
         <span id="turnName" class="turn-name">—</span>
       </div>
       <div class="right">
-        <span class="turn-hint">اختر بطاقة للاسم الوهمي المطابق</span>
+        <div class="turn-timer">
+          <div class="timer-circle">
+            <svg>
+              <circle cx="18" cy="18" r="18" class="timer-bg"></circle>
+              <circle cx="18" cy="18" r="18" class="timer-progress"></circle>
+            </svg>
+            <span class="timer-text" id="timerText">60</span>
+          </div>
+          <span class="turn-hint">اختر بطاقة للاسم الوهمي المطابق</span>
+        </div>
       </div>
+    </div>
+
+    <!-- شريط تقدم الجولة -->
+    <div class="round-progress">
+      <div class="progress-bar">
+        <div class="progress-fill" id="roundProgress"></div>
+      </div>
+      <div class="round-label">الجولة: <span id="roundNumber">1</span></div>
     </div>
 
     <!-- قائمة اللاعبين -->
@@ -1040,6 +1483,29 @@
         </div>
       </div>
       <div id="cardsGrid" class="grid"></div>
+    </div>
+
+    <!-- لوحة الإحصائيات -->
+    <div class="stats-panel">
+      <h4>📊 الإحصائيات</h4>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-label">معدل الصحة</span>
+          <span class="stat-value" id="accuracyRate">0%</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">البطاقات المتبقية</span>
+          <span class="stat-value" id="remainingCards">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">اللاعبون النشطون</span>
+          <span class="stat-value" id="activePlayers">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">إجمالي النقاط</span>
+          <span class="stat-value" id="totalPoints">0</span>
+        </div>
+      </div>
     </div>
 
     <!-- شريط الحالة -->
@@ -1076,7 +1542,7 @@
           <div>
             <h4 style="margin:6px 0;color:#e5e9ff;">قائمة اللاعبين</h4>
             <table class="table">
-              <thead><tr><th>الاسم</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+              <thead><tr><th>الاسم</th><th>النقاط</th><th>المستوى</th><th>الحالة</th><th>إجراءات</th></tr></thead>
               <tbody id="playersTable"></tbody>
             </table>
           </div>
@@ -1100,6 +1566,54 @@
 
 <!-- زر فتح/إغلاق لوحة الستريمر -->
 <button id="gmToggle" class="gm-toggle">⚙️ لوحة الستريمر</button>
+
+<!-- نافذة المشاهدين (تصميم مبسط) -->
+<div id="viewerModal" class="viewer-modal" style="display:none;">
+  <div class="viewer-card">
+    <h2>🎮 انضم إلى اللعبة</h2>
+    
+    <div id="viewerForm" class="viewer-form">
+      <div class="form-group">
+        <label>👤 اسمك في المنصة</label>
+        <input type="text" id="viewerPlatformName" placeholder="مثال: AhmadGamer" required>
+      </div>
+      
+      <div class="form-group">
+        <label>🎭 اختر اسمك الوهمي</label>
+        <input type="text" id="viewerFakeName" placeholder="مثال: سوبرمان" required>
+      </div>
+      
+      <button class="viewer-btn" id="submitViewer">🚀 انضم الآن</button>
+    </div>
+    
+    <div id="successMessage" class="success-message" style="display:none;">
+      <h3>✅ تمت إضافتك بنجاح!</h3>
+      <p>لقد تم إرسال طلبك إلى الستريمر.</p>
+      <p>ستظهر في قائمة اللاعبين قريباً.</p>
+      <button class="success-btn" onclick="window.close()">إغلاق النافذة</button>
+    </div>
+  </div>
+</div>
+
+<!-- نافذة مشاركة الرابط -->
+<div id="shareModal" class="share-modal" style="display:none;">
+  <div class="share-card">
+    <h3>🔗 شارك رابط المشاهدين</h3>
+    <p style="color:var(--muted-soft);margin-bottom:20px;">انسخ الرابط وأرسله للمشاهدين للانضمام</p>
+    
+    <div class="url-box" id="shareUrl">https://...</div>
+    
+    <button class="copy-btn" id="copyShareUrl">📋 نسخ الرابط</button>
+    
+    <div class="share-options">
+      <button class="share-option" onclick="shareToTwitter()">🐦 تويتر</button>
+      <button class="share-option" onclick="shareToDiscord()">💬 ديسكورد</button>
+      <button class="share-option" onclick="shareToWhatsApp()">💚 واتساب</button>
+    </div>
+    
+    <button class="btn" id="closeShare" style="margin-top:20px;">إغلاق</button>
+  </div>
+</div>
 
 <!-- نافذة التعليمات السريعة -->
 <div id="helpOverlay" class="help-overlay" role="dialog" aria-modal="true">
@@ -1143,7 +1657,9 @@ const LS_KEY_TWITCH='fn_twitch', LS_KEY_KICK='fn_kick';
 /* ===== عناصر DOM ===== */
 const els = {
   turnLabel: document.getElementById('turnLabel'),
-
+  turnName: document.getElementById('turnName'),
+  timerText: document.getElementById('timerText'),
+  
   cardsGrid: document.getElementById('cardsGrid'),
   playersGrid: document.getElementById('playersGrid'),
 
@@ -1187,19 +1703,105 @@ const els = {
   lastEventBody: document.getElementById('lastEventBody'),
   lastEventHide: document.getElementById('lastEventHide'),
 
-  // بانر الدور
   turnBanner: document.getElementById('turnBanner'),
-  turnName: document.getElementById('turnName'),
+  
+  roundProgress: document.getElementById('roundProgress'),
+  roundNumber: document.getElementById('roundNumber'),
+  
+  accuracyRate: document.getElementById('accuracyRate'),
+  remainingCards: document.getElementById('remainingCards'),
+  activePlayers: document.getElementById('activePlayers'),
+  totalPoints: document.getElementById('totalPoints'),
+  
+  viewerLinkBtn: document.getElementById('viewerLinkBtn'),
+  viewerModal: document.getElementById('viewerModal'),
+  viewerPlatformName: document.getElementById('viewerPlatformName'),
+  viewerFakeName: document.getElementById('viewerFakeName'),
+  submitViewer: document.getElementById('submitViewer'),
+  viewerForm: document.getElementById('viewerForm'),
+  successMessage: document.getElementById('successMessage'),
+  
+  shareModal: document.getElementById('shareModal'),
+  shareUrl: document.getElementById('shareUrl'),
+  copyShareUrl: document.getElementById('copyShareUrl'),
+  closeShare: document.getElementById('closeShare')
 };
 
 /* ===== حالة اللعبة ===== */
 const state = {
-  players: [],   // {id,name,eliminated:false}
-  cards: [],     // {id,text,ownerId,revealed:false,locked:false}
+  players: [],
+  cards: [],
   turnIndex: -1,
   started: false,
   selectedMentionedId: null,
-  selectedCardId: null
+  selectedCardId: null,
+  turnTimer: null,
+  timeLeft: 60,
+  currentRound: 1,
+  viewerRequests: [],
+  roomId: generateRoomId() // إضافة معرف للغرفة
+};
+
+/* ===== توليد معرف غرفة فريد ===== */
+function generateRoomId() {
+    return 'room_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+}
+
+/* ===== تأثيرات صوتية ===== */
+const sounds = {
+  correct: () => {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    
+    oscillator.frequency.setValueAtTime(523.25, ctx.currentTime);
+    oscillator.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1);
+    oscillator.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2);
+    
+    gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+    
+    oscillator.start();
+    oscillator.stop(ctx.currentTime + 0.5);
+  },
+  
+  wrong: () => {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    
+    oscillator.frequency.setValueAtTime(200, ctx.currentTime);
+    oscillator.frequency.setValueAtTime(150, ctx.currentTime + 0.1);
+    
+    gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+    
+    oscillator.start();
+    oscillator.stop(ctx.currentTime + 0.3);
+  },
+  
+  turn: () => {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    
+    oscillator.frequency.setValueAtTime(440, ctx.currentTime);
+    
+    gainNode.gain.setValueAtTime(0.2, ctx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+    
+    oscillator.start();
+    oscillator.stop(ctx.currentTime + 0.2);
+  }
 };
 
 /* ===== مساعدات ===== */
@@ -1208,7 +1810,224 @@ const normalize = s => (s||"").toString().trim().toLowerCase();
 function byId(arr,id){ return arr.find(x=>x.id===id); }
 function currentPlayer(){ if(state.turnIndex<0||state.turnIndex>=state.players.length) return null; return state.players[state.turnIndex]; }
 function alivePlayers(){ return state.players.filter(p=>!p.eliminated); }
-function log(t){ els.log.value = `[${new Date().toLocaleTimeString()}] ${t}\n` + els.log.value; setLastEvent(t); }
+function log(t){ els.log.value = `[${new Date().toLocaleTimeString()}] ${t}\n` + els.log.value; setLastEvent(t); updateStats(); }
+
+/* ===== نظام نقل البيانات بين النوافذ ===== */
+
+// إذا كانت هذه الصفحة الرئيسية (صفحة الستريمر)
+let isMainPage = !window.location.search.includes('viewer=1');
+
+/* ===== دالة إرسال طلب المشاهد إلى الصفحة الرئيسية ===== */
+function sendViewerRequestToMain(platformName, fakeName) {
+    // تخزين الطلب في localStorage مع معرف الغرفة
+    const requestId = 'viewer_request_' + Date.now();
+    const requestData = {
+        id: requestId,
+        platformName: platformName,
+        fakeName: fakeName,
+        timestamp: Date.now(),
+        roomId: getRoomIdFromURL() || state.roomId
+    };
+    
+    // حفظ الطلب في localStorage
+    localStorage.setItem('fn_viewer_request', JSON.stringify(requestData));
+    
+    // إذا كانت النافذة الرئيسية مفتوحة، أرسل لها مباشرة
+    if (window.opener) {
+        try {
+            window.opener.postMessage({
+                type: 'VIEWER_REQUEST',
+                data: requestData
+            }, '*');
+        } catch (e) {
+            console.log('لا يمكن الاتصال بالصفحة الرئيسية');
+        }
+    }
+    
+    return requestId;
+}
+
+/* ===== دالة الحصول على معرف الغرفة من الرابط ===== */
+function getRoomIdFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('room');
+}
+
+/* ===== دالة إضافة المشاهد في الصفحة الرئيسية ===== */
+function addViewerInMainPage(platformName, fakeName) {
+    // إضافة اللاعب
+    const playerId = uid();
+    state.players.push({
+        id: playerId,
+        name: platformName,
+        eliminated: false,
+        score: 0,
+        level: 1,
+        correctGuesses: 0,
+        wrongGuesses: 0
+    });
+    
+    // إضافة البطاقة
+    state.cards.push({
+        id: uid(),
+        text: fakeName,
+        ownerId: playerId,
+        revealed: false,
+        locked: false
+    });
+    
+    // تحديث العرض
+    renderPlayers();
+    renderCards();
+    updateSelects();
+    
+    // تسجيل الحدث
+    log(`✅ ${platformName} انضم عبر الرابط باسم "${fakeName}"`);
+    
+    // إشعار
+    showNotification(`${platformName} انضم عبر الرابط باسم ${fakeName}`);
+    
+    // تشغيل صوت النجاح
+    sounds.correct();
+    
+    return true;
+}
+
+/* ===== دالة معالجة طلبات المشاهدين في الصفحة الرئيسية ===== */
+function processViewerRequests() {
+    // التحقق من وجود طلبات في localStorage
+    const requestStr = localStorage.getItem('fn_viewer_request');
+    if (requestStr) {
+        try {
+            const request = JSON.parse(requestStr);
+            
+            // التحقق من أن الطلب جديد (أقل من 10 ثواني)
+            const requestAge = Date.now() - request.timestamp;
+            if (requestAge < 10000) { // 10 ثواني
+                // إضافة المشاهد
+                addViewerInMainPage(request.platformName, request.fakeName);
+                
+                // حذف الطلب بعد معالجته
+                localStorage.removeItem('fn_viewer_request');
+            } else {
+                // حذف الطلب القديم
+                localStorage.removeItem('fn_viewer_request');
+            }
+        } catch (e) {
+            localStorage.removeItem('fn_viewer_request');
+        }
+    }
+}
+
+/* ===== الاستماع لرسائل المشاهدين ===== */
+window.addEventListener('message', function(event) {
+    if (event.data && event.data.type === 'VIEWER_REQUEST') {
+        const request = event.data.data;
+        addViewerInMainPage(request.platformName, request.fakeName);
+    }
+});
+
+/* ===== دالة إشعار ===== */
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                document.body.removeChild(notification);
+            }
+        }, 300);
+    }, 3000);
+}
+
+/* ===== دالة إنشاء رابط المشاهدة ===== */
+function generateViewerLink() {
+    const baseUrl = window.location.origin + window.location.pathname;
+    const roomId = state.roomId;
+    return baseUrl + `?viewer=1&room=${roomId}`;
+}
+
+/* ===== مؤقت الدور ===== */
+function startTurnTimer() {
+    clearInterval(state.turnTimer);
+    state.timeLeft = 60;
+    updateTimerDisplay();
+    
+    state.turnTimer = setInterval(() => {
+        state.timeLeft--;
+        updateTimerDisplay();
+        
+        if (state.timeLeft <= 0) {
+            clearInterval(state.turnTimer);
+            const player = currentPlayer();
+            if (player && !player.eliminated) {
+                log(`⏰ انتهى وقت ${player.name}`);
+                sounds.wrong();
+            }
+            nextTurnAuto();
+        }
+    }, 1000);
+}
+
+function updateTimerDisplay() {
+    els.timerText.textContent = state.timeLeft;
+    const progress = document.querySelector('.timer-progress');
+    if (progress) {
+        const circumference = 2 * Math.PI * 18;
+        const offset = circumference - (state.timeLeft / 60) * circumference;
+        progress.style.strokeDasharray = `${circumference} ${circumference}`;
+        progress.style.strokeDashoffset = offset;
+        
+        if (state.timeLeft <= 10) {
+            progress.style.stroke = 'var(--danger)';
+        } else if (state.timeLeft <= 30) {
+            progress.style.stroke = 'var(--yellow)';
+        } else {
+            progress.style.stroke = 'var(--green)';
+        }
+    }
+}
+
+/* ===== الإحصائيات ===== */
+function updateStats() {
+    let totalGuesses = 0;
+    let correctGuesses = 0;
+    
+    state.players.forEach(p => {
+        totalGuesses += p.correctGuesses + p.wrongGuesses;
+        correctGuesses += p.correctGuesses;
+    });
+    
+    const accuracy = totalGuesses > 0 ? Math.round((correctGuesses / totalGuesses) * 100) : 0;
+    els.accuracyRate.textContent = `${accuracy}%`;
+    
+    const unrevealed = state.cards.filter(c => !c.revealed).length;
+    els.remainingCards.textContent = `${unrevealed}/${state.cards.length}`;
+    
+    const active = alivePlayers().length;
+    els.activePlayers.textContent = `${active}/${state.players.length}`;
+    
+    const totalPoints = state.players.reduce((sum, p) => sum + p.score, 0);
+    els.totalPoints.textContent = totalPoints;
+    
+    updateProgressBar();
+}
+
+function updateProgressBar() {
+    const progress = els.roundProgress;
+    if (!progress) return;
+    
+    const revealed = state.cards.filter(c => c.revealed).length;
+    const total = state.cards.length;
+    const percentage = total > 0 ? Math.round((revealed / total) * 100) : 0;
+    
+    progress.style.width = `${percentage}%`;
+    els.roundNumber.textContent = state.currentRound;
+}
 
 /* ===== عدادات ===== */
 function updateCounts(){
@@ -1225,17 +2044,21 @@ function updateSelects(){
   setOpts(els.fakeOwner, state.players.map(p=>({value:p.id,label:p.name})), true);
 }
 
-/* ===== بانر الدور (نسخة من بطاقة اللاعب) ===== */
+/* ===== بانر الدور ===== */
 function renderTurnBanner(){
   const p = currentPlayer();
   if (p && !p.eliminated){
     els.turnName.textContent = p.name;
     els.turnLabel.textContent = p.name;
     els.turnBanner.style.display = 'flex';
+    if (state.started) {
+        startTurnTimer();
+    }
   } else {
     els.turnName.textContent = '—';
     els.turnLabel.textContent = '-';
     els.turnBanner.style.display = 'none';
+    clearInterval(state.turnTimer);
   }
 }
 
@@ -1265,7 +2088,12 @@ function renderPlayers(){
       badge.textContent = p.eliminated ? 'مقصى' : (isTurn ? 'الدور' : 'جاهز');
 
       const t=document.createElement('div'); t.className='text'; t.textContent=p.name;
-      el.append(badge,t);
+      
+      const score = document.createElement('span');
+      score.className = 'player-score';
+      score.textContent = `⭐ ${p.score} (${p.level})`;
+      
+      el.append(badge,t,score);
       els.playersGrid.append(el);
     });
   }
@@ -1275,18 +2103,21 @@ function renderPlayers(){
   state.players.forEach((p,idx)=>{
     const tr=document.createElement('tr');
     const td1=document.createElement('td'); td1.textContent=p.name;
-    const td2=document.createElement('td'); td2.textContent=p.eliminated?'مقصى':'نشط';
-    const td3=document.createElement('td');
+    const td2=document.createElement('td'); td2.textContent=p.score;
+    const td3=document.createElement('td'); td3.textContent=p.level;
+    const td4=document.createElement('td'); td4.textContent=p.eliminated?'مقصى':'نشط';
+    const td5=document.createElement('td');
     const elim=document.createElement('button'); elim.className='btn accent'; elim.textContent=p.eliminated?'إرجاع':'إقصاء';
     elim.onclick=()=>{ p.eliminated=!p.eliminated; if (state.turnIndex===idx && p.eliminated) nextTurnAuto(); renderPlayers(); renderTurnBanner(); };
     const del=document.createElement('button'); del.className='btn'; del.textContent='حذف';
     del.onclick=()=>{ state.cards.forEach(c=>{ if(c.ownerId===p.id) c.ownerId=null; }); state.players=state.players.filter(x=>x.id!==p.id); if(state.turnIndex>=state.players.length) state.turnIndex=state.players.length-1; renderPlayers(); renderCards(); renderTurnBanner(); };
-    td3.append(elim,document.createTextNode(' '),del);
-    tr.append(td1,td2,td3); els.playersTable.append(tr);
+    td5.append(elim,document.createTextNode(' '),del);
+    tr.append(td1,td2,td3,td4,td5); els.playersTable.append(tr);
   });
 
   updateCounts();
   renderTurnBanner();
+  updateStats();
 }
 
 /* ===== رسم البطاقات ===== */
@@ -1337,6 +2168,7 @@ function renderCards(){
   });
 
   updateCounts();
+  updateStats();
 }
 
 /* ===== منطق الدور + تجاوز الدور ===== */
@@ -1347,6 +2179,7 @@ function startGame(){
   state.turnIndex = state.players.findIndex(p=>!p.eliminated);
   if (state.turnIndex<0) state.turnIndex = 0;
   log('بدأت اللعبة.');
+  sounds.turn();
   renderPlayers(); renderCards(); renderTurnBanner();
 }
 function nextTurnAuto(){
@@ -1358,31 +2191,48 @@ function nextTurnAuto(){
     if (!state.players[i].eliminated){ state.turnIndex = i; break; }
   }
 
-  // تنظيف الاختيار
   state.selectedMentionedId = null;
   state.selectedCardId = null;
   document.querySelectorAll('.card').forEach(x=>x.classList.remove('selected','wrong','flash-red'));
 
-  // الفوز إذا بقي لاعب واحد
+  const allEliminated = state.players.every(p => p.eliminated);
+  if (allEliminated && alivePlayers().length === 0) {
+    state.currentRound++;
+    state.players.forEach(p => p.eliminated = false);
+    log(`🔄 بدأت جولة جديدة (${state.currentRound})`);
+  }
+
   if (alivePlayers().length<=1){
     const champ = alivePlayers()[0];
-    log(champ?`🎉 الفائز: ${champ.name}`:'لا يوجد فائز.');
+    log(champ?`🎉 الفائز: ${champ.name} بـ ${champ.score} نقطة!`:'لا يوجد فائز.');
   }
+  
   renderPlayers();
   renderTurnBanner();
+  sounds.turn();
 }
 function resetGame(){
   state.started=false; state.turnIndex=-1;
-  state.players.forEach(p=>p.eliminated=false);
+  state.players.forEach(p=>{
+    p.eliminated=false;
+    p.score=0;
+    p.level=1;
+    p.correctGuesses=0;
+    p.wrongGuesses=0;
+  });
   state.cards.forEach(c=>{c.revealed=false;c.locked=false;});
   state.selectedMentionedId=null; state.selectedCardId=null;
+  state.timeLeft=60;
+  state.currentRound=1;
+  clearInterval(state.turnTimer);
   log('تمت إعادة اللعبة.');
-  renderPlayers(); renderCards(); renderTurnBanner();
+  renderPlayers(); renderCards(); renderTurnBanner(); updateStats();
 }
 els.btnSkip.onclick = ()=>{
   if (!state.started){ log('ابدأ اللعبة أولاً.'); return; }
   const cur = currentPlayer()?.name || '-';
   log(`⏭️ تم تجاوز دور ${cur}.`);
+  sounds.wrong();
   nextTurnAuto();
 };
 
@@ -1428,24 +2278,80 @@ function tryResolveIfReady(){
 
   if (correct){
     card.revealed = true;
+    mentioned.score += 100;
+    mentioned.correctGuesses++;
+    
+    if (mentioned.correctGuesses % 3 === 0) {
+      mentioned.level++;
+      log(`🎖️ ${mentioned.name} ارتفع للمستوى ${mentioned.level}!`);
+    }
+    
     if (!mentioned.eliminated){
       mentioned.eliminated = true;
-      log(`✅ صحيح! "${card.text}" تخص ${mentioned.name}. تم إقصاؤه.`);
+      log(`✅ صحيح! "${card.text}" تخص ${mentioned.name}. تم إقصاؤه (+100 نقطة).`);
     } else {
-      log(`✅ صحيح! "${card.text}" تخص ${mentioned.name} (كان مقصى).`);
+      log(`✅ صحيح! "${card.text}" تخص ${mentioned.name} (كان مقصى) (+100 نقطة).`);
     }
+    
+    sounds.correct();
     const rect = cardEl?.getBoundingClientRect?.();
     confettiBurst(rect ? rect.left + rect.width/2 : undefined, rect ? rect.top + 10 : undefined);
+    
+    showMiddleCards(mentioned.name, card.text, true);
+    
   } else {
+    mentioned.wrongGuesses++;
+    mentioned.score = Math.max(0, mentioned.score - 50);
+    
     if (cardEl){
       cardEl.classList.add('wrong','flash-red');
       setTimeout(()=>cardEl.classList.remove('wrong','flash-red'), 400);
     }
-    log(`❌ خطأ! "${card.text}" لا تخص ${mentioned.name}.`);
+    log(`❌ خطأ! "${card.text}" لا تخص ${mentioned.name} (-50 نقطة).`);
+    sounds.wrong();
+    
+    showMiddleCards(mentioned.name, card.text, false);
   }
 
   renderPlayers(); renderCards();
-  nextTurnAuto();
+  setTimeout(() => nextTurnAuto(), 1500);
+}
+
+/* ===== تحريك البطاقات للمنتصف ===== */
+function showMiddleCards(playerName, cardName, isCorrect) {
+    const middleArea = document.getElementById('middleCardsArea');
+    const leftBox = document.getElementById('middleLeftCard');
+    const rightBox = document.getElementById('middleRightCard');
+    const resultBox = document.getElementById('matchResultOverlay');
+    
+    if (!middleArea || !leftBox || !rightBox || !resultBox) return;
+    
+    leftBox.textContent = playerName;
+    rightBox.textContent = cardName;
+    
+    middleArea.style.display = 'flex';
+    resultBox.style.display = 'flex';
+    
+    void leftBox.offsetWidth;
+    void rightBox.offsetWidth;
+    
+    leftBox.classList.add('show');
+    rightBox.classList.add('show');
+    
+    if (isCorrect) {
+        resultBox.textContent = '✔ صحيح!';
+        resultBox.className = 'result-ok';
+    } else {
+        resultBox.textContent = '✖ خطأ';
+        resultBox.className = 'result-bad';
+    }
+    
+    setTimeout(() => {
+        middleArea.style.display = 'none';
+        resultBox.style.display = 'none';
+        leftBox.classList.remove('show');
+        rightBox.classList.remove('show');
+    }, 2000);
 }
 
 /* ===== أزرار عامة ===== */
@@ -1462,16 +2368,26 @@ els.btnUnlockAll.onclick = ()=>{ state.cards.forEach(c=>c.locked=false); renderC
 els.addPlayerBtn.onclick=()=>{
   const name=els.playerName.value.trim(); if(!name) return;
   if(!state.players.some(p=>normalize(p.name)===normalize(name))){
-    state.players.push({id:uid(),name,eliminated:false});
+    state.players.push({
+        id:uid(),
+        name,
+        eliminated:false,
+        score:0,
+        level:1,
+        correctGuesses:0,
+        wrongGuesses:0
+    });
     els.playerName.value=''; renderPlayers(); renderTurnBanner();
+    log(`👤 تمت إضافة اللاعب: ${name}`);
   } else { log('اللاعب موجود مسبقًا.'); }
 };
 els.addFakeBtn.onclick=()=>{
   const text=els.fakeWord.value.trim(); const ownerId=els.fakeOwner.value||null; if(!text) return;
   state.cards.push({id:uid(),text,ownerId,revealed:false,locked:false});
   els.fakeWord.value=''; renderCards(); updateSelects();
+  log(`🃏 تمت إضافة بطاقة: ${text}`);
 };
-els.clearUnowned.onclick=()=>{ state.cards = state.cards.filter(c=>!!c.ownerId); renderCards(); updateSelects(); };
+els.clearUnowned.onclick=()=>{ state.cards = state.cards.filter(c=>!!c.ownerId); renderCards(); updateSelects(); log('تمت إزالة البطاقات غير المملوكة'); };
 
 function setGmVisibility(show){ els.gm.classList.toggle('open', !!show); }
 els.gmToggle.onclick = ()=> setGmVisibility(!els.gm.classList.contains('open'));
@@ -1482,8 +2398,16 @@ window.addEventListener('keydown',e=>{ if(e.altKey && (e.key.toLowerCase()==='g'
 function handleChatJoin(user){
   if (!user) return;
   if (state.players.some(p=>normalize(p.name)===normalize(user))) return;
-  state.players.push({id:uid(),name:user,eliminated:false});
-  renderPlayers(); renderTurnBanner(); log(`انضم ${user} إلى اللعبة.`);
+  state.players.push({
+      id:uid(),
+      name:user,
+      eliminated:false,
+      score:0,
+      level:1,
+      correctGuesses:0,
+      wrongGuesses:0
+  });
+  renderPlayers(); renderTurnBanner(); log(`👤 انضم ${user} إلى اللعبة.`);
 }
 
 /* Twitch */
@@ -1505,7 +2429,6 @@ function connectTwitch(channel){
       const user = tags['display-name'] || tags.username || 'مشارك';
       const text = (message||'').trim();
       if (text==='!دخول'){ handleChatJoin(user); return; }
-      // الإجابات من الشات معطلة
     });
   }catch(e){ els.chatStatus.textContent=`❌ خطأ في Twitch`; log('خطأ Twitch: '+e.message); updateConnBadge(els.twitchBadge, 'err'); }
 }
@@ -1535,7 +2458,6 @@ async function connectKick(channel){
         const user = d?.sender?.username || 'مشارك';
         const text = (d?.content || '').trim();
         if (text==='!دخول'){ handleChatJoin(user); return; }
-        // الإجابات من الشات معطلة
       }
     };
     ws.onerror = ()=>{ els.chatStatus.textContent='❌ مشكلة في اتصال Kick'; log('❌ مشكلة في اتصال Kick'); updateConnBadge(els.kickBadge, 'err'); };
@@ -1571,9 +2493,102 @@ els.connectBtn.onclick = ()=>{
   if (platform==='twitch'){ connectTwitch(channel); } else { connectKick(channel); }
 };
 
-/* بدء الصفحة */
-function updateAll(){ renderPlayers(); renderCards(); updateSelects(); updateCounts(); renderTurnBanner(); }
+/* ===== نظام المشاهدين ===== */
+function showViewerModal() {
+    els.viewerModal.style.display = 'flex';
+    els.viewerForm.style.display = 'block';
+    els.successMessage.style.display = 'none';
+    els.viewerPlatformName.value = '';
+    els.viewerFakeName.value = '';
+}
+
+// فتح نافذة الشير
+function openShareModal() {
+    els.shareUrl.textContent = generateViewerLink();
+    els.shareModal.style.display = 'flex';
+}
+
+function closeShareModal() {
+    els.shareModal.style.display = 'none';
+}
+
+// نسخ الرابط
+els.copyShareUrl.onclick = function() {
+    navigator.clipboard.writeText(els.shareUrl.textContent)
+        .then(() => {
+            this.textContent = '✅ تم النسخ!';
+            this.classList.add('copied');
+            setTimeout(() => {
+                this.textContent = '📋 نسخ الرابط';
+                this.classList.remove('copied');
+            }, 2000);
+        });
+};
+
+/* ===== إرسال طلب المشاهد (في صفحة المشاهد) ===== */
+function sendViewerRequest(platformName, fakeName) {
+    // إرسال الطلب إلى الصفحة الرئيسية
+    sendViewerRequestToMain(platformName, fakeName);
+    
+    // عرض رسالة النجاح للمشاهد
+    els.viewerForm.style.display = 'none';
+    els.successMessage.style.display = 'block';
+    
+    // إغلاق النافذة تلقائياً بعد 3 ثواني
+    setTimeout(() => {
+        if (window.opener) {
+            window.close();
+        }
+    }, 3000);
+    
+    return true;
+}
+
+// إرسال طلب المشاهد
+els.submitViewer.onclick = function() {
+    const platformName = els.viewerPlatformName.value.trim();
+    const fakeName = els.viewerFakeName.value.trim();
+    
+    if (!platformName || !fakeName) {
+        alert('يرجى ملء جميع الحقول');
+        return;
+    }
+    
+    // إرسال الطلب
+    sendViewerRequest(platformName, fakeName);
+};
+
+// أحداث الأزرار
+els.viewerLinkBtn.onclick = openShareModal;
+els.closeShare.onclick = closeShareModal;
+
+// دالات الشير للوسائط الاجتماعية
+function shareToTwitter() {
+    const text = `🎭 انضم إلى لعبة الأسماء الوهمية! ${els.shareUrl.textContent}`;
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+function shareToDiscord() {
+    const text = `🎭 انضم إلى لعبة الأسماء الوهمية!\n${els.shareUrl.textContent}`;
+    window.open(`https://discord.com/channels/@me?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+function shareToWhatsApp() {
+    const text = `🎭 انضم إلى لعبة الأسماء الوهمية!\n${els.shareUrl.textContent}`;
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+/* ===== بدء الصفحة ===== */
+function updateAll(){ renderPlayers(); renderCards(); updateSelects(); updateCounts(); renderTurnBanner(); updateStats(); }
 updateAll();
+
+// إذا كانت هذه صفحة المشاهد
+if (new URLSearchParams(window.location.search).get('viewer') === '1') {
+    showViewerModal();
+} else {
+    // إذا كانت الصفحة الرئيسية، ابدأ بالتحقق من الطلبات
+    setInterval(processViewerRequests, 2000); // التحقق كل 2 ثانية
+}
 
 /* تعليمات سريعة */
 els.helpBtn.onclick = ()=>{ els.helpOverlay.style.display='flex'; };
@@ -1584,7 +2599,7 @@ els.helpOverlay.addEventListener('click',(e)=>{ if(e.target===els.helpOverlay) e
 function setLastEvent(text){ els.lastEventBody.textContent = text; els.lastEvent.style.display = 'block'; }
 els.lastEventHide.onclick = ()=>{ els.lastEvent.style.display='none'; };
 
-/* لوحة GM (تعريف مكرر لكن بنفس السلوك للحفاظ على منطقك الأصلي) */
+/* لوحة GM */
 function setGmVisibility(show){ els.gm.classList.toggle('open', !!show); }
 els.gmToggle.onclick = ()=> setGmVisibility(!els.gm.classList.contains('open'));
 setGmVisibility(location.hash==='#gm');
@@ -1608,7 +2623,7 @@ document.addEventListener('click', function(e){
     leftSelectedId = fakeCard.dataset.id || null;
     maybeAnimateMiddle();
   }
-}, true); // capture عشان ما نكسر onClick الأصلي
+}, true);
 
 function maybeAnimateMiddle(){
   if (!rightSelectedId || !leftSelectedId) return;
@@ -1663,6 +2678,12 @@ function showPairResult(correct){
 
   setTimeout(()=>{ box.style.display='none'; }, 900);
 }
+
+// تنظيف طلبات المشاهدين القديمة
+setInterval(() => {
+    const now = Date.now();
+    state.viewerRequests = state.viewerRequests.filter(r => now - r.timestamp < 300000);
+}, 60000);
 </script>
 </body>
 </html>
