@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>🎭 الأسماء الوهمية</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" />
- <script src="tmi.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/tmi.js@1.8.5/dist/tmi.min.js"></script>
   <style>
     :root{
       /* ألوان 2026 البريميوم */
@@ -134,56 +132,6 @@
       color:var(--accent-soft);
     }
 
-    /* بادجات حالة الاتصال */
-    .conn-badges{
-      display:flex;
-      gap:8px;
-      align-items:center;
-      flex-wrap:wrap;
-    }
-    .conn{
-      display:flex;
-      align-items:center;
-      gap:6px;
-      border-radius:999px;
-      border:1px solid rgba(63,70,86,0.95);
-      background:linear-gradient(180deg,#171a23,#141720);
-      padding:6px 11px;
-      font-size:13px;
-      color:var(--muted);
-      box-shadow:0 6px 16px rgba(0,0,0,0.6);
-    }
-    .conn span:last-child{
-      opacity:.9;
-    }
-    .conn .led{
-      width:9px;
-      height:9px;
-      border-radius:999px;
-      background:#555;
-      box-shadow:0 0 0 0 rgba(255,255,255,0);
-    }
-    .conn.ok .led{
-      background:var(--green);
-      animation:breath 2.2s ease-in-out infinite;
-    }
-    .conn.wait .led{
-      background:var(--yellow);
-      animation:pulse 1.4s ease-in-out infinite;
-    }
-    .conn.err .led{
-      background:var(--danger);
-      box-shadow:0 0 10px rgba(255,98,98,0.6);
-    }
-    @keyframes breath{
-      0%,100%{box-shadow:0 0 0 0 rgba(34,197,139,.7);}
-      50%{box-shadow:0 0 12px 4px rgba(34,197,139,.24);}
-    }
-    @keyframes pulse{
-      0%,100%{opacity:.55;}
-      50%{opacity:1;}
-    }
-
     /* مركز الصفحة */
     .wrap{
       flex:1;
@@ -201,83 +149,6 @@
     }
     @media (max-width:980px){
       .container{grid-template-columns:1fr;}
-    }
-
-    /* شريط تسجيل الدخول أعلى اللوحين */
-    .login-inline{
-      grid-column:1/-1;
-      width:100%;
-      margin:0 auto;
-      background:linear-gradient(135deg,rgba(30,33,43,.96),rgba(22,25,34,.96));
-      border-radius:var(--radius-lg);
-      padding:12px 12px 10px;
-      display:grid;
-      gap:8px;
-      grid-template-columns:130px 1fr 160px 1fr 160px;
-      position:relative;
-      border:1px solid rgba(66,73,92,0.95);
-      box-shadow:var(--shadow-soft);
-      overflow:hidden;
-    }
-
-    .login-inline::before{
-      content:"";
-      position:absolute;
-      inset:-20%;
-      background:
-        radial-gradient(circle at 0% 0%,rgba(255,59,59,0.09),transparent 55%),
-        radial-gradient(circle at 100% 100%,rgba(58,143,255,0.08),transparent 55%);
-      opacity:.95;
-      pointer-events:none;
-    }
-
-    .login-inline > *{
-      position:relative;
-      z-index:1;
-    }
-
-    .login-inline .lbl{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      border-radius:var(--radius-md);
-      font-size:13px;
-      padding:8px 6px;
-      color:var(--muted-soft);
-      border:1px solid rgba(75,82,104,0.9);
-      background:radial-gradient(circle at top,#202430,#181b24);
-      box-shadow:0 6px 18px rgba(0,0,0,0.5) inset;
-    }
-
-    .login-inline input,
-    .login-inline select{
-      background:radial-gradient(circle at top,#191c25,#13151d);
-      border:1px solid rgba(69,76,98,0.95);
-      color:var(--text);
-      padding:8px 10px;
-      border-radius:var(--radius-md);
-      outline:none;
-      width:100%;
-      font-size:13px;
-      box-shadow:0 6px 18px rgba(0,0,0,0.5) inset;
-    }
-    .login-inline input::placeholder{
-      color:rgba(158,170,196,0.7);
-    }
-    .login-inline .status{
-      grid-column:1/-1;
-      font-size:13px;
-      color:#b5f5d8;
-      padding-top:2px;
-    }
-
-    @media (max-width:980px){
-      .login-inline{
-        grid-template-columns:1fr 1fr;
-      }
-      .login-inline .lbl{
-        display:none;
-      }
     }
 
     /* بانر اللاعب الحالي */
@@ -1392,38 +1263,11 @@
     <span class="status-pill">الدور الآن: <b id="turnLabel">-</b></span>
     <button id="viewerLinkBtn" class="btn viewer-link-btn">🔗 رابط المشاهدين</button>
     <button id="helpBtn" class="help-btn">❔ تعليمات</button>
-    <div class="conn-badges">
-      <div id="twitchBadge" class="conn"><span class="led"></span><span>Twitch</span></div>
-      <div id="kickBadge" class="conn"><span class="led"></span><span>Kick</span></div>
-    </div>
   </div>
 </header>
 
 <div class="wrap">
   <div class="container">
-
-    <!-- تسجيل الدخول داخل الصفحة -->
-    <div class="login-inline">
-      <div class="lbl">المنصّة</div>
-      <select id="platformSelect">
-        <option value="twitch">Twitch</option>
-        <option value="kick">Kick</option>
-      </select>
-
-      <div class="lbl">اسم القناة</div>
-      <input id="channelInput" placeholder="اكتب اسم القناة بدون #">
-
-      <div class="lbl">خيارات</div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <label class="chip"><input type="checkbox" id="remember" style="margin-inline-end:6px"> تذكرني</label>
-        <button class="btn" id="fillSaved">ملء المحفوظ</button>
-      </div>
-
-      <div class="lbl">اتصال</div>
-      <button class="btn success" id="connectBtn">✅ تسجيل الدخول</button>
-
-      <div class="status" id="chatStatus">💡 اختر المنصّة وأدخل اسم القناة ثم اضغط تسجيل الدخول. يمكنك تكرارها للمنصّة الأخرى.</div>
-    </div>
 
     <!-- بانر اللاعب الحالي -->
     <div id="turnBanner" class="turn-banner">
@@ -1511,7 +1355,7 @@
     <!-- شريط الحالة -->
     <div class="status-bar">
       <div style="display:flex;flex-wrap:wrap;gap:8px">
-        <span class="chip">انضمام من الشات: <b>!دخول</b></span>
+        <span class="chip">انضمام من الرابط: <b>🔗 اضغط رابط المشاهدين</b></span>
         <span class="chip">التحقق: اختَر <b>لاعبًا</b> ثم اختَر <b>بطاقة</b> من الستريمر</span>
       </div>
       <div class="legend">
@@ -1529,7 +1373,7 @@
         <div class="row">
           <input id="playerName" placeholder="اسم اللاعب (مثال: أحمد)" />
           <button class="btn success" id="addPlayerBtn">إضافة لاعب</button>
-          <span class="hint">أو ينضمون من الشات بـ <b>!دخول</b></span>
+          <span class="hint">أو ينضمون عبر <b>🔗 رابط المشاهدين</b></span>
         </div>
         <div class="row">
           <input id="fakeWord" placeholder="اكتب الاسم الوهمي (مثال: سيارة)" />
@@ -1618,12 +1462,13 @@
 <!-- نافذة التعليمات السريعة -->
 <div id="helpOverlay" class="help-overlay" role="dialog" aria-modal="true">
   <div class="help-card">
-    <h3>📘 طريقة اللعب السريعة</h3>
+    <h3>📘 طريقة اللعب</h3>
     <div class="help-steps">
       <div class="help-step"><div class="num">1</div><div>ابدأ اللعبة من زر <b>▶️ ابدأ</b>.</div></div>
       <div class="help-step"><div class="num">2</div><div>اختَر بطاقة <b>اللاعب المذكور</b> من لوحة اللاعبين.</div></div>
       <div class="help-step"><div class="num">3</div><div>اختَر بطاقة <b>الاسم الوهمي</b> المطابقة له.</div></div>
       <div class="help-step"><div class="num">4</div><div>عند الحاجة يمكنك الضغط على <b>⏭️ تجاوز الدور</b>.</div></div>
+      <div class="help-step"><div class="num">5</div><div>المشاهدون ينضمون عبر <b>🔗 رابط المشاهدين</b>.</div></div>
     </div>
     <div class="help-close">
       <button id="helpClose" class="btn">حسناً</button>
@@ -1648,12 +1493,6 @@
 <div id="matchResultOverlay" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:200;pointer-events:none;"></div>
 
 <script>
-/* ===== اتصال المنصات ===== */
-let TWITCH_CHANNEL = "", KICK_CHANNEL = "";
-let twitchClient = null, kickSocket = null;
-let twitchConnected=false, kickConnected=false;
-const LS_KEY_TWITCH='fn_twitch', LS_KEY_KICK='fn_kick';
-
 /* ===== عناصر DOM ===== */
 const els = {
   turnLabel: document.getElementById('turnLabel'),
@@ -1673,13 +1512,6 @@ const els = {
   btnUnlockAll: document.getElementById('btnUnlockAll'),
   btnSkip: document.getElementById('btnSkip'),
 
-  platformSelect: document.getElementById('platformSelect'),
-  channelInput: document.getElementById('channelInput'),
-  remember: document.getElementById('remember'),
-  connectBtn: document.getElementById('connectBtn'),
-  fillSaved: document.getElementById('fillSaved'),
-  chatStatus: document.getElementById('chatStatus'),
-
   gm: document.getElementById('gm'),
   gmToggle: document.getElementById('gmToggle'),
   playerName: document.getElementById('playerName'),
@@ -1691,9 +1523,6 @@ const els = {
   clearUnowned: document.getElementById('clearUnowned'),
   cardsTable: document.getElementById('cardsTable'),
   log: document.getElementById('log'),
-
-  twitchBadge: document.getElementById('twitchBadge'),
-  kickBadge: document.getElementById('kickBadge'),
 
   helpBtn: document.getElementById('helpBtn'),
   helpOverlay: document.getElementById('helpOverlay'),
@@ -1739,7 +1568,7 @@ const state = {
   timeLeft: 60,
   currentRound: 1,
   viewerRequests: [],
-  roomId: generateRoomId() // إضافة معرف للغرفة
+  roomId: generateRoomId()
 };
 
 /* ===== توليد معرف غرفة فريد ===== */
@@ -1813,9 +1642,6 @@ function alivePlayers(){ return state.players.filter(p=>!p.eliminated); }
 function log(t){ els.log.value = `[${new Date().toLocaleTimeString()}] ${t}\n` + els.log.value; setLastEvent(t); updateStats(); }
 
 /* ===== نظام نقل البيانات بين النوافذ ===== */
-
-// إذا كانت هذه الصفحة الرئيسية (صفحة الستريمر)
-let isMainPage = !window.location.search.includes('viewer=1');
 
 /* ===== دالة إرسال طلب المشاهد إلى الصفحة الرئيسية ===== */
 function sendViewerRequestToMain(platformName, fakeName) {
@@ -2393,105 +2219,6 @@ function setGmVisibility(show){ els.gm.classList.toggle('open', !!show); }
 els.gmToggle.onclick = ()=> setGmVisibility(!els.gm.classList.contains('open'));
 setGmVisibility(location.hash==='#gm');
 window.addEventListener('keydown',e=>{ if(e.altKey && (e.key.toLowerCase()==='g')) setGmVisibility(!els.gm.classList.contains('open')); });
-
-/* ===== الشات: انضمام فقط ===== */
-function handleChatJoin(user){
-  if (!user) return;
-  if (state.players.some(p=>normalize(p.name)===normalize(user))) return;
-  state.players.push({
-      id:uid(),
-      name:user,
-      eliminated:false,
-      score:0,
-      level:1,
-      correctGuesses:0,
-      wrongGuesses:0
-  });
-  renderPlayers(); renderTurnBanner(); log(`👤 انضم ${user} إلى اللعبة.`);
-}
-
-/* Twitch */
-function connectTwitch(channel){
-  try{
-    updateConnBadge(els.twitchBadge, 'wait');
-    twitchClient = new tmi.Client({ channels:[channel], connection:{secure:true,reconnect:true} });
-    twitchClient.connect()
-      .then(()=>{ 
-        TWITCH_CHANNEL=channel; twitchConnected=true; 
-        els.chatStatus.textContent=`✅ تم الاتصال بـ Twitch: #${channel}`; 
-        log(`✅ Twitch متصل: #${channel}`); 
-        updateConnBadge(els.twitchBadge, 'ok');
-        if (els.remember.checked) localStorage.setItem(LS_KEY_TWITCH, channel); 
-      })
-      .catch(e=>{ els.chatStatus.textContent=`❌ فشل اتصال Twitch`; log('❌ فشل اتصال Twitch: '+e); updateConnBadge(els.twitchBadge, 'err'); });
-    twitchClient.on('message',(ch,tags,message,self)=>{
-      if(self) return;
-      const user = tags['display-name'] || tags.username || 'مشارك';
-      const text = (message||'').trim();
-      if (text==='!دخول'){ handleChatJoin(user); return; }
-    });
-  }catch(e){ els.chatStatus.textContent=`❌ خطأ في Twitch`; log('خطأ Twitch: '+e.message); updateConnBadge(els.twitchBadge, 'err'); }
-}
-
-/* Kick */
-async function connectKick(channel){
-  try{
-    updateConnBadge(els.kickBadge, 'wait');
-    const res = await fetch(`https://kick.com/api/v2/channels/${channel}`);
-    const data = await res.json();
-    const roomId = data?.chatroom?.id;
-    if (!roomId){ els.chatStatus.textContent='❌ فشل جلب غرفة كيك'; updateConnBadge(els.kickBadge, 'err'); return; }
-
-    const ws = new WebSocket("wss://ws-us2.pusher.com/app/32cbd69e4b950bf97679?protocol=7&client=js&version=8.4.0-rc2&flash=false");
-    kickSocket = ws;
-    ws.onopen = ()=>{
-      ws.send(JSON.stringify({event:"pusher:subscribe",data:{auth:"",channel:`chatrooms.${roomId}.v2`}}));
-      setInterval(()=>{ if(ws.readyState===WebSocket.OPEN){ ws.send(JSON.stringify({event:"pusher:ping",data:{}})); } },12000);
-      KICK_CHANNEL=channel; kickConnected=true; els.chatStatus.textContent=`✅ تم الاتصال بـ Kick: ${channel}`; log(`✅ Kick متصل: ${channel}`);
-      updateConnBadge(els.kickBadge, 'ok');
-      if (els.remember.checked) localStorage.setItem(LS_KEY_KICK, channel);
-    };
-    ws.onmessage = (event)=>{
-      const pkt = JSON.parse(event.data);
-      if (pkt.event === "App\\Events\\ChatMessageEvent"){
-        const d = JSON.parse(pkt.data);
-        const user = d?.sender?.username || 'مشارك';
-        const text = (d?.content || '').trim();
-        if (text==='!دخول'){ handleChatJoin(user); return; }
-      }
-    };
-    ws.onerror = ()=>{ els.chatStatus.textContent='❌ مشكلة في اتصال Kick'; log('❌ مشكلة في اتصال Kick'); updateConnBadge(els.kickBadge, 'err'); };
-  }catch(e){
-    els.chatStatus.textContent='❌ فشل الاتصال بـ Kick';
-    log('Kick error: '+e.message);
-    updateConnBadge(els.kickBadge, 'err');
-  }
-}
-
-/* بادجات الاتصال */
-function updateConnBadge(el, state){
-  el.classList.remove('ok','wait','err');
-  if (state==='ok') el.classList.add('ok');
-  else if (state==='wait') el.classList.add('wait');
-  else el.classList.add('err');
-}
-
-/* زر الاتصال */
-els.fillSaved.onclick = ()=>{
-  els.channelInput.value = (els.platformSelect.value==='twitch')
-    ? (localStorage.getItem(LS_KEY_TWITCH)||'')
-    : (localStorage.getItem(LS_KEY_KICK)||'');
-};
-els.connectBtn.onclick = ()=>{
-  const platform = els.platformSelect.value;
-  const channel  = els.channelInput.value.trim();
-  if (!channel){ els.chatStatus.textContent='⚠️ اكتب اسم القناة أولاً'; return; }
-  if (els.remember.checked){
-    if (platform==='twitch') localStorage.setItem(LS_KEY_TWITCH, channel);
-    else localStorage.setItem(LS_KEY_KICK, channel);
-  }
-  if (platform==='twitch'){ connectTwitch(channel); } else { connectKick(channel); }
-};
 
 /* ===== نظام المشاهدين ===== */
 function showViewerModal() {
