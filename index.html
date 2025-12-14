@@ -1068,6 +1068,32 @@
       cursor: pointer;
     }
 
+    /* بطاقة مغلقة للتطوير */
+    .creator-card.closed-for-maintenance {
+      opacity: 0.7;
+      filter: grayscale(0.3);
+      cursor: not-allowed;
+    }
+
+    .creator-card.closed-for-maintenance::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1;
+      border-radius: 18px;
+    }
+
+    .creator-card.closed-for-maintenance .creator-avatar {
+      filter: grayscale(0.5);
+    }
+
+    .creator-card.closed-for-maintenance:hover {
+      transform: none;
+      box-shadow: 0 14px 36px rgba(0,0,0,.35);
+      border-color: var(--border);
+    }
+
     .creator-card::before {
       content: "";
       position: absolute;
@@ -1080,7 +1106,7 @@
       opacity: .9;
     }
 
-    .creator-card:hover {
+    .creator-card:hover:not(.closed-for-maintenance) {
       transform: translateY(-6px);
       box-shadow: 0 22px 60px rgba(0,0,0,.55);
       border-color: rgba(255,255,255,.18);
@@ -1131,7 +1157,7 @@
       transition: opacity .25s ease, transform .25s ease;
     }
 
-    .creator-card:hover .creator-avatar-wrap::before {
+    .creator-card:hover:not(.closed-for-maintenance) .creator-avatar-wrap::before {
       opacity: 1;
       transform: rotate(4deg);
     }
@@ -1178,7 +1204,13 @@
       font-family: inherit;
     }
 
-    .creator-btn:hover {
+    .creator-btn:disabled {
+      background: linear-gradient(135deg, #666, #444);
+      cursor: not-allowed;
+      opacity: 0.8;
+    }
+
+    .creator-btn:hover:not(:disabled) {
       transform: translateY(-2px);
       box-shadow: 0 16px 36px rgba(145,70,255,.36);
       filter: saturate(1.06);
@@ -2069,15 +2101,16 @@
       }
     ];
 
+    // ========= Streamer Data (مع لعبة Saleeh مغلقة) =========
     const streamersData = [
       {
         id: 'saleeh',
         name: 'Saleeh',
-        tag: '@saleeh • فئة خاصة',
+        tag: '@saleeh • مغلقة للتطوير',
         avatar: 'https://i.postimg.cc/qqpqNrBX/74508bb339c7d4b80fdc0dc3d41c8898.webp',
-        online: true,
-        link: 'saleeh.html',
-        soon: false
+        online: false, // مغلقة - النقطة حمراء
+        link: '#',
+        soon: true
       },
       {
         id: 'naif_z4',
@@ -2310,8 +2343,15 @@
         card.className = 'creator-card animate-in';
         card.id = `${streamer.id}Card`;
         
+        // إضافة كلاس خاص إذا كانت اللعبة مغلقة
+        if (streamer.id === 'saleeh') {
+          card.classList.add('closed-for-maintenance');
+          card.style.opacity = '0.7';
+          card.style.filter = 'grayscale(0.3)';
+        }
+        
         card.innerHTML = `
-          ${streamer.soon ? '<span class="creator-soon">قريبًا</span>' : ''}
+          ${streamer.soon ? '<span class="creator-soon">مغلقة للتطوير</span>' : ''}
           <div class="creator-overlay">
             <div class="creator-avatar-wrap">
               <img class="creator-avatar" 
@@ -2326,35 +2366,34 @@
             <div class="creator-name">${streamer.name}</div>
             <div class="creator-tag">${streamer.tag}</div>
             <div class="creator-actions">
-              ${streamer.soon ? `
-                <button type="button" class="creator-btn" disabled style="cursor:not-allowed; opacity:.8;">
-                  <i class="fa-solid fa-ban"></i> غير متاح
-                </button>
-              ` : `
-                <button type="button" class="creator-btn" onclick="openStreamer('${streamer.id}')">
-                  <i class="fa-solid fa-lock"></i> دخول
-                </button>
-              `}
+              <button type="button" class="creator-btn" disabled style="cursor:not-allowed; opacity:.8;">
+                <i class="fa-solid fa-lock"></i> مغلقة حالياً
+              </button>
             </div>
           </div>
         `;
         
         streamersGrid.appendChild(card);
         
-        if (!streamer.soon) {
-          card.addEventListener('click', (e) => {
-            if (!e.target.closest('button')) {
-              openStreamer(streamer.id);
-            }
-          });
-        }
+        // إضافة حدث النقر لعرض رسالة الإغلاق
+        card.addEventListener('click', () => {
+          if (streamer.id === 'saleeh') {
+            showStreamerClosedMessage();
+          }
+        });
       });
     }
 
+    // ========= Streamer Functions =========
     function openStreamer(streamerId) {
       if (streamerId === 'saleeh') {
-        window.location.href = "saleeh.html";
+        showStreamerClosedMessage();
+        return false;
       }
+    }
+
+    function showStreamerClosedMessage() {
+      alert('🎮 لعبة Saleeh مغلقة حاليًا للتطوير\n\nنعمل على تحسين اللعبة وتطويرها لتقديم تجربة أفضل قريباً!\n\nشكراً لتفهمك. 🔧');
     }
 
     // ========= Navigation =========
