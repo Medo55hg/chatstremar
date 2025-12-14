@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>🎭 الأسماء الوهمية</title>
+  <title>🎭 الأسماء الوهمية - نسخة الفائزين</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root{
@@ -402,31 +402,31 @@
       text-shadow:0 0 12px rgba(0,0,0,0.8);
     }
 
-    /* بطاقات اللاعبين المحسنة */
-    .player-score {
+    /* بطاقات الفائزين */
+    .card.winner {
+        background: radial-gradient(circle at top, #1f3a30, #13231c) !important;
+        border: 2px solid var(--green-soft) !important;
+        box-shadow: 0 0 20px var(--green-soft) !important;
+        animation: winnerGlow 2s infinite alternate;
+    }
+
+    @keyframes winnerGlow {
+        from { box-shadow: 0 0 10px var(--green-soft); }
+        to { box-shadow: 0 0 30px var(--green-soft); }
+    }
+
+    .player-correct {
         position: absolute;
         bottom: 8px;
         left: 50%;
         transform: translateX(-50%);
         font-size: 11px;
-        color: var(--yellow);
-        background: rgba(0,0,0,0.3);
+        color: var(--green-soft);
+        background: rgba(34, 197, 139, 0.1);
         padding: 2px 8px;
         border-radius: 999px;
-        border: 1px solid rgba(241, 199, 92, 0.3);
+        border: 1px solid rgba(34, 197, 139, 0.3);
         white-space: nowrap;
-    }
-
-    .player-level {
-        position: absolute;
-        top: 8px;
-        right: 8px;
-        font-size: 10px;
-        color: var(--blue-soft);
-        background: rgba(0,0,0,0.4);
-        padding: 1px 6px;
-        border-radius: 999px;
-        border: 1px solid rgba(58, 143, 255, 0.3);
     }
 
     .card.selected{
@@ -701,7 +701,7 @@
       color:var(--muted-soft);
     }
 
-    /* لوحة الإحصائيات */
+    /* لوحة الإحصائيات الجديدة */
     .stats-panel {
         grid-column: 1/-1;
         background: linear-gradient(135deg, rgba(30,33,43,.96), rgba(22,25,34,.96));
@@ -723,30 +723,40 @@
 
     .stats-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        gap: 8px;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 10px;
     }
 
     .stat-card {
         background: radial-gradient(circle at top, #222736, #181b24);
         border: 1px solid rgba(83,92,116,0.95);
         border-radius: var(--radius-md);
-        padding: 10px;
+        padding: 12px;
         text-align: center;
+        min-height: 80px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
 
     .stat-label {
         font-size: 11px;
         color: var(--muted-soft);
         display: block;
-        margin-bottom: 4px;
+        margin-bottom: 6px;
     }
 
     .stat-value {
-        font-size: 16px;
+        font-size: 18px;
         font-weight: 800;
         color: var(--text);
         display: block;
+    }
+
+    .stat-subtitle {
+        font-size: 10px;
+        color: var(--muted);
+        margin-top: 4px;
     }
 
     /* زر فتح لوحة الستريمر */
@@ -986,7 +996,7 @@
       text-shadow:0 0 25px rgba(255,98,98,.55);
     }
 
-    /* ===== نافذة المشتركين (تصميم بسيط) ===== */
+    /* ===== نافذة المشتركين ===== */
     .viewer-modal {
         position: fixed;
         inset: 0;
@@ -1115,11 +1125,33 @@
         box-shadow: 0 8px 20px rgba(90,164,255,0.4);
     }
 
-    /* زر رابط المشاهدين */
+    /* زر رابط المشاهدين مع تسليط الضوء */
     .viewer-link-btn {
         background: linear-gradient(180deg, #28344a, #1a2130);
         border: 1px solid rgba(90,164,255,0.95);
         color: #d7e1ff;
+        animation: highlightPulse 2s infinite;
+        position: relative;
+    }
+
+    @keyframes highlightPulse {
+        0% { box-shadow: 0 0 0 0 rgba(90, 164, 255, 0.7); }
+        70% { box-shadow: 0 0 0 15px rgba(90, 164, 255, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(90, 164, 255, 0); }
+    }
+
+    .viewer-link-btn::after {
+        content: "🔥";
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        font-size: 12px;
+        animation: bounce 1s infinite;
+    }
+
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
     }
 
     .link-copied {
@@ -1250,6 +1282,30 @@
         from { transform: translateX(0); opacity: 1; }
         to { transform: translateX(100%); opacity: 0; }
     }
+
+    /* عرض الفائزين */
+    .winners-display {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, var(--green), var(--green-soft));
+        padding: 40px 60px;
+        border-radius: 20px;
+        color: white;
+        font-size: 36px;
+        font-weight: 900;
+        text-align: center;
+        z-index: 1000;
+        box-shadow: 0 20px 60px rgba(34, 197, 139, 0.5);
+        animation: winnerPulse 2s infinite;
+    }
+
+    @keyframes winnerPulse {
+        0% { transform: translate(-50%, -50%) scale(1); }
+        50% { transform: translate(-50%, -50%) scale(1.05); }
+        100% { transform: translate(-50%, -50%) scale(1); }
+    }
   </style>
 </head>
 <body>
@@ -1329,25 +1385,29 @@
       <div id="cardsGrid" class="grid"></div>
     </div>
 
-    <!-- لوحة الإحصائيات -->
+    <!-- لوحة الإحصائيات الجديدة -->
     <div class="stats-panel">
-      <h4>📊 الإحصائيات</h4>
+      <h4>📊 الإحصائيات الجديدة</h4>
       <div class="stats-grid">
         <div class="stat-card">
           <span class="stat-label">معدل الصحة</span>
           <span class="stat-value" id="accuracyRate">0%</span>
+          <span class="stat-subtitle">نسبة الإجابات الصحيحة</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">الاسم الأكثر اختيارًا</span>
+          <span class="stat-value" id="mostChosenName">—</span>
+          <span class="stat-subtitle" id="mostChosenCount">0 مرة</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">الأكثر إجابة صحيحة</span>
+          <span class="stat-value" id="mostCorrectPlayer">—</span>
+          <span class="stat-subtitle" id="mostCorrectCount">0 صحيحة</span>
         </div>
         <div class="stat-card">
           <span class="stat-label">البطاقات المتبقية</span>
           <span class="stat-value" id="remainingCards">0</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-label">اللاعبون النشطون</span>
-          <span class="stat-value" id="activePlayers">0</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-label">إجمالي النقاط</span>
-          <span class="stat-value" id="totalPoints">0</span>
+          <span class="stat-subtitle">من أصل <span id="totalCards">0</span></span>
         </div>
       </div>
     </div>
@@ -1362,6 +1422,7 @@
         <div class="lg"><span class="dot-sm d-green"></span><span>صحيحة/مقصى</span></div>
         <div class="lg"><span class="dot-sm d-yellow"></span><span>مقفلة</span></div>
         <div class="lg"><span class="dot-sm d-red"></span><span>خطأ</span></div>
+        <div class="lg"><span class="dot-sm d-green" style="animation: winnerGlow 2s infinite"></span><span>فائز</span></div>
       </div>
     </div>
 
@@ -1386,7 +1447,7 @@
           <div>
             <h4 style="margin:6px 0;color:#e5e9ff;">قائمة اللاعبين</h4>
             <table class="table">
-              <thead><tr><th>الاسم</th><th>النقاط</th><th>المستوى</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+              <thead><tr><th>الاسم</th><th>صحيحة</th><th>خطأ</th><th>الحالة</th><th>إجراءات</th></tr></thead>
               <tbody id="playersTable"></tbody>
             </table>
           </div>
@@ -1411,7 +1472,7 @@
 <!-- زر فتح/إغلاق لوحة الستريمر -->
 <button id="gmToggle" class="gm-toggle">⚙️ لوحة الستريمر</button>
 
-<!-- نافذة المشاهدين (تصميم مبسط) -->
+<!-- نافذة المشاهدين -->
 <div id="viewerModal" class="viewer-modal" style="display:none;">
   <div class="viewer-card">
     <h2>🎮 انضم إلى اللعبة</h2>
@@ -1469,6 +1530,7 @@
       <div class="help-step"><div class="num">3</div><div>اختَر بطاقة <b>الاسم الوهمي</b> المطابقة له.</div></div>
       <div class="help-step"><div class="num">4</div><div>عند الحاجة يمكنك الضغط على <b>⏭️ تجاوز الدور</b>.</div></div>
       <div class="help-step"><div class="num">5</div><div>المشاهدون ينضمون عبر <b>🔗 رابط المشاهدين</b>.</div></div>
+      <div class="help-step"><div class="num">6</div><div>اللاعبان الأخيران يفوزان ويظهر اسماهما في المنتصف!</div></div>
     </div>
     <div class="help-close">
       <button id="helpClose" class="btn">حسناً</button>
@@ -1538,9 +1600,12 @@ const els = {
   roundNumber: document.getElementById('roundNumber'),
   
   accuracyRate: document.getElementById('accuracyRate'),
+  mostChosenName: document.getElementById('mostChosenName'),
+  mostChosenCount: document.getElementById('mostChosenCount'),
+  mostCorrectPlayer: document.getElementById('mostCorrectPlayer'),
+  mostCorrectCount: document.getElementById('mostCorrectCount'),
   remainingCards: document.getElementById('remainingCards'),
-  activePlayers: document.getElementById('activePlayers'),
-  totalPoints: document.getElementById('totalPoints'),
+  totalCards: document.getElementById('totalCards'),
   
   viewerLinkBtn: document.getElementById('viewerLinkBtn'),
   viewerModal: document.getElementById('viewerModal'),
@@ -1568,7 +1633,11 @@ const state = {
   timeLeft: 60,
   currentRound: 1,
   viewerRequests: [],
-  roomId: generateRoomId()
+  roomId: generateRoomId(),
+  gameEnded: false,
+  // تتبع الإحصائيات الجديدة
+  cardChoices: {}, // تتبع عدد مرات اختيار كل بطاقة
+  lastWinners: [] // الفائزون الأخيرون
 };
 
 /* ===== توليد معرف غرفة فريد ===== */
@@ -1630,6 +1699,26 @@ const sounds = {
     
     oscillator.start();
     oscillator.stop(ctx.currentTime + 0.2);
+  },
+  
+  win: () => {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    
+    oscillator.frequency.setValueAtTime(523.25, ctx.currentTime);
+    oscillator.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1);
+    oscillator.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2);
+    oscillator.frequency.setValueAtTime(1046.50, ctx.currentTime + 0.3);
+    
+    gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.8);
+    
+    oscillator.start();
+    oscillator.stop(ctx.currentTime + 0.8);
   }
 };
 
@@ -1642,10 +1731,7 @@ function alivePlayers(){ return state.players.filter(p=>!p.eliminated); }
 function log(t){ els.log.value = `[${new Date().toLocaleTimeString()}] ${t}\n` + els.log.value; setLastEvent(t); updateStats(); }
 
 /* ===== نظام نقل البيانات بين النوافذ ===== */
-
-/* ===== دالة إرسال طلب المشاهد إلى الصفحة الرئيسية ===== */
 function sendViewerRequestToMain(platformName, fakeName) {
-    // تخزين الطلب في localStorage مع معرف الغرفة
     const requestId = 'viewer_request_' + Date.now();
     const requestData = {
         id: requestId,
@@ -1655,10 +1741,8 @@ function sendViewerRequestToMain(platformName, fakeName) {
         roomId: getRoomIdFromURL() || state.roomId
     };
     
-    // حفظ الطلب في localStorage
     localStorage.setItem('fn_viewer_request', JSON.stringify(requestData));
     
-    // إذا كانت النافذة الرئيسية مفتوحة، أرسل لها مباشرة
     if (window.opener) {
         try {
             window.opener.postMessage({
@@ -1673,27 +1757,22 @@ function sendViewerRequestToMain(platformName, fakeName) {
     return requestId;
 }
 
-/* ===== دالة الحصول على معرف الغرفة من الرابط ===== */
 function getRoomIdFromURL() {
     const params = new URLSearchParams(window.location.search);
     return params.get('room');
 }
 
-/* ===== دالة إضافة المشاهد في الصفحة الرئيسية ===== */
 function addViewerInMainPage(platformName, fakeName) {
-    // إضافة اللاعب
     const playerId = uid();
     state.players.push({
         id: playerId,
         name: platformName,
         eliminated: false,
-        score: 0,
-        level: 1,
         correctGuesses: 0,
-        wrongGuesses: 0
+        wrongGuesses: 0,
+        isWinner: false
     });
     
-    // إضافة البطاقة
     state.cards.push({
         id: uid(),
         text: fakeName,
@@ -1702,41 +1781,27 @@ function addViewerInMainPage(platformName, fakeName) {
         locked: false
     });
     
-    // تحديث العرض
     renderPlayers();
     renderCards();
     updateSelects();
     
-    // تسجيل الحدث
     log(`✅ ${platformName} انضم عبر الرابط باسم "${fakeName}"`);
-    
-    // إشعار
     showNotification(`${platformName} انضم عبر الرابط باسم ${fakeName}`);
-    
-    // تشغيل صوت النجاح
     sounds.correct();
     
     return true;
 }
 
-/* ===== دالة معالجة طلبات المشاهدين في الصفحة الرئيسية ===== */
 function processViewerRequests() {
-    // التحقق من وجود طلبات في localStorage
     const requestStr = localStorage.getItem('fn_viewer_request');
     if (requestStr) {
         try {
             const request = JSON.parse(requestStr);
-            
-            // التحقق من أن الطلب جديد (أقل من 10 ثواني)
             const requestAge = Date.now() - request.timestamp;
-            if (requestAge < 10000) { // 10 ثواني
-                // إضافة المشاهد
+            if (requestAge < 10000) {
                 addViewerInMainPage(request.platformName, request.fakeName);
-                
-                // حذف الطلب بعد معالجته
                 localStorage.removeItem('fn_viewer_request');
             } else {
-                // حذف الطلب القديم
                 localStorage.removeItem('fn_viewer_request');
             }
         } catch (e) {
@@ -1745,7 +1810,6 @@ function processViewerRequests() {
     }
 }
 
-/* ===== الاستماع لرسائل المشاهدين ===== */
 window.addEventListener('message', function(event) {
     if (event.data && event.data.type === 'VIEWER_REQUEST') {
         const request = event.data.data;
@@ -1818,8 +1882,9 @@ function updateTimerDisplay() {
     }
 }
 
-/* ===== الإحصائيات ===== */
+/* ===== الإحصائيات الجديدة ===== */
 function updateStats() {
+    // 1. معدل الصحة
     let totalGuesses = 0;
     let correctGuesses = 0;
     
@@ -1831,14 +1896,39 @@ function updateStats() {
     const accuracy = totalGuesses > 0 ? Math.round((correctGuesses / totalGuesses) * 100) : 0;
     els.accuracyRate.textContent = `${accuracy}%`;
     
+    // 2. الاسم الوهمي الأكثر اختيارًا
+    let mostChosen = { name: '—', count: 0 };
+    Object.keys(state.cardChoices).forEach(cardId => {
+        const card = byId(state.cards, cardId);
+        if (card && state.cardChoices[cardId] > mostChosen.count) {
+            mostChosen = { 
+                name: card.text, 
+                count: state.cardChoices[cardId] 
+            };
+        }
+    });
+    
+    els.mostChosenName.textContent = mostChosen.name;
+    els.mostChosenCount.textContent = `${mostChosen.count} مرة`;
+    
+    // 3. اللاعب الأكثر إجابة صحيحة
+    let mostCorrect = { player: null, count: 0 };
+    state.players.forEach(p => {
+        if (p.correctGuesses > mostCorrect.count) {
+            mostCorrect = { 
+                player: p.name, 
+                count: p.correctGuesses 
+            };
+        }
+    });
+    
+    els.mostCorrectPlayer.textContent = mostCorrect.player || '—';
+    els.mostCorrectCount.textContent = `${mostCorrect.count} صحيحة`;
+    
+    // 4. البطاقات المتبقية
     const unrevealed = state.cards.filter(c => !c.revealed).length;
-    els.remainingCards.textContent = `${unrevealed}/${state.cards.length}`;
-    
-    const active = alivePlayers().length;
-    els.activePlayers.textContent = `${active}/${state.players.length}`;
-    
-    const totalPoints = state.players.reduce((sum, p) => sum + p.score, 0);
-    els.totalPoints.textContent = totalPoints;
+    els.remainingCards.textContent = `${unrevealed}`;
+    els.totalCards.textContent = `${state.cards.length}`;
     
     updateProgressBar();
 }
@@ -1873,7 +1963,7 @@ function updateSelects(){
 /* ===== بانر الدور ===== */
 function renderTurnBanner(){
   const p = currentPlayer();
-  if (p && !p.eliminated){
+  if (p && !p.eliminated && !state.gameEnded){
     els.turnName.textContent = p.name;
     els.turnLabel.textContent = p.name;
     els.turnBanner.style.display = 'flex';
@@ -1898,11 +1988,12 @@ function renderPlayers(){
   } else {
     state.players.forEach((p)=>{
       const el=document.createElement('div'); el.className='card'; el.dataset.id=p.id;
+      if (p.isWinner) el.classList.add('winner');
       if (state.selectedMentionedId===p.id) el.classList.add('selected');
       if (p.eliminated) { el.style.opacity=.48; el.style.filter='grayscale(.35)'; }
 
       el.onclick=()=>{
-        if (p.eliminated) return;
+        if (p.eliminated || state.gameEnded) return;
         state.selectedMentionedId=p.id;
         document.querySelectorAll('#playersGrid .card').forEach(x=>x.classList.remove('selected'));
         el.classList.add('selected');
@@ -1910,33 +2001,57 @@ function renderPlayers(){
       };
 
       const badge=document.createElement('span'); badge.className='badge';
-      const isTurn = currentPlayer() && currentPlayer().id===p.id && !p.eliminated;
-      badge.textContent = p.eliminated ? 'مقصى' : (isTurn ? 'الدور' : 'جاهز');
+      if (p.isWinner) {
+          badge.textContent = '🏆 فائز';
+      } else {
+          const isTurn = currentPlayer() && currentPlayer().id===p.id && !p.eliminated;
+          badge.textContent = p.eliminated ? 'مقصى' : (isTurn ? 'الدور' : 'جاهز');
+      }
 
       const t=document.createElement('div'); t.className='text'; t.textContent=p.name;
       
-      const score = document.createElement('span');
-      score.className = 'player-score';
-      score.textContent = `⭐ ${p.score} (${p.level})`;
+      // عرض عدد الإجابات الصحيحة فقط (بدون نقاط أو نجوم)
+      if (p.correctGuesses > 0) {
+          const correctBadge = document.createElement('span');
+          correctBadge.className = 'player-correct';
+          correctBadge.textContent = `✅ ${p.correctGuesses}`;
+          el.append(correctBadge);
+      }
       
-      el.append(badge,t,score);
+      el.append(badge,t);
       els.playersGrid.append(el);
     });
   }
 
-  // جدول GM
+  // جدول GM (معدل)
   els.playersTable.innerHTML='';
   state.players.forEach((p,idx)=>{
     const tr=document.createElement('tr');
     const td1=document.createElement('td'); td1.textContent=p.name;
-    const td2=document.createElement('td'); td2.textContent=p.score;
-    const td3=document.createElement('td'); td3.textContent=p.level;
-    const td4=document.createElement('td'); td4.textContent=p.eliminated?'مقصى':'نشط';
+    const td2=document.createElement('td'); td2.textContent=p.correctGuesses;
+    const td3=document.createElement('td'); td3.textContent=p.wrongGuesses;
+    const td4=document.createElement('td'); 
+    td4.textContent = p.isWinner ? '🏆 فائز' : (p.eliminated?'مقصى':'نشط');
     const td5=document.createElement('td');
     const elim=document.createElement('button'); elim.className='btn accent'; elim.textContent=p.eliminated?'إرجاع':'إقصاء';
-    elim.onclick=()=>{ p.eliminated=!p.eliminated; if (state.turnIndex===idx && p.eliminated) nextTurnAuto(); renderPlayers(); renderTurnBanner(); };
+    elim.onclick=()=>{ 
+        if (state.gameEnded) return;
+        p.eliminated=!p.eliminated; 
+        if (state.turnIndex===idx && p.eliminated) nextTurnAuto(); 
+        renderPlayers(); 
+        renderTurnBanner(); 
+        checkWinCondition();
+    };
     const del=document.createElement('button'); del.className='btn'; del.textContent='حذف';
-    del.onclick=()=>{ state.cards.forEach(c=>{ if(c.ownerId===p.id) c.ownerId=null; }); state.players=state.players.filter(x=>x.id!==p.id); if(state.turnIndex>=state.players.length) state.turnIndex=state.players.length-1; renderPlayers(); renderCards(); renderTurnBanner(); };
+    del.onclick=()=>{ 
+        state.cards.forEach(c=>{ if(c.ownerId===p.id) c.ownerId=null; }); 
+        state.players=state.players.filter(x=>x.id!==p.id); 
+        if(state.turnIndex>=state.players.length) state.turnIndex=state.players.length-1; 
+        renderPlayers(); 
+        renderCards(); 
+        renderTurnBanner();
+        checkWinCondition();
+    };
     td5.append(elim,document.createTextNode(' '),del);
     tr.append(td1,td2,td3,td4,td5); els.playersTable.append(tr);
   });
@@ -1961,6 +2076,7 @@ function renderCards(){
 
       el.onclick=()=>{
         if (!state.started){ log('ابدأ اللعبة أولاً.'); return; }
+        if (state.gameEnded){ log('انتهت اللعبة.'); return; }
         if (c.locked){ log('هذه البطاقة مقفلة.'); return; }
         if (c.revealed){ log('هذه البطاقة صارت صحيحة مسبقًا.'); return; }
         state.selectedCardId=c.id;
@@ -1997,19 +2113,104 @@ function renderCards(){
   updateStats();
 }
 
+/* ===== التحقق من الفوز (آخر لاعبين) ===== */
+function checkWinCondition() {
+    if (state.gameEnded) return false;
+    
+    const alive = alivePlayers();
+    
+    if (alive.length === 2) {
+        // الفائزون هم آخر لاعبين
+        endGame(alive);
+        return true;
+    } else if (alive.length === 1) {
+        // حالة خاصة - لاعب واحد فقط بقي
+        endGame(alive);
+        return true;
+    } else if (alive.length === 0) {
+        // حالة خاصة - لا أحد بقي
+        state.gameEnded = true;
+        state.started = false;
+        clearInterval(state.turnTimer);
+        log('🎲 انتهت اللعبة! لا يوجد فائزين.');
+        return true;
+    }
+    
+    return false;
+}
+
+/* ===== نهاية اللعبة وعرض الفائزين ===== */
+function endGame(winners) {
+    state.gameEnded = true;
+    state.started = false;
+    clearInterval(state.turnTimer);
+    
+    // تحديد الفائزين
+    winners.forEach(p => {
+        p.isWinner = true;
+        p.eliminated = false; // نجعله نشط ليظهر كفائز
+    });
+    
+    state.lastWinners = winners;
+    
+    // تسجيل الحدث
+    const winnerNames = winners.map(w => w.name).join(' و ');
+    log(`🏆 الفائزون: ${winnerNames}! مبروك للفائزين!`);
+    
+    // عرض الفائزين
+    showWinners(winners);
+    
+    // تشغيل صوت الفوز
+    sounds.win();
+    
+    // إعادة عرض اللاعبين مع تمييز الفائزين
+    renderPlayers();
+}
+
+/* ===== عرض الفائزين في المنتصف ===== */
+function showWinners(winners) {
+    const winnerNames = winners.map(w => w.name).join(' و ');
+    
+    const winnerDiv = document.createElement('div');
+    winnerDiv.className = 'winners-display';
+    
+    winnerDiv.innerHTML = `
+        <div style="font-size: 28px; margin-bottom: 20px;">🏆 الفائزون 🏆</div>
+        <div style="font-size: 42px; text-shadow: 0 4px 12px rgba(0,0,0,0.3);">${winnerNames}</div>
+        <div style="font-size: 18px; margin-top: 20px; opacity: 0.9;">آخر لاعبين يتبقيان يفوزان!</div>
+    `;
+    
+    document.body.appendChild(winnerDiv);
+    
+    // إزالة العرض بعد 10 ثواني
+    setTimeout(() => {
+        if (winnerDiv.parentNode) {
+            document.body.removeChild(winnerDiv);
+        }
+    }, 10000);
+}
+
 /* ===== منطق الدور + تجاوز الدور ===== */
 function startGame(){
-  if (alivePlayers().length===0){ log('لا يوجد لاعبين.'); return; }
-  if (state.cards.length===0){ log('أضف بطاقات أولاً.'); return; }
-  state.started = true;
-  state.turnIndex = state.players.findIndex(p=>!p.eliminated);
-  if (state.turnIndex<0) state.turnIndex = 0;
-  log('بدأت اللعبة.');
-  sounds.turn();
-  renderPlayers(); renderCards(); renderTurnBanner();
+    if (state.gameEnded) {
+        // إعادة بدء اللعبة
+        resetGame();
+        return;
+    }
+    
+    if (alivePlayers().length===0){ log('لا يوجد لاعبين.'); return; }
+    if (state.cards.length===0){ log('أضف بطاقات أولاً.'); return; }
+    state.started = true;
+    state.gameEnded = false;
+    state.turnIndex = state.players.findIndex(p=>!p.eliminated);
+    if (state.turnIndex<0) state.turnIndex = 0;
+    log('بدأت اللعبة.');
+    sounds.turn();
+    renderPlayers(); renderCards(); renderTurnBanner();
 }
+
 function nextTurnAuto(){
-  if (!state.started) return;
+  if (!state.started || state.gameEnded) return;
   const n = state.players.length; if (!n) return;
   let i = state.turnIndex;
   for (let step=0; step<n; step++){
@@ -2021,41 +2222,45 @@ function nextTurnAuto(){
   state.selectedCardId = null;
   document.querySelectorAll('.card').forEach(x=>x.classList.remove('selected','wrong','flash-red'));
 
-  const allEliminated = state.players.every(p => p.eliminated);
-  if (allEliminated && alivePlayers().length === 0) {
-    state.currentRound++;
-    state.players.forEach(p => p.eliminated = false);
-    log(`🔄 بدأت جولة جديدة (${state.currentRound})`);
+  // التحقق من حالة الفوز بعد كل دور
+  if (!checkWinCondition()) {
+      renderPlayers();
+      renderTurnBanner();
+      sounds.turn();
   }
-
-  if (alivePlayers().length<=1){
-    const champ = alivePlayers()[0];
-    log(champ?`🎉 الفائز: ${champ.name} بـ ${champ.score} نقطة!`:'لا يوجد فائز.');
-  }
-  
-  renderPlayers();
-  renderTurnBanner();
-  sounds.turn();
 }
+
 function resetGame(){
-  state.started=false; state.turnIndex=-1;
+  state.gameEnded = false;
+  state.started=false; 
+  state.turnIndex=-1;
+  state.lastWinners = [];
+  state.cardChoices = {};
+  
   state.players.forEach(p=>{
     p.eliminated=false;
-    p.score=0;
-    p.level=1;
     p.correctGuesses=0;
     p.wrongGuesses=0;
+    p.isWinner=false;
   });
-  state.cards.forEach(c=>{c.revealed=false;c.locked=false;});
-  state.selectedMentionedId=null; state.selectedCardId=null;
+  
+  state.cards.forEach(c=>{
+    c.revealed=false;
+    c.locked=false;
+  });
+  
+  state.selectedMentionedId=null; 
+  state.selectedCardId=null;
   state.timeLeft=60;
   state.currentRound=1;
   clearInterval(state.turnTimer);
+  
   log('تمت إعادة اللعبة.');
   renderPlayers(); renderCards(); renderTurnBanner(); updateStats();
 }
+
 els.btnSkip.onclick = ()=>{
-  if (!state.started){ log('ابدأ اللعبة أولاً.'); return; }
+  if (!state.started || state.gameEnded){ log('ابدأ اللعبة أولاً.'); return; }
   const cur = currentPlayer()?.name || '-';
   log(`⏭️ تم تجاوز دور ${cur}.`);
   sounds.wrong();
@@ -2088,6 +2293,8 @@ function confettiBurst(x=window.innerWidth/2, y=120){
 
 /* ===== التحقق عند اكتمال الاختيار ===== */
 function tryResolveIfReady(){
+  if (state.gameEnded) return;
+  
   const turnP = currentPlayer();
   if (!turnP || turnP.eliminated) return;
 
@@ -2099,24 +2306,24 @@ function tryResolveIfReady(){
   const card = byId(state.cards, cardId);
   if (!mentioned || !card || card.locked) return;
 
+  // تتبع عدد مرات اختيار هذه البطاقة
+  if (!state.cardChoices[cardId]) {
+    state.cardChoices[cardId] = 0;
+  }
+  state.cardChoices[cardId]++;
+
   const correct = !!card.ownerId && card.ownerId === mentioned.id;
   const cardEl = document.querySelector(`#cardsGrid .card[data-id="${card.id}"]`);
 
   if (correct){
     card.revealed = true;
-    mentioned.score += 100;
     mentioned.correctGuesses++;
-    
-    if (mentioned.correctGuesses % 3 === 0) {
-      mentioned.level++;
-      log(`🎖️ ${mentioned.name} ارتفع للمستوى ${mentioned.level}!`);
-    }
     
     if (!mentioned.eliminated){
       mentioned.eliminated = true;
-      log(`✅ صحيح! "${card.text}" تخص ${mentioned.name}. تم إقصاؤه (+100 نقطة).`);
+      log(`✅ صحيح! "${card.text}" تخص ${mentioned.name}. تم إقصاؤه.`);
     } else {
-      log(`✅ صحيح! "${card.text}" تخص ${mentioned.name} (كان مقصى) (+100 نقطة).`);
+      log(`✅ صحيح! "${card.text}" تخص ${mentioned.name} (كان مقصى).`);
     }
     
     sounds.correct();
@@ -2127,20 +2334,24 @@ function tryResolveIfReady(){
     
   } else {
     mentioned.wrongGuesses++;
-    mentioned.score = Math.max(0, mentioned.score - 50);
     
     if (cardEl){
       cardEl.classList.add('wrong','flash-red');
       setTimeout(()=>cardEl.classList.remove('wrong','flash-red'), 400);
     }
-    log(`❌ خطأ! "${card.text}" لا تخص ${mentioned.name} (-50 نقطة).`);
+    log(`❌ خطأ! "${card.text}" لا تخص ${mentioned.name}.`);
     sounds.wrong();
     
     showMiddleCards(mentioned.name, card.text, false);
   }
 
-  renderPlayers(); renderCards();
-  setTimeout(() => nextTurnAuto(), 1500);
+  renderPlayers(); 
+  renderCards();
+  
+  // التحقق من حالة الفوز
+  if (!checkWinCondition()) {
+      setTimeout(() => nextTurnAuto(), 1500);
+  }
 }
 
 /* ===== تحريك البطاقات للمنتصف ===== */
@@ -2198,10 +2409,9 @@ els.addPlayerBtn.onclick=()=>{
         id:uid(),
         name,
         eliminated:false,
-        score:0,
-        level:1,
         correctGuesses:0,
-        wrongGuesses:0
+        wrongGuesses:0,
+        isWinner:false
     });
     els.playerName.value=''; renderPlayers(); renderTurnBanner();
     log(`👤 تمت إضافة اللاعب: ${name}`);
@@ -2229,7 +2439,6 @@ function showViewerModal() {
     els.viewerFakeName.value = '';
 }
 
-// فتح نافذة الشير
 function openShareModal() {
     els.shareUrl.textContent = generateViewerLink();
     els.shareModal.style.display = 'flex';
@@ -2239,7 +2448,6 @@ function closeShareModal() {
     els.shareModal.style.display = 'none';
 }
 
-// نسخ الرابط
 els.copyShareUrl.onclick = function() {
     navigator.clipboard.writeText(els.shareUrl.textContent)
         .then(() => {
@@ -2252,26 +2460,18 @@ els.copyShareUrl.onclick = function() {
         });
 };
 
-/* ===== إرسال طلب المشاهد (في صفحة المشاهد) ===== */
 function sendViewerRequest(platformName, fakeName) {
-    // إرسال الطلب إلى الصفحة الرئيسية
     sendViewerRequestToMain(platformName, fakeName);
-    
-    // عرض رسالة النجاح للمشاهد
     els.viewerForm.style.display = 'none';
     els.successMessage.style.display = 'block';
-    
-    // إغلاق النافذة تلقائياً بعد 3 ثواني
     setTimeout(() => {
         if (window.opener) {
             window.close();
         }
     }, 3000);
-    
     return true;
 }
 
-// إرسال طلب المشاهد
 els.submitViewer.onclick = function() {
     const platformName = els.viewerPlatformName.value.trim();
     const fakeName = els.viewerFakeName.value.trim();
@@ -2281,15 +2481,12 @@ els.submitViewer.onclick = function() {
         return;
     }
     
-    // إرسال الطلب
     sendViewerRequest(platformName, fakeName);
 };
 
-// أحداث الأزرار
 els.viewerLinkBtn.onclick = openShareModal;
 els.closeShare.onclick = closeShareModal;
 
-// دالات الشير للوسائط الاجتماعية
 function shareToTwitter() {
     const text = `🎭 انضم إلى لعبة الأسماء الوهمية! ${els.shareUrl.textContent}`;
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
@@ -2306,7 +2503,14 @@ function shareToWhatsApp() {
 }
 
 /* ===== بدء الصفحة ===== */
-function updateAll(){ renderPlayers(); renderCards(); updateSelects(); updateCounts(); renderTurnBanner(); updateStats(); }
+function updateAll(){ 
+    renderPlayers(); 
+    renderCards(); 
+    updateSelects(); 
+    updateCounts(); 
+    renderTurnBanner(); 
+    updateStats(); 
+}
 updateAll();
 
 // إذا كانت هذه صفحة المشاهد
@@ -2314,7 +2518,7 @@ if (new URLSearchParams(window.location.search).get('viewer') === '1') {
     showViewerModal();
 } else {
     // إذا كانت الصفحة الرئيسية، ابدأ بالتحقق من الطلبات
-    setInterval(processViewerRequests, 2000); // التحقق كل 2 ثانية
+    setInterval(processViewerRequests, 2000);
 }
 
 /* تعليمات سريعة */
@@ -2325,12 +2529,6 @@ els.helpOverlay.addEventListener('click',(e)=>{ if(e.target===els.helpOverlay) e
 /* لاصق آخر حدث — إخفاء */
 function setLastEvent(text){ els.lastEventBody.textContent = text; els.lastEvent.style.display = 'block'; }
 els.lastEventHide.onclick = ()=>{ els.lastEvent.style.display='none'; };
-
-/* لوحة GM */
-function setGmVisibility(show){ els.gm.classList.toggle('open', !!show); }
-els.gmToggle.onclick = ()=> setGmVisibility(!els.gm.classList.contains('open'));
-setGmVisibility(location.hash==='#gm');
-window.addEventListener('keydown',e=>{ if(e.altKey && (e.key.toLowerCase()==='g')) setGmVisibility(!els.gm.classList.contains('open')); });
 
 /* ===== نظام بطاقتين للمنتصف (يمين/يسار) ===== */
 let rightSelectedId = null;
@@ -2354,7 +2552,7 @@ document.addEventListener('click', function(e){
 
 function maybeAnimateMiddle(){
   if (!rightSelectedId || !leftSelectedId) return;
-  if (!state.started) return;
+  if (!state.started || state.gameEnded) return;
 
   const turnP = currentPlayer();
   if (!turnP || turnP.eliminated) return;
