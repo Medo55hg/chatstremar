@@ -291,12 +291,6 @@
       background: transparent;
     }
 
-    .btn.rest-break {
-      background: linear-gradient(135deg, var(--rest-break), #ff7b00);
-      border-color: rgba(255,149,0,0.3);
-      color: white;
-    }
-
     .chip {
       padding: .45rem .7rem;
       font-size: .86rem;
@@ -392,49 +386,6 @@
       gap: 10px;
       flex-wrap: wrap;
       margin-bottom: 20px;
-    }
-
-    /* ========= Live Stats ========= */
-    .live-stats {
-      display: flex;
-      gap: 16px;
-      margin: 24px 0;
-      flex-wrap: wrap;
-    }
-
-    .stat-card {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      padding: 16px;
-      border-radius: 16px;
-      background: var(--glass);
-      border: 1px solid var(--border);
-      min-width: 120px;
-      transition: transform 0.2s ease;
-    }
-
-    .stat-card:hover {
-      transform: translateY(-4px);
-    }
-
-    .stat-card i {
-      font-size: 1.5rem;
-      color: var(--accent);
-    }
-
-    .stat-number {
-      font-size: 1.8rem;
-      font-weight: 800;
-      color: var(--text);
-      line-height: 1;
-    }
-
-    .stat-label {
-      font-size: 0.85rem;
-      color: var(--muted);
-      font-weight: 600;
     }
 
     /* ========= Breadcrumbs ========= */
@@ -854,14 +805,13 @@
     .img-1::before { background-image: url('https://i.postimg.cc/sDmnYMss/1.png'); }
     .img-2::before { background-image: url('https://i.postimg.cc/VNQD1nRY/5.png'); }
     .img-4::before { background-image: url('https://i.postimg.cc/2jwdJgMY/4.png'); }
-    .img-5::before { background-image: url('https://i.postimg.cc/FRXg5vh4/3.png'); }
     .img-huroof::before { background-image: url('https://i.postimg.cc/3J81x3mm/2.png'); }
     .img-squares::before { background-image: url('https://i.postimg.cc/XYGZ0j3s/St.png'); }
     .img-tahadi::before { background-image: url('https://i.postimg.cc/sx7C12Yj/thdy-almfrdat.png'); }
 
     /* ========= Rest Break Section ========= */
     .rest-break-section {
-      margin: 60px 0;
+      margin: 40px 0;
       padding: 0 clamp(16px, 4vw, 48px);
     }
 
@@ -873,12 +823,7 @@
       position: relative;
       overflow: hidden;
       box-shadow: 0 20px 60px rgba(255,149,0,0.15);
-      animation: glow 3s infinite alternate;
-    }
-
-    @keyframes glow {
-      0% { box-shadow: 0 20px 60px rgba(255,149,0,0.15); }
-      100% { box-shadow: 0 20px 80px rgba(255,149,0,0.25); }
+      text-align: center;
     }
 
     .rest-break-card::before {
@@ -895,101 +840,28 @@
       z-index: 1;
     }
 
-    .rest-break-info h2 {
-      font-size: 2rem;
+    .rest-break-content h2 {
+      font-size: 2.2rem;
       color: var(--rest-break);
-      margin-bottom: 16px;
+      margin-bottom: 20px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      justify-content: center;
+      gap: 15px;
     }
 
-    .rest-break-info p {
+    .rest-break-content p {
       color: var(--muted);
       line-height: 1.8;
-      margin-bottom: 24px;
-      font-size: 1.1rem;
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin: 0 auto;
     }
 
-    .rest-break-features {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 16px;
-      margin: 32px 0;
-    }
-
-    .feature {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 16px;
-      background: rgba(255,149,0,0.1);
-      border-radius: 16px;
-      border: 1px solid rgba(255,149,0,0.2);
-      transition: transform 0.3s ease;
-    }
-
-    .feature:hover {
-      transform: translateY(-4px);
-      background: rgba(255,149,0,0.15);
-    }
-
-    .feature i {
+    .rest-break-icon {
+      font-size: 3rem;
+      margin-bottom: 20px;
       color: var(--rest-break);
-      font-size: 1.5rem;
-      width: 50px;
-      height: 50px;
-      display: grid;
-      place-items: center;
-      background: rgba(255,149,0,0.2);
-      border-radius: 12px;
-    }
-
-    .feature-content h3 {
-      margin: 0 0 6px;
-      color: var(--text);
-      font-size: 1.1rem;
-    }
-
-    .feature-content p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 0.9rem;
-      line-height: 1.5;
-    }
-
-    .countdown-timer {
-      display: flex;
-      gap: 16px;
-      margin: 32px 0;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .countdown-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background: rgba(255,149,0,0.2);
-      padding: 20px;
-      border-radius: 16px;
-      min-width: 90px;
-      border: 2px solid rgba(255,149,0,0.3);
-    }
-
-    .countdown-number {
-      font-size: 2.5rem;
-      font-weight: 800;
-      color: var(--rest-break);
-      line-height: 1;
-      text-shadow: 0 0 20px rgba(255,149,0,0.3);
-    }
-
-    .countdown-label {
-      font-size: 0.9rem;
-      color: var(--muted);
-      margin-top: 8px;
-      font-weight: 600;
     }
 
     /* ========= How It Works ========= */
@@ -1068,32 +940,6 @@
       cursor: pointer;
     }
 
-    /* بطاقة مغلقة للتطوير */
-    .creator-card.closed-for-maintenance {
-      opacity: 0.7;
-      filter: grayscale(0.3);
-      cursor: not-allowed;
-    }
-
-    .creator-card.closed-for-maintenance::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 1;
-      border-radius: 18px;
-    }
-
-    .creator-card.closed-for-maintenance .creator-avatar {
-      filter: grayscale(0.5);
-    }
-
-    .creator-card.closed-for-maintenance:hover {
-      transform: none;
-      box-shadow: 0 14px 36px rgba(0,0,0,.35);
-      border-color: var(--border);
-    }
-
     .creator-card::before {
       content: "";
       position: absolute;
@@ -1106,7 +952,7 @@
       opacity: .9;
     }
 
-    .creator-card:hover:not(.closed-for-maintenance) {
+    .creator-card:hover {
       transform: translateY(-6px);
       box-shadow: 0 22px 60px rgba(0,0,0,.55);
       border-color: rgba(255,255,255,.18);
@@ -1157,7 +1003,7 @@
       transition: opacity .25s ease, transform .25s ease;
     }
 
-    .creator-card:hover:not(.closed-for-maintenance) .creator-avatar-wrap::before {
+    .creator-card:hover .creator-avatar-wrap::before {
       opacity: 1;
       transform: rotate(4deg);
     }
@@ -1214,21 +1060,6 @@
       transform: translateY(-2px);
       box-shadow: 0 16px 36px rgba(145,70,255,.36);
       filter: saturate(1.06);
-    }
-
-    .creator-soon {
-      position: absolute;
-      top: 10px;
-      inset-inline-end: 10px;
-      z-index: 2;
-      background: linear-gradient(135deg, var(--accent), #6b2dff);
-      color: #fff;
-      font-size: .82rem;
-      font-weight: 900;
-      padding: 5px 11px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.12);
-      box-shadow: 0 10px 22px rgba(145,70,255,.28);
     }
 
     .status-dot {
@@ -1546,21 +1377,12 @@
         grid-template-columns: 1fr;
       }
       
-      .rest-break-features {
-        grid-template-columns: 1fr;
+      .rest-break-content h2 {
+        font-size: 1.8rem;
       }
       
-      .countdown-item {
-        min-width: 70px;
-        padding: 16px;
-      }
-      
-      .countdown-number {
-        font-size: 2rem;
-      }
-      
-      .live-stats {
-        justify-content: center;
+      .rest-break-content p {
+        font-size: 1rem;
       }
       
       footer {
@@ -1587,17 +1409,14 @@
         justify-content: center;
       }
       
-      .countdown-timer {
+      .rest-break-content h2 {
+        font-size: 1.5rem;
+        flex-direction: column;
         gap: 10px;
       }
       
-      .countdown-item {
-        min-width: 60px;
-        padding: 12px;
-      }
-      
-      .countdown-number {
-        font-size: 1.5rem;
+      .rest-break-icon {
+        font-size: 2.5rem;
       }
     }
 
@@ -1607,9 +1426,7 @@
       .start-btn:hover,
       .game-card:hover,
       .creator-card:hover,
-      .step:hover,
-      .stat-card:hover,
-      .feature:hover {
+      .step:hover {
         transform: none;
       }
       
@@ -1695,28 +1512,11 @@
       <p>منصة الألعاب التفاعلية المصممة خصيصاً للستريمرز — اربط الشات وخَلِّ المتابعين يلعبون معك مباشرة!</p>
       <div class="divider"></div>
       
-      <!-- إحصاءات حية - تم تقليلها -->
-      <div class="live-stats">
-        <div class="stat-card">
-          <i class="fa-solid fa-users"></i>
-          <span class="stat-number" id="activeUsers">87</span>
-          <span class="stat-label">مستخدم نشط</span>
-        </div>
-        <div class="stat-card">
-          <i class="fa-solid fa-gamepad"></i>
-          <span class="stat-number">6</span>
-          <span class="stat-label">لعبة تفاعلية</span>
-        </div>
-        <div class="stat-card">
-          <i class="fa-solid fa-rocket"></i>
-          <span class="stat-number" id="gamesPlayed">4,231</span>
-          <span class="stat-label">لعبة تم لعبها</span>
-        </div>
-      </div>
-      
       <div class="hero-actions">
         <a href="#games" class="btn primary"><i class="fa-solid fa-rocket"></i> اكتشف الألعاب</a>
-        <a href="#rest-break" class="btn rest-break"><i class="fa-solid fa-mug-hot"></i> الاستراحة</a>
+        <a href="#rest-break" class="btn" style="background: linear-gradient(135deg, var(--rest-break), #ff7b00); border-color: rgba(255,149,0,0.3); color: white;">
+          <i class="fa-solid fa-mug-hot"></i> العاب الاستراحه
+        </a>
         <a href="#streamer" class="btn"><i class="fa-solid fa-star"></i> فئة ستريمر خاصة</a>
         <a href="#how-it-works" class="btn outline"><i class="fa-solid fa-play-circle"></i> كيف تعمل</a>
       </div>
@@ -1729,7 +1529,7 @@
       <p style="margin:0">يتم حالياً العمل على: تسجيل الدخول، وخدمة <b>ستريمر بلس</b>.</p>
       <div style="margin-top:16px; padding:12px; background:rgba(255,51,51,0.1); border-radius:12px; border:1px solid rgba(255,51,51,0.3);">
         <p style="margin:0; color:var(--primary); font-weight:600;">
-          <i class="fa-solid fa-tools"></i> تنويه: لعبة "يلا نتعاون" مغلقة مؤقتاً للتطوير
+          <i class="fa-solid fa-tools"></i> تنويه: جميع الألعاب متاحة الآن!
         </p>
       </div>
     </div>
@@ -1739,61 +1539,11 @@
   <section class="rest-break-section" id="rest-break">
     <div class="rest-break-card animate-in">
       <div class="rest-break-content">
-        <div class="rest-break-info">
-          <h2><i class="fa-solid fa-mug-hot"></i> الاستراحة</h2>
-          <p>مساحة جديدة مخصصة للجلسات الجماعية فقط! استمتع بألعاب هادئة مع أصدقائك في جو ممتع بعيداً عن ضغوط البث المباشر.</p>
-          
-          <div class="rest-break-features">
-            <div class="feature">
-              <i class="fa-solid fa-users"></i>
-              <div class="feature-content">
-                <h3>مخصص للجلسات الجماعية</h3>
-                <p>مساحة مخصصة فقط للجلسات الجماعية مع الأصدقاء</p>
-              </div>
-            </div>
-            <div class="feature">
-              <i class="fa-solid fa-wifi-slash"></i>
-              <div class="feature-content">
-                <h3>غير مرتبط بالبث</h3>
-                <p>استمتع بدون ضغوط البث المباشر أو التفاعل مع المشاهدين</p>
-              </div>
-            </div>
-            <div class="feature">
-              <i class="fa-solid fa-couch"></i>
-              <div class="feature-content">
-                <h3>جو هادئ ومريح</h3>
-                <p>ألعاب خفيفة وممتعة في جو مريح للترفيه عن النفس</p>
-              </div>
-            </div>
-            <div class="feature">
-              <i class="fa-solid fa-gamepad"></i>
-              <div class="feature-content">
-                <h3>ألعاب اجتماعية</h3>
-                <p>ألعاب مصممة خصيصاً للتفاعل الاجتماعي الجماعي</p>
-              </div>
-            </div>
-          </div>
-          
-          <!-- مؤشر العد التنازلي -->
-          <div class="countdown-timer">
-            <div class="countdown-item">
-              <span class="countdown-number" id="days">14</span>
-              <span class="countdown-label">يوم</span>
-            </div>
-            <div class="countdown-item">
-              <span class="countdown-number" id="hours">06</span>
-              <span class="countdown-label">ساعة</span>
-            </div>
-            <div class="countdown-item">
-              <span class="countdown-number" id="minutes">45</span>
-              <span class="countdown-label">دقيقة</span>
-            </div>
-            <div class="countdown-item">
-              <span class="countdown-number" id="seconds">22</span>
-              <span class="countdown-label">ثانية</span>
-            </div>
-          </div>
+        <div class="rest-break-icon">
+          <i class="fa-solid fa-mug-hot"></i>
         </div>
+        <h2><i class="fa-solid fa-mug-hot"></i> العاب الاستراحه قريبا</h2>
+        <p>مساحة جديدة مخصصة للجلسات الجماعية فقط! استمتع بألعاب هادئة مع أصدقائك في جو ممتع بعيداً عن ضغوط البث المباشر.</p>
       </div>
     </div>
   </section>
@@ -1849,7 +1599,7 @@
     </div>
   </section>
 
-  <!-- الستريمر (محسّن: صالح و نايف) -->
+  <!-- الستريمر (Saleeh و naif_z4) -->
   <section class="section" id="streamer-access">
     <h2>الستريمر</h2>
     <div class="streamer-access-grid">
@@ -1952,7 +1702,6 @@
       favorites: JSON.parse(localStorage.getItem('streamerTop_favorites')) || [],
       gamesPlayed: 4231,
       activeUsers: 87,
-      restBreakSubscribed: JSON.parse(localStorage.getItem('streamerTop_restBreakSubscribed')) || false,
       
       toggleFavorite(gameId) {
         const index = this.favorites.indexOf(gameId);
@@ -1970,14 +1719,6 @@
       
       incrementGamesPlayed() {
         this.gamesPlayed++;
-        document.getElementById('gamesPlayed').textContent = this.gamesPlayed.toLocaleString();
-      },
-      
-      subscribeToRestBreak(email) {
-        this.restBreakSubscribed = true;
-        localStorage.setItem('streamerTop_restBreakSubscribed', JSON.stringify(true));
-        localStorage.setItem('streamerTop_restBreakEmail', email);
-        return true;
       },
       
       updateUI() {
@@ -2063,16 +1804,6 @@
         available: true
       },
       {
-        id: 'tarkeeb',
-        title: 'يلا نتعاون',
-        description: 'حلّوا التحديات مع بعض—كل مساهمة من الشات تقربكم من الفوز!',
-        image: 'img-5',
-        link: 'tarkeeb.html',
-        badges: ['twitch', 'kick'],
-        available: false,
-        maintenance: true
-      },
-      {
         id: 'huroof-game',
         title: 'لعبة الحروف',
         description: 'انطلق بحرف محدد وكتب كلمات صحيحة—السريع يسبق!',
@@ -2101,16 +1832,16 @@
       }
     ];
 
-    // ========= Streamer Data (مع لعبة Saleeh مغلقة) =========
+    // ========= Streamer Data (Saleeh متاحة للجميع) =========
     const streamersData = [
       {
         id: 'saleeh',
         name: 'Saleeh',
-        tag: '@saleeh • مغلقة للتطوير',
+        tag: '@saleeh • متاح للجميع',
         avatar: 'https://i.postimg.cc/qqpqNrBX/74508bb339c7d4b80fdc0dc3d41c8898.webp',
-        online: false, // مغلقة - النقطة حمراء
-        link: '#',
-        soon: true
+        online: true,
+        link: 'saleeh.html',
+        soon: false
       },
       {
         id: 'naif_z4',
@@ -2127,23 +1858,6 @@
     document.addEventListener('DOMContentLoaded', () => {
       // Set current year
       document.getElementById('year').textContent = new Date().getFullYear();
-      
-      // Initialize stats with reduced numbers
-      document.getElementById('gamesPlayed').textContent = AppState.gamesPlayed.toLocaleString();
-      document.getElementById('activeUsers').textContent = AppState.activeUsers;
-      
-      // Initialize countdown timer for Rest Break
-      initializeCountdown();
-      
-      // Simulate slight user count changes
-      setInterval(() => {
-        const activeUsers = document.getElementById('activeUsers');
-        const current = parseInt(activeUsers.textContent);
-        const change = Math.floor(Math.random() * 5) - 2;
-        const newValue = Math.max(80, Math.min(95, current + change));
-        activeUsers.textContent = newValue;
-        AppState.activeUsers = newValue;
-      }, 10000);
       
       // Load games dynamically
       loadGames();
@@ -2164,42 +1878,6 @@
       initPerformance();
     });
 
-    // ========= Initialize Countdown Timer =========
-    function initializeCountdown() {
-      // Set launch date to 14 days from now
-      const launchDate = new Date();
-      launchDate.setDate(launchDate.getDate() + 14);
-      launchDate.setHours(18, 0, 0, 0); // 6:00 PM
-      
-      function updateCountdown() {
-        const now = new Date();
-        const diff = launchDate - now;
-        
-        if (diff <= 0) {
-          // Launch time reached
-          document.getElementById('days').textContent = '00';
-          document.getElementById('hours').textContent = '00';
-          document.getElementById('minutes').textContent = '00';
-          document.getElementById('seconds').textContent = '00';
-          return;
-        }
-        
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-        
-        document.getElementById('days').textContent = days.toString().padStart(2, '0');
-        document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
-        document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
-        document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
-      }
-      
-      // Update every second
-      updateCountdown();
-      setInterval(updateCountdown, 1000);
-    }
-
     // ========= Load Games =========
     function loadGames() {
       const gamesGrid = document.getElementById('gamesGrid');
@@ -2210,9 +1888,6 @@
       gamesData.forEach(game => {
         const gameCard = document.createElement('article');
         gameCard.className = `game-card ${game.image} animate-in`;
-        if (!game.available) {
-          gameCard.classList.add('disabled');
-        }
         gameCard.dataset.id = game.id;
         gameCard.setAttribute('role', 'article');
         gameCard.setAttribute('aria-labelledby', `game-${game.id}-title`);
@@ -2221,43 +1896,26 @@
         const isDisabled = !game.available;
         
         let badgesHTML = '';
-        if (isDisabled) {
-          badgesHTML = `
-            <span class="badge maintenance-badge">
-              <i class="fa-solid fa-tools"></i>
-              مغلقة مؤقتاً
-            </span>
-          `;
-        } else {
-          badgesHTML = game.badges.map(badge => `
-            <span class="badge ${badge}">
-              <i class="fa-brands fa-${badge === 'twitch' ? 'twitch' : 'kick'}"></i>
-              ${badge === 'twitch' ? 'تويتش' : 'كيك'}
-            </span>
-          `).join('');
-        }
+        badgesHTML = game.badges.map(badge => `
+          <span class="badge ${badge}">
+            <i class="fa-brands fa-${badge === 'twitch' ? 'twitch' : 'kick'}"></i>
+            ${badge === 'twitch' ? 'تويتش' : 'كيك'}
+          </span>
+        `).join('');
         
         gameCard.innerHTML = `
           <div class="badges">
             ${badgesHTML}
           </div>
-          ${!isDisabled ? `
-            <button class="favorite-btn" aria-label="${isFavorite ? 'إزالة من المفضلة' : 'إضافة إلى المفضلة'}" data-id="${game.id}">
-              <i class="fa-${isFavorite ? 'solid' : 'regular'} fa-heart"></i>
-            </button>
-          ` : ''}
+          <button class="favorite-btn" aria-label="${isFavorite ? 'إزالة من المفضلة' : 'إضافة إلى المفضلة'}" data-id="${game.id}">
+            <i class="fa-${isFavorite ? 'solid' : 'regular'} fa-heart"></i>
+          </button>
           <div class="game-body">
-            ${isDisabled ? `
-              <div class="closed-badge">
-                <i class="fa-solid fa-tools"></i>
-                مغلقة مؤقتاً للتطوير
-              </div>
-            ` : ''}
             <div class="game-info">
               <p>${game.description}</p>
             </div>
-            <button class="start-btn" data-game-id="${game.id}" ${isDisabled ? 'disabled' : ''}>
-              ${isDisabled ? 'مغلقة مؤقتاً' : 'ابدأ اللعبة'}
+            <button class="start-btn" data-game-id="${game.id}">
+              ابدأ اللعبة
             </button>
           </div>
           <h3 id="game-${game.id}-title" class="visually-hidden">${game.title}</h3>
@@ -2265,72 +1923,48 @@
         
         gamesGrid.appendChild(gameCard);
         
-        // Add click handlers only if game is available
-        if (game.available) {
-          const favBtn = gameCard.querySelector('.favorite-btn');
-          const startBtn = gameCard.querySelector('.start-btn');
+        // Add click handlers
+        const favBtn = gameCard.querySelector('.favorite-btn');
+        const startBtn = gameCard.querySelector('.start-btn');
+        
+        favBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const wasAdded = AppState.toggleFavorite(game.id);
+          favBtn.setAttribute('aria-label', wasAdded ? 'إزالة من المفضلة' : 'إضافة إلى المفضلة');
           
-          favBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const wasAdded = AppState.toggleFavorite(game.id);
-            favBtn.setAttribute('aria-label', wasAdded ? 'إزالة من المفضلة' : 'إضافة إلى المفضلة');
-            
-            favBtn.style.animation = 'none';
-            setTimeout(() => {
-              favBtn.style.animation = 'heartBeat 0.5s ease';
-            }, 10);
-          });
+          favBtn.style.animation = 'none';
+          setTimeout(() => {
+            favBtn.style.animation = 'heartBeat 0.5s ease';
+          }, 10);
+        });
+        
+        startBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
           
-          startBtn.addEventListener('click', (e) => {
+          AppState.incrementGamesPlayed();
+          
+          gameCard.style.transform = 'translateY(-6px) scale(1.02)';
+          gameCard.style.transition = 'transform .35s ease';
+          
+          setTimeout(() => {
+            window.location.href = game.link;
+          }, 350);
+        });
+        
+        gameCard.addEventListener('click', (e) => {
+          if (!e.target.closest('.favorite-btn') && !e.target.closest('.start-btn')) {
+            startBtn.click();
+          }
+        });
+        
+        gameCard.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
-            e.stopPropagation();
-            
-            AppState.incrementGamesPlayed();
-            
-            gameCard.style.transform = 'translateY(-6px) scale(1.02)';
-            gameCard.style.transition = 'transform .35s ease';
-            
-            if (window.gtag) {
-              gtag('event', 'game_start', {
-                'game_name': game.title,
-                'event_category': 'engagement'
-              });
-            }
-            
-            setTimeout(() => {
-              window.location.href = game.link;
-            }, 350);
-          });
-          
-          gameCard.addEventListener('click', (e) => {
-            if (!e.target.closest('.favorite-btn') && !e.target.closest('.start-btn')) {
-              startBtn.click();
-            }
-          });
-          
-          gameCard.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              startBtn.click();
-            }
-          });
-        } else {
-          gameCard.addEventListener('click', () => {
-            showMaintenanceMessage(game.title);
-          });
-          
-          gameCard.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              showMaintenanceMessage(game.title);
-            }
-          });
-        }
+            startBtn.click();
+          }
+        });
       });
-    }
-
-    function showMaintenanceMessage(gameTitle) {
-      alert(`🎮 ${gameTitle}\n\nهذه اللعبة مغلقة مؤقتاً للتطوير والتحسينات.\n\nنعمل على تحسين تجربة اللعبة لإعادتها بأفضل صورة قريباً!`);
     }
 
     // ========= Load Streamers =========
@@ -2343,15 +1977,8 @@
         card.className = 'creator-card animate-in';
         card.id = `${streamer.id}Card`;
         
-        // إضافة كلاس خاص إذا كانت اللعبة مغلقة
-        if (streamer.id === 'saleeh') {
-          card.classList.add('closed-for-maintenance');
-          card.style.opacity = '0.7';
-          card.style.filter = 'grayscale(0.3)';
-        }
-        
         card.innerHTML = `
-          ${streamer.soon ? '<span class="creator-soon">مغلقة للتطوير</span>' : ''}
+          ${streamer.soon ? '<span class="creator-soon">قريباً</span>' : ''}
           <div class="creator-overlay">
             <div class="creator-avatar-wrap">
               <img class="creator-avatar" 
@@ -2366,34 +1993,20 @@
             <div class="creator-name">${streamer.name}</div>
             <div class="creator-tag">${streamer.tag}</div>
             <div class="creator-actions">
-              <button type="button" class="creator-btn" disabled style="cursor:not-allowed; opacity:.8;">
-                <i class="fa-solid fa-lock"></i> مغلقة حالياً
-              </button>
+              ${streamer.soon ? 
+                `<button type="button" class="creator-btn" disabled style="cursor:not-allowed; opacity:.8;">
+                  <i class="fa-solid fa-clock"></i> قريباً
+                </button>` : 
+                `<a href="${streamer.link}" class="creator-btn">
+                  <i class="fa-solid fa-play"></i> ابدأ اللعبة
+                </a>`
+              }
             </div>
           </div>
         `;
         
         streamersGrid.appendChild(card);
-        
-        // إضافة حدث النقر لعرض رسالة الإغلاق
-        card.addEventListener('click', () => {
-          if (streamer.id === 'saleeh') {
-            showStreamerClosedMessage();
-          }
-        });
       });
-    }
-
-    // ========= Streamer Functions =========
-    function openStreamer(streamerId) {
-      if (streamerId === 'saleeh') {
-        showStreamerClosedMessage();
-        return false;
-      }
-    }
-
-    function showStreamerClosedMessage() {
-      alert('🎮 لعبة Saleeh مغلقة حاليًا للتطوير\n\nنعمل على تحسين اللعبة وتطويرها لتقديم تجربة أفضل قريباً!\n\nشكراً لتفهمك. 🔧');
     }
 
     // ========= Navigation =========
@@ -2448,7 +2061,6 @@
         if (!supportDialog) return;
         supportDialog.classList.add('is-open');
         supportDialog.setAttribute('aria-hidden', 'false');
-        trapFocus(supportDialog);
         setTimeout(() => supportClose?.focus(), 0);
       }
       
@@ -2472,7 +2084,6 @@
         if (!aboutDialog) return;
         aboutDialog.classList.add('is-open');
         aboutDialog.setAttribute('aria-hidden', 'false');
-        trapFocus(aboutDialog);
         setTimeout(() => aboutClose?.focus(), 0);
       }
       
@@ -2538,13 +2149,6 @@
           
           AppState.currentFilter = btn.dataset.filter;
           AppState.filterGames();
-          
-          if (window.gtag) {
-            gtag('event', 'filter_games', {
-              'filter_type': AppState.currentFilter,
-              'event_category': 'engagement'
-            });
-          }
         });
       });
     }
@@ -2568,19 +2172,12 @@
         const isLight = document.documentElement.classList.toggle('light-mode');
         themeIcon.className = isLight ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
         localStorage.setItem('streamerTop_theme', isLight ? 'light' : 'dark');
-        
-        if (window.gtag) {
-          gtag('event', 'theme_toggle', {
-            'theme': isLight ? 'light' : 'dark',
-            'event_category': 'preferences'
-          });
-        }
       });
     }
 
     // ========= Accessibility =========
     function initAccessibility() {
-      // Focus trap for modals
+      // Focus management for modals
       function trapFocus(modalEl) {
         const focusable = modalEl.querySelectorAll('a, button, input, textarea, select, [tabindex]:not([tabindex="-1"])');
         if (!focusable.length) return null;
@@ -2627,23 +2224,7 @@
 
     // ========= Performance Optimizations =========
     function initPerformance() {
-      const imageObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const img = entry.target;
-            if (img.dataset.src) {
-              img.src = img.dataset.src;
-              img.classList.add('loaded');
-            }
-            imageObserver.unobserve(img);
-          }
-        });
-      }, { rootMargin: '50px' });
-      
-      document.querySelectorAll('img[data-src]').forEach(img => {
-        imageObserver.observe(img);
-      });
-      
+      // Debounce function for search
       function debounce(func, wait) {
         let timeout;
         return function executedFunction(...args) {
