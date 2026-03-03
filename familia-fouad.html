@@ -990,6 +990,9 @@
       </div>
 
       <div class="top-actions">
+        <!-- ✅ زر لوحة المقدم (مضاف) -->
+        <button class="btn ghost" id="btnPresenter"><i class="fas fa-user-shield"></i> لوحة المقدم</button>
+
         <button class="btn ghost" id="btnHelp"><i class="fas fa-question-circle"></i> طريقة اللعب</button>
         <button class="btn" id="btnBuzz"><i class="fas fa-bell"></i> جرس</button>
         <button class="btn" id="btnFullscreen"><i class="fas fa-expand"></i> ملء الشاشة</button>
@@ -1136,7 +1139,7 @@
         </div>
 
         <div class="hint">
-          <i class="fas fa-info-circle" style="margin-left: 5px;"></i> <b>ملاحظة:</b> نقاط الجولة = مجموع الإجابات المكشوفة × المضاعف
+          <i class="fas fa-info-circle" style="margin-left: 5px;"></i> <b>ملاحظة:</b> نقاط الجولة = مجموع نقاط الإجابات المكشوفة × المضاعف
         </div>
       </div>
     </div>
@@ -1176,6 +1179,66 @@
       }
     }
     createStars();
+
+    // =========================
+    // ✅ Presenter Panel Sync (مضاف)
+    // =========================
+    const PRESENTER_CHANNEL_NAME = "familia-fouad-presenter-v1";
+    const PRESENTER_STORAGE_KEY  = "FF_PRESENTER_STATE_V1";
+    let presenterBC = null;
+    let presenterTabRef = null;
+
+    try {
+      presenterBC = new BroadcastChannel(PRESENTER_CHANNEL_NAME);
+    } catch (e) {
+      presenterBC = null;
+    }
+
+    function getPresenterPayload() {
+      const current = state.current ? {
+        category: state.current.category,
+        q: state.current.q,
+        answers: (state.current.answers || []).map(x => ({
+          a: x.a,
+          p: x.p
+        }))
+      } : null;
+
+      return {
+        ts: Date.now(),
+        round: state.round,
+        multiplier: state.multiplier,
+        activeTeam: state.activeTeam,
+        scores: { ...state.scores },
+        strikes: { ...state.strikes },
+        current,
+        revealed: (state.revealed || []).map(Boolean)
+      };
+    }
+
+    function pushToPresenter(reason = "update") {
+      const payload = getPresenterPayload();
+      payload.reason = reason;
+
+      try {
+        localStorage.setItem(PRESENTER_STORAGE_KEY, JSON.stringify(payload));
+      } catch (e) {}
+
+      if (presenterBC) {
+        try { presenterBC.postMessage(payload); } catch (e) {}
+      }
+    }
+
+    function openPresenterTab() {
+      const url = "familia-fouad-presenter.html";
+      presenterTabRef = window.open(url, "_blank", "noopener,noreferrer");
+      if (!presenterTabRef) {
+        toast("المتصفح منع فتح التبويب — فعّل Popups");
+        return;
+      }
+      toast("تم فتح لوحة المقدم 🛡️");
+      setTimeout(() => pushToPresenter("open_presenter"), 150);
+    }
 
     // =========================
     // بنك الأسئلة (نفس الكود الأصلي)
@@ -1572,6 +1635,7 @@
     function renderScores(){
       el.scoreBlue.textContent = state.scores.blue;
       el.scoreRed.textContent = state.scores.red;
+      pushToPresenter("scores");
     }
 
     function renderStrikes(){
@@ -1579,6 +1643,7 @@
       const redSlots  = [...el.strikesRed.querySelectorAll(".strike")];
       blueSlots.forEach((s,i)=> s.classList.toggle("on", i < state.strikes.blue));
       redSlots.forEach((s,i)=> s.classList.toggle("on", i < state.strikes.red));
+      pushToPresenter("strikes");
     }
 
     function setActiveTeam(team){
@@ -1593,6 +1658,7 @@
       el.sideRed.classList.toggle("active-team", team==="red");
 
       toast(team==="blue" ? "الدور على الأزرق 🔵" : "الدور على الأحمر 🔴");
+      pushToPresenter("active_team");
     }
 
     // Players functions
@@ -1724,6 +1790,7 @@
 
       el.roundPoints.textContent = currentRoundPoints();
       updateMeta();
+      pushToPresenter("reveals");
     }
 
     function toggleReveal(i){
@@ -1758,6 +1825,7 @@
       playSound(SFX.ding);
       syncReveals();
       toast("👁️ تم كشف كل الإجابات");
+      pushToPresenter("reveal_all");
     }
 
     function resetRound(keepQuestion=false){
@@ -1774,6 +1842,7 @@
       updateMeta();
       el.roundPoints.textContent = currentRoundPoints();
       toast("تم تصفير الجولة 🧹");
+      pushToPresenter("reset_round");
     }
 
     function nextRound(){
@@ -1786,6 +1855,7 @@
       updateMeta();
       toast(`جولة ${state.round} — المضاعف ×${state.multiplier}`);
       playSound(SFX.ding);
+      pushToPresenter("round");
     }
 
     function pickNewQuestion(){
@@ -1808,6 +1878,8 @@
       updateMeta();
       toast("✨ سؤال جديد جاهز!");
       playSound(SFX.ding);
+
+      pushToPresenter("new_question");
     }
 
     function showBigScore(points){
@@ -1829,6 +1901,7 @@
       toast(`🏆 تم إضافة ${pts} نقطة لـ ${team==="blue"?"الأزرق":"الأحمر"}`);
       playSound(SFX.ding);
       confettiBurst();
+      pushToPresenter("add_points");
     }
 
     function addStrike(team){
@@ -1841,12 +1914,14 @@
         toast("⛔ 3 أخطاء! غالبًا الدور للفريق الثاني");
         playSound(SFX.buzz);
       }
+      pushToPresenter("strike");
     }
 
     function clearStrikes(team){
       state.strikes[team] = 0;
       renderStrikes();
       toast(`🧽 تم مسح أخطاء ${team==="blue"?"الأزرق":"الأحمر"}`);
+      pushToPresenter("clear_strikes");
     }
 
     // Modal functions
@@ -2047,6 +2122,7 @@ N سؤال جديد — A كشف/إضافة — R كشف الكل — B الدو
 
       pickNewQuestion();
       toast("تم بدء جولة جديدة ✅");
+      pushToPresenter("new_game");
     }
 
     // Confetti
@@ -2169,6 +2245,9 @@ N سؤال جديد — A كشف/إضافة — R كشف الكل — B الدو
     document.getElementById("btnClearBluePlayers").addEventListener("click", ()=> clearPlayers("blue"));
     document.getElementById("btnClearRedPlayers").addEventListener("click", ()=> clearPlayers("red"));
 
+    // ✅ زر لوحة المقدم (مضاف)
+    document.getElementById("btnPresenter").addEventListener("click", openPresenterTab);
+
     // Keyboard shortcuts
     window.addEventListener("keydown", (e)=>{
       if(el.overlay.classList.contains("show")) return;
@@ -2187,6 +2266,9 @@ N سؤال جديد — A كشف/إضافة — R كشف الكل — B الدو
     renderPlayers();
     setActiveTeam("blue");
     updateMeta();
+
+    // ✅ إرسال أول حالة للوحة المقدم (مضاف)
+    pushToPresenter("init");
   </script>
 </body>
 </html>
