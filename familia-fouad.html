@@ -1,0 +1,2192 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+  <title>🎤 فاميليا فؤاد | الإصدار المتطور</title>
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-primary: #0b0e14;
+      --bg-secondary: #151e2a;
+      --bg-card: #1e293b;
+      --bg-card-hover: #2a3a4f;
+      --text-primary: #ffffff;
+      --text-secondary: #b9c7dc;
+      --text-muted: #8a9bb5;
+      --blue-team: #3b82f6;
+      --blue-glow: rgba(59, 130, 246, 0.3);
+      --red-team: #ef4444;
+      --red-glow: rgba(239, 68, 68, 0.3);
+      --gold: #fbbf24;
+      --gold-glow: rgba(251, 191, 36, 0.4);
+      --border-glow: rgba(255, 255, 255, 0.05);
+      --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.75);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+      --radius-xl: 24px;
+      --radius-lg: 20px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Tajawal', 'Cairo', system-ui, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      position: relative;
+      background-image: 
+        radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.08) 0%, transparent 30%),
+        radial-gradient(circle at 80% 70%, rgba(239, 68, 68, 0.08) 0%, transparent 30%),
+        radial-gradient(circle at 40% 80%, rgba(251, 191, 36, 0.05) 0%, transparent 40%);
+    }
+
+    /* أنيميشن الخلفية المتحركة */
+    .animated-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .bg-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.4;
+      animation: float 20s infinite alternate ease-in-out;
+    }
+
+    .bg-orb-1 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle at 30% 30%, #3b82f6, #1e3a8a);
+      top: -100px;
+      left: -100px;
+      animation: float 25s infinite alternate;
+    }
+
+    .bg-orb-2 {
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle at 70% 70%, #ef4444, #7f1d1d);
+      bottom: -200px;
+      right: -100px;
+      animation: float 30s infinite alternate-reverse;
+    }
+
+    .bg-orb-3 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle at 50% 50%, #fbbf24, #b45309);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.2;
+      animation: pulse 10s infinite ease-in-out;
+    }
+
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(50px, 50px) scale(1.1); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.2; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 0.3; transform: translate(-50%, -50%) scale(1.2); }
+    }
+
+    /* النجوم المتلألئة */
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.3;
+      animation: twinkle 3s infinite ease-in-out;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.5); }
+    }
+
+    /* الحاوية الرئيسية */
+    .wrap {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      min-height: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* الشريط العلوي - تصميم عصري */
+    .topbar {
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .topbar:hover {
+      border-color: rgba(255, 255, 255, 0.12);
+      box-shadow: var(--shadow-xl);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #fbbf24, #3b82f6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 900;
+      color: white;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 10px 20px rgba(251, 191, 36, 0.3);
+      transition: transform 0.2s ease;
+    }
+
+    .logo:hover {
+      transform: scale(1.05) rotate(5deg);
+    }
+
+    .title {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .title b {
+      font-size: 24px;
+      font-weight: 900;
+      background: linear-gradient(135deg, #fff, #fbbf24);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    .title small {
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* الأزرار - تصميم محدث */
+    .btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+      padding: 12px 18px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: 'Tajawal', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: var(--shadow-md);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      letter-spacing: 0.3px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 15px 25px -8px rgba(0, 0, 0, 0.5);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+      transition: 0.05s;
+    }
+
+    .btn i {
+      font-size: 16px;
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      border-color: rgba(251, 191, 36, 0.5);
+      color: #0b0e14;
+      font-weight: 800;
+    }
+
+    .btn.primary:hover {
+      background: linear-gradient(135deg, #fcd34d, #fbbf24);
+      border-color: #fbbf24;
+    }
+
+    .btn.blue {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      border-color: rgba(59, 130, 246, 0.5);
+    }
+
+    .btn.red {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      border-color: rgba(239, 68, 68, 0.5);
+    }
+
+    .btn.ghost {
+      background: transparent;
+      box-shadow: none;
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .btn.ghost:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .btn.small {
+      padding: 8px 14px;
+      font-size: 13px;
+      border-radius: var(--radius-sm);
+    }
+
+    /* الشبكة الرئيسية */
+    .grid {
+      display: grid;
+      grid-template-columns: 300px 1fr 300px;
+      gap: 20px;
+      flex: 1;
+    }
+
+    @media (max-width: 1200px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* البطاقات */
+    .card {
+      background: rgba(30, 41, 59, 0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      padding: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+      box-shadow: var(--shadow-xl);
+    }
+
+    .card.active-team {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.2), var(--shadow-xl);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card.active-team::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 20% 20%, rgba(251, 191, 36, 0.15), transparent 70%);
+      pointer-events: none;
+    }
+
+    .card.active-team::after {
+      content: '🎤';
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      font-size: 40px;
+      opacity: 0.1;
+      transform: rotate(-15deg);
+      pointer-events: none;
+    }
+
+    /* قسم النقاط */
+    .scoreSide {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .teamHeader {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 12px;
+    }
+
+    .teamName {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .team-icon {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.05);
+    }
+
+    .team-icon.blue {
+      background: var(--blue-team);
+      box-shadow: 0 0 15px var(--blue-glow);
+    }
+
+    .team-icon.red {
+      background: var(--red-team);
+      box-shadow: 0 0 15px var(--red-glow);
+    }
+
+    .scoreBox {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .scoreBox .tiny {
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .scoreNum {
+      font-size: 42px;
+      font-weight: 900;
+      background: linear-gradient(135deg, #fff, #fbbf24);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1;
+    }
+
+    /* الأخطاء */
+    .strikeRow {
+      display: flex;
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    .strike {
+      width: 50px;
+      height: 50px;
+      border-radius: var(--radius-md);
+      background: rgba(0, 0, 0, 0.3);
+      border: 2px solid rgba(239, 68, 68, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 900;
+      color: rgba(239, 68, 68, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .strike.on {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: #ef4444;
+      color: #ef4444;
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+      transform: scale(1.05);
+    }
+
+    /* قائمة اللاعبين */
+    .playersBox {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+    }
+
+    .playersHead {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      color: var(--text-secondary);
+    }
+
+    .playersList {
+      max-height: 200px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .playersList::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .playersList::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .playersList::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+    }
+
+    .playerItem {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+    }
+
+    .playerItem:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateX(-2px);
+    }
+
+    .playerName {
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .playerTag {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .playerAddRow {
+      display: flex;
+      gap: 8px;
+    }
+
+    .input {
+      flex: 1;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      color: var(--text-primary);
+      font-family: 'Tajawal', sans-serif;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .input:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.2);
+    }
+
+    .input::placeholder {
+      color: var(--text-muted);
+      opacity: 0.6;
+    }
+
+    /* بطاقة السؤال - مركز المسرح */
+    .centerStage {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .questionCard {
+      background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(251, 191, 36, 0.2);
+      border-radius: var(--radius-xl);
+      padding: 25px;
+      box-shadow: var(--shadow-xl);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .questionCard::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 20% 20%, rgba(251, 191, 36, 0.15), transparent 60%);
+      pointer-events: none;
+    }
+
+    .questionCard::after {
+      content: '"';
+      position: absolute;
+      bottom: -20px;
+      right: -10px;
+      font-size: 150px;
+      color: rgba(251, 191, 36, 0.1);
+      font-family: serif;
+      pointer-events: none;
+    }
+
+    .metaRow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50px;
+      padding: 6px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chip b {
+      color: var(--gold);
+      font-weight: 800;
+      font-size: 15px;
+    }
+
+    .questionText {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.4;
+      text-align: center;
+      padding: 20px 10px;
+      background: linear-gradient(135deg, #fff, #fbbf24);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 2px 20px rgba(251, 191, 36, 0.3);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* لوحة الإجابات */
+    .board {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 768px) {
+      .board {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .slot {
+      perspective: 1000px;
+      height: 80px;
+      cursor: pointer;
+    }
+
+    .face {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+      border-radius: var(--radius-lg);
+    }
+
+    .slot.revealed .face {
+      transform: rotateY(180deg);
+    }
+
+    .front, .back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(145deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      box-shadow: var(--shadow-md);
+    }
+
+    .front {
+      transform: rotateY(0deg);
+    }
+
+    .back {
+      transform: rotateY(180deg);
+      background: linear-gradient(145deg, #1e293b, #0f172a);
+      border-color: var(--gold);
+    }
+
+    .front .mystery {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text-secondary);
+      letter-spacing: 4px;
+    }
+
+    .index {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 16px;
+      color: var(--text-secondary);
+    }
+
+    .answer {
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--text-primary);
+    }
+
+    .points {
+      width: 70px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 20px;
+      color: var(--gold);
+    }
+
+    .back .points {
+      background: rgba(251, 191, 36, 0.2);
+    }
+
+    /* التلميحات */
+    .hint {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px dashed rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-lg);
+      padding: 15px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    .kbd {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 2px 10px;
+      font-family: monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gold);
+      margin: 0 2px;
+    }
+
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      border-radius: 50px;
+      padding: 14px 28px;
+      color: var(--text-primary);
+      font-weight: 700;
+      box-shadow: var(--shadow-xl);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 10000;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Modal */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .overlay.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      width: min(500px, 100%);
+      background: linear-gradient(145deg, #1e293b, #0f172a);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-xl);
+      padding: 30px;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+
+    .overlay.show .modal {
+      transform: scale(1);
+    }
+
+    .modal h3 {
+      font-size: 24px;
+      font-weight: 900;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, #fff, #fbbf24);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .modal .desc {
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 20px;
+      white-space: pre-line;
+    }
+
+    .modal .field {
+      margin-bottom: 20px;
+    }
+
+    .modal label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .modal .row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .modal .btn {
+      flex: 1;
+      justify-content: center;
+    }
+
+    /* Countdown */
+    .countdown {
+      position: fixed;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--gold);
+      border-radius: 50px;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      color: var(--text-primary);
+      font-weight: 700;
+      box-shadow: var(--shadow-xl);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 9999;
+    }
+
+    .countdown.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .countdown .num {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 900;
+      color: #0b0e14;
+    }
+
+    /* Big score animation */
+    .big-score {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.5);
+      font-size: 100px;
+      font-weight: 900;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 40px rgba(251, 191, 36, 0.5);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
+      z-index: 10001;
+    }
+
+    .big-score.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    /* Pulse animation */
+    .pulse {
+      animation: cardPulse 0.3s ease;
+    }
+
+    @keyframes cardPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); filter: brightness(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    /* Canvas confetti */
+    #confetti {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9998;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .topbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .top-actions {
+        justify-content: center;
+      }
+      
+      .questionText {
+        font-size: 22px;
+      }
+      
+      .scoreNum {
+        font-size: 32px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- الخلفية المتحركة -->
+  <div class="animated-bg">
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+  </div>
+
+  <!-- النجوم المتلألئة -->
+  <div class="stars" id="stars"></div>
+
+  <canvas id="confetti"></canvas>
+  <div id="bigScore" class="big-score"></div>
+
+  <div id="countdown" class="countdown">
+    <span>⏱️ <i class="fas fa-hourglass-half"></i> فحص الإجابة خلال</span>
+    <span class="num" id="countNum">5</span>
+  </div>
+
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">🎤</div>
+        <div class="title">
+          <b>فاميليا فؤاد</b>
+          <small><i class="fas fa-star" style="color: #fbbf24;"></i> نسخة الاستوديو المتطورة</small>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <button class="btn ghost" id="btnHelp"><i class="fas fa-question-circle"></i> طريقة اللعب</button>
+        <button class="btn" id="btnBuzz"><i class="fas fa-bell"></i> جرس</button>
+        <button class="btn" id="btnFullscreen"><i class="fas fa-expand"></i> ملء الشاشة</button>
+        <button class="btn" id="btnReset"><i class="fas fa-broom"></i> تصفير الجولة</button>
+        <button class="btn" id="btnNewGame"><i class="fas fa-flag"></i> جولة جديدة</button>
+        <button class="btn primary" id="btnNewQ"><i class="fas fa-magic"></i> سؤال جديد</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- الفريق الأزرق -->
+      <div class="card scoreSide" id="sideBlue">
+        <div class="teamHeader">
+          <div class="teamName">
+            <span class="team-icon blue"></span>
+            <span>الفريق الأزرق</span>
+          </div>
+          <button class="btn blue" id="btnActiveBlue"><i class="fas fa-check-circle"></i> الدور</button>
+        </div>
+
+        <div class="scoreBox">
+          <div>
+            <div class="tiny"><i class="fas fa-trophy" style="color: #fbbf24;"></i> نقاط الفريق</div>
+            <div class="scoreNum" id="scoreBlue">0</div>
+          </div>
+          <button class="btn blue small" id="btnAddBlue"><i class="fas fa-plus"></i> إضافة نقاط</button>
+        </div>
+
+        <div class="playersBox">
+          <div class="playersHead">
+            <div class="tiny"><i class="fas fa-users"></i> اللاعبين <b id="blueCount">(0/4)</b></div>
+            <button class="btn small blue" id="btnClearBluePlayers"><i class="fas fa-eraser"></i> مسح</button>
+          </div>
+          <div class="playerAddRow">
+            <input class="input" id="inpBluePlayer" placeholder="اكتب اسم اللاعب..." />
+            <button class="btn small blue" id="btnAddBluePlayer"><i class="fas fa-user-plus"></i></button>
+          </div>
+          <div class="playersList" id="bluePlayers"></div>
+        </div>
+
+        <div>
+          <div class="tiny"><i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i> الأخطاء (3)</div>
+          <div class="strikeRow" id="strikesBlue">
+            <div class="strike"><i class="fas fa-times"></i></div>
+            <div class="strike"><i class="fas fa-times"></i></div>
+            <div class="strike"><i class="fas fa-times"></i></div>
+          </div>
+          <div class="row" style="display: flex; gap: 8px; margin-top: 10px;">
+            <button class="btn small" id="btnStrikeBlue"><i class="fas fa-ban" style="color: #ef4444;"></i> خطأ</button>
+            <button class="btn small" id="btnClearStrikeBlue"><i class="fas fa-eraser"></i> مسح الأخطاء</button>
+          </div>
+        </div>
+
+        <div class="hint">
+          <i class="fas fa-keyboard" style="margin-left: 5px;"></i> <b>اختصارات:</b>
+          <span class="kbd">N</span> سؤال
+          <span class="kbd">A</span> كشف
+          <span class="kbd">R</span> الكل
+          <span class="kbd">B</span> أزرق
+          <span class="kbd">E</span> أحمر
+          <span class="kbd">Space</span> جرس
+        </div>
+      </div>
+
+      <!-- المركز - المسرح -->
+      <div class="centerStage">
+        <div class="questionCard" id="qCard">
+          <div class="metaRow">
+            <div class="chips">
+              <span class="chip"><i class="fas fa-redo-alt"></i> الجولة <b id="roundNum">1</b></span>
+              <span class="chip"><i class="fas fa-times"></i> المضاعف <b id="multVal">×1</b></span>
+              <span class="chip"><i class="fas fa-star"></i> نقاط الجولة <b id="roundPoints">0</b></span>
+            </div>
+
+            <div class="chips">
+              <span class="chip"><i class="fas fa-tag"></i> الفئة <b id="catName">—</b></span>
+              <span class="chip"><i class="fas fa-hourglass-half"></i> المتبقي <b id="remain">0</b>/<b id="totalAns">0</b></span>
+            </div>
+          </div>
+
+          <div class="questionText" id="questionText">اضغط "سؤال جديد" للبدء ✨</div>
+        </div>
+
+        <div class="board" id="board"></div>
+
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <div class="tiny"><i class="fas fa-sliders-h"></i> تحكم سريع</div>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn small" id="btnRevealAll"><i class="fas fa-eye"></i> كشف الكل</button>
+              <button class="btn small" id="btnNextRound"><i class="fas fa-forward"></i> جولة +</button>
+              <button class="btn small" id="btnSwapTurn"><i class="fas fa-exchange-alt"></i> تبديل الدور</button>
+            </div>
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button class="btn primary small" id="btnAddAnswer"><i class="fas fa-plus-circle"></i> كشف/إضافة</button>
+            <button class="btn small" id="btnRevealByNum"><i class="fas fa-hashtag"></i> كشف برقم</button>
+            <button class="btn small" id="btnAutoCheck"><i class="fas fa-check-double"></i> فحص إجابة</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- الفريق الأحمر -->
+      <div class="card scoreSide" id="sideRed">
+        <div class="teamHeader">
+          <div class="teamName">
+            <span class="team-icon red"></span>
+            <span>الفريق الأحمر</span>
+          </div>
+          <button class="btn red" id="btnActiveRed"><i class="fas fa-check-circle"></i> الدور</button>
+        </div>
+
+        <div class="scoreBox">
+          <div>
+            <div class="tiny"><i class="fas fa-trophy" style="color: #fbbf24;"></i> نقاط الفريق</div>
+            <div class="scoreNum" id="scoreRed">0</div>
+          </div>
+          <button class="btn red small" id="btnAddRed"><i class="fas fa-plus"></i> إضافة نقاط</button>
+        </div>
+
+        <div class="playersBox">
+          <div class="playersHead">
+            <div class="tiny"><i class="fas fa-users"></i> اللاعبين <b id="redCount">(0/4)</b></div>
+            <button class="btn small red" id="btnClearRedPlayers"><i class="fas fa-eraser"></i> مسح</button>
+          </div>
+          <div class="playerAddRow">
+            <input class="input" id="inpRedPlayer" placeholder="اكتب اسم اللاعب..." />
+            <button class="btn small red" id="btnAddRedPlayer"><i class="fas fa-user-plus"></i></button>
+          </div>
+          <div class="playersList" id="redPlayers"></div>
+        </div>
+
+        <div>
+          <div class="tiny"><i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i> الأخطاء (3)</div>
+          <div class="strikeRow" id="strikesRed">
+            <div class="strike"><i class="fas fa-times"></i></div>
+            <div class="strike"><i class="fas fa-times"></i></div>
+            <div class="strike"><i class="fas fa-times"></i></div>
+          </div>
+          <div style="display: flex; gap: 8px; margin-top: 10px;">
+            <button class="btn small" id="btnStrikeRed"><i class="fas fa-ban" style="color: #ef4444;"></i> خطأ</button>
+            <button class="btn small" id="btnClearStrikeRed"><i class="fas fa-eraser"></i> مسح الأخطاء</button>
+          </div>
+        </div>
+
+        <div class="hint">
+          <i class="fas fa-info-circle" style="margin-left: 5px;"></i> <b>ملاحظة:</b> نقاط الجولة = مجموع الإجابات المكشوفة × المضاعف
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modals -->
+  <div class="overlay" id="overlay">
+    <div class="modal" id="modal">
+      <h3 id="modalTitle">—</h3>
+      <div class="desc" id="modalDesc">—</div>
+
+      <div class="field" id="modalFieldWrap" style="display:none">
+        <label id="modalLabel">—</label>
+        <input class="input" id="modalInput" placeholder="" autocomplete="off" />
+      </div>
+
+      <div class="row" id="modalRow">
+        <button class="btn primary" id="modalOk"><i class="fas fa-check"></i> تأكيد</button>
+        <button class="btn" id="modalCancel"><i class="fas fa-times"></i> إلغاء</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">—</div>
+
+  <script>
+    // إنشاء النجوم المتلألئة
+    function createStars() {
+      const starsContainer = document.getElementById('stars');
+      for (let i = 0; i < 50; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 3 + 's';
+        starsContainer.appendChild(star);
+      }
+    }
+    createStars();
+
+    // =========================
+    // بنك الأسئلة (نفس الكود الأصلي)
+    // =========================
+    const CONTEXTS = [
+      { tag: "",  addCat: " - بيت" },
+      { tag: "", addCat: " - دوام" },
+      { tag: "", addCat: " - مدرسة" },
+      { tag: "",  addCat: " - سفر" },
+      { tag: "", addCat: " - استراحة" },
+    ];
+
+    const BASE_80 = [
+      { category:"أكل", q:"اذكر شيء تاكله في الفطور", answers:[
+        {a:"بيض",p:34},{a:"فول",p:22},{a:"جبن",p:14},{a:"شاي",p:11},{a:"قهوه",p:9},{a:"تمر",p:6},{a:"كرواسون",p:3},{a:"كورنفلكس",p:1}
+      ]},
+      { category:"أكل", q:"اذكر اكلة ما تنفع بدون خبز", answers:[
+        {a:"فول",p:28},{a:"شكشوكة",p:18},{a:"كبده",p:14},{a:"حمص",p:12},{a:"مقلقل",p:9},{a:"شاورما",p:8},{a:"جبن",p:6},{a:"مسقعه",p:5}
+      ]},
+      { category:"أكل", q:"اذكر مشروب الناس تطلبه كثير", answers:[
+        {a:"قهوه",p:30},{a:"شاي",p:22},{a:"عصير",p:14},{a:"بيبسي",p:12},{a:"مويه",p:10},{a:"كابتشينو",p:6},{a:"شوكولاته حاره",p:4},{a:"ايس تي",p:2}
+      ]},
+      { category:"أكل", q:"اذكر نوع حلا مشهور", answers:[
+        {a:"كنافه",p:24},{a:"كيك",p:18},{a:"بسبوسه",p:14},{a:"ايس كريم",p:13},{a:"لقيمات",p:10},{a:"تشيز كيك",p:9},{a:"مهلبيه",p:7},{a:"حلى تمر",p:5}
+      ]},
+      { category:"أكل", q:"اذكر شيء يجي مع الشاورما", answers:[
+        {a:"ثوم",p:30},{a:"بطاطس",p:20},{a:"مخلل",p:14},{a:"بيبسي",p:12},{a:"كاتشب",p:8},{a:"سلطه",p:7},{a:"خبز اضافي",p:5},{a:"حار",p:4}
+      ]},
+      { category:"أكل", q:"اذكر شيء ينحط على الرز", answers:[
+        {a:"لحم",p:26},{a:"دجاج",p:22},{a:"مرق",p:16},{a:"سلطه",p:10},{a:"دقوس",p:9},{a:"صوص",p:7},{a:"مكسرات",p:6},{a:"زبادي",p:4}
+      ]},
+      { category:"أكل", q:"اذكر شيء الناس ياكلونه بالسناك", answers:[
+        {a:"شيبس",p:26},{a:"شوكولاته",p:18},{a:"مكسرات",p:14},{a:"بسكوت",p:13},{a:"فواكه",p:11},{a:"بذور",p:7},{a:"اندومي",p:6},{a:"ساندويتش",p:5}
+      ]},
+      { category:"أكل", q:"اذكر اكلة لو بردت تصير اسوأ", answers:[
+        {a:"بيتزا",p:24},{a:"بطاطس",p:22},{a:"شاورما",p:14},{a:"اندومي",p:12},{a:"برجر",p:11},{a:"مقليات",p:9},{a:"كشري",p:5},{a:"شوربه",p:3}
+      ]},
+      { category:"منزل", q:"اذكر شيء تضيعَه كثير داخل البيت", answers:[
+        {a:"المفتاح",p:28},{a:"الجوال",p:22},{a:"الريموت",p:18},{a:"النظاره",p:10},{a:"المحفظه",p:8},{a:"الشاحن",p:6},{a:"السماعات",p:5},{a:"قلم",p:3}
+      ]},
+      { category:"منزل", q:"اذكر مكان تحط فيه اغراضك اول ما تدخل البيت", answers:[
+        {a:"المدخل",p:24},{a:"الطاولة",p:20},{a:"غرفة النوم",p:16},{a:"الصاله",p:12},{a:"على الكنبه",p:10},{a:"الدرج",p:8},{a:"المطبخ",p:6},{a:"بالسياره",p:4}
+      ]},
+      { category:"منزل", q:"اذكر شي ينقطع فجأه وتقوم تدوره", answers:[
+        {a:"كهرباء",p:22},{a:"انترنت",p:20},{a:"مويه",p:16},{a:"غاز",p:12},{a:"شاحن",p:10},{a:"شبكه",p:8},{a:"ريموت",p:7},{a:"لمبه",p:5}
+      ]},
+      { category:"منزل", q:"اذكر شيء تتمنى يكون عندك روبوت يسويه بدالك", answers:[
+        {a:"تنظيف",p:28},{a:"غسيل مواعين",p:20},{a:"غسيل ملابس",p:16},{a:"ترتيب",p:12},{a:"طبخ",p:10},{a:"كي",p:7},{a:"تسوق",p:5},{a:"رمي زباله",p:2}
+      ]},
+      { category:"منزل", q:"اذكر شيء يطلع صوت مزعج بالبيت", answers:[
+        {a:"مكنسه",p:22},{a:"خلاط",p:18},{a:"مكيف",p:14},{a:"غساله",p:12},{a:"جرس",p:10},{a:"باب",p:9},{a:"اطفال",p:8},{a:"قط",p:4}
+      ]},
+      { category:"منزل", q:"اذكر غرفة الناس يجتمعون فيها غالبا", answers:[
+        {a:"الصاله",p:36},{a:"المجلس",p:20},{a:"المطبخ",p:14},{a:"غرفة الطعام",p:10},{a:"الحوش",p:8},{a:"السطح",p:6},{a:"غرفة التلفزيون",p:4},{a:"الغرفه",p:2}
+      ]},
+      { category:"منزل", q:"اذكر شيء يخرب كثير وتحتاج تصلحه", answers:[
+        {a:"مكيف",p:22},{a:"حنفيه",p:18},{a:"ثلاجه",p:12},{a:"غساله",p:11},{a:"لمبات",p:10},{a:"ريموت",p:9},{a:"باب",p:6},{a:"نت",p:5}
+      ]},
+      { category:"منزل", q:"اذكر شيء لو انقطع يخرب مزاج البيت", answers:[
+        {a:"انترنت",p:32},{a:"كهرباء",p:20},{a:"مويه",p:16},{a:"مكيف",p:10},{a:"جوال",p:8},{a:"شبكه",p:6},{a:"قهوه",p:4},{a:"تلفزيون",p:2}
+      ]},
+      { category:"سوشيال", q:"اذكر شيء الناس يسوونه اذا انحرجوا", answers:[
+        {a:"يضحكون",p:22},{a:"يسكتون",p:18},{a:"يغيرون الموضوع",p:16},{a:"يمسكون الجوال",p:12},{a:"يحكون راسهم",p:10},{a:"يعتذرون",p:9},{a:"يحمر وجههم",p:7},{a:"يمشون",p:6}
+      ]},
+      { category:"سوشيال", q:"اذكر سبب يخليك تلغي طلعه", answers:[
+        {a:"تعب",p:26},{a:"كسل",p:18},{a:"ما معي فلوس",p:14},{a:"نمت",p:12},{a:"شغل",p:11},{a:"زحمه",p:8},{a:"مزاج",p:6},{a:"مرض",p:5}
+      ]},
+      { category:"سوشيال", q:"اذكر شيء يصير بالقروب ويزعل الناس", answers:[
+        {a:"تطنيش",p:22},{a:"سخريه",p:18},{a:"تسريب كلام",p:14},{a:"حذف",p:12},{a:"نقاش حاد",p:11},{a:"سب",p:9},{a:"قل ادب",p:8},{a:"اشاعات",p:6}
+      ]},
+      { category:"سوشيال", q:"اذكر شيء تكتبَه بالواتس كثير", answers:[
+        {a:"تمام",p:20},{a:"اوكي",p:18},{a:"هههه",p:16},{a:"وينك",p:12},{a:"تم",p:10},{a:"دقيقه",p:9},{a:"جاي",p:8},{a:"سلام",p:7}
+      ]},
+      { category:"سوشيال", q:"اذكر شيء تسويه اول ما تمسك جوالك", answers:[
+        {a:"واتس",p:26},{a:"تيك توك",p:18},{a:"انستقرام",p:14},{a:"اشعارات",p:12},{a:"سناب",p:10},{a:"يوتيوب",p:9},{a:"اتصال",p:6},{a:"كاميرا",p:5}
+      ]},
+      { category:"سوشيال", q:"اذكر شيء يخليك تسوي بلوك", answers:[
+        {a:"ازعاج",p:24},{a:"سب",p:18},{a:"تحرش",p:16},{a:"كذب",p:12},{a:"تطفل",p:11},{a:"تهديد",p:9},{a:"ابتزاز",p:7},{a:"غثاثه",p:5}
+      ]},
+      { category:"سوشيال", q:"اذكر موقف الناس يصورونه وينزلونه", answers:[
+        {a:"زواج",p:20},{a:"تخرج",p:18},{a:"رحله",p:14},{a:"مباراه",p:12},{a:"مقلب",p:10},{a:"عشاء",p:9},{a:"هديه",p:8},{a:"مفاجاه",p:7}
+      ]},
+      { category:"سوشيال", q:"اذكر شي يجي مع القهوه في الجلسه", answers:[
+        {a:"تمر",p:24},{a:"حلى",p:18},{a:"شكولاته",p:14},{a:"مكسرات",p:12},{a:"مويه",p:10},{a:"فواكه",p:8},{a:"بسكوت",p:7},{a:"كيك",p:6}
+      ]},
+      { category:"دوام", q:"اذكر سبب تتاخر عن الدوام", answers:[
+        {a:"نوم",p:30},{a:"زحمه",p:20},{a:"مواصلات",p:14},{a:"نسيت شي",p:10},{a:"طفا الجوال",p:9},{a:"مطر",p:7},{a:"مرض",p:6},{a:"مشوار",p:4}
+      ]},
+      { category:"دوام", q:"اذكر شيء الناس يشتكون منه في الدوام", answers:[
+        {a:"ضغط",p:24},{a:"مدير",p:18},{a:"راتب",p:14},{a:"ساعات",p:12},{a:"اجتماعات",p:11},{a:"زملاء",p:9},{a:"نظام",p:7},{a:"تكييف",p:5}
+      ]},
+      { category:"دوام", q:"اذكر مكان تاخذ فيه بريك", answers:[
+        {a:"الكافتيريا",p:24},{a:"السياره",p:18},{a:"غرفة الاستراحه",p:14},{a:"بره",p:12},{a:"مكتبك",p:10},{a:"كفي",p:9},{a:"مسجد",p:7},{a:"دوران",p:6}
+      ]},
+      { category:"دوام", q:"اذكر شي تكرهه باجتماعات العمل", answers:[
+        {a:"يطول",p:26},{a:"كلام كثير",p:18},{a:"بدون نتيجه",p:14},{a:"تكرار",p:12},{a:"مقاطعه",p:10},{a:"تأخير",p:9},{a:"كاميرا",p:7},{a:"صمت",p:4}
+      ]},
+      { category:"دوام", q:"اذكر شي يخليك تطلب اجازه", answers:[
+        {a:"مرض",p:26},{a:"سفر",p:18},{a:"ظرف عائلي",p:14},{a:"مراجعه",p:12},{a:"تعب نفسي",p:10},{a:"موعد",p:9},{a:"دوام حكومي",p:6},{a:"مذاكره",p:5}
+      ]},
+      { category:"دوام", q:"اذكر شي تاكله في الغداء بالدوام", answers:[
+        {a:"رز",p:22},{a:"ساندويتش",p:18},{a:"شاورما",p:14},{a:"سلطه",p:12},{a:"مكرونه",p:10},{a:"برجر",p:9},{a:"اندومي",p:8},{a:"فطيره",p:6}
+      ]},
+      { category:"دوام", q:"اذكر شي دايم يضيع في المكتب", answers:[
+        {a:"قلم",p:24},{a:"ورق",p:16},{a:"بطاقه",p:14},{a:"سماعات",p:12},{a:"شاحن",p:11},{a:"دفتر",p:9},{a:"ستكر",p:7},{a:"ريموت",p:5}
+      ]},
+      { category:"دوام", q:"اذكر شيء تسويه عشان يمر الوقت بسرعه بالدوام", answers:[
+        {a:"قهوه",p:20},{a:"شغل",p:18},{a:"سولف",p:14},{a:"موسيقى",p:12},{a:"تنظيم",p:10},{a:"مشاريع جانبيه",p:9},{a:"تمشية",p:7},{a:"جوال",p:6}
+      ]},
+      { category:"مدرسة", q:"اذكر مادة كثير طلاب ما يحبونها", answers:[
+        {a:"رياضيات",p:30},{a:"فيزياء",p:18},{a:"كيمياء",p:14},{a:"نحو",p:12},{a:"انجليزي",p:10},{a:"احياء",p:8},{a:"تاريخ",p:6},{a:"جغرافيا",p:4}
+      ]},
+      { category:"مدرسة", q:"اذكر سبب يخليك تتاخر عن المدرسة", answers:[
+        {a:"نوم",p:32},{a:"باص",p:18},{a:"زحمه",p:14},{a:"نسيان شنطه",p:10},{a:"ملابس",p:9},{a:"واجب",p:7},{a:"مطر",p:6},{a:"مرض",p:4}
+      ]},
+      { category:"مدرسة", q:"اذكر شي ممكن ينسى الطالب يجيبه", answers:[
+        {a:"دفتر",p:22},{a:"قلم",p:18},{a:"كتاب",p:14},{a:"بطاقه",p:12},{a:"واجب",p:11},{a:"اكل",p:9},{a:"فلوس",p:7},{a:"مسطره",p:5}
+      ]},
+      { category:"مدرسة", q:"اذكر مكان الطلاب يحبون يجلسون فيه بالفسحه", answers:[
+        {a:"المقصف",p:28},{a:"الساحه",p:18},{a:"الظل",p:14},{a:"الفصل",p:12},{a:"المكتبه",p:9},{a:"الممر",p:8},{a:"جنب الكره",p:6},{a:"المصلى",p:5}
+      ]},
+      { category:"مدرسة", q:"اذكر شي يخلي المعلم يعصب", answers:[
+        {a:"ازعاج",p:26},{a:"تأخير",p:18},{a:"جوال",p:14},{a:"عدم حل واجب",p:12},{a:"كلام",p:11},{a:"استهزاء",p:9},{a:"اكل",p:6},{a:"نوم",p:4}
+      ]},
+      { category:"مدرسة", q:"اذكر شي تسويه اذا ما ذاكر", answers:[
+        {a:"غش",p:22},{a:"ادعي",p:18},{a:"اذاكر بسرعه",p:14},{a:"اسال صديق",p:12},{a:"اسوي نفسي فاهم",p:10},{a:"اعتذر",p:8},{a:"اهرب",p:6},{a:"اكتب اي شي",p:5}
+      ]},
+      { category:"مدرسة", q:"اذكر شي تحطه في شنطتك", answers:[
+        {a:"كتب",p:28},{a:"دفاتر",p:18},{a:"اقلام",p:14},{a:"اكل",p:12},{a:"قارورة مويه",p:10},{a:"مقلمه",p:8},{a:"مسطره",p:6},{a:"مناديل",p:4}
+      ]},
+      { category:"مدرسة", q:"اذكر شي يصير وقت الاختبار ويخوف", answers:[
+        {a:"نسيان",p:24},{a:"وقت يخلص",p:18},{a:"مراقب",p:14},{a:"سؤال صعب",p:12},{a:"غلط",p:10},{a:"توتر",p:9},{a:"صوت",p:7},{a:"ورقه تضيع",p:5}
+      ]},
+      { category:"سفر", q:"اذكر شي مستحيل تسافر بدونه", answers:[
+        {a:"جواز",p:30},{a:"فلوس",p:20},{a:"جوال",p:14},{a:"شاحن",p:12},{a:"تذاكر",p:10},{a:"شنطه",p:8},{a:"ملابس",p:4},{a:"عطر",p:2}
+      ]},
+      { category:"سفر", q:"اذكر شي يضيع كثير بالمطار", answers:[
+        {a:"جواز",p:24},{a:"شنطه",p:20},{a:"سماعات",p:14},{a:"مفتاح",p:12},{a:"شاحن",p:10},{a:"محفظه",p:9},{a:"اوراق",p:7},{a:"قلم",p:4}
+      ]},
+      { category:"سفر", q:"اذكر سبب يخليك تتوتر بالسفر", answers:[
+        {a:"تأخير طياره",p:26},{a:"ضياع",p:18},{a:"تفتيش",p:14},{a:"زحمه",p:12},{a:"لغة",p:10},{a:"فقدان شنطه",p:9},{a:"خوف",p:7},{a:"مرض",p:5}
+      ]},
+      { category:"سفر", q:"اذكر شي تسويه اول ما توصل الفندق", answers:[
+        {a:"تفتيش الغرفه",p:22},{a:"شاور",p:18},{a:"نوم",p:16},{a:"اشحن الجوال",p:12},{a:"اطلب اكل",p:10},{a:"افتح الشنطه",p:9},{a:"اصور",p:7},{a:"اطالع",p:6}
+      ]},
+      { category:"سفر", q:"اذكر شي تاكله بالطريق", answers:[
+        {a:"شيبس",p:22},{a:"ساندويتش",p:18},{a:"تميس",p:14},{a:"شوكولاته",p:12},{a:"مكسرات",p:10},{a:"تمر",p:9},{a:"بسكوت",p:7},{a:"فواكه",p:5}
+      ]},
+      { category:"سفر", q:"اذكر شي تشتريه كتذكار", answers:[
+        {a:"مغناطيس",p:18},{a:"عطر",p:16},{a:"ملابس",p:14},{a:"كوفي",p:12},{a:"تحفه",p:10},{a:"حلويات",p:9},{a:"ميداليه",p:7},{a:"كوب",p:6}
+      ]},
+      { category:"سفر", q:"اذكر شي يسبب دوخه في السفر", answers:[
+        {a:"سياره",p:22},{a:"بحر",p:18},{a:"مطبات",p:14},{a:"قراءة",p:12},{a:"روائح",p:10},{a:"جوع",p:8},{a:"حر",p:7},{a:"خوف",p:5}
+      ]},
+      { category:"سفر", q:"اذكر وسيلة نقل تستخدمها كثير", answers:[
+        {a:"سياره",p:36},{a:"طيران",p:18},{a:"تاكسي",p:14},{a:"مترو",p:10},{a:"باص",p:9},{a:"قطار",p:7},{a:"اوبر",p:4},{a:"مشيا",p:2}
+      ]},
+      { category:"تقنية", q:"اذكر تطبيق ما تقدر تستغني عنه", answers:[
+        {a:"واتس",p:30},{a:"يوتيوب",p:18},{a:"انستقرام",p:14},{a:"سناب",p:12},{a:"تيك توك",p:10},{a:"خرائط",p:8},{a:"ايميل",p:5},{a:"متجر",p:3}
+      ]},
+      { category:"تقنية", q:"اذكر شيء يخرب بالكمبيوتر كثير", answers:[
+        {a:"ويندوز",p:22},{a:"هاردسك",p:18},{a:"تعريفات",p:14},{a:"نت",p:12},{a:"رام",p:10},{a:"كرت شاشه",p:9},{a:"باور",p:7},{a:"مراوح",p:5}
+      ]},
+      { category:"تقنية", q:"اذكر سبب يخليك تعيد تشغيل الراوتر", answers:[
+        {a:"بطء",p:26},{a:"انقطاع",p:20},{a:"بنق عالي",p:14},{a:"تحديث",p:10},{a:"تعليق",p:9},{a:"شبكه تختفي",p:8},{a:"مشاكل لعب",p:7},{a:"حماية",p:6}
+      ]},
+      { category:"تقنية", q:"اذكر شيء يقهر بالجوال", answers:[
+        {a:"بطاريه تخلص",p:26},{a:"تعليق",p:18},{a:"حراره",p:14},{a:"شبكه ضعيفه",p:12},{a:"مساحه",p:10},{a:"اشعارات كثير",p:9},{a:"كسر",p:7},{a:"صوت",p:4}
+      ]},
+      { category:"تسوق", q:"اذكر مكان تتسوق منه كثير", answers:[
+        {a:"السوبرماركت",p:26},{a:"نون",p:18},{a:"امازون",p:14},{a:"مول",p:12},{a:"بقاله",p:10},{a:"تميمي",p:8},{a:"جرير",p:7},{a:"صيدليه",p:5}
+      ]},
+      { category:"تسوق", q:"اذكر شيء تشتريه كل شهر", answers:[
+        {a:"اكل",p:28},{a:"مويه",p:18},{a:"مناديل",p:14},{a:"شامبو",p:12},{a:"منظفات",p:10},{a:"قهوه",p:9},{a:"عطور",p:5},{a:"ملابس",p:4}
+      ]},
+      { category:"تسوق", q:"اذكر سبب يخليك تندم على شراء", answers:[
+        {a:"غالي",p:24},{a:"ما احتجته",p:18},{a:"جوده سيئه",p:14},{a:"طلع تقليد",p:12},{a:"ما ناسب",p:10},{a:"خرب",p:9},{a:"مقاس غلط",p:7},{a:"توصيل تاخر",p:6}
+      ]},
+      { category:"تسوق", q:"اذكر شي الناس يكثرون منه وقت العروض", answers:[
+        {a:"ملابس",p:22},{a:"عطور",p:18},{a:"اجهزه",p:14},{a:"احذيه",p:12},{a:"مكياج",p:10},{a:"العاب",p:9},{a:"اكسسوارات",p:7},{a:"اثاث",p:6}
+      ]},
+      { category:"رياضة", q:"اذكر رياضة الناس تمارسها كثير", answers:[
+        {a:"مشـي",p:30},{a:"حديد",p:18},{a:"كره قدم",p:14},{a:"سباحه",p:12},{a:"جري",p:10},{a:"ملاكمه",p:8},{a:"دراجه",p:5},{a:"يوغا",p:3}
+      ]},
+      { category:"رياضة", q:"اذكر سبب يخليك تترك النادي", answers:[
+        {a:"كسل",p:24},{a:"وقت",p:18},{a:"اصابه",p:14},{a:"فلوس",p:12},{a:"ما فيه نتيجه",p:10},{a:"زحمه",p:9},{a:"ملل",p:7},{a:"بعيد",p:6}
+      ]},
+      { category:"رياضة", q:"اذكر شي تاكله بعد التمرين", answers:[
+        {a:"بروتين",p:22},{a:"دجاج",p:18},{a:"بيض",p:14},{a:"موزه",p:12},{a:"تونه",p:10},{a:"رز",p:9},{a:"زبادي",p:7},{a:"مكسرات",p:6}
+      ]},
+      { category:"رياضة", q:"اذكر شي تلبسه وقت الرياضه", answers:[
+        {a:"جزمه",p:24},{a:"تيشيرت",p:18},{a:"بنطال رياضي",p:14},{a:"شراب",p:12},{a:"قفازات",p:10},{a:"ساعه",p:9},{a:"سماعات",p:7},{a:"طاقيه",p:4}
+      ]},
+      { category:"سيارات", q:"اذكر شيء تخاف يخرب في السياره", answers:[
+        {a:"مكينه",p:22},{a:"قير",p:18},{a:"بطاريه",p:14},{a:"كفرات",p:12},{a:"مكيف",p:10},{a:"فرامل",p:9},{a:"دينمو",p:7},{a:"لمبات",p:5}
+      ]},
+      { category:"سيارات", q:"اذكر سبب يخليك توقف عند محطة", answers:[
+        {a:"بنزين",p:32},{a:"هواء",p:18},{a:"قهوه",p:14},{a:"دورة مياه",p:12},{a:"زيت",p:10},{a:"مويه رديتر",p:7},{a:"غسيل",p:5},{a:"اكل",p:4}
+      ]},
+      { category:"سيارات", q:"اذكر شيء تلاقيه داخل درج السياره", answers:[
+        {a:"مناديل",p:26},{a:"عطر",p:18},{a:"شاحن",p:14},{a:"فكه",p:12},{a:"اوراق",p:10},{a:"كفر",p:7},{a:"ولاعة",p:5},{a:"اقلام",p:4}
+      ]},
+      { category:"سيارات", q:"اذكر شي يضايقك وانت تسوق", answers:[
+        {a:"زحمه",p:26},{a:"تهور",p:18},{a:"اشارات",p:14},{a:"جواب غلط",p:12},{a:"شمس",p:10},{a:"جوال",p:9},{a:"مطبات",p:7},{a:"مواقف",p:6}
+      ]},
+      { category:"رمضان", q:"اذكر شيء يكون موجود على سفرة الافطار", answers:[
+        {a:"تمر",p:30},{a:"شوربه",p:20},{a:"سمبوسه",p:14},{a:"عصير",p:12},{a:"سلطه",p:10},{a:"رز",p:8},{a:"لقيمات",p:4},{a:"مويه",p:2}
+      ]},
+      { category:"رمضان", q:"اذكر شيء تسويه بعد التراويح", answers:[
+        {a:"قهوه",p:22},{a:"جلسه",p:18},{a:"سهر",p:14},{a:"تسوق",p:12},{a:"سناب",p:10},{a:"مشي",p:9},{a:"نوم",p:8},{a:"زياره",p:7}
+      ]},
+      { category:"رمضان", q:"اذكر شيء الناس يتضاربون عليه وقت السحور", answers:[
+        {a:"بيض",p:20},{a:"فول",p:18},{a:"شاهي",p:14},{a:"لبن",p:12},{a:"تمر",p:10},{a:"خبز",p:9},{a:"جبن",p:7},{a:"مويه",p:5}
+      ]},
+      { category:"رمضان", q:"اذكر عذر الناس يقولونه اذا ناموا عن السحور", answers:[
+        {a:"ما سمعت منبه",p:26},{a:"كنت تعبان",p:18},{a:"نسيت",p:14},{a:"سهران",p:12},{a:"طفيت الجوال",p:10},{a:"ما صحيت",p:9},{a:"مريض",p:7},{a:"ما فيه اكل",p:4}
+      ]},
+      { category:"عيد", q:"اذكر شيء الناس يسوونه اول يوم عيد", answers:[
+        {a:"صلاة العيد",p:30},{a:"معايده",p:18},{a:"زيارات",p:14},{a:"فطور جماعي",p:12},{a:"عزيمه",p:10},{a:"توزيع عيديه",p:8},{a:"تصوير",p:5},{a:"نوم",p:3}
+      ]},
+      { category:"عيد", q:"اذكر شيء تاخذه معك اذا رايح زياره بالعيد", answers:[
+        {a:"حلا",p:22},{a:"عطر",p:18},{a:"هديه",p:14},{a:"قهوه",p:12},{a:"شكولاته",p:10},{a:"ورد",p:9},{a:"فلوس عيديه",p:7},{a:"تمر",p:5}
+      ]},
+      { category:"عيد", q:"اذكر شي تلبسه بالعيد", answers:[
+        {a:"ثوب",p:28},{a:"شماغ",p:18},{a:"جزمه",p:14},{a:"ساعه",p:12},{a:"عطر",p:10},{a:"بشت",p:8},{a:"نظاره",p:6},{a:"طاقيه",p:4}
+      ]},
+      { category:"عيد", q:"اذكر شيء الناس ياكلونه بالعيد", answers:[
+        {a:"كليجه",p:20},{a:"معمول",p:18},{a:"حلا",p:14},{a:"قهوه",p:12},{a:"كبسه",p:10},{a:"لحمه",p:9},{a:"حلويات",p:7},{a:"شوكولاته",p:6}
+      ]},
+      { category:"مشاعر", q:"اذكر شيء يخليك تنبسط فجأه", answers:[
+        {a:"خبر حلو",p:22},{a:"هديه",p:18},{a:"مديح",p:14},{a:"راتب",p:12},{a:"فوز",p:10},{a:"رساله",p:9},{a:"مفاجاه",p:7},{a:"اكل",p:5}
+      ]},
+      { category:"مشاعر", q:"اذكر شيء يخليك تعصب بسرعه", answers:[
+        {a:"ظلم",p:22},{a:"استفزاز",p:18},{a:"تطنيش",p:14},{a:"كذب",p:12},{a:"زحمه",p:10},{a:"تاخير",p:9},{a:"قله ادب",p:7},{a:"صراخ",p:5}
+      ]},
+      { category:"مشاعر", q:"اذكر شيء يخليك تتوتر", answers:[
+        {a:"اختبار",p:20},{a:"مقابله",p:18},{a:"مكالمه",p:14},{a:"موعد مهم",p:12},{a:"سفر",p:10},{a:"مشاكل",p:9},{a:"زحمه",p:7},{a:"فلوس",p:6}
+      ]},
+      { category:"مشاعر", q:"اذكر شيء يخليك تضحك غصب", answers:[
+        {a:"ميمز",p:22},{a:"موقف",p:18},{a:"مقاطع",p:14},{a:"صديق",p:12},{a:"مقلب",p:10},{a:"نكت",p:9},{a:"غلطه",p:7},{a:"ضحكه معديه",p:6}
+      ]},
+      { category:"ترفيه", q:"اذكر نوع محتوى تتابعه كثير", answers:[
+        {a:"قيمنق",p:22},{a:"كوميدي",p:18},{a:"اكشن",p:14},{a:"وثائقي",p:12},{a:"رعب",p:10},{a:"طبخ",p:9},{a:"رياضه",p:7},{a:"بودكاست",p:6}
+      ]},
+      { category:"ترفيه", q:"اذكر شي تسويه وقت الملل", answers:[
+        {a:"تيك توك",p:22},{a:"يوتيوب",p:18},{a:"نوم",p:14},{a:"لعب",p:12},{a:"مشي",p:10},{a:"اكل",p:9},{a:"سولف",p:7},{a:"مسلسل",p:6}
+      ]},
+      { category:"ترفيه", q:"اذكر شي يخرب متعة اللعب", answers:[
+        {a:"لاق",p:26},{a:"هاكر",p:18},{a:"بنق",p:14},{a:"تيم سيء",p:12},{a:"سيرفر طافي",p:10},{a:"تحديث",p:8},{a:"صوت",p:7},{a:"كيرف",p:5}
+      ]},
+      { category:"عام", q:"اذكر شيء الناس تقول له دايم ما عندي وقت", answers:[
+        {a:"رياضه",p:22},{a:"مذاكره",p:18},{a:"قراءة",p:14},{a:"زياره",p:12},{a:"نوم بدري",p:10},{a:"ترتيب",p:9},{a:"طبخ",p:7},{a:"هوايه",p:6}
+      ]},
+    ];
+
+    const QUESTION_BANK = BASE_80
+      .flatMap((b) =>
+        CONTEXTS.map((c) => ({
+          category: (b.category || "عام") + c.addCat,
+          q: `${b.q} ${c.tag}`,
+          answers: (b.answers || []).slice(0, 8),
+        }))
+      )
+      .slice(0, 400);
+
+    // =========================
+    // أصوات
+    // =========================
+    const SFX = {
+      correct: new Audio("https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3"),
+      wrong:   new Audio("https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-buzz-950.mp3"),
+      buzz:    new Audio("https://assets.mixkit.co/sfx/preview/mixkit-game-show-buzz-in-3090.mp3"),
+      ding:    new Audio("https://assets.mixkit.co/sfx/preview/mixkit-game-show-bell-ding-2859.mp3"),
+    };
+    Object.values(SFX).forEach(a => { a.volume = 0.65; a.preload = "auto"; });
+
+    function playSound(aud){
+      if(!aud) return;
+      try{ aud.currentTime = 0; aud.play().catch(()=>{}); }catch(e){}
+    }
+
+    // =========================
+    // حالة اللعبة
+    // =========================
+    const state = {
+      round: 1,
+      multiplier: 1,
+      activeTeam: "blue",
+      scores: { blue: 0, red: 0 },
+      strikes: { blue: 0, red: 0 },
+      players: { blue: [], red: [] },
+      current: null,
+      revealed: [],
+    };
+
+    // =========================
+    // DOM Elements
+    // =========================
+    const el = {
+      board: document.getElementById("board"),
+      questionText: document.getElementById("questionText"),
+      catName: document.getElementById("catName"),
+      roundNum: document.getElementById("roundNum"),
+      multVal: document.getElementById("multVal"),
+      roundPoints: document.getElementById("roundPoints"),
+      remain: document.getElementById("remain"),
+      totalAns: document.getElementById("totalAns"),
+
+      scoreBlue: document.getElementById("scoreBlue"),
+      scoreRed: document.getElementById("scoreRed"),
+
+      strikesBlue: document.getElementById("strikesBlue"),
+      strikesRed: document.getElementById("strikesRed"),
+
+      btnActiveBlue: document.getElementById("btnActiveBlue"),
+      btnActiveRed: document.getElementById("btnActiveRed"),
+
+      toast: document.getElementById("toast"),
+
+      overlay: document.getElementById("overlay"),
+      modalTitle: document.getElementById("modalTitle"),
+      modalDesc: document.getElementById("modalDesc"),
+      modalFieldWrap: document.getElementById("modalFieldWrap"),
+      modalLabel: document.getElementById("modalLabel"),
+      modalInput: document.getElementById("modalInput"),
+      modalOk: document.getElementById("modalOk"),
+      modalCancel: document.getElementById("modalCancel"),
+
+      sideBlue: document.getElementById("sideBlue"),
+      sideRed: document.getElementById("sideRed"),
+
+      bigScore: document.getElementById("bigScore"),
+      countdown: document.getElementById("countdown"),
+      countNum: document.getElementById("countNum"),
+
+      confetti: document.getElementById("confetti"),
+
+      bluePlayers: document.getElementById("bluePlayers"),
+      redPlayers: document.getElementById("redPlayers"),
+      blueCount: document.getElementById("blueCount"),
+      redCount: document.getElementById("redCount"),
+      inpBluePlayer: document.getElementById("inpBluePlayer"),
+      inpRedPlayer: document.getElementById("inpRedPlayer"),
+    };
+
+    // =========================
+    // Helper Functions (نفس الكود الأصلي تماماً)
+    // =========================
+    const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+    const rand = (n) => Math.floor(Math.random() * n);
+
+    function toast(msg){
+      el.toast.textContent = msg;
+      el.toast.classList.add("show");
+      clearTimeout(toast._t);
+      toast._t = setTimeout(()=> el.toast.classList.remove("show"), 1600);
+    }
+
+    function normalize(s){
+      return (s || "")
+        .toString()
+        .trim()
+        .toLowerCase()
+        .replace(/[أإآ]/g,"ا")
+        .replace(/ة/g,"ه")
+        .replace(/ى/g,"ي")
+        .replace(/[^\p{L}\p{N}\s]/gu,"")
+        .replace(/\s+/g," ");
+    }
+
+    function currentRoundPoints(){
+      if(!state.current) return 0;
+      let sum = 0;
+      state.current.answers.forEach((x, i)=>{
+        if(state.revealed[i]) sum += Number(x.p||0);
+      });
+      return sum * state.multiplier;
+    }
+
+    function updateMeta(){
+      el.roundNum.textContent = state.round;
+      el.multVal.textContent = "×" + state.multiplier;
+      el.roundPoints.textContent = currentRoundPoints();
+      el.totalAns.textContent = state.current ? state.current.answers.length : 0;
+
+      if(state.current){
+        const revealedCount = state.revealed.filter(Boolean).length;
+        el.remain.textContent = (state.current.answers.length - revealedCount);
+      } else {
+        el.remain.textContent = 0;
+      }
+    }
+
+    function renderScores(){
+      el.scoreBlue.textContent = state.scores.blue;
+      el.scoreRed.textContent = state.scores.red;
+    }
+
+    function renderStrikes(){
+      const blueSlots = [...el.strikesBlue.querySelectorAll(".strike")];
+      const redSlots  = [...el.strikesRed.querySelectorAll(".strike")];
+      blueSlots.forEach((s,i)=> s.classList.toggle("on", i < state.strikes.blue));
+      redSlots.forEach((s,i)=> s.classList.toggle("on", i < state.strikes.red));
+    }
+
+    function setActiveTeam(team){
+      state.activeTeam = team;
+      el.btnActiveBlue.innerHTML = (team==="blue") ? '<i class="fas fa-check-circle"></i> ✅ الدور' : '<i class="fas fa-circle"></i> الدور';
+      el.btnActiveRed.innerHTML  = (team==="red")  ? '<i class="fas fa-check-circle"></i> ✅ الدور' : '<i class="fas fa-circle"></i> الدور';
+
+      el.btnActiveBlue.classList.toggle("primary", team==="blue");
+      el.btnActiveRed.classList.toggle("primary", team==="red");
+
+      el.sideBlue.classList.toggle("active-team", team==="blue");
+      el.sideRed.classList.toggle("active-team", team==="red");
+
+      toast(team==="blue" ? "الدور على الأزرق 🔵" : "الدور على الأحمر 🔴");
+    }
+
+    // Players functions
+    function renderPlayers(){
+      el.blueCount.textContent = `(${state.players.blue.length}/4)`;
+      el.redCount.textContent  = `(${state.players.red.length}/4)`;
+
+      el.bluePlayers.innerHTML = "";
+      el.redPlayers.innerHTML = "";
+
+      const makeItem = (team, name, idx) => {
+        const row = document.createElement("div");
+        row.className = "playerItem";
+        row.innerHTML = `
+          <div style="min-width:0;display:flex;flex-direction:column;gap:2px">
+            <div class="playerName">${escapeHtml(name)}</div>
+            <div class="playerTag">لاعب ${idx+1}</div>
+          </div>
+        `;
+        const btn = document.createElement("button");
+        btn.className = "btn small";
+        btn.innerHTML = '<i class="fas fa-trash"></i>';
+        btn.addEventListener("click", ()=> removePlayer(team, idx));
+        row.appendChild(btn);
+        return row;
+      };
+
+      state.players.blue.forEach((n, i)=> el.bluePlayers.appendChild(makeItem("blue", n, i)));
+      state.players.red.forEach((n, i)=> el.redPlayers.appendChild(makeItem("red", n, i)));
+    }
+
+    function addPlayer(team, raw){
+      const name = raw.trim();
+      if(!name) return toast("اكتب اسم اللاعب أولاً");
+      if(state.players[team].length >= 4) return toast("الحد الأقصى 4 لاعبين فقط");
+      const n1 = normalize(name);
+      if(state.players[team].some(x => normalize(x) === n1)) return toast("هذا الاسم موجود مسبقًا");
+      state.players[team].push(name);
+      renderPlayers();
+      toast(`تم إضافة لاعب لـ ${team==="blue" ? "الأزرق" : "الأحمر"}`);
+    }
+
+    function removePlayer(team, idx){
+      state.players[team].splice(idx, 1);
+      renderPlayers();
+      toast("تم حذف اللاعب");
+    }
+
+    function clearPlayers(team){
+      state.players[team] = [];
+      renderPlayers();
+      toast(`تم مسح لاعبين ${team==="blue" ? "الأزرق" : "الأحمر"}`);
+    }
+
+    function escapeHtml(str){
+      return str.replace(/[&<>"']/g, (m)=>({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+      }[m]));
+    }
+
+    // Board functions
+    function buildBoard(){
+      el.board.innerHTML = "";
+      if(!state.current) return;
+
+      state.current.answers.forEach((ans, i)=>{
+        const slot = document.createElement("div");
+        slot.className = "slot";
+        slot.dataset.index = i;
+
+        const face = document.createElement("div");
+        face.className = "face";
+
+        const front = document.createElement("div");
+        front.className = "front";
+        const frontText = document.createElement("div");
+        frontText.className = "frontText";
+        frontText.innerHTML = `
+          <div style="display:flex;align-items:center;gap:10px;min-width:0">
+            <div class="index">${i+1}</div>
+            <div class="mystery">•••••••••</div>
+          </div>
+          <div class="points">?</div>
+        `;
+        front.appendChild(frontText);
+
+        const back = document.createElement("div");
+        back.className = "back";
+
+        const left = document.createElement("div");
+        left.className = "left";
+
+        const idx = document.createElement("div");
+        idx.className = "index";
+        idx.textContent = (i+1);
+
+        const answer = document.createElement("div");
+        answer.className = "answer";
+        answer.textContent = ans.a;
+
+        left.appendChild(idx);
+        left.appendChild(answer);
+
+        const pts = document.createElement("div");
+        pts.className = "points";
+        pts.textContent = ans.p;
+
+        back.appendChild(left);
+        back.appendChild(pts);
+
+        face.appendChild(front);
+        face.appendChild(back);
+        slot.appendChild(face);
+
+        slot.addEventListener("click", ()=> toggleReveal(i));
+        el.board.appendChild(slot);
+      });
+
+      syncReveals();
+    }
+
+    function syncReveals(){
+      if(!state.current) return;
+      const slots = [...el.board.querySelectorAll(".slot")];
+      slots.forEach((slot)=>{
+        const i = Number(slot.dataset.index);
+        slot.classList.toggle("revealed", !!state.revealed[i]);
+      });
+
+      el.roundPoints.textContent = currentRoundPoints();
+      updateMeta();
+    }
+
+    function toggleReveal(i){
+      if(!state.current) return;
+      const was = !!state.revealed[i];
+      state.revealed[i] = !was;
+
+      const slot = el.board.querySelector(`.slot[data-index="${i}"]`);
+      if(slot){
+        slot.classList.add("pulse");
+        setTimeout(()=>slot.classList.remove("pulse"), 350);
+      }
+
+      if(!was) playSound(SFX.correct);
+      syncReveals();
+      toast(!was ? "✅ تم كشف الإجابة" : "↩️ تم إخفاء الإجابة");
+    }
+
+    function revealByIndex(i){
+      if(!state.current) return;
+      i = clamp(i, 0, state.current.answers.length-1);
+      if(!state.revealed[i]){
+        state.revealed[i] = true;
+        playSound(SFX.correct);
+        syncReveals();
+      }
+    }
+
+    function revealAll(){
+      if(!state.current) return;
+      state.revealed = state.revealed.map(()=>true);
+      playSound(SFX.ding);
+      syncReveals();
+      toast("👁️ تم كشف كل الإجابات");
+    }
+
+    function resetRound(keepQuestion=false){
+      state.strikes.blue = 0;
+      state.strikes.red = 0;
+      state.revealed = state.current ? state.current.answers.map(()=>false) : [];
+      if(!keepQuestion){
+        state.current = null;
+        el.questionText.textContent = 'اضغط "سؤال جديد" للبدء ✨';
+        el.catName.textContent = "—";
+        el.board.innerHTML = "";
+      }
+      renderStrikes();
+      updateMeta();
+      el.roundPoints.textContent = currentRoundPoints();
+      toast("تم تصفير الجولة 🧹");
+    }
+
+    function nextRound(){
+      state.round += 1;
+      state.multiplier = (state.round === 2) ? 2 : (state.round === 3) ? 3 : 1;
+      if(state.round > 3){
+        state.round = 1;
+        state.multiplier = 1;
+      }
+      updateMeta();
+      toast(`جولة ${state.round} — المضاعف ×${state.multiplier}`);
+      playSound(SFX.ding);
+    }
+
+    function pickNewQuestion(){
+      const q = QUESTION_BANK[rand(QUESTION_BANK.length)];
+      state.current = {
+        category: q.category,
+        q: q.q,
+        answers: q.answers.slice(0, 8)
+      };
+      state.current.answers.sort((a,b)=> (b.p||0)-(a.p||0));
+      state.revealed = state.current.answers.map(()=>false);
+      state.strikes.blue = 0;
+      state.strikes.red = 0;
+
+      el.questionText.textContent = state.current.q;
+      el.catName.textContent = state.current.category;
+
+      buildBoard();
+      renderStrikes();
+      updateMeta();
+      toast("✨ سؤال جديد جاهز!");
+      playSound(SFX.ding);
+    }
+
+    function showBigScore(points){
+      el.bigScore.textContent = "+" + points;
+      el.bigScore.classList.add("show");
+      clearTimeout(showBigScore._t);
+      showBigScore._t = setTimeout(()=> el.bigScore.classList.remove("show"), 1400);
+    }
+
+    function addRoundPointsTo(team){
+      const pts = currentRoundPoints();
+      if(pts <= 0){
+        toast("ما فيه نقاط مضافة — اكشف إجابات أولاً");
+        return;
+      }
+      state.scores[team] += pts;
+      renderScores();
+      showBigScore(pts);
+      toast(`🏆 تم إضافة ${pts} نقطة لـ ${team==="blue"?"الأزرق":"الأحمر"}`);
+      playSound(SFX.ding);
+      confettiBurst();
+    }
+
+    function addStrike(team){
+      state.strikes[team] = clamp(state.strikes[team]+1, 0, 3);
+      renderStrikes();
+      toast(`❌ خطأ على ${team==="blue"?"الأزرق":"الأحمر"} (${state.strikes[team]}/3)`);
+      playSound(SFX.wrong);
+
+      if(state.strikes[team] >= 3){
+        toast("⛔ 3 أخطاء! غالبًا الدور للفريق الثاني");
+        playSound(SFX.buzz);
+      }
+    }
+
+    function clearStrikes(team){
+      state.strikes[team] = 0;
+      renderStrikes();
+      toast(`🧽 تم مسح أخطاء ${team==="blue"?"الأزرق":"الأحمر"}`);
+    }
+
+    // Modal functions
+    let modalResolver = null;
+
+    function openModal({title, desc, withInput=false, label="إدخال", placeholder="", defaultValue=""}){
+      el.modalTitle.textContent = title;
+      el.modalDesc.textContent = desc || "";
+      el.modalFieldWrap.style.display = withInput ? "flex" : "none";
+      el.modalLabel.textContent = label;
+      el.modalInput.value = defaultValue || "";
+      el.modalInput.placeholder = placeholder || "";
+      el.overlay.classList.add("show");
+
+      return new Promise((resolve)=>{
+        modalResolver = resolve;
+        if(withInput) setTimeout(()=> el.modalInput.focus(), 50);
+      });
+    }
+
+    function closeModal(result=null){
+      el.overlay.classList.remove("show");
+      const r = modalResolver;
+      modalResolver = null;
+      if(r) r(result);
+    }
+
+    el.modalOk.addEventListener("click", ()=>{
+      const val = el.modalFieldWrap.style.display === "none" ? true : el.modalInput.value;
+      closeModal(val);
+    });
+    el.modalCancel.addEventListener("click", ()=> closeModal(null));
+    el.overlay.addEventListener("click", (e)=>{ if(e.target === el.overlay) closeModal(null); });
+    el.modalInput.addEventListener("keydown", (e)=>{
+      if(e.key === "Enter") el.modalOk.click();
+      if(e.key === "Escape") closeModal(null);
+    });
+
+    // Countdown + AutoCheck
+    async function runCountdown(seconds=5){
+      el.countNum.textContent = seconds;
+      el.countdown.classList.add("show");
+      let s = seconds;
+      return new Promise((resolve)=>{
+        const t = setInterval(()=>{
+          s--;
+          el.countNum.textContent = s;
+          if(s <= 0){
+            clearInterval(t);
+            el.countdown.classList.remove("show");
+            resolve(true);
+          }
+        }, 1000);
+      });
+    }
+
+    async function autoCheck(){
+      if(!state.current){
+        toast("اختر سؤال جديد أولاً");
+        return;
+      }
+
+      const input = await openModal({
+        title: "✅ فحص إجابة",
+        desc: "اكتب إجابة اللاعب.\nإذا كانت موجودة في اللوحة سيتم كشفها تلقائيًا.",
+        withInput: true,
+        label: "الإجابة",
+        placeholder: "مثال: بيض"
+      });
+      if(input == null) return;
+
+      await runCountdown(5);
+
+      const n = normalize(input);
+      if(!n){ toast("اكتب إجابة صحيحة"); return; }
+
+      const idx = state.current.answers.findIndex(x => normalize(x.a) === n);
+      if(idx === -1){
+        toast("❌ مو موجودة — اعتبرها خطأ");
+        playSound(SFX.wrong);
+        return;
+      }
+
+      revealByIndex(idx);
+      toast("✅ إجابة صحيحة!");
+    }
+
+    async function addAnswerManual(){
+      if(!state.current){
+        toast("اختر سؤال جديد أولاً");
+        return;
+      }
+      const input = await openModal({
+        title: "➕ كشف/إضافة إجابة",
+        desc: "اكتب رقم الإجابة (1-8) أو اكتب النص وسيتم البحث عنه.",
+        withInput: true,
+        label: "رقم أو نص",
+        placeholder: "مثال: 1 أو (بيض)"
+      });
+      if(input == null) return;
+
+      const t = input.trim();
+      if(!t){ toast("اكتب رقم أو نص"); return; }
+
+      const num = Number(t);
+      if(Number.isFinite(num) && String(num) === t && num >= 1 && num <= state.current.answers.length){
+        revealByIndex(num-1);
+        toast(`تم كشف الإجابة رقم ${num}`);
+        return;
+      }
+
+      const n = normalize(t);
+      const idx = state.current.answers.findIndex(x => normalize(x.a) === n);
+      if(idx === -1){
+        toast("ما لقيتها بالضبط — جرّب رقم أو اكتبها نفس اللي باللوحة");
+        return;
+      }
+      revealByIndex(idx);
+      toast("✅ تم كشف الإجابة");
+    }
+
+    async function revealByNumber(){
+      if(!state.current){
+        toast("اختر سؤال جديد أولاً");
+        return;
+      }
+      const input = await openModal({
+        title: "🔢 كشف برقم",
+        desc: "اكتب رقم الإجابة من 1 إلى 8.",
+        withInput: true,
+        label: "الرقم",
+        placeholder: "مثال: 3"
+      });
+      if(input == null) return;
+
+      const num = Number(String(input).trim());
+      if(!Number.isFinite(num) || num < 1 || num > state.current.answers.length){
+        toast("رقم غير صحيح");
+        return;
+      }
+      revealByIndex(num-1);
+      toast(`تم كشف الإجابة رقم ${num}`);
+    }
+
+    // Fullscreen + Help + Buzz
+    async function toggleFullscreen(){
+      try{
+        if(!document.fullscreenElement){
+          await document.documentElement.requestFullscreen();
+          toast("⛶ تم تفعيل ملء الشاشة");
+        }else{
+          await document.exitFullscreen();
+          toast("⛶ تم إلغاء ملء الشاشة");
+        }
+      }catch(e){ toast("متصفحك منع ملء الشاشة"); }
+    }
+
+    async function showHelp(){
+      await openModal({
+        title: "❔ طريقة اللعب (مختصر)",
+        desc:
+`• اضغط "سؤال جديد" لبدء السؤال.
+• نقاط الجولة = مجموع نقاط الإجابات المكشوفة × المضاعف.
+• بعد نهاية السؤال اضغط “إضافة نقاط الجولة” للفريق الفائز.
+• زر “🏁 جولة جديدة” يرجّع الجولة 1 ويصفر نقاط الفريقين.
+
+اختصارات:
+N سؤال جديد — A كشف/إضافة — R كشف الكل — B الدور للأزرق — E الدور للأحمر — Space جرس`,
+        withInput: false
+      });
+    }
+
+    function buzz(){
+      playSound(SFX.buzz);
+      toast("🔔 بَزّ!");
+    }
+
+    // New Game
+    async function newGame(){
+      const ok = await openModal({
+        title: "🏁 جولة جديدة",
+        desc: "هذا سيقوم بـ:\n- تصفير نقاط الفريقين\n- تصفير الأخطاء\n- الرجوع للجولة 1 (×1)\n- البدء بسؤال جديد\n\nمتأكد؟",
+        withInput: false
+      });
+      if(!ok) return;
+
+      state.scores.blue = 0;
+      state.scores.red = 0;
+      state.strikes.blue = 0;
+      state.strikes.red = 0;
+
+      state.round = 1;
+      state.multiplier = 1;
+
+      renderScores();
+      renderStrikes();
+      updateMeta();
+
+      pickNewQuestion();
+      toast("تم بدء جولة جديدة ✅");
+    }
+
+    // Confetti
+    const conf = { ctx:null, W:0, H:0, parts:[], running:false };
+
+    function resizeConfetti(){
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
+      conf.W = window.innerWidth;
+      conf.H = window.innerHeight;
+      el.confetti.width = Math.floor(conf.W * dpr);
+      el.confetti.height = Math.floor(conf.H * dpr);
+      el.confetti.style.width = conf.W + "px";
+      el.confetti.style.height = conf.H + "px";
+      conf.ctx = el.confetti.getContext("2d");
+      conf.ctx.setTransform(dpr,0,0,dpr,0,0);
+    }
+
+    function confettiBurst(){
+      if(!conf.ctx) resizeConfetti();
+      const count = 120;
+      for(let i=0;i<count;i++){
+        conf.parts.push({
+          x: conf.W/2 + (Math.random()*120-60),
+          y: conf.H/2 + (Math.random()*40-20),
+          vx: (Math.random()*6-3),
+          vy: (Math.random()*-8-3),
+          g: 0.18 + Math.random()*0.10,
+          r: 2 + Math.random()*3,
+          a: 1,
+          rot: Math.random()*Math.PI,
+          vr: (Math.random()*0.2-0.1),
+        });
+      }
+      if(!conf.running){
+        conf.running = true;
+        requestAnimationFrame(confettiTick);
+      }
+    }
+
+    function confettiTick(){
+      const ctx = conf.ctx;
+      ctx.clearRect(0,0,conf.W,conf.H);
+
+      for(let i=conf.parts.length-1; i>=0; i--){
+        const p = conf.parts[i];
+        p.vy += p.g;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += p.vr;
+        p.a -= 0.008;
+
+        if(p.a <= 0 || p.y > conf.H + 40){
+          conf.parts.splice(i,1);
+          continue;
+        }
+
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.a);
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        const hue = Math.floor((p.x / conf.W) * 360);
+        ctx.fillStyle = `hsla(${hue}, 80%, 60%, ${p.a})`;
+        ctx.fillRect(-p.r, -p.r, p.r*2.4, p.r*1.4);
+        ctx.restore();
+      }
+
+      if(conf.parts.length > 0){
+        requestAnimationFrame(confettiTick);
+      }else{
+        conf.running = false;
+        ctx.clearRect(0,0,conf.W,conf.H);
+      }
+    }
+
+    window.addEventListener("resize", resizeConfetti);
+    resizeConfetti();
+
+    // Button event listeners
+    document.getElementById("btnNewQ").addEventListener("click", pickNewQuestion);
+    document.getElementById("btnRevealAll").addEventListener("click", revealAll);
+    document.getElementById("btnReset").addEventListener("click", ()=> resetRound(false));
+    document.getElementById("btnNextRound").addEventListener("click", nextRound);
+    document.getElementById("btnSwapTurn").addEventListener("click", ()=> setActiveTeam(state.activeTeam==="blue"?"red":"blue"));
+    document.getElementById("btnFullscreen").addEventListener("click", toggleFullscreen);
+    document.getElementById("btnHelp").addEventListener("click", showHelp);
+    document.getElementById("btnBuzz").addEventListener("click", buzz);
+
+    document.getElementById("btnAddAnswer").addEventListener("click", addAnswerManual);
+    document.getElementById("btnRevealByNum").addEventListener("click", revealByNumber);
+    document.getElementById("btnAutoCheck").addEventListener("click", autoCheck);
+
+    document.getElementById("btnActiveBlue").addEventListener("click", ()=> setActiveTeam("blue"));
+    document.getElementById("btnActiveRed").addEventListener("click", ()=> setActiveTeam("red"));
+
+    document.getElementById("btnAddBlue").addEventListener("click", ()=> addRoundPointsTo("blue"));
+    document.getElementById("btnAddRed").addEventListener("click", ()=> addRoundPointsTo("red"));
+
+    document.getElementById("btnStrikeBlue").addEventListener("click", ()=> addStrike("blue"));
+    document.getElementById("btnStrikeRed").addEventListener("click", ()=> addStrike("red"));
+
+    document.getElementById("btnClearStrikeBlue").addEventListener("click", ()=> clearStrikes("blue"));
+    document.getElementById("btnClearStrikeRed").addEventListener("click", ()=> clearStrikes("red"));
+
+    document.getElementById("btnNewGame").addEventListener("click", newGame);
+
+    document.getElementById("btnAddBluePlayer").addEventListener("click", ()=> {
+      addPlayer("blue", el.inpBluePlayer.value);
+      el.inpBluePlayer.value = "";
+      el.inpBluePlayer.focus();
+    });
+    document.getElementById("btnAddRedPlayer").addEventListener("click", ()=> {
+      addPlayer("red", el.inpRedPlayer.value);
+      el.inpRedPlayer.value = "";
+      el.inpRedPlayer.focus();
+    });
+
+    el.inpBluePlayer.addEventListener("keydown", (e)=>{ if(e.key==="Enter") document.getElementById("btnAddBluePlayer").click(); });
+    el.inpRedPlayer.addEventListener("keydown", (e)=>{ if(e.key==="Enter") document.getElementById("btnAddRedPlayer").click(); });
+
+    document.getElementById("btnClearBluePlayers").addEventListener("click", ()=> clearPlayers("blue"));
+    document.getElementById("btnClearRedPlayers").addEventListener("click", ()=> clearPlayers("red"));
+
+    // Keyboard shortcuts
+    window.addEventListener("keydown", (e)=>{
+      if(el.overlay.classList.contains("show")) return;
+      const k = e.key.toLowerCase();
+      if(k === "n"){ pickNewQuestion(); }
+      if(k === "r"){ revealAll(); }
+      if(k === "a"){ addAnswerManual(); }
+      if(k === "b"){ setActiveTeam("blue"); }
+      if(k === "e"){ setActiveTeam("red"); }
+      if(e.code === "Space"){ e.preventDefault(); buzz(); }
+    });
+
+    // Initial render
+    renderScores();
+    renderStrikes();
+    renderPlayers();
+    setActiveTeam("blue");
+    updateMeta();
+  </script>
+</body>
+</html>
