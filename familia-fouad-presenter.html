@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+  <title>🛡️ فاميليا فؤاد | لوحة المقدم</title>
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root{
+      --bg:#0b0e14;
+      --panel:#121a24;
+      --card:#152133;
+      --stroke: rgba(255,255,255,.10);
+      --text:#f3f6fb;
+      --muted:#b9c7dc;
+      --muted2:#8a9bb5;
+      --gold:#fbbf24;
+      --blue:#3b82f6;
+      --red:#ef4444;
+      --shadow: 0 22px 60px rgba(0,0,0,.55);
+      --radius: 20px;
+    }
+
+    *{ box-sizing:border-box; margin:0; padding:0; }
+    html,body{ height:100%; }
+    body{
+      font-family: 'Tajawal','Cairo',system-ui,sans-serif;
+      background: radial-gradient(circle at 30% 20%, rgba(59,130,246,.10), transparent 35%),
+                  radial-gradient(circle at 70% 80%, rgba(239,68,68,.10), transparent 35%),
+                  radial-gradient(circle at 50% 50%, rgba(251,191,36,.06), transparent 45%),
+                  var(--bg);
+      color: var(--text);
+      padding: 18px;
+    }
+
+    .wrap{
+      max-width: 1100px;
+      margin: 0 auto;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      min-height: 100%;
+    }
+
+    .topbar{
+      background: rgba(18,33,36,.55);
+      border: 1px solid rgba(255,255,255,.08);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px 18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width: 240px;
+    }
+
+    .logo{
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--gold), var(--blue));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size: 22px;
+      font-weight: 900;
+      color:#0b0e14;
+      box-shadow: 0 14px 30px rgba(251,191,36,.18);
+    }
+
+    .titles b{
+      display:block;
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: -0.3px;
+    }
+
+    .titles small{
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .chips{
+      display:flex;
+      gap:8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      flex:1;
+    }
+
+    .chip{
+      background: rgba(0,0,0,.32);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--muted);
+      display:flex;
+      align-items:center;
+      gap: 8px;
+    }
+
+    .chip b{
+      color: var(--gold);
+      font-weight: 900;
+      font-size: 14px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 14px;
+      flex:1;
+    }
+
+    @media (max-width: 980px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+
+    .card{
+      background: rgba(21,33,51,.60);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      backdrop-filter: blur(10px);
+    }
+
+    .qTitle{
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 800;
+      margin-bottom: 10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap: wrap;
+    }
+
+    .qText{
+      font-size: 24px;
+      font-weight: 900;
+      line-height: 1.5;
+      background: linear-gradient(135deg, #fff, var(--gold));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color: transparent;
+      padding: 8px 0 2px;
+      word-break: break-word;
+    }
+
+    .subRow{
+      display:flex;
+      gap:10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      color: var(--muted2);
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .badge{
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.25);
+      border-radius: 12px;
+      padding: 8px 10px;
+    }
+
+    .answers{
+      margin-top: 14px;
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+    }
+
+    .ans{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      background: rgba(0,0,0,.25);
+      border: 1px solid rgba(255,255,255,.09);
+      border-radius: 16px;
+      padding: 12px 12px;
+    }
+
+    .ansLeft{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .num{
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight: 900;
+      color: var(--muted);
+      flex: 0 0 auto;
+    }
+
+    .txt{
+      display:flex;
+      flex-direction:column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .txt b{
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 520px;
+    }
+
+    .txt small{
+      color: var(--muted2);
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .rightBits{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      flex: 0 0 auto;
+    }
+
+    .pts{
+      width: 70px;
+      height: 36px;
+      border-radius: 14px;
+      border: 1px solid rgba(251,191,36,.25);
+      background: rgba(251,191,36,.10);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight: 900;
+      color: var(--gold);
+    }
+
+    .stateDot{
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      box-shadow: 0 0 0 4px rgba(255,255,255,.05);
+    }
+
+    .revealed{
+      border-color: rgba(251,191,36,.35);
+      background: rgba(251,191,36,.07);
+    }
+
+    .revealed .stateDot{ background: #22c55e; }
+    .hidden .stateDot{ background: rgba(255,255,255,.28); }
+
+    .asideRow{
+      display:flex;
+      flex-direction:column;
+      gap: 12px;
+    }
+
+    .miniTitle{
+      color: var(--muted);
+      font-weight: 900;
+      margin-bottom: 10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+    }
+
+    .kv{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(0,0,0,.25);
+      border: 1px solid rgba(255,255,255,.09);
+      font-weight: 800;
+      color: var(--muted);
+    }
+
+    .kv b{
+      color: var(--text);
+      font-weight: 900;
+    }
+
+    .teamPill{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.25);
+      font-weight: 900;
+      color: var(--text);
+    }
+
+    .dot{
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+    }
+
+    .blue{ background: var(--blue); }
+    .red { background: var(--red); }
+
+    .warn{
+      color: var(--muted2);
+      font-weight: 700;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .empty{
+      color: var(--muted2);
+      font-weight: 800;
+      padding: 10px 0;
+    }
+
+    .btnRow{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .btn{
+      cursor:pointer;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-weight: 900;
+      transition: .15s;
+      user-select: none;
+    }
+
+    .btn:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,.10);
+      border-color: rgba(255,255,255,.18);
+    }
+
+    .btn:active{
+      transform: translateY(1px);
+      transition: .05s;
+    }
+
+    .toast{
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%) translateY(14px);
+      opacity: 0;
+      pointer-events: none;
+      background: rgba(0,0,0,.65);
+      border: 1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(8px);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 900;
+      transition: .2s;
+      z-index: 9999;
+    }
+
+    .toast.show{
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">🛡️</div>
+        <div class="titles">
+          <b>لوحة المقدم</b>
+          <small>تعرض السؤال + كل الإجابات + حالة الكشف</small>
+        </div>
+      </div>
+
+      <div class="chips">
+        <div class="chip">الجولة <b id="cRound">—</b></div>
+        <div class="chip">المضاعف <b id="cMult">—</b></div>
+        <div class="chip">آخر تحديث <b id="cTime">—</b></div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="qTitle">
+          <span>📌 السؤال الحالي</span>
+          <span class="teamPill" id="activeTeamPill">
+            <span class="dot blue" id="teamDot"></span>
+            <span id="teamName">—</span>
+          </span>
+        </div>
+
+        <div class="qText" id="qText">افتح سؤال من صفحة اللعبة…</div>
+
+        <div class="subRow">
+          <span class="badge">🏷️ التصنيف: <b id="qCat">—</b></span>
+          <span class="badge">👁️ المكشوف: <b id="qRevealed">0</b>/<b id="qTotal">0</b></span>
+        </div>
+
+        <div class="btnRow">
+          <button class="btn" id="btnCopyQ">نسخ السؤال</button>
+          <button class="btn" id="btnCopyAnswers">نسخ الإجابات</button>
+          <button class="btn" id="btnCopyAll">نسخ (سؤال + إجابات)</button>
+        </div>
+
+        <div class="answers" id="answers">
+          <div class="empty" id="empty">لا يوجد سؤال حالياً.</div>
+        </div>
+      </div>
+
+      <div class="asideRow">
+        <div class="card">
+          <div class="miniTitle">🏆 النقاط</div>
+          <div class="kv"><span>الأزرق</span><b id="sBlue">0</b></div>
+          <div class="kv"><span>الأحمر</span><b id="sRed">0</b></div>
+        </div>
+
+        <div class="card">
+          <div class="miniTitle">❌ الأخطاء</div>
+          <div class="kv"><span>الأزرق</span><b id="stBlue">0</b></div>
+          <div class="kv"><span>الأحمر</span><b id="stRed">0</b></div>
+        </div>
+
+        <div class="card">
+          <div class="miniTitle">ℹ️ تنبيه</div>
+          <div class="warn">
+            • هذه الصفحة مخصصة للمقدم فقط.<br>
+            • تعرض كل الإجابات دائمًا، وتوضح أيها مكشوف على شاشة اللعب.<br>
+            • التحديث يتم تلقائيًا طالما تبويب اللعبة مفتوح.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">—</div>
+
+  <script>
+    const PRESENTER_CHANNEL_NAME = "familia-fouad-presenter-v1";
+    const PRESENTER_STORAGE_KEY  = "FF_PRESENTER_STATE_V1";
+    let bc = null;
+
+    try {
+      bc = new BroadcastChannel(PRESENTER_CHANNEL_NAME);
+    } catch (e) {
+      bc = null;
+    }
+
+    const el = {
+      cRound: document.getElementById("cRound"),
+      cMult: document.getElementById("cMult"),
+      cTime: document.getElementById("cTime"),
+
+      qText: document.getElementById("qText"),
+      qCat: document.getElementById("qCat"),
+      qRevealed: document.getElementById("qRevealed"),
+      qTotal: document.getElementById("qTotal"),
+      answers: document.getElementById("answers"),
+      empty: document.getElementById("empty"),
+
+      sBlue: document.getElementById("sBlue"),
+      sRed: document.getElementById("sRed"),
+      stBlue: document.getElementById("stBlue"),
+      stRed: document.getElementById("stRed"),
+
+      activeTeamPill: document.getElementById("activeTeamPill"),
+      teamDot: document.getElementById("teamDot"),
+      teamName: document.getElementById("teamName"),
+
+      toast: document.getElementById("toast"),
+
+      btnCopyQ: document.getElementById("btnCopyQ"),
+      btnCopyAnswers: document.getElementById("btnCopyAnswers"),
+      btnCopyAll: document.getElementById("btnCopyAll"),
+    };
+
+    function toast(msg){
+      el.toast.textContent = msg;
+      el.toast.classList.add("show");
+      clearTimeout(toast._t);
+      toast._t = setTimeout(()=> el.toast.classList.remove("show"), 1500);
+    }
+
+    function safeText(s){
+      return (s || "").toString();
+    }
+
+    function fmtTime(ts){
+      try{
+        const d = new Date(ts);
+        const hh = String(d.getHours()).padStart(2,"0");
+        const mm = String(d.getMinutes()).padStart(2,"0");
+        const ss = String(d.getSeconds()).padStart(2,"0");
+        return `${hh}:${mm}:${ss}`;
+      }catch(e){
+        return "—";
+      }
+    }
+
+    function setTeam(team){
+      if(team === "red"){
+        el.teamDot.classList.remove("blue");
+        el.teamDot.classList.add("red");
+        el.teamName.textContent = "الدور: الأحمر 🔴";
+      } else {
+        el.teamDot.classList.remove("red");
+        el.teamDot.classList.add("blue");
+        el.teamName.textContent = "الدور: الأزرق 🔵";
+      }
+    }
+
+    function render(payload){
+      if(!payload) return;
+
+      el.cRound.textContent = payload.round != null ? payload.round : "—";
+      el.cMult.textContent  = payload.multiplier != null ? ("×" + payload.multiplier) : "—";
+      el.cTime.textContent  = payload.ts ? fmtTime(payload.ts) : "—";
+
+      const scores = payload.scores || { blue: 0, red: 0 };
+      const strikes = payload.strikes || { blue: 0, red: 0 };
+
+      el.sBlue.textContent = scores.blue ?? 0;
+      el.sRed.textContent  = scores.red ?? 0;
+      el.stBlue.textContent = strikes.blue ?? 0;
+      el.stRed.textContent  = strikes.red ?? 0;
+
+      setTeam(payload.activeTeam || "blue");
+
+      const current = payload.current;
+      if(!current){
+        el.qText.textContent = "لا يوجد سؤال حالياً.";
+        el.qCat.textContent = "—";
+        el.qRevealed.textContent = "0";
+        el.qTotal.textContent = "0";
+        el.answers.innerHTML = "";
+        el.answers.appendChild(el.empty);
+        el.empty.style.display = "block";
+        return;
+      }
+
+      el.qText.textContent = safeText(current.q);
+      el.qCat.textContent  = safeText(current.category);
+
+      const answers = Array.isArray(current.answers) ? current.answers : [];
+      const revealed = Array.isArray(payload.revealed) ? payload.revealed : [];
+
+      const revealedCount = revealed.filter(Boolean).length;
+      el.qRevealed.textContent = revealedCount;
+      el.qTotal.textContent = answers.length;
+
+      el.answers.innerHTML = "";
+      el.empty.style.display = "none";
+
+      answers.forEach((a, idx)=>{
+        const isRevealed = !!revealed[idx];
+
+        const row = document.createElement("div");
+        row.className = "ans " + (isRevealed ? "revealed" : "hidden");
+
+        const left = document.createElement("div");
+        left.className = "ansLeft";
+
+        const num = document.createElement("div");
+        num.className = "num";
+        num.textContent = idx + 1;
+
+        const txt = document.createElement("div");
+        txt.className = "txt";
+
+        const t = document.createElement("b");
+        t.textContent = safeText(a.a);
+
+        const s = document.createElement("small");
+        s.textContent = isRevealed ? "✅ مكشوف على شاشة اللعب" : "👁️ مخفي على شاشة اللعب";
+
+        txt.appendChild(t);
+        txt.appendChild(s);
+
+        left.appendChild(num);
+        left.appendChild(txt);
+
+        const right = document.createElement("div");
+        right.className = "rightBits";
+
+        const dot = document.createElement("div");
+        dot.className = "stateDot";
+
+        const pts = document.createElement("div");
+        pts.className = "pts";
+        pts.textContent = safeText(a.p);
+
+        right.appendChild(dot);
+        right.appendChild(pts);
+
+        row.appendChild(left);
+        row.appendChild(right);
+
+        el.answers.appendChild(row);
+      });
+    }
+
+    function readFromStorage(){
+      try{
+        const raw = localStorage.getItem(PRESENTER_STORAGE_KEY);
+        if(!raw) return null;
+        return JSON.parse(raw);
+      }catch(e){
+        return null;
+      }
+    }
+
+    // Copy helpers
+    async function copyText(text){
+      const t = safeText(text);
+      try{
+        await navigator.clipboard.writeText(t);
+        toast("تم النسخ ✅");
+      }catch(e){
+        // fallback
+        try{
+          const ta = document.createElement("textarea");
+          ta.value = t;
+          ta.style.position = "fixed";
+          ta.style.left = "-9999px";
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          document.body.removeChild(ta);
+          toast("تم النسخ ✅");
+        }catch(err){
+          toast("فشل النسخ ❌");
+        }
+      }
+    }
+
+    function buildCopyAnswers(payload){
+      if(!payload || !payload.current) return "";
+      const q = payload.current;
+      const answers = Array.isArray(q.answers) ? q.answers : [];
+      return answers.map((x,i)=> `${i+1}) ${safeText(x.a)} (${safeText(x.p)})`).join("\n");
+    }
+
+    function buildCopyAll(payload){
+      if(!payload || !payload.current) return "";
+      const q = payload.current;
+      const head = `السؤال: ${safeText(q.q)}\nالتصنيف: ${safeText(q.category)}\n`;
+      const ans = buildCopyAnswers(payload);
+      return head + "\nالإجابات:\n" + ans;
+    }
+
+    // Button actions
+    el.btnCopyQ.addEventListener("click", ()=>{
+      const payload = readFromStorage();
+      const txt = payload?.current?.q ? payload.current.q : "";
+      copyText(txt);
+    });
+
+    el.btnCopyAnswers.addEventListener("click", ()=>{
+      const payload = readFromStorage();
+      copyText(buildCopyAnswers(payload));
+    });
+
+    el.btnCopyAll.addEventListener("click", ()=>{
+      const payload = readFromStorage();
+      copyText(buildCopyAll(payload));
+    });
+
+    // Listen BC
+    if(bc){
+      bc.onmessage = (ev)=>{
+        render(ev.data);
+      };
+    }
+
+    // Storage event (إذا صفحة اللعبة كتبت في localStorage)
+    window.addEventListener("storage", (e)=>{
+      if(e.key === PRESENTER_STORAGE_KEY){
+        const payload = readFromStorage();
+        if(payload) render(payload);
+      }
+    });
+
+    // Initial load
+    const initial = readFromStorage();
+    if(initial) render(initial);
+  </script>
+</body>
+</html>
