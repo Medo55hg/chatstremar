@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DEX vs 89 - Flip Coin</title>
+
+<style>
+body{
+    margin:0;
+    background: radial-gradient(circle at center, #111633, #050510);
+    font-family:Tahoma, sans-serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:100vh;
+    color:white;
+    overflow:hidden;
+}
+
+/* الحاوية الرئيسية */
+.wrapper{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+}
+
+/* المساحات الإعلانية */
+.ad{
+    width:180px;
+    height:420px;
+    margin:20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    font-size:22px;
+    font-weight:bold;
+    border-radius:20px;
+    background:linear-gradient(145deg,#ff0077,#aa0033);
+    box-shadow:0 0 25px #ff0077;
+    animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+    0%{box-shadow:0 0 15px #ff0077;}
+    50%{box-shadow:0 0 35px #ff3399;}
+    100%{box-shadow:0 0 15px #ff0077;}
+}
+
+/* المنطقة الوسط */
+.center{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+/* الشعار */
+.logo{
+    width:220px;
+    margin-bottom:30px;
+    animation:float 4s infinite ease-in-out;
+}
+
+@keyframes float{
+    0%{transform:translateY(0);}
+    50%{transform:translateY(-10px);}
+    100%{transform:translateY(0);}
+}
+
+/* العملة */
+.coin-container{
+    perspective:1200px;
+}
+
+.coin{
+    width:230px;
+    height:230px;
+    position:relative;
+    transform-style:preserve-3d;
+    transition:transform 1.5s ease-in-out;
+}
+
+.coin.flipping{
+    transform:rotateY(1800deg);
+}
+
+.side{
+    position:absolute;
+    width:100%;
+    height:100%;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:45px;
+    font-weight:900;
+    backface-visibility:hidden;
+    text-shadow:0 0 20px #000;
+}
+
+.front{
+    background:radial-gradient(circle,#00eaff,#0077ff);
+}
+
+.back{
+    background:radial-gradient(circle,#ff007a,#ff0033);
+    transform:rotateY(180deg);
+}
+
+/* زر */
+button{
+    margin-top:30px;
+    padding:14px 35px;
+    font-size:20px;
+    border:none;
+    border-radius:30px;
+    cursor:pointer;
+    background:#00eaff;
+    color:#000;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:scale(1.1);
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+<div class="ad">
+🔥 مساحة إعلانية<br>
+بس 89$ 😂
+</div>
+
+<div class="center">
+
+<img src="https://i.postimg.cc/j5d9P1gF/dda42797-92c6-437f-9b3c-8fb1117e0655-fullsize.jpg" class="logo">
+
+<div class="coin-container">
+    <div class="coin" id="coin">
+        <div class="side front">DEX</div>
+        <div class="side back">89</div>
+    </div>
+</div>
+
+<button onclick="flipCoin()">اقلبها 🔥</button>
+
+</div>
+
+<div class="ad">
+💰 إعلان هنا<br>
+فقط 89$ 😎
+</div>
+
+</div>
+
+<!-- أصوات -->
+<audio id="flipSound" src="https://assets.mixkit.co/sfx/preview/mixkit-fast-coin-flip-1933.mp3"></audio>
+<audio id="winSound" src="https://assets.mixkit.co/sfx/preview/mixkit-video-game-win-2016.mp3"></audio>
+
+<script>
+function flipCoin(){
+    const coin = document.getElementById("coin");
+    const flipSound = document.getElementById("flipSound");
+    const winSound = document.getElementById("winSound");
+
+    flipSound.play();
+
+    coin.classList.add("flipping");
+
+    setTimeout(()=>{
+        let result = Math.random() < 0.5 ? "DEX" : "89";
+
+        if(result === "DEX"){
+            coin.querySelector(".front").innerText = "DEX";
+            coin.querySelector(".back").innerText = "89";
+        }else{
+            coin.querySelector(".front").innerText = "89";
+            coin.querySelector(".back").innerText = "DEX";
+        }
+
+        winSound.play();
+        coin.classList.remove("flipping");
+    },1500);
+}
+</script>
+
+</body>
+</html>
