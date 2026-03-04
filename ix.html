@@ -44,7 +44,7 @@
             50% { opacity: 1; }
         }
 
-        /* تحسين الإعلانات */
+        /* تحسين الإعلانات - تقريبها من المنتصف */
         .ad {
             position: fixed;
             top: 50%;
@@ -75,8 +75,14 @@
             box-shadow: 0 20px 45px rgba(0,234,255,0.3);
         }
 
-        .ad-left { left: 20px; }
-        .ad-right { right: 20px; }
+        /* تقريب الإعلانات من المنتصف - تم تعديل المسافات */
+        .ad-left { 
+            left: 80px; /* تم تقليل المسافة من 20px إلى 80px لتقريبها من المنتصف */
+        }
+        
+        .ad-right { 
+            right: 80px; /* تم تقليل المسافة من 20px إلى 80px لتقريبها من المنتصف */
+        }
 
         .ad i {
             font-size: 40px;
@@ -262,8 +268,16 @@
             opacity: 1;
         }
 
-        /* العدسة المكبرة */
+        /* تحسينات للشاشات المتوسطة */
+        @media (max-width: 1200px) {
+            .ad-left { left: 40px; }
+            .ad-right { right: 40px; }
+            .ad { width: 150px; font-size: 18px; }
+        }
+
         @media (max-width: 1000px) {
+            .ad-left { left: 20px; }
+            .ad-right { right: 20px; }
             .ad {
                 width: 130px;
                 font-size: 16px;
@@ -294,7 +308,7 @@
 </head>
 <body>
 
-    <!-- الإعلانات المحسّنة -->
+    <!-- الإعلانات المحسّنة - أقرب للمنتصف -->
     <div class="ad ad-left">
         <i class="fas fa-bullhorn"></i>
         مساحة إعلانية
@@ -486,11 +500,6 @@
         window.addEventListener('load', () => {
             console.log('مرحباً بك في لعبة DEX vs 89!');
         });
-
-        // حفظ الحالة في localStorage (اختياري)
-        function saveState() {
-            // يمكن إضافة حفظ الحالة إذا أردت
-        }
     </script>
 </body>
 </html>
