@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DEX vs 89 - Flip Coin</title>
+<title>DEX vs 89 - Smooth Flip</title>
 
 <style>
 body{
     margin:0;
-    background: radial-gradient(circle at center, #111633, #050510);
+    background: radial-gradient(circle at center, #0f1328, #050510);
     font-family:Tahoma, sans-serif;
     display:flex;
     align-items:center;
@@ -18,38 +18,28 @@ body{
     overflow:hidden;
 }
 
-/* الحاوية الرئيسية */
-.wrapper{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    width:100%;
-}
-
-/* المساحات الإعلانية */
+/* إعلانات */
 .ad{
-    width:180px;
-    height:420px;
-    margin:20px;
+    position:fixed;
+    top:50%;
+    transform:translateY(-50%);
+    width:170px;
+    height:65vh;
     display:flex;
     align-items:center;
     justify-content:center;
     text-align:center;
-    font-size:22px;
+    font-size:18px;
     font-weight:bold;
+    background:linear-gradient(180deg,#111,#000);
     border-radius:20px;
-    background:linear-gradient(145deg,#ff0077,#aa0033);
-    box-shadow:0 0 25px #ff0077;
-    animation:pulse 2s infinite;
+    line-height:1.7;
 }
 
-@keyframes pulse{
-    0%{box-shadow:0 0 15px #ff0077;}
-    50%{box-shadow:0 0 35px #ff3399;}
-    100%{box-shadow:0 0 15px #ff0077;}
-}
+.ad-left{ left:10px; }
+.ad-right{ right:10px; }
 
-/* المنطقة الوسط */
+/* الوسط */
 .center{
     display:flex;
     flex-direction:column;
@@ -60,13 +50,6 @@ body{
 .logo{
     width:220px;
     margin-bottom:30px;
-    animation:float 4s infinite ease-in-out;
-}
-
-@keyframes float{
-    0%{transform:translateY(0);}
-    50%{transform:translateY(-10px);}
-    100%{transform:translateY(0);}
 }
 
 /* العملة */
@@ -75,15 +58,11 @@ body{
 }
 
 .coin{
-    width:230px;
-    height:230px;
+    width:240px;
+    height:240px;
     position:relative;
     transform-style:preserve-3d;
-    transition:transform 1.5s ease-in-out;
-}
-
-.coin.flipping{
-    transform:rotateY(1800deg);
+    transition:transform 3.5s cubic-bezier(.25,.8,.25,1); /* 3.5 ثانية */
 }
 
 .side{
@@ -94,28 +73,28 @@ body{
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:45px;
+    font-size:50px;
     font-weight:900;
     backface-visibility:hidden;
     text-shadow:0 0 20px #000;
 }
 
-.front{
+.dex{
     background:radial-gradient(circle,#00eaff,#0077ff);
 }
 
-.back{
-    background:radial-gradient(circle,#ff007a,#ff0033);
+.nine{
+    background:radial-gradient(circle,#ff0033,#aa0000);
     transform:rotateY(180deg);
 }
 
 /* زر */
 button{
-    margin-top:30px;
-    padding:14px 35px;
-    font-size:20px;
+    margin-top:35px;
+    padding:15px 45px;
+    font-size:22px;
     border:none;
-    border-radius:30px;
+    border-radius:40px;
     cursor:pointer;
     background:#00eaff;
     color:#000;
@@ -131,11 +110,12 @@ button:hover{
 
 <body>
 
-<div class="wrapper">
+<div class="ad ad-left">
+😂 مساحة إعلانية<br>89$ فقط
+</div>
 
-<div class="ad">
-🔥 مساحة إعلانية<br>
-بس 89$ 😂
+<div class="ad ad-right">
+🚀 إعلان VIP<br>89$ لا تفاصل
 </div>
 
 <div class="center">
@@ -144,50 +124,37 @@ button:hover{
 
 <div class="coin-container">
     <div class="coin" id="coin">
-        <div class="side front">DEX</div>
-        <div class="side back">89</div>
+        <div class="side dex">DEX</div>
+        <div class="side nine">89</div>
     </div>
 </div>
 
-<button onclick="flipCoin()">اقلبها 🔥</button>
+<button onclick="flipCoin()">FLIP</button>
 
 </div>
 
-<div class="ad">
-💰 إعلان هنا<br>
-فقط 89$ 😎
-</div>
-
-</div>
-
-<!-- أصوات -->
 <audio id="flipSound" src="https://assets.mixkit.co/sfx/preview/mixkit-fast-coin-flip-1933.mp3"></audio>
 <audio id="winSound" src="https://assets.mixkit.co/sfx/preview/mixkit-video-game-win-2016.mp3"></audio>
 
 <script>
+let totalRotation = 0;
+
 function flipCoin(){
     const coin = document.getElementById("coin");
     const flipSound = document.getElementById("flipSound");
     const winSound = document.getElementById("winSound");
 
+    flipSound.currentTime = 0;
     flipSound.play();
 
-    coin.classList.add("flipping");
+    const result = Math.random() < 0.5 ? 0 : 180;
+    totalRotation += 1800 + result;
+
+    coin.style.transform = `rotateY(${totalRotation}deg)`;
 
     setTimeout(()=>{
-        let result = Math.random() < 0.5 ? "DEX" : "89";
-
-        if(result === "DEX"){
-            coin.querySelector(".front").innerText = "DEX";
-            coin.querySelector(".back").innerText = "89";
-        }else{
-            coin.querySelector(".front").innerText = "89";
-            coin.querySelector(".back").innerText = "DEX";
-        }
-
         winSound.play();
-        coin.classList.remove("flipping");
-    },1500);
+    },3500); // بعد انتهاء اللفة
 }
 </script>
 
