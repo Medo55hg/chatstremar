@@ -1,2127 +1,1479 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام كيلرات ديد باي ديلايت - أفضل البيلدات</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* التنسيقات العامة */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: #0f172a;
-            color: #e2e8f0;
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* تنسيق الرأس */
-        header {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            padding: 20px 0;
-            border-bottom: 2px solid #334155;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-            margin-bottom: 30px;
-        }
-
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .logo i {
-            color: #ef4444;
-            font-size: 2.5rem;
-        }
-
-        .logo h1 {
-            font-size: 1.8rem;
-            color: #f8fafc;
-        }
-
-        .logo span {
-            color: #ef4444;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 25px;
-        }
-
-        nav a {
-            color: #cbd5e1;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1.1rem;
-            transition: color 0.3s;
-            padding: 8px 12px;
-            border-radius: 5px;
-        }
-
-        nav a:hover, nav a.active {
-            color: #ef4444;
-            background-color: rgba(239, 68, 68, 0.1);
-        }
-
-        .user-section {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background-color: #1e293b;
-            padding: 8px 15px;
-            border-radius: 50px;
-        }
-
-        .user-info i {
-            color: #60a5fa;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 1rem;
-        }
-
-        .btn-primary {
-            background-color: #ef4444;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: #dc2626;
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            background-color: #334155;
-            color: #e2e8f0;
-        }
-
-        .btn-secondary:hover {
-            background-color: #475569;
-        }
-
-        .btn-danger {
-            background-color: #dc2626;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background-color: #b91c1c;
-        }
-
-        .btn-small {
-            padding: 5px 10px;
-            font-size: 0.9rem;
-        }
-
-        .btn-discord {
-            background-color: #5865f2;
-            color: white;
-        }
-
-        .btn-discord:hover {
-            background-color: #4752c4;
-        }
-
-        /* تنسيق المحتوى الرئيسي */
-        .hero {
-            background: linear-gradient(to right, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
-            padding: 60px 40px;
-            border-radius: 15px;
-            margin-bottom: 40px;
-            text-align: center;
-            border: 2px solid #334155;
-        }
-
-        .hero h2 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            color: #f8fafc;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            max-width: 800px;
-            margin: 0 auto 30px;
-            color: #cbd5e1;
-        }
-
-        /* تنسيق قسم الكيلرات */
-        .killers-section, .builds-section, .add-build-section {
-            margin-bottom: 50px;
-        }
-
-        .section-title {
-            font-size: 2rem;
-            margin-bottom: 30px;
-            color: #f8fafc;
-            border-right: 5px solid #ef4444;
-            padding-right: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .section-title i {
-            color: #ef4444;
-        }
-
-        .killers-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 25px;
-        }
-
-        .killer-card {
-            background-color: #1e293b;
-            border-radius: 12px;
-            overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
-            border: 1px solid #334155;
-            cursor: pointer;
-        }
-
-        .killer-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
-            border-color: #ef4444;
-        }
-
-        .killer-card.active {
-            border-color: #ef4444;
-            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.5);
-        }
-
-        .killer-icon {
-            height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-        }
-
-        .killer-info {
-            padding: 20px;
-        }
-
-        .killer-info h3 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            color: #f8fafc;
-        }
-
-        .killer-info p {
-            color: #94a3b8;
-            font-size: 0.95rem;
-            margin-bottom: 15px;
-        }
-
-        .killer-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .tag {
-            background-color: #334155;
-            padding: 5px 10px;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            color: #cbd5e1;
-        }
-
-        /* تنسيق قسم البيلدات */
-        .builds-container {
-            display: none;
-        }
-
-        .builds-container.active {
-            display: block;
-        }
-
-        .builds-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 30px;
-        }
-
-        .build-card {
-            background-color: #1e293b;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid #334155;
-        }
-
-        .build-header {
-            padding: 20px;
-            background-color: #0f172a;
-            border-bottom: 1px solid #334155;
-        }
-
-        .build-header h3 {
-            font-size: 1.5rem;
-            color: #f8fafc;
-            margin-bottom: 10px;
-        }
-
-        .build-meta {
-            display: flex;
-            justify-content: space-between;
-            color: #94a3b8;
-            font-size: 0.9rem;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .build-suggested {
-            color: #fbbf24;
-            font-style: italic;
-        }
-
-        .build-body {
-            padding: 20px;
-        }
-
-        .build-killer-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: rgba(15, 23, 42, 0.5);
-            border-radius: 8px;
-            border: 1px solid #334155;
-        }
-
-        .killer-icon-small {
-            font-size: 2rem;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-        }
-
-        .build-description {
-            color: #cbd5e1;
-            line-height: 1.7;
-            margin-bottom: 20px;
-        }
-
-        .build-perks {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .perk {
-            width: 60px;
-            height: 60px;
-            background-color: #0f172a;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            border: 3px solid #3b82f6;
-            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
-        }
-
-        .perk img {
-            width: 85%;
-            height: 85%;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #1e293b;
-        }
-
-        .perk-number {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background-color: #ef4444;
-            color: white;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            font-weight: bold;
-        }
-
-        .build-addons {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .addon {
-            width: 50px;
-            height: 50px;
-            background-color: #0f172a;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #10b981;
-            box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
-        }
-
-        .addon img {
-            width: 90%;
-            height: 90%;
-            border-radius: 6px;
-            object-fit: cover;
-            border: 1px solid #1e293b;
-        }
-
-        .build-footer {
-            padding: 15px 20px;
-            background-color: rgba(15, 23, 42, 0.7);
-            border-top: 1px solid #334155;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .build-rating {
-            color: #fbbf24;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .rating-section {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .rating-stars {
-            display: flex;
-            gap: 2px;
-            cursor: pointer;
-        }
-
-        .rating-stars .star {
-            color: #64748b;
-            font-size: 1.2rem;
-            transition: color 0.2s;
-        }
-
-        .rating-stars .star:hover,
-        .rating-stars .star.active {
-            color: #fbbf24;
-        }
-
-        .rating-count {
-            font-size: 0.9rem;
-            color: #94a3b8;
-        }
-
-        /* تنسيق نموذج إضافة البيلد */
-        .add-build-form {
-            background-color: #1e293b;
-            padding: 30px;
-            border-radius: 12px;
-            border: 1px solid #334155;
-            display: none;
-        }
-
-        .add-build-form.active {
-            display: block;
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #f8fafc;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px 15px;
-            background-color: #0f172a;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            color: #e2e8f0;
-            font-size: 1rem;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: #ef4444;
-        }
-
-        textarea.form-control {
-            min-height: 150px;
-            resize: vertical;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .upload-section {
-            margin-bottom: 30px;
-        }
-
-        .upload-title {
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-            color: #f8fafc;
-            border-right: 3px solid #ef4444;
-            padding-right: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .perks-upload, .addons-upload {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        @media (max-width: 768px) {
-            .perks-upload, .addons-upload {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        .perk-upload-item, .addon-upload-item {
-            text-align: center;
-        }
-
-        .perk-upload-box, .addon-upload-box {
-            width: 80px;
-            height: 80px;
-            background-color: #0f172a;
-            border: 3px dashed #334155;
-            border-radius: 50%;
-            margin: 0 auto 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .addon-upload-box {
-            border-radius: 8px;
-            border-color: #10b981;
-        }
-
-        .perk-upload-box:hover, .addon-upload-box:hover {
-            border-color: #ef4444;
-            transform: scale(1.05);
-        }
-
-        .perk-upload-box i, .addon-upload-box i {
-            font-size: 2rem;
-            color: #64748b;
-        }
-
-        .perk-preview, .addon-preview {
-            width: 90%;
-            height: 90%;
-            border-radius: 50%;
-            object-fit: cover;
-            margin: 0 auto;
-            display: none;
-        }
-
-        .addon-preview {
-            border-radius: 6px;
-        }
-
-        .upload-number {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background-color: #3b82f6;
-            color: white;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            font-weight: bold;
-        }
-
-        .form-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 15px;
-            margin-top: 30px;
-        }
-
-        /* تنسيق نموذج تسجيل الدخول */
-        .login-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .login-container {
-            max-width: 500px;
-            background-color: #1e293b;
-            border-radius: 12px;
-            padding: 40px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            border: 1px solid #334155;
-        }
-
-        .login-container h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #f8fafc;
-            font-size: 2rem;
-        }
-
-        .login-message {
-            padding: 15px;
-            background-color: #0f172a;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            text-align: center;
-            color: #94a3b8;
-            border: 1px solid #334155;
-        }
-
-        .login-message.error {
-            color: #f87171;
-            border-color: #f87171;
-            background-color: rgba(248, 113, 113, 0.1);
-        }
-
-        .login-message.success {
-            color: #10b981;
-            border-color: #10b981;
-            background-color: rgba(16, 185, 129, 0.1);
-        }
-
-        /* تنسيق التذييل */
-        footer {
-            background-color: #0f172a;
-            padding: 30px 0;
-            border-top: 2px solid #334155;
-            margin-top: 50px;
-            text-align: center;
-        }
-
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .copyright {
-            color: #94a3b8;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 20px;
-        }
-
-        .social-links a {
-            color: #cbd5e1;
-            font-size: 1.5rem;
-            transition: color 0.3s;
-        }
-
-        .social-links a:hover {
-            color: #ef4444;
-        }
-
-        /* رسالة فارغة */
-        .empty-message {
-            text-align: center;
-            padding: 60px 20px;
-            background-color: #1e293b;
-            border-radius: 12px;
-            border: 2px dashed #334155;
-            margin: 40px 0;
-        }
-
-        .empty-message i {
-            font-size: 4rem;
-            color: #64748b;
-            margin-bottom: 20px;
-        }
-
-        .empty-message h3 {
-            font-size: 1.8rem;
-            color: #f8fafc;
-            margin-bottom: 15px;
-        }
-
-        .empty-message p {
-            color: #94a3b8;
-            max-width: 600px;
-            margin: 0 auto 25px;
-            font-size: 1.1rem;
-        }
-
-        /* إدارة الكيلرات */
-        .manage-killers {
-            margin-bottom: 30px;
-        }
-
-        .killer-form {
-            background-color: #1e293b;
-            padding: 25px;
-            border-radius: 12px;
-            border: 1px solid #334155;
-            margin-bottom: 20px;
-        }
-
-        .killer-form h3 {
-            margin-bottom: 20px;
-            color: #f8fafc;
-        }
-
-        /* تنسيق نافذة التقييم */
-        .rating-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            z-index: 1001;
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .rating-container {
-            background-color: #1e293b;
-            border-radius: 12px;
-            padding: 30px;
-            width: 90%;
-            max-width: 500px;
-            border: 1px solid #334155;
-        }
-
-        .rating-container h3 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #f8fafc;
-        }
-
-        .rating-modal-stars {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 25px;
-        }
-
-        .rating-modal-stars .star {
-            font-size: 2.5rem;
-            color: #64748b;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-
-        .rating-modal-stars .star:hover,
-        .rating-modal-stars .star.active {
-            color: #fbbf24;
-        }
-
-        /* نافذة تأكيد حذف البيلد */
-        .delete-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            z-index: 1002;
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .delete-container {
-            background-color: #1e293b;
-            border-radius: 12px;
-            padding: 30px;
-            width: 90%;
-            max-width: 500px;
-            border: 1px solid #334155;
-        }
-
-        .delete-container h3 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #f8fafc;
-        }
-
-        .delete-container p {
-            text-align: center;
-            margin-bottom: 25px;
-            color: #cbd5e1;
-        }
-
-        /* Discord button */
-        .discord-info {
-            background-color: rgba(88, 101, 242, 0.1);
-            border: 1px solid #5865f2;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .discord-info p {
-            margin-bottom: 10px;
-            color: #cbd5e1;
-        }
-
-        .discord-info strong {
-            color: #5865f2;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dead by Daylight — البيلدات</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+  --blood:#c0392b;--blood2:#8b0000;--blood3:#ff4444;
+  --dark:#050508;--dark2:#0a0a12;--dark3:#0f0f1a;--dark4:#141422;
+  --panel:rgba(255,255,255,0.03);--panel2:rgba(255,255,255,0.06);
+  --border:rgba(255,255,255,0.07);--border2:rgba(192,57,43,0.35);
+  --text:#e8e0d5;--text2:#8a8070;--text3:#5a5248;
+  --gold:#c9a84c;--gold2:#8b6914;
+  --font-title:'Cinzel',serif;--font-body:'Cairo',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--dark);color:var(--text);font-family:var(--font-body);
+  min-height:100vh;overflow-x:hidden;cursor:default;
+}
+
+/* ─── CURSOR ─── */
+.cursor{position:fixed;width:18px;height:18px;border:2px solid var(--blood3);border-radius:50%;pointer-events:none;z-index:99999;transition:transform .15s,border-color .2s;mix-blend-mode:difference}
+.cursor-dot{position:fixed;width:5px;height:5px;background:var(--blood3);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%)}
+.cursor.hovering{transform:scale(2.4);border-color:var(--gold)}
+
+/* ─── CANVAS BG ─── */
+#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:0.18;pointer-events:none}
+
+/* ─── NOISE OVERLAY ─── */
+body::before{
+  content:'';position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity:0.35;
+}
+
+/* ─── VIGNETTE ─── */
+body::after{
+  content:'';position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.7) 100%);
+}
+
+.container{max-width:1380px;margin:0 auto;padding:0 24px;position:relative;z-index:10}
+
+/* ─── HEADER ─── */
+header{
+  position:sticky;top:0;z-index:1000;
+  background:rgba(5,5,8,0.92);
+  backdrop-filter:blur(20px) saturate(150%);
+  border-bottom:1px solid var(--border2);
+  padding:0;
+}
+.header-bar{
+  display:flex;align-items:center;gap:16px;padding:12px 24px;
+  max-width:1380px;margin:0 auto;
+}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;flex-shrink:0}
+.logo-icon{
+  width:42px;height:42px;border-radius:10px;
+  background:linear-gradient(135deg,var(--blood2),var(--blood));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;color:#fff;
+  box-shadow:0 0 20px rgba(192,57,43,0.5);
+  animation:logo-pulse 3s ease-in-out infinite;
+}
+@keyframes logo-pulse{0%,100%{box-shadow:0 0 20px rgba(192,57,43,0.5)}50%{box-shadow:0 0 35px rgba(192,57,43,0.9),0 0 60px rgba(192,57,43,0.3)}}
+.logo-text{display:flex;flex-direction:column;line-height:1}
+.logo-main{font-family:var(--font-title);font-size:1.05rem;color:#fff;letter-spacing:0.5px}
+.logo-sub{font-size:0.7rem;color:var(--gold);letter-spacing:3px;text-transform:uppercase;margin-top:2px}
+
+.search-wrap{flex:1;max-width:360px;position:relative}
+.search-wrap input{
+  width:100%;padding:9px 40px 9px 18px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid var(--border);border-radius:8px;
+  color:var(--text);font-family:var(--font-body);font-size:0.88rem;
+  transition:all .3s;
+}
+.search-wrap input:focus{outline:none;border-color:var(--blood3);background:rgba(255,255,255,0.08);box-shadow:0 0 0 3px rgba(192,57,43,0.15)}
+.search-wrap input::placeholder{color:var(--text3)}
+.search-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:0.82rem;pointer-events:none}
+.clear-s{position:absolute;right:11px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);cursor:pointer;font-size:0.8rem;display:none;padding:2px;transition:color .2s}
+.clear-s:hover{color:var(--blood3)}
+
+nav{margin-right:auto}
+nav ul{display:flex;list-style:none;gap:2px;background:rgba(255,255,255,0.03);padding:4px;border-radius:10px;border:1px solid var(--border)}
+nav a{
+  color:var(--text2);text-decoration:none;
+  font-family:var(--font-body);font-weight:600;font-size:0.85rem;
+  padding:7px 14px;border-radius:7px;display:flex;align-items:center;gap:6px;
+  transition:all .25s;white-space:nowrap;
+}
+nav a:hover{color:var(--text);background:rgba(255,255,255,0.06)}
+nav a.active{color:#fff;background:rgba(192,57,43,0.2);border:1px solid rgba(192,57,43,0.4);box-shadow:inset 0 1px 0 rgba(255,255,255,0.1)}
+nav a i{font-size:0.78rem}
+
+.user-wrap{display:flex;align-items:center;gap:9px}
+.user-chip{
+  display:flex;align-items:center;gap:7px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid var(--border);border-radius:20px;
+  padding:6px 13px;font-size:0.82rem;color:var(--text2);
+}
+.user-chip .dot{width:6px;height:6px;border-radius:50%;background:#4ade80;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ─── BUTTONS ─── */
+.btn{
+  padding:9px 20px;border-radius:8px;border:none;
+  font-family:var(--font-body);font-weight:700;cursor:pointer;
+  transition:all .25s;font-size:0.85rem;
+  display:inline-flex;align-items:center;gap:7px;position:relative;overflow:hidden;
+}
+.btn::after{content:'';position:absolute;top:50%;left:50%;width:0;height:0;background:rgba(255,255,255,0.15);border-radius:50%;transform:translate(-50%,-50%);transition:width .4s,height .4s,opacity .4s}
+.btn:active::after{width:200px;height:200px;opacity:0}
+.btn-blood{background:linear-gradient(135deg,var(--blood),var(--blood2));color:#fff}
+.btn-blood:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(192,57,43,0.45)}
+.btn-ghost{background:rgba(255,255,255,0.06);color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{background:rgba(255,255,255,0.1);transform:translateY(-1px)}
+.btn-danger{background:rgba(139,0,0,0.4);color:#ff6b6b;border:1px solid rgba(139,0,0,0.5)}
+.btn-danger:hover{background:rgba(139,0,0,0.6)}
+.btn-sm{padding:6px 13px;font-size:0.78rem}
+.btn-xs{padding:4px 10px;font-size:0.73rem}
+.btn-outline-gold{background:transparent;border:1px solid rgba(201,168,76,0.4);color:var(--gold)}
+.btn-outline-gold:hover{background:rgba(201,168,76,0.1)}
+
+/* ─── HERO ─── */
+.hero{
+  position:relative;overflow:hidden;
+  padding:90px 0 70px;text-align:center;
+  margin-bottom:50px;
+}
+.hero-glow{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:800px;height:400px;
+  background:radial-gradient(ellipse, rgba(192,57,43,0.15) 0%, transparent 70%);
+  pointer-events:none;
+}
+.hero-title{
+  font-family:var(--font-title);
+  font-size:clamp(2.2rem,5vw,4.2rem);
+  color:#fff;line-height:1.1;margin-bottom:16px;
+  text-shadow:0 0 60px rgba(192,57,43,0.5);
+  animation:hero-in 1s ease both;
+}
+@keyframes hero-in{from{opacity:0;transform:translateY(30px) scale(0.95)}to{opacity:1;transform:none}}
+.hero-title span{color:var(--blood3);position:relative}
+.hero-title span::after{
+  content:'';position:absolute;bottom:-4px;left:0;width:100%;height:2px;
+  background:linear-gradient(90deg,transparent,var(--blood3),transparent);
+  animation:line-in 1.2s .5s ease both;transform-origin:center;
+}
+@keyframes line-in{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.hero-sub{font-size:1.05rem;color:var(--text2);max-width:620px;margin:0 auto 36px;line-height:1.8;animation:hero-in 1s .15s ease both}
+.hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;animation:hero-in 1s .3s ease both}
+
+/* ─── STATS ROW ─── */
+.stats-row{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;
+  margin-bottom:50px;
+}
+.stat-card{
+  background:var(--panel);border:1px solid var(--border);border-radius:12px;
+  padding:20px 18px;position:relative;overflow:hidden;
+  transition:all .35s;cursor:default;
+}
+.stat-card::before{
+  content:'';position:absolute;top:0;right:0;width:60px;height:60px;
+  background:radial-gradient(circle at top right, rgba(192,57,43,0.12), transparent 70%);
+  pointer-events:none;
+}
+.stat-card:hover{border-color:rgba(192,57,43,0.3);transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,0.4)}
+.stat-icon{font-size:1.6rem;margin-bottom:10px;display:block}
+.stat-num{font-family:var(--font-title);font-size:2.2rem;color:#fff;font-weight:700;line-height:1;display:block}
+.stat-lbl{font-size:0.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:2px;margin-top:5px}
+.stat-card.s-blood .stat-num{color:var(--blood3)}
+.stat-card.s-gold .stat-num{color:var(--gold)}
+.stat-card.s-green .stat-num{color:#4ade80}
+
+/* ─── SECTION HEADER ─── */
+.sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px}
+.sec-title{
+  font-family:var(--font-title);font-size:1.6rem;color:#fff;
+  display:flex;align-items:center;gap:12px;
+}
+.sec-title i{color:var(--blood3);font-size:1.2rem}
+.sec-badge{
+  font-size:0.7rem;background:rgba(192,57,43,0.15);color:var(--blood3);
+  border:1px solid rgba(192,57,43,0.3);padding:3px 10px;border-radius:20px;
+  font-family:var(--font-body);letter-spacing:1px;font-weight:600;
+}
+
+/* ─── FILTER BAR ─── */
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;align-items:center}
+.filter-bar .lbl{font-size:0.78rem;color:var(--text3);letter-spacing:1px;text-transform:uppercase}
+.filt{
+  padding:5px 14px;border-radius:20px;
+  border:1px solid var(--border);background:transparent;
+  color:var(--text2);cursor:pointer;font-family:var(--font-body);font-size:0.8rem;
+  transition:all .2s;
+}
+.filt:hover{border-color:rgba(192,57,43,0.4);color:var(--text)}
+.filt.active{background:rgba(192,57,43,0.18);border-color:rgba(192,57,43,0.5);color:#fff}
+
+/* ─── KILLERS GRID ─── */
+.killers-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:20px}
+.killer-card{
+  background:var(--panel);border:1px solid var(--border);border-radius:16px;
+  overflow:hidden;cursor:pointer;transition:all .4s cubic-bezier(.25,.8,.25,1);
+  position:relative;group:true;
+}
+.killer-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(192,57,43,0.08),transparent 60%);
+  opacity:0;transition:opacity .4s;border-radius:16px;z-index:1;
+}
+.killer-card:hover{transform:translateY(-8px) scale(1.015);border-color:rgba(192,57,43,0.45);box-shadow:0 24px 50px rgba(0,0,0,0.6),0 0 0 1px rgba(192,57,43,0.15)}
+.killer-card:hover::before{opacity:1}
+.killer-card.active{border-color:var(--blood3);box-shadow:0 0 0 1px rgba(192,57,43,0.4),0 20px 40px rgba(0,0,0,0.5)}
+.killer-card.hidden{display:none}
+
+.k-icon-wrap{
+  height:130px;display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.k-icon-wrap::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to bottom,transparent 40%,var(--dark3));
+}
+.k-icon{font-size:3.6rem;position:relative;z-index:2;transition:transform .4s,filter .4s}
+.killer-card:hover .k-icon{transform:scale(1.15) rotate(-5deg);filter:drop-shadow(0 0 20px currentColor)}
+
+.k-body{padding:18px 18px 16px}
+.k-name{font-family:var(--font-title);font-size:1.1rem;color:#fff;margin-bottom:7px}
+.k-desc{color:var(--text2);font-size:0.82rem;line-height:1.6;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.k-tags{display:flex;gap:7px;flex-wrap:wrap}
+.k-tag{
+  font-size:0.7rem;padding:3px 10px;border-radius:20px;
+  border:1px solid;font-weight:600;
+}
+.k-tag-diff{background:rgba(192,57,43,0.12);color:var(--blood3);border-color:rgba(192,57,43,0.25)}
+.k-tag-builds{background:rgba(201,168,76,0.1);color:var(--gold);border-color:rgba(201,168,76,0.25)}
+
+/* ─── ACTIVE INDICATOR ─── */
+.k-active-bar{
+  position:absolute;top:0;left:0;width:100%;height:3px;
+  background:linear-gradient(90deg,transparent,var(--blood3),transparent);
+  transform:scaleX(0);transition:transform .4s;
+}
+.killer-card.active .k-active-bar{transform:scaleX(1)}
+
+/* ─── NO RESULTS ─── */
+.no-results{grid-column:1/-1;text-align:center;padding:60px;color:var(--text3)}
+.no-results i{font-size:3rem;display:block;margin-bottom:16px;opacity:.3}
+
+/* ─── BREADCRUMB ─── */
+.breadcrumb{display:flex;align-items:center;gap:8px;margin-bottom:20px;font-size:0.8rem;color:var(--text3)}
+.breadcrumb a{color:var(--text2);text-decoration:none;cursor:pointer;transition:color .2s}
+.breadcrumb a:hover{color:var(--blood3)}
+.breadcrumb i{font-size:0.65rem;opacity:.5}
+
+/* ─── BUILDS TOOLBAR ─── */
+.builds-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px;align-items:center}
+.builds-toolbar .bc{margin-right:auto;font-size:0.8rem;color:var(--text3)}
+
+/* ─── BUILD CARD ─── */
+.builds-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:20px}
+.build-card{
+  background:var(--panel);border:1px solid var(--border);border-radius:14px;
+  overflow:hidden;cursor:pointer;transition:all .35s;
+  position:relative;
+}
+.build-card::after{
+  content:'';position:absolute;inset:0;border-radius:14px;
+  background:linear-gradient(135deg,rgba(192,57,43,0.06),transparent);
+  opacity:0;transition:opacity .35s;pointer-events:none;
+}
+.build-card:hover{transform:translateY(-5px);border-color:rgba(192,57,43,0.3);box-shadow:0 20px 40px rgba(0,0,0,.5)}
+.build-card:hover::after{opacity:1}
+
+.b-header{padding:16px 18px;background:rgba(0,0,0,.25);border-bottom:1px solid var(--border)}
+.b-name{font-family:var(--font-title);font-size:1rem;color:#fff;margin-bottom:8px}
+.b-meta{display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text3);flex-wrap:wrap;gap:5px}
+.b-suggested{color:var(--gold);font-style:italic}
+
+.b-body{padding:16px 18px}
+.b-killer-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding:12px;background:rgba(0,0,0,.2);border-radius:10px}
+.b-ki{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0}
+.b-desc{
+  font-size:0.82rem;color:var(--text2);line-height:1.7;margin-bottom:14px;
+  padding:12px 14px;background:rgba(0,0,0,.18);border-radius:9px;
+  border-right:3px solid var(--blood);
+}
+
+/* ─── PERKS GRID ─── */
+.perks-label,.addons-label{
+  font-size:0.72rem;text-transform:uppercase;letter-spacing:2px;
+  color:var(--text3);margin-bottom:10px;display:flex;align-items:center;gap:7px;
+}
+.perks-label i{color:#60a5fa}.addons-label i{color:#34d399}
+.perks-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.addons-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:4px}
+
+.perk-pill{
+  background:rgba(96,165,250,0.07);border:1px solid rgba(96,165,250,0.15);
+  border-radius:9px;padding:9px 10px;transition:all .25s;position:relative;
+}
+.perk-pill:hover{background:rgba(96,165,250,0.14);border-color:rgba(96,165,250,0.35);transform:translateY(-2px)}
+.pp-num{
+  position:absolute;top:-6px;right:-6px;
+  width:18px;height:18px;background:#2563eb;color:#fff;
+  border-radius:50%;font-size:0.65rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.pp-name{font-size:0.75rem;color:#fff;font-weight:600;margin-bottom:3px;line-height:1.3}
+.pp-desc{font-size:0.67rem;color:var(--text3);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+.addon-pill{
+  background:rgba(52,211,153,0.07);border:1px solid rgba(52,211,153,0.15);
+  border-radius:9px;padding:9px 10px;transition:all .25s;
+}
+.addon-pill:hover{background:rgba(52,211,153,0.14);border-color:rgba(52,211,153,0.35);transform:translateY(-2px)}
+.ap-name{font-size:0.75rem;color:#fff;font-weight:600;margin-bottom:3px}
+.ap-desc{font-size:0.67rem;color:var(--text3);line-height:1.4}
+
+.b-footer{
+  padding:12px 18px;background:rgba(0,0,0,.2);border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;
+}
+.rating-row{display:flex;align-items:center;gap:9px;font-size:0.8rem}
+.stars-disp{color:#fbbf24;font-size:0.82rem}
+.rating-val{color:#fff;font-weight:700}
+.rating-cnt{color:var(--text3)}
+.b-actions{display:flex;gap:7px;flex-wrap:wrap}
+
+/* ─── RIBBON ─── */
+.top-ribbon{
+  position:absolute;top:14px;left:-22px;
+  background:var(--gold);color:var(--dark);
+  font-size:0.62rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  padding:3px 30px;transform:rotate(-45deg);box-shadow:0 2px 8px rgba(0,0,0,.5);
+  pointer-events:none;z-index:5;
+}
+
+/* ─── EMPTY STATE ─── */
+.empty-state{
+  text-align:center;padding:60px 30px;
+  background:var(--panel);border:1px dashed var(--border);border-radius:16px;
+  margin:20px 0;
+}
+.empty-state i{font-size:3.5rem;display:block;margin-bottom:16px;opacity:.2}
+.empty-state h3{font-family:var(--font-title);font-size:1.4rem;color:#fff;margin-bottom:10px}
+.empty-state p{color:var(--text2);font-size:0.88rem;max-width:480px;margin:0 auto 22px;line-height:1.7}
+
+/* ─── MODAL ─── */
+.overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.88);backdrop-filter:blur(12px);
+  z-index:2000;display:none;
+  animation:ovl-in .3s ease;
+}
+.overlay.open{display:flex;align-items:center;justify-content:center}
+@keyframes ovl-in{from{opacity:0}to{opacity:1}}
+
+.modal{
+  width:92%;max-width:820px;max-height:88vh;overflow-y:auto;
+  background:linear-gradient(160deg,#0e0e18,#080810);
+  border:1px solid rgba(192,57,43,0.3);border-radius:20px;
+  position:relative;animation:modal-in .35s cubic-bezier(.25,.8,.25,1);
+  box-shadow:0 0 80px rgba(192,57,43,0.15),0 40px 80px rgba(0,0,0,.8);
+}
+@keyframes modal-in{from{opacity:0;transform:scale(0.88) translateY(30px)}to{opacity:1;transform:none}}
+.modal-close-btn{
+  position:absolute;top:14px;left:14px;
+  width:34px;height:34px;border-radius:50%;
+  background:rgba(192,57,43,0.2);border:1px solid rgba(192,57,43,0.3);
+  color:#fff;cursor:pointer;font-size:0.9rem;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .25s;z-index:10;
+}
+.modal-close-btn:hover{background:rgba(192,57,43,0.45);transform:rotate(90deg)}
+
+/* ─── FORM STYLES ─── */
+.section{margin-bottom:50px}
+.form-wrap{
+  background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:28px;
+  display:none;
+}
+.form-wrap.open{display:block;animation:hero-in .35s ease}
+.form-group{margin-bottom:18px}
+.form-group label{
+  display:block;margin-bottom:7px;
+  font-size:0.8rem;color:var(--text2);letter-spacing:1px;text-transform:uppercase;
+  display:flex;align-items:center;gap:7px;
+}
+.form-group label i{color:var(--blood3);font-size:0.75rem}
+.fc{
+  width:100%;padding:11px 14px;
+  background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:9px;
+  color:var(--text);font-family:var(--font-body);font-size:0.88rem;
+  transition:all .25s;
+}
+.fc:focus{outline:none;border-color:rgba(192,57,43,0.5);box-shadow:0 0 0 3px rgba(192,57,43,0.1);background:rgba(0,0,0,.45)}
+textarea.fc{min-height:120px;resize:vertical;line-height:1.6}
+.fc option{background:#0f0f1a;color:var(--text)}
+.form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.perk-block,.addon-block{
+  background:rgba(0,0,0,.25);border:1px solid rgba(96,165,250,0.12);
+  border-radius:10px;padding:14px;margin-bottom:12px;
+}
+.addon-block{border-color:rgba(52,211,153,0.12)}
+.perk-block label{color:rgba(96,165,250,0.7)!important}
+.addon-block label{color:rgba(52,211,153,0.7)!important}
+.pinput{
+  width:100%;padding:9px 12px;margin-bottom:8px;
+  background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,0.07);
+  border-radius:7px;color:#fff;font-family:var(--font-body);font-size:0.85rem;
+  transition:border-color .2s;
+}
+.pinput:focus{outline:none;border-color:rgba(96,165,250,0.4)}
+.addon-block .pinput:focus{border-color:rgba(52,211,153,0.4)}
+.fa-row{display:flex;justify-content:flex-end;gap:10px;margin-top:22px;padding-top:18px;border-top:1px solid var(--border)}
+.discord-note{
+  background:rgba(88,101,242,0.08);border:1px solid rgba(88,101,242,0.2);
+  border-radius:10px;padding:12px 16px;margin-bottom:20px;
+  font-size:0.82rem;color:var(--text2);
+}
+.discord-note strong{color:#818cf8}
+
+/* ─── MANAGE ─── */
+.manage-block{
+  background:var(--panel);border:1px solid var(--border);border-radius:14px;
+  padding:24px;margin-bottom:20px;
+}
+.manage-block h3{font-family:var(--font-title);font-size:1.1rem;color:#fff;margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.manage-block h3 i{color:var(--blood3)}
+.killer-item{
+  background:rgba(0,0,0,.2);border:1px solid var(--border);border-radius:10px;
+  padding:14px 16px;margin-bottom:10px;
+  display:flex;justify-content:space-between;align-items:center;
+  transition:border-color .2s;
+}
+.killer-item:hover{border-color:rgba(192,57,43,0.2)}
+.io-row{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:16px}
+
+/* ─── LOGIN MODAL ─── */
+.login-box{
+  width:90%;max-width:400px;
+  background:linear-gradient(160deg,#0e0e18,#080810);
+  border:1px solid rgba(192,57,43,0.3);border-radius:20px;padding:36px;
+  box-shadow:0 40px 80px rgba(0,0,0,.8);
+  animation:modal-in .35s ease;
+}
+.login-box h2{font-family:var(--font-title);text-align:center;font-size:1.5rem;color:#fff;margin-bottom:22px}
+.lmsg{padding:10px 14px;border-radius:8px;font-size:0.82rem;margin-bottom:16px;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--text2)}
+.lmsg.ok{background:rgba(74,222,128,.08);border-color:rgba(74,222,128,.3);color:#4ade80}
+.lmsg.err{background:rgba(192,57,43,.1);border-color:rgba(192,57,43,.3);color:var(--blood3)}
+
+/* ─── RATING / DELETE MODAL ─── */
+.sm-box{
+  width:90%;max-width:380px;
+  background:linear-gradient(160deg,#0e0e18,#080810);
+  border:1px solid var(--border);border-radius:16px;padding:30px;text-align:center;
+  animation:modal-in .3s ease;
+}
+.sm-box h3{font-family:var(--font-title);font-size:1.2rem;color:#fff;margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:10px}
+.sm-box p{color:var(--text2);font-size:0.88rem;line-height:1.6;margin-bottom:22px}
+.stars-pick{display:flex;justify-content:center;gap:12px;margin-bottom:26px}
+.stars-pick .s{font-size:2.4rem;color:#1e293b;cursor:pointer;transition:all .2s}
+.stars-pick .s:hover,.stars-pick .s.on{color:#fbbf24;transform:scale(1.25)}
+
+/* ─── SCROLL PROGRESS ─── */
+#prog{
+  position:fixed;top:0;left:0;height:2px;z-index:9999;
+  background:linear-gradient(90deg,var(--blood2),var(--blood3));
+  transition:width .1s;pointer-events:none;
+}
+
+/* ─── BACK TO TOP ─── */
+#btt{
+  position:fixed;bottom:20px;right:20px;
+  width:40px;height:40px;border-radius:50%;
+  background:rgba(192,57,43,0.3);border:1px solid rgba(192,57,43,0.5);
+  color:#fff;font-size:0.9rem;cursor:pointer;
+  display:none;align-items:center;justify-content:center;z-index:500;
+  transition:all .25s;box-shadow:0 4px 16px rgba(192,57,43,.3);
+}
+#btt.show{display:flex}
+#btt:hover{background:rgba(192,57,43,.6);transform:translateY(-3px)}
+
+/* ─── TOAST ─── */
+#toast-c{position:fixed;bottom:20px;left:20px;z-index:9998;display:flex;flex-direction:column;gap:8px}
+.tst{
+  padding:10px 16px;border-radius:9px;font-size:0.82rem;font-family:var(--font-body);
+  display:flex;align-items:center;gap:9px;
+  box-shadow:0 6px 20px rgba(0,0,0,.5);
+  animation:tst-in .3s ease;backdrop-filter:blur(10px);
+}
+@keyframes tst-in{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:none}}
+
+/* ─── FLOATING PARTICLES ─── */
+.particle{position:fixed;pointer-events:none;z-index:2;border-radius:50%;animation:float-up linear infinite}
+@keyframes float-up{
+  0%{transform:translateY(0) translateX(0) scale(1);opacity:.8}
+  100%{transform:translateY(-100vh) translateX(calc(var(--dx)*60px)) scale(0);opacity:0}
+}
+
+/* ─── SECTION ANIMATIONS ─── */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* ─── FOOTER ─── */
+footer{
+  border-top:1px solid var(--border);margin-top:70px;padding:30px 0;
+  background:rgba(0,0,0,.3);
+}
+.footer-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px}
+.footer-copy{font-size:0.78rem;color:var(--text3);line-height:1.7}
+.footer-copy strong{color:var(--gold)}
+.social-row{display:flex;gap:12px}
+.soc{
+  width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--text3);
+  font-size:0.9rem;transition:all .25s;text-decoration:none;
+}
+.soc:hover{background:rgba(192,57,43,.15);border-color:rgba(192,57,43,.35);color:var(--blood3);transform:translateY(-3px)}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:860px){
+  .header-bar{flex-wrap:wrap;padding:10px 16px}
+  .search-wrap{order:3;max-width:100%;flex:0 0 100%}
+  nav a span.nt{display:none}
+  .hero-title{font-size:2rem}
+  .builds-grid{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+  .killers-grid{grid-template-columns:1fr 1fr}
+  .perks-grid{grid-template-columns:repeat(2,1fr)}
+  .stats-row{grid-template-columns:repeat(3,1fr)}
+  .hero{padding:50px 0 40px}
+}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:rgba(0,0,0,.2)}
+::-webkit-scrollbar-thumb{background:var(--blood2);border-radius:6px}
+::-webkit-scrollbar-thumb:hover{background:var(--blood3)}
+
+/* ─── SELECTION ─── */
+::selection{background:rgba(192,57,43,.35);color:#fff}
+
+/* ─── BATCH TEXTAREA ─── */
+.batch-ta{width:100%;min-height:140px;padding:12px;background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:9px;color:var(--text);font-family:monospace;font-size:0.85rem;line-height:1.8;resize:vertical}
+.batch-ta:focus{outline:none;border-color:rgba(192,57,43,.5)}
+.info-note{background:rgba(192,57,43,.07);border-right:3px solid var(--blood);border-radius:0 8px 8px 0;padding:10px 14px;font-size:0.8rem;color:var(--text2);margin-top:10px}
+
+/* ─── ACTIVE KILLER SECTION TITLE ─── */
+#sel-killer-display{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(192,57,43,0.12);border:1px solid rgba(192,57,43,0.3);
+  border-radius:8px;padding:3px 14px;margin-right:12px;
+  font-family:var(--font-title);color:var(--blood3);font-size:1rem;
+}
+</style>
 </head>
 <body>
-    <!-- الرأس -->
-    <header>
-        <div class="container header-container">
-            <div class="logo">
-                <i class="fas fa-ghost"></i>
-                <h1>كيلرات <span>ديد باي ديلايت</span></h1>
-            </div>
-            
-            <nav>
-                <ul>
-                    <li><a href="#" class="active" id="nav-killers">الكيلرات</a></li>
-                    <li><a href="#" id="nav-builds">أفضل البيلدات</a></li>
-                    <li><a href="#" id="nav-add-build">إضافة بيلد</a></li>
-                    <li><a href="#" id="nav-manage-killers">إدارة الكيلرات</a></li>
-                </ul>
-            </nav>
-            
-            <div class="user-section">
-                <div class="user-info" id="user-info">
-                    <i class="fas fa-user-circle"></i>
-                    <span>زائر</span>
-                </div>
-                <button class="btn btn-primary" id="login-btn">تسجيل الدخول</button>
-            </div>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-dot" id="cursor-dot"></div>
+
+<!-- SCROLL PROGRESS -->
+<div id="prog"></div>
+
+<!-- BG CANVAS -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header>
+  <div class="header-bar">
+    <a class="logo" href="#" id="logo-link">
+      <div class="logo-icon"><i class="fas fa-skull"></i></div>
+      <div class="logo-text">
+        <span class="logo-main">Dead by Daylight</span>
+        <span class="logo-sub">Killer Builds</span>
+      </div>
+    </a>
+
+    <div class="search-wrap">
+      <i class="fas fa-search search-icon"></i>
+      <input type="text" id="global-search" placeholder="ابحث عن كيلر أو بيلد...">
+      <button class="clear-s" id="clear-s"><i class="fas fa-times"></i></button>
+    </div>
+
+    <nav id="main-nav">
+      <ul>
+        <li><a href="#" class="active" id="nav-killers"><i class="fas fa-skull-crossbones"></i><span class="nt"> الكيلرات</span></a></li>
+        <li><a href="#" id="nav-builds"><i class="fas fa-hammer"></i><span class="nt"> البيلدات</span></a></li>
+        <li><a href="#" id="nav-add"><i class="fas fa-plus-circle"></i><span class="nt"> إضافة</span></a></li>
+        <li><a href="#" id="nav-manage" style="display:none"><i class="fas fa-cog"></i><span class="nt"> إدارة</span></a></li>
+      </ul>
+    </nav>
+
+    <div class="user-wrap">
+      <div class="user-chip" id="user-chip">
+        <span class="dot"></span>
+        <span id="user-lbl">زائر</span>
+      </div>
+      <button class="btn btn-blood btn-sm" id="login-btn"><i class="fas fa-sign-in-alt"></i> <span id="login-lbl">دخول</span></button>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<main class="container">
+
+  <!-- HERO -->
+  <section class="hero" id="hero-section">
+    <div class="hero-glow"></div>
+    <h1 class="hero-title">أفضل بيلدات<br><span>Dead by Daylight</span></h1>
+    <p class="hero-sub">اكتشف أقوى البيلدات المحترفة لكل كيلر مع شرح استراتيجي تفصيلي لكل بيلد.</p>
+    <div class="hero-cta">
+      <button class="btn btn-blood" onclick="document.getElementById('killers-sec').scrollIntoView({behavior:'smooth'})">
+        <i class="fas fa-play"></i> ابدأ الاستكشاف
+      </button>
+      <button class="btn btn-outline-gold" id="hero-add-btn">
+        <i class="fas fa-plus"></i> أضف بيلد
+      </button>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-row reveal" id="stats-row">
+    <div class="stat-card s-blood">
+      <span class="stat-icon">💀</span>
+      <span class="stat-num" id="st-killers">0</span>
+      <span class="stat-lbl">كيلر</span>
+    </div>
+    <div class="stat-card s-gold">
+      <span class="stat-icon">⚔️</span>
+      <span class="stat-num" id="st-builds">0</span>
+      <span class="stat-lbl">بيلد</span>
+    </div>
+    <div class="stat-card s-green">
+      <span class="stat-icon">⭐</span>
+      <span class="stat-num" id="st-ratings">0</span>
+      <span class="stat-lbl">تقييم</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">🏆</span>
+      <span class="stat-num" id="st-top">—</span>
+      <span class="stat-lbl">الأعلى تقييماً</span>
+    </div>
+  </div>
+
+  <!-- KILLERS SECTION -->
+  <section class="section reveal" id="killers-sec">
+    <div class="sec-header">
+      <h2 class="sec-title"><i class="fas fa-skull-crossbones"></i> الكيلرات <span class="sec-badge" id="k-badge">0</span></h2>
+    </div>
+    <div class="filter-bar">
+      <span class="lbl"><i class="fas fa-filter"></i> تصفية</span>
+      <button class="filt active" data-d="all">الكل</button>
+      <button class="filt" data-d="سهل">سهل</button>
+      <button class="filt" data-d="متوسط">متوسط</button>
+      <button class="filt" data-d="صعب">صعب</button>
+      <button class="filt" data-d="صعب جداً">صعب جداً</button>
+    </div>
+    <div class="killers-grid" id="killers-grid"></div>
+  </section>
+
+  <!-- BUILDS SECTION -->
+  <section class="section reveal" id="builds-sec">
+    <div class="breadcrumb" id="breadcrumb" style="display:none">
+      <a id="bc-home"><i class="fas fa-home"></i> الرئيسية</a>
+      <i class="fas fa-chevron-left"></i>
+      <span id="bc-name">—</span>
+    </div>
+    <div class="sec-header">
+      <h2 class="sec-title">
+        <i class="fas fa-hammer"></i>
+        <span id="sel-killer-display" style="display:none"></span>
+        <span id="builds-title-text">اختر كيلراً</span>
+        <span class="sec-badge" id="b-badge">0</span>
+      </h2>
+    </div>
+    <div class="builds-toolbar" id="builds-toolbar" style="display:none">
+      <button class="filt active" data-f="all">الكل</button>
+      <button class="filt" data-f="top"><i class="fas fa-star"></i> الأعلى</button>
+      <button class="filt" data-f="new"><i class="fas fa-clock"></i> الأحدث</button>
+      <span class="bc" id="b-count-txt"></span>
+    </div>
+    <div id="builds-container"></div>
+  </section>
+
+  <!-- ADD BUILD SECTION -->
+  <section class="section reveal" id="add-sec">
+    <div class="sec-header" id="add-sec-hdr" style="display:none">
+      <h2 class="sec-title"><i class="fas fa-plus-circle"></i> إضافة بيلد جديد</h2>
+    </div>
+    <div class="form-wrap" id="add-form-wrap"></div>
+  </section>
+
+  <!-- MANAGE SECTION -->
+  <section class="section reveal" id="manage-sec" style="display:none">
+    <div class="sec-header">
+      <h2 class="sec-title"><i class="fas fa-cog"></i> إدارة النظام</h2>
+    </div>
+    <div id="manage-body"></div>
+  </section>
+
+  <!-- BUILD DETAIL OVERLAY -->
+  <div class="overlay" id="detail-overlay">
+    <div class="modal" id="detail-modal">
+      <button class="modal-close-btn" id="modal-close"><i class="fas fa-times"></i></button>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- LOGIN OVERLAY -->
+  <div class="overlay" id="login-overlay" style="display:none;align-items:center;justify-content:center">
+    <div class="login-box">
+      <h2><i class="fas fa-skull" style="color:var(--blood3);margin-left:10px"></i> تسجيل الدخول</h2>
+      <div class="lmsg" id="lmsg">أدخل بيانات المسؤول.</div>
+      <form id="lform">
+        <div class="form-group">
+          <label><i class="fas fa-user"></i> اسم المستخدم</label>
+          <input type="text" class="fc" id="l-user" placeholder="اسم المستخدم" autocomplete="username" required>
         </div>
-    </header>
-
-    <!-- المحتوى الرئيسي -->
-    <main class="container">
-        <!-- قسم المقدمة -->
-        <section class="hero">
-            <h2>أفضل البيلدات لكيلرات ديد باي ديلايت</h2>
-            <p>استعرض قائمة الكيلرات في ديد باي ديلايت واكتشف أفضل البيلدات لكل كيلر مع شرح مفصل لكل بيلد وكيفية استخدامه بشكل فعال.</p>
-            <button class="btn btn-primary" id="view-killers-btn">استعرض الكيلرات</button>
-        </section>
-
-        <!-- قسم الكيلرات -->
-        <section class="killers-section" id="killers-section">
-            <h2 class="section-title"><i class="fas fa-skull-crossbones"></i> قائمة الكيلرات</h2>
-            <div class="killers-grid" id="killers-grid">
-                <!-- سيتم ملء الكيلرات بواسطة JavaScript -->
-            </div>
-        </section>
-
-        <!-- قسم البيلدات -->
-        <section class="builds-section" id="builds-section">
-            <h2 class="section-title"><i class="fas fa-hammer"></i> أفضل البيلدات لـ <span id="selected-killer-name">الكيلر المحدد</span></h2>
-            <div class="builds-container" id="builds-container">
-                <!-- سيتم ملء البيلدات هنا عند اختيار كيلر -->
-            </div>
-        </section>
-
-        <!-- نموذج إضافة بيلد -->
-        <section class="add-build-section" id="add-build-section">
-            <h2 class="section-title"><i class="fas fa-plus-circle"></i> إضافة بيلد جديد</h2>
-            <div class="add-build-form" id="add-build-form">
-                <!-- سيتم إظهار النموذج فقط للمستخدم المسجل -->
-            </div>
-        </section>
-
-        <!-- قسم إدارة الكيلرات -->
-        <section class="manage-killers-section" id="manage-killers-section" style="display: none;">
-            <h2 class="section-title"><i class="fas fa-edit"></i> إدارة الكيلرات</h2>
-            <div class="manage-killers" id="manage-killers">
-                <!-- سيتم عرض واجهة إدارة الكيلرات هنا -->
-            </div>
-        </section>
-
-        <!-- نموذج تسجيل الدخول -->
-        <div class="login-overlay" id="login-overlay">
-            <div class="login-container">
-                <h2><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</h2>
-                <div class="login-message" id="login-message">
-                    أدخل اسم المستخدم وكلمة المرور للوصول إلى ميزات إدارة الموقع.
-                </div>
-                <form id="login-form">
-                    <div class="form-group">
-                        <label for="username">اسم المستخدم</label>
-                        <input type="text" class="form-control" id="username" name="username" placeholder="أدخل اسم المستخدم" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="password">كلمة المرور</label>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="أدخل كلمة المرور" required>
-                    </div>
-                    
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-secondary" id="cancel-login-btn">إلغاء</button>
-                        <button type="submit" class="btn btn-primary">تسجيل الدخول</button>
-                    </div>
-                </form>
-            </div>
+        <div class="form-group">
+          <label><i class="fas fa-lock"></i> كلمة المرور</label>
+          <input type="password" class="fc" id="l-pass" placeholder="كلمة المرور" autocomplete="current-password" required>
         </div>
-
-        <!-- نافذة التقييم -->
-        <div class="rating-modal" id="rating-modal">
-            <div class="rating-container">
-                <h3>قيم هذا البيلد</h3>
-                <div class="rating-modal-stars" id="rating-modal-stars">
-                    <i class="fas fa-star star" data-rating="1"></i>
-                    <i class="fas fa-star star" data-rating="2"></i>
-                    <i class="fas fa-star star" data-rating="3"></i>
-                    <i class="fas fa-star star" data-rating="4"></i>
-                    <i class="fas fa-star star" data-rating="5"></i>
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" id="cancel-rating-btn">إلغاء</button>
-                    <button type="button" class="btn btn-primary" id="submit-rating-btn">تأكيد التقييم</button>
-                </div>
-            </div>
+        <div class="fa-row">
+          <button type="button" class="btn btn-ghost" id="l-cancel">إلغاء</button>
+          <button type="submit" class="btn btn-blood"><i class="fas fa-sign-in-alt"></i> دخول</button>
         </div>
+      </form>
+    </div>
+  </div>
 
-        <!-- نافذة تأكيد حذف البيلد -->
-        <div class="delete-modal" id="delete-modal">
-            <div class="delete-container">
-                <h3><i class="fas fa-exclamation-triangle"></i> تأكيد الحذف</h3>
-                <p>هل أنت متأكد من حذف هذا البيلد؟ هذا الإجراء لا يمكن التراجع عنه.</p>
-                <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" id="cancel-delete-btn">إلغاء</button>
-                    <button type="button" class="btn btn-danger" id="confirm-delete-btn">نعم، احذف البيلد</button>
-                </div>
-            </div>
+  <!-- RATING OVERLAY -->
+  <div class="overlay" id="rate-overlay" style="display:none;align-items:center;justify-content:center">
+    <div class="sm-box">
+      <h3><i class="fas fa-star" style="color:#fbbf24"></i> قيّم هذا البيلد</h3>
+      <div class="stars-pick" id="stars-pick">
+        <i class="fas fa-star s" data-v="1"></i>
+        <i class="fas fa-star s" data-v="2"></i>
+        <i class="fas fa-star s" data-v="3"></i>
+        <i class="fas fa-star s" data-v="4"></i>
+        <i class="fas fa-star s" data-v="5"></i>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:center">
+        <button class="btn btn-ghost" id="rate-cancel">إلغاء</button>
+        <button class="btn btn-blood" id="rate-submit">تأكيد</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DELETE OVERLAY -->
+  <div class="overlay" id="del-overlay" style="display:none;align-items:center;justify-content:center">
+    <div class="sm-box">
+      <h3><i class="fas fa-exclamation-triangle" style="color:var(--blood3)"></i> تأكيد الحذف</h3>
+      <p>هل أنت متأكد من حذف هذا البيلد؟ لا يمكن التراجع عن هذا الإجراء.</p>
+      <div style="display:flex;gap:10px;justify-content:center">
+        <button class="btn btn-ghost" id="del-cancel">إلغاء</button>
+        <button class="btn btn-danger" id="del-confirm"><i class="fas fa-trash"></i> احذف</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="container footer-inner">
+    <div class="footer-copy">
+      <p>جميع الحقوق محفوظة &copy; 2024 — Dead by Daylight Builds</p>
+      <p style="margin-top:5px"><i class="fab fa-discord" style="color:#818cf8;margin-left:5px"></i> اقتراحات البيلدات: <strong>medo_dv</strong> على ديسكورد</p>
+    </div>
+    <div class="social-row">
+      <a href="#" class="soc"><i class="fab fa-discord"></i></a>
+      <a href="#" class="soc"><i class="fab fa-youtube"></i></a>
+      <a href="#" class="soc"><i class="fab fa-twitter"></i></a>
+    </div>
+  </div>
+</footer>
+
+<button id="btt" title="للأعلى"><i class="fas fa-chevron-up"></i></button>
+
+<div id="toast-c"></div>
+
+<script>
+/* ═══════════════════════════════════════════
+   DATA & STATE
+═══════════════════════════════════════════ */
+let killers = JSON.parse(localStorage.getItem('dbdKillers')) || [];
+let builds  = JSON.parse(localStorage.getItem('dbdBuilds'))  || [];
+let ratings = JSON.parse(localStorage.getItem('dbdRatings')) || {};
+const VU='MEDO', VP='123459876';
+let me = JSON.parse(localStorage.getItem('dbdCurrentUser')) || null;
+let selKiller=null, cFilter='all', dFilter='all', searchQ='', ratingTarget=null, deleteTarget=null;
+
+/* ═══ INIT ═══ */
+window.addEventListener('DOMContentLoaded', () => {
+  if (!killers.length) { killers = defaults(); save('k'); }
+  ui(); renderKillers(); setupAll(); updateStats();
+  animOnScroll();
+  bgCanvas();
+  particles();
+  cursor();
+  scrollProg();
+  window.addEventListener('scroll', () => {
+    document.getElementById('btt').classList.toggle('show', scrollY > 500);
+  });
+  document.getElementById('btt').onclick = () => scrollTo({top:0,behavior:'smooth'});
+  if (typeof BroadcastChannel !== 'undefined') {
+    new BroadcastChannel('dbd_u').onmessage = () => {
+      killers=JSON.parse(localStorage.getItem('dbdKillers'))||[];
+      builds=JSON.parse(localStorage.getItem('dbdBuilds'))||[];
+      ratings=JSON.parse(localStorage.getItem('dbdRatings'))||{};
+      renderKillers(); if(selKiller) renderBuilds(selKiller); updateStats();
+    };
+  }
+});
+
+/* ═══ DEFAULTS ═══ */
+function defaults() {
+  return [
+    {id:1,name:"The Trapper",description:"خبير في وضع الفخاخ الخفية التي تُمسك الناجين بفاعلية.",difficulty:"متوسط",icon:"fas fa-mask",color:"#c0392b"},
+    {id:2,name:"The Hillbilly",description:"كيلر سريع بمنشار مميت يقطع مسافات طويلة بلحظات.",difficulty:"صعب",icon:"fas fa-tachometer-alt",color:"#16a34a"},
+    {id:3,name:"The Nurse",description:"شبحية تختفي وتظهر فجأة — تتطلب مهارة عالية للإتقان.",difficulty:"صعب جداً",icon:"fas fa-procedures",color:"#7c3aed"}
+  ];
+}
+
+/* ═══ SAVE ═══ */
+function save(t) {
+  if (t==='k'||t==='all') localStorage.setItem('dbdKillers',JSON.stringify(killers));
+  if (t==='b'||t==='all') localStorage.setItem('dbdBuilds',JSON.stringify(builds));
+  if (t==='r'||t==='all') localStorage.setItem('dbdRatings',JSON.stringify(ratings));
+  localStorage.setItem('dbdLastUpdate',new Date().toISOString());
+  if (typeof BroadcastChannel!=='undefined') new BroadcastChannel('dbd_u').postMessage({t:'upd'});
+  updateStats();
+}
+
+/* ═══ STATS ═══ */
+function updateStats() {
+  animNum('st-killers', killers.length);
+  animNum('st-builds', builds.length);
+  const tot = Object.values(ratings).reduce((a,b)=>a+b.length,0);
+  animNum('st-ratings', tot);
+  // top rated build name
+  let topBuild=null,topScore=0;
+  builds.forEach(b=>{ const a=parseFloat(avg(b.id))||0; if(a>topScore){topScore=a;topBuild=b;}});
+  const el=document.getElementById('st-top');
+  if(topBuild) el.textContent=topScore>0?topScore+'★':'—';
+  else el.textContent='—';
+}
+function animNum(id, target) {
+  const el=document.getElementById(id);
+  const cur=parseInt(el.textContent)||0;
+  if(cur===target) return;
+  let s=cur,step=(target-cur)/20;
+  const t=setInterval(()=>{
+    s+=step; if((step>0&&s>=target)||(step<0&&s<=target)){s=target;clearInterval(t);}
+    el.textContent=Math.round(s);
+  },30);
+}
+
+/* ═══ RATING HELPERS ═══ */
+function avg(id){
+  if(!ratings[id]||!ratings[id].length)return 0;
+  return (ratings[id].reduce((s,r)=>s+r.rating,0)/ratings[id].length).toFixed(1);
+}
+function myRating(id){
+  if(!me||!ratings[id])return 0;
+  const r=ratings[id].find(r=>r.user===me.username);return r?r.rating:0;
+}
+function starsHTML(r){
+  const n=parseFloat(r)||0,f=Math.floor(n),h=n%1>=.5;
+  let s='';
+  for(let i=0;i<f;i++) s+='<i class="fas fa-star"></i>';
+  if(h) s+='<i class="fas fa-star-half-alt"></i>';
+  for(let i=f+(h?1:0);i<5;i++) s+='<i class="far fa-star"></i>';
+  return s;
+}
+
+/* ═══ TOAST ═══ */
+function toast(msg,type='info',dur=3000){
+  const c=document.getElementById('toast-c');
+  const t=document.createElement('div');
+  t.className='tst';
+  const bg={success:'rgba(16,185,129,.85)',error:'rgba(192,57,43,.85)',warning:'rgba(245,158,11,.85)',info:'rgba(59,130,246,.85)'}[type];
+  const ic={success:'fa-check-circle',error:'fa-exclamation-circle',warning:'fa-exclamation-triangle',info:'fa-info-circle'}[type];
+  t.style.background=bg; t.style.color='#fff';
+  t.innerHTML=`<i class="fas ${ic}"></i><span>${msg}</span>`;
+  c.appendChild(t);
+  setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateX(-20px)'; t.style.transition='all .3s'; setTimeout(()=>t.remove(),320);},dur);
+}
+
+/* ═══ UI STATE ═══ */
+function ui(){
+  const chip=document.getElementById('user-chip');
+  const lbl=document.getElementById('login-lbl');
+  const nm=document.getElementById('nav-manage');
+  if(me){
+    document.getElementById('user-lbl').textContent=me.username==='MEDO'?'مسؤول':me.username;
+    chip.style.borderColor='rgba(74,222,128,0.3)';
+    lbl.textContent='خروج'; nm.style.display='';
+  } else {
+    document.getElementById('user-lbl').textContent='زائر';
+    chip.style.borderColor='';
+    lbl.textContent='دخول'; nm.style.display='none';
+  }
+}
+function setNav(id){
+  document.querySelectorAll('nav a').forEach(a=>a.classList.remove('active'));
+  document.getElementById(id)?.classList.add('active');
+}
+
+/* ═══ RENDER KILLERS ═══ */
+function renderKillers(){
+  const g=document.getElementById('killers-grid');
+  g.innerHTML='';
+  const q=searchQ.toLowerCase();
+  let vis=0;
+  killers.forEach(k=>{
+    const ms=!q||k.name.toLowerCase().includes(q)||k.description.toLowerCase().includes(q);
+    const md=dFilter==='all'||k.difficulty===dFilter;
+    if(!ms||!md){return;}
+    vis++;
+    const bc=builds.filter(b=>b.killerId===k.id).length;
+    const card=document.createElement('div');
+    card.className='killer-card'+(k.id===selKiller?' active':'');
+    card.dataset.id=k.id;
+    card.innerHTML=`
+      <div class="k-active-bar"></div>
+      ${bc>0&&parseFloat(avg(builds.filter(b=>b.killerId===k.id).sort((a,c)=>parseFloat(avg(c.id))-parseFloat(avg(a.id)))[0]?.id))>=4?'<div class="top-ribbon">الأفضل</div>':''}
+      <div class="k-icon-wrap" style="background:linear-gradient(135deg,${k.color}22,${k.color}08)">
+        <i class="k-icon ${k.icon}" style="color:${k.color}"></i>
+      </div>
+      <div class="k-body">
+        <div class="k-name">${k.name}</div>
+        <div class="k-desc">${k.description}</div>
+        <div class="k-tags">
+          <span class="k-tag k-tag-diff"><i class="fas fa-bolt"></i> ${k.difficulty}</span>
+          <span class="k-tag k-tag-builds"><i class="fas fa-hammer"></i> ${bc} بيلد</span>
         </div>
-    </main>
+      </div>`;
+    card.addEventListener('click',()=>{
+      selKiller=k.id;
+      renderBuilds(k.id);
+      setTimeout(()=>document.getElementById('builds-sec').scrollIntoView({behavior:'smooth',block:'start'}),150);
+    });
+    g.appendChild(card);
+    // stagger animation
+    card.style.opacity='0'; card.style.transform='translateY(20px)';
+    setTimeout(()=>{ card.style.transition='opacity .4s ease,transform .4s ease'; card.style.opacity='1'; card.style.transform='none'; }, vis*60);
+  });
+  if(!vis) g.innerHTML=`<div class="no-results"><i class="fas fa-search"></i>لا نتائج تطابق البحث</div>`;
+  document.getElementById('k-badge').textContent=vis+'/'+killers.length;
+}
 
-    <!-- التذييل -->
-    <footer>
-        <div class="container footer-content">
-            <div class="copyright">
-                <p>جميع الحقوق محفوظة &copy; 2023 - نظام كيلرات ديد باي ديلايت</p>
-                <p>آخر تحديث: <span id="current-date"></span></p>
-                <p style="margin-top: 10px; color: #94a3b8; font-size: 0.9rem;">لاقتراحات البيلدات: <strong>medo_dv</strong> على ديسكورد</p>
-            </div>
-            
-            <div class="social-links">
-                <a href="#" title="ديسكورد"><i class="fab fa-discord"></i></a>
-                <a href="#" title="يوتيوب"><i class="fab fa-youtube"></i></a>
-                <a href="#" title="تويتر"><i class="fab fa-twitter"></i></a>
-            </div>
+/* ═══ BUILD CARD HTML ═══ */
+function buildHTML(b, full=false){
+  const k=killers.find(x=>x.id===b.killerId)||{};
+  const kc=k.color||'#c0392b';
+  const a=avg(b.id), mr=myRating(b.id);
+  const rcnt=ratings[b.id]?ratings[b.id].length:0;
+  const perks=(b.perks||[]).slice(0,4);
+  const addons=(b.addons||[]).slice(0,2);
+  const desc=full?b.description:(b.description.length>200?b.description.slice(0,200)+'…':b.description);
+
+  return `<div class="build-card" data-bid="${b.id}">
+    ${parseFloat(a)>=4.5?'<div class="top-ribbon">برو</div>':''}
+    <div class="b-header">
+      <div class="b-name">${b.name}</div>
+      <div class="b-meta">
+        <span><i class="fas fa-user"></i> ${b.author}${b.suggestedBy?` · <span class="b-suggested"><i class="fas fa-lightbulb"></i> ${b.suggestedBy}</span>`:''}</span>
+        <span><i class="far fa-calendar"></i> ${b.date}</span>
+      </div>
+    </div>
+    <div class="b-body">
+      <div class="b-killer-row">
+        <div class="b-ki" style="background:${kc}22;border:1.5px solid ${kc}40"><i class="${k.icon||'fas fa-skull'}" style="color:${kc};font-size:1.4rem"></i></div>
+        <div>
+          <div style="color:#fff;font-weight:700;font-size:0.9rem;margin-bottom:2px">${b.killerName}</div>
+          <div style="color:var(--text3);font-size:0.72rem;letter-spacing:1px">مسؤول النظام</div>
         </div>
-    </footer>
+      </div>
+      <div class="b-desc">${desc}</div>
+      <div class="perks-label"><i class="fas fa-gem"></i> البيركات</div>
+      <div class="perks-grid">
+        ${perks.map((p,i)=>`<div class="perk-pill"><div class="pp-num">${i+1}</div><div class="pp-name">${p.name}</div><div class="pp-desc">${p.description||''}</div></div>`).join('')}
+        ${perks.length<4?Array(4-perks.length).fill(0).map((_,i)=>`<div class="perk-pill" style="opacity:.3"><div class="pp-num">${perks.length+i+1}</div><div class="pp-name">—</div></div>`).join(''):''}
+      </div>
+      <div class="addons-label"><i class="fas fa-plus-circle"></i> الإضافات</div>
+      <div class="addons-grid">
+        ${addons.map(a=>`<div class="addon-pill"><div class="ap-name">${a.name}</div><div class="ap-desc">${a.description||''}</div></div>`).join('')}
+        ${addons.length<2?Array(2-addons.length).fill(0).map(()=>`<div class="addon-pill" style="opacity:.3"><div class="ap-name">—</div></div>`).join(''):''}
+      </div>
+    </div>
+    <div class="b-footer">
+      <div class="rating-row">
+        <div class="stars-disp">${starsHTML(a)}</div>
+        <span class="rating-val">${a}</span>
+        <span class="rating-cnt"><i class="fas fa-users"></i> ${rcnt}</span>
+      </div>
+      <div class="b-actions">
+        ${!full?`<button class="btn btn-ghost btn-xs detail-btn" data-bid="${b.id}"><i class="fas fa-expand"></i> تفاصيل</button>`:''}
+        <button class="btn btn-outline-gold btn-xs rate-btn" data-bid="${b.id}"><i class="fas fa-star"></i> ${mr>0?'تعديل':'تقييم'}</button>
+        ${me&&me.username==='MEDO'?`<button class="btn btn-danger btn-xs del-btn" data-bid="${b.id}"><i class="fas fa-trash"></i></button>`:''}
+      </div>
+    </div>
+  </div>`;
+}
 
-    <script>
-        // بيانات الكيلرات (تبدأ فارغة - ستضيفها أنت)
-        let killers = JSON.parse(localStorage.getItem('dbdKillers')) || [];
+function attachCards(scope){
+  scope.querySelectorAll('.detail-btn').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();openDetail(+b.dataset.bid);}));
+  scope.querySelectorAll('.build-card').forEach(c=>c.addEventListener('click',e=>{if(!e.target.closest('.btn'))openDetail(+c.dataset.bid);}));
+  scope.querySelectorAll('.rate-btn').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();openRate(+b.dataset.bid);}));
+  scope.querySelectorAll('.del-btn').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();openDel(+b.dataset.bid);}));
+}
 
-        // بيانات البيلدات (تبدأ فارغة)
-        let builds = JSON.parse(localStorage.getItem('dbdBuilds')) || [];
+/* ═══ RENDER BUILDS ═══ */
+function renderBuilds(kid){
+  selKiller=kid;
+  const k=killers.find(x=>x.id===kid); if(!k) return;
+  document.getElementById('bc-name').textContent=k.name;
+  document.getElementById('breadcrumb').style.display='flex';
+  document.getElementById('builds-toolbar').style.display='flex';
+  document.getElementById('sel-killer-display').textContent=k.name;
+  document.getElementById('sel-killer-display').style.display='inline-flex';
+  document.getElementById('builds-title-text').style.display='none';
 
-        // بيانات التقييمات (كل بيلد له تقييماته)
-        let ratings = JSON.parse(localStorage.getItem('dbdRatings')) || {};
+  let list=builds.filter(b=>b.killerId===kid);
+  const q=searchQ.toLowerCase();
+  if(q) list=list.filter(b=>b.name.toLowerCase().includes(q)||b.description.toLowerCase().includes(q));
+  if(cFilter==='top') list.sort((a,b)=>parseFloat(avg(b.id))-parseFloat(avg(a.id)));
+  else if(cFilter==='new') list.sort((a,b)=>new Date(b.addedDate||0)-new Date(a.addedDate||0));
+  else list.sort((a,b)=>b.id-a.id);
 
-        // معلومات تسجيل الدخول (مخفية الآن)
-        const validUsername = "admin";
-        const validPassword = "123456123456";
+  document.getElementById('b-badge').textContent=list.length;
+  document.getElementById('b-count-txt').textContent=list.length+' بيلد';
+  document.querySelectorAll('#builds-toolbar .filt').forEach(x=>x.classList.toggle('active',x.dataset.f===cFilter));
+  document.querySelectorAll('.killer-card').forEach(c=>c.classList.toggle('active',parseInt(c.dataset.id)===kid));
 
-        // حالة التطبيق
-        let currentUser = JSON.parse(localStorage.getItem('dbdCurrentUser')) || null;
-        let selectedKillerId = null;
-        let selectedKillerName = "";
-        let currentRatingBuildId = null;
-        let currentDeleteBuildId = null;
+  const cont=document.getElementById('builds-container');
+  if(!list.length){
+    cont.innerHTML=`<div class="empty-state"><i class="fas fa-info-circle"></i><h3>لا توجد بيلدات بعد</h3><p>لم يتم إضافة بيلدات لـ ${k.name} بعد.${me?' كن أول من يضيف!':' سجل الدخول لإضافة أول بيلد.'}</p>${me?`<button class="btn btn-blood" onclick="showAdd(${kid})"><i class="fas fa-plus-circle"></i> أضف بيلداً</button>`:''}</div>`;
+    return;
+  }
+  cont.innerHTML=`<div class="builds-grid">${list.map(b=>buildHTML(b,false)).join('')}</div>`;
+  attachCards(cont);
+  setNav('nav-builds');
+}
 
-        // تهيئة التطبيق
-        document.addEventListener('DOMContentLoaded', function() {
-            // عرض التاريخ الحالي
-            const now = new Date();
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('current-date').textContent = now.toLocaleDateString('ar-EG', options);
-            
-            // تحديث واجهة المستخدم بناءً على حالة تسجيل الدخول
-            updateUIForLogin();
-            
-            // عرض الكيلرات
-            renderKillers();
-            
-            // تعيين معالجي الأحداث
-            setupEventListeners();
-            
-            // إخفاء الأقسام الأخرى في البداية
-            document.getElementById('builds-container').style.display = 'none';
-            document.getElementById('add-build-form').style.display = 'none';
-            
-            // إظهار رسالة أن الموقع فارغ
-            showEmptyMessage();
-        });
+/* ═══ DETAIL MODAL ═══ */
+function openDetail(bid){
+  const b=builds.find(x=>x.id===bid); if(!b) return;
+  document.getElementById('modal-body').innerHTML=buildHTML(b,true);
+  attachCards(document.getElementById('modal-body'));
+  const ol=document.getElementById('detail-overlay');
+  ol.style.display='flex';
+  ol.classList.add('open');
+}
+function closeDetail(){
+  const ol=document.getElementById('detail-overlay');
+  ol.style.display='none'; ol.classList.remove('open');
+}
 
-        // حفظ الكيلرات في localStorage
-        function saveKillers() {
-            localStorage.setItem('dbdKillers', JSON.stringify(killers));
+/* ═══ RATING ═══ */
+function openRate(bid){
+  ratingTarget=bid;
+  const mr=myRating(bid);
+  document.querySelectorAll('#stars-pick .s').forEach((s,i)=>s.classList.toggle('on',i<mr));
+  document.getElementById('rate-overlay').style.display='flex';
+}
+
+/* ═══ DELETE ═══ */
+function openDel(bid){ deleteTarget=bid; document.getElementById('del-overlay').style.display='flex'; }
+function doDelete(bid){
+  builds=builds.filter(b=>b.id!==bid);
+  if(ratings[bid]){delete ratings[bid]; save('r');}
+  save('b'); closeDetail();
+  if(selKiller) renderBuilds(selKiller);
+  renderKillers();
+  toast('تم حذف البيلد','warning');
+}
+
+/* ═══ ADD FORM ═══ */
+function showAdd(kid){
+  if(!me){ document.getElementById('login-overlay').style.display='flex'; return; }
+  const wrap=document.getElementById('add-form-wrap');
+  document.getElementById('add-sec-hdr').style.display='flex';
+  wrap.innerHTML=`
+    <div class="discord-note"><i class="fab fa-discord" style="color:#818cf8"></i> لاقتراحات البيلدات: <strong>medo_dv</strong> على ديسكورد</div>
+    <form id="nform">
+      <div class="form-row">
+        <div class="form-group">
+          <label><i class="fas fa-skull"></i> الكيلر *</label>
+          <select class="fc" id="nk" required>
+            <option value="">-- اختر كيلر --</option>
+            ${killers.map(k=>`<option value="${k.id}" ${k.id===kid?'selected':''}>${k.name}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-heading"></i> اسم البيلد *</label>
+          <input type="text" class="fc" id="nn" placeholder="مثال: بيلد الضغط المستمر" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-lightbulb"></i> اقتراح من (اختياري)</label>
+        <input type="text" class="fc" id="nsg" placeholder="مصدر البيلد أو اسم المقترح">
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-file-alt"></i> شرح البيلد *</label>
+        <textarea class="fc" id="nd" placeholder="شرح مفصل للبيلد والاستراتيجية المثلى..." required></textarea>
+      </div>
+      <div style="color:var(--text2);font-size:0.78rem;text-transform:uppercase;letter-spacing:2px;margin-bottom:14px;display:flex;align-items:center;gap:8px"><i class="fas fa-gem" style="color:#60a5fa"></i> البيركات (4)</div>
+      ${[1,2,3,4].map(i=>`<div class="perk-block"><label><i class="fas fa-hashtag"></i> البيرك ${i} *</label><input type="text" class="pinput" id="p${i}n" placeholder="اسم البيرك ${i}" required><input type="text" class="pinput" id="p${i}d" placeholder="وصف البيرك ${i} (اختياري)"></div>`).join('')}
+      <div style="color:var(--text2);font-size:0.78rem;text-transform:uppercase;letter-spacing:2px;margin:18px 0 14px;display:flex;align-items:center;gap:8px"><i class="fas fa-plus" style="color:#34d399"></i> الإضافات (2)</div>
+      ${[1,2].map(i=>`<div class="addon-block"><label><i class="fas fa-hashtag"></i> الإضافة ${i} *</label><input type="text" class="pinput" id="a${i}n" placeholder="اسم الإضافة ${i}" required><input type="text" class="pinput" id="a${i}d" placeholder="وصف الإضافة ${i} (اختياري)"></div>`).join('')}
+      <div class="fa-row">
+        <button type="button" class="btn btn-ghost" id="n-cancel"><i class="fas fa-times"></i> إلغاء</button>
+        <button type="submit" class="btn btn-blood"><i class="fas fa-plus-circle"></i> إضافة البيلد</button>
+      </div>
+    </form>`;
+  wrap.classList.add('open');
+  document.getElementById('builds-container').innerHTML='';
+  document.getElementById('add-sec').scrollIntoView({behavior:'smooth',block:'start'});
+  setNav('nav-add');
+
+  document.getElementById('n-cancel').onclick=()=>{
+    wrap.classList.remove('open'); wrap.innerHTML='';
+    document.getElementById('add-sec-hdr').style.display='none';
+    setNav('nav-killers');
+  };
+  document.getElementById('nform').addEventListener('submit',e=>{
+    e.preventDefault();
+    const kid2=parseInt(document.getElementById('nk').value);
+    const name=document.getElementById('nn').value.trim();
+    const desc=document.getElementById('nd').value.trim();
+    const sugg=document.getElementById('nsg').value.trim();
+    if(!kid2||!name||!desc){toast('أكمل الحقول المطلوبة','error');return;}
+    const perks=[],addons=[];
+    for(let i=1;i<=4;i++){
+      const n=document.getElementById(`p${i}n`).value.trim();
+      if(!n){toast(`أدخل اسم البيرك ${i}`,'error');return;}
+      perks.push({name:n,description:document.getElementById(`p${i}d`).value.trim()});
+    }
+    for(let i=1;i<=2;i++){
+      const n=document.getElementById(`a${i}n`).value.trim();
+      if(!n){toast(`أدخل اسم الإضافة ${i}`,'error');return;}
+      addons.push({name:n,description:document.getElementById(`a${i}d`).value.trim()});
+    }
+    const k2=killers.find(x=>x.id===kid2);
+    builds.push({id:builds.length?Math.max(...builds.map(x=>x.id))+1:1,killerId:kid2,killerName:k2.name,name,description:desc,suggestedBy:sugg||null,perks,addons,author:me.username,date:new Date().toLocaleDateString('ar-EG'),addedDate:new Date().toISOString()});
+    save('b'); toast('تم إضافة البيلد!','success');
+    wrap.classList.remove('open'); wrap.innerHTML='';
+    document.getElementById('add-sec-hdr').style.display='none';
+    renderBuilds(kid2); renderKillers();
+    document.getElementById('builds-sec').scrollIntoView({behavior:'smooth'});
+  });
+}
+
+/* ═══ MANAGE ═══ */
+function showManage(){
+  if(!me){document.getElementById('login-overlay').style.display='flex';return;}
+  const sec=document.getElementById('manage-sec'); sec.style.display='block';
+  const body=document.getElementById('manage-body');
+  body.innerHTML=`
+    <div class="manage-block">
+      <h3><i class="fas fa-database"></i> البيانات</h3>
+      <div class="io-row">
+        <button class="btn btn-ghost" id="m-exp"><i class="fas fa-download"></i> تصدير</button>
+        <button class="btn btn-ghost" id="m-imp"><i class="fas fa-upload"></i> استيراد</button>
+        <button class="btn btn-danger" id="m-rst"><i class="fas fa-trash"></i> إعادة تعيين</button>
+      </div>
+      <p style="color:var(--text3);font-size:0.8rem">البيانات محفوظة في المتصفح. استخدم تصدير/استيراد للمشاركة بين الأجهزة.</p>
+    </div>
+    <div class="manage-block" style="border-color:rgba(192,57,43,0.25)">
+      <h3><i class="fas fa-layer-group"></i> إضافة كيلرات دفعة واحدة</h3>
+      <p style="color:var(--text3);font-size:0.82rem;margin-bottom:12px">كل كيلر في سطر مستقل:</p>
+      <textarea class="batch-ta" id="batch-ta" placeholder="The Trapper&#10;The Hillbilly&#10;The Nurse&#10;The Huntress"></textarea>
+      <div class="form-row" style="margin-top:14px">
+        <div class="form-group"><label>الوصف الافتراضي</label><input type="text" class="fc" id="bd-desc" value="كيلر قوي في ديد باي ديلايت"></div>
+        <div class="form-group"><label>الصعوبة</label><select class="fc" id="bd-diff"><option>سهل</option><option selected>متوسط</option><option>صعب</option><option>صعب جداً</option></select></div>
+        <div class="form-group"><label>اللون</label><input type="color" class="fc" id="bd-col" value="#c0392b" style="height:44px"></div>
+        <div class="form-group"><label>الأيقونة</label>
+          <select class="fc" id="bd-ico">
+            <option value="fas fa-skull">جمجمة</option><option value="fas fa-ghost">شبح</option>
+            <option value="fas fa-mask">قناع</option><option value="fas fa-tachometer-alt">سرعة</option>
+            <option value="fas fa-procedures">ممرضة</option><option value="fas fa-hat-cowboy">صياد</option>
+            <option value="fas fa-fist-raised">مقاتل</option><option value="fas fa-spider">عنكبوت</option>
+            <option value="fas fa-fire">نار</option><option value="fas fa-bolt">برق</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-blood" id="batch-go" style="width:100%;margin-top:8px;justify-content:center"><i class="fas fa-plus-circle"></i> إضافة الكيلرات</button>
+      <div class="info-note"><i class="fas fa-info-circle"></i> الأسطر الفارغة والكيلرات المكررة تُتجاهل تلقائياً.</div>
+    </div>
+    <div class="manage-block">
+      <h3><i class="fas fa-plus-circle"></i> إضافة كيلر فردي</h3>
+      <form id="ak-form">
+        <div class="form-row">
+          <div class="form-group"><label>الاسم *</label><input type="text" class="fc" id="ak-n" placeholder="The Trapper" required></div>
+          <div class="form-group"><label>الصعوبة *</label>
+            <select class="fc" id="ak-d" required>
+              <option value="">-- اختر --</option><option>سهل</option><option>متوسط</option><option>صعب</option><option>صعب جداً</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group"><label>الوصف *</label><textarea class="fc" id="ak-desc" rows="3" required></textarea></div>
+        <div class="form-row">
+          <div class="form-group"><label>الأيقونة *</label>
+            <select class="fc" id="ak-ico" required>
+              <option value="">-- اختر --</option>
+              <option value="fas fa-skull">جمجمة</option><option value="fas fa-ghost">شبح</option>
+              <option value="fas fa-mask">قناع</option><option value="fas fa-tachometer-alt">سرعة</option>
+              <option value="fas fa-procedures">ممرضة</option><option value="fas fa-hat-cowboy">صياد</option>
+              <option value="fas fa-fire">نار</option><option value="fas fa-bolt">برق</option>
+              <option value="fas fa-spider">عنكبوت</option><option value="fas fa-fist-raised">مقاتل</option>
+            </select>
+          </div>
+          <div class="form-group"><label>اللون *</label><input type="color" class="fc" id="ak-col" value="#3b82f6" style="height:44px"></div>
+        </div>
+        <div class="fa-row"><button type="submit" class="btn btn-blood"><i class="fas fa-plus-circle"></i> إضافة</button></div>
+      </form>
+    </div>
+    <div class="manage-block">
+      <h3><i class="fas fa-list"></i> الكيلرات (${killers.length})</h3>
+      ${killers.map(k=>{
+        const bc=builds.filter(b=>b.killerId===k.id).length;
+        return `<div class="killer-item">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:40px;height:40px;border-radius:50%;background:${k.color}22;border:1.5px solid ${k.color}44;display:flex;align-items:center;justify-content:center">
+              <i class="${k.icon}" style="color:${k.color};font-size:1.1rem"></i>
+            </div>
+            <div>
+              <div style="color:#fff;font-weight:700;font-size:0.9rem">${k.name}</div>
+              <div style="color:var(--text3);font-size:0.72rem;margin-top:2px"><i class="fas fa-bolt"></i> ${k.difficulty} · <i class="fas fa-hammer"></i> ${bc} بيلد</div>
+            </div>
+          </div>
+          <button class="btn btn-danger btn-xs dkb" data-id="${k.id}"><i class="fas fa-trash"></i> حذف</button>
+        </div>`;
+      }).join('')||'<p style="color:var(--text3);text-align:center;padding:20px">لا توجد كيلرات.</p>'}
+    </div>`;
+
+  document.getElementById('ak-form').onsubmit=e=>{
+    e.preventDefault();
+    const n=document.getElementById('ak-n').value.trim(), d=document.getElementById('ak-d').value,
+          desc=document.getElementById('ak-desc').value.trim(), ico=document.getElementById('ak-ico').value,
+          col=document.getElementById('ak-col').value;
+    if(!n||!d||!desc||!ico){toast('أكمل جميع الحقول','error');return;}
+    killers.push({id:killers.length?Math.max(...killers.map(k=>k.id))+1:1,name:n,description:desc,difficulty:d,icon:ico,color:col});
+    save('k'); renderKillers(); showManage(); toast('تم إضافة الكيلر!','success');
+  };
+  document.getElementById('batch-go').onclick=()=>{
+    const lines=document.getElementById('batch-ta').value.split('\n');
+    const ex=killers.map(k=>k.name.toLowerCase());
+    let added=0,skipped=0;
+    lines.forEach(l=>{
+      const n=l.trim(); if(!n) return;
+      if(ex.includes(n.toLowerCase())){skipped++;return;}
+      killers.push({id:killers.length?Math.max(...killers.map(k=>k.id))+1:1,name:n,
+        description:document.getElementById('bd-desc').value,difficulty:document.getElementById('bd-diff').value,
+        icon:document.getElementById('bd-ico').value,color:document.getElementById('bd-col').value});
+      ex.push(n.toLowerCase()); added++;
+    });
+    if(added){save('k');renderKillers();showManage();toast(`أُضيف ${added} كيلر${skipped?' (تخطي '+skipped+' مكرر)':''}!`,'success');document.getElementById('batch-ta').value='';}
+    else toast('لا كيلرات جديدة للإضافة','warning');
+  };
+  document.getElementById('m-exp').onclick=()=>{
+    const a=document.createElement('a');
+    a.href='data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify({killers,builds,ratings,exportDate:new Date().toISOString()},null,2));
+    a.download='dbd-data-'+new Date().toISOString().slice(0,10)+'.json'; a.click();
+    toast('تم التصدير!','success');
+  };
+  document.getElementById('m-imp').onclick=()=>{
+    const inp=document.createElement('input'); inp.type='file'; inp.accept='.json';
+    inp.onchange=e=>{const fr=new FileReader();fr.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(!Array.isArray(d.killers))throw new Error('ملف غير صالح');if(confirm(`استيراد ${d.killers.length} كيلر و${(d.builds||[]).length} بيلد؟`)){killers=d.killers;builds=d.builds||[];ratings=d.ratings||{};save('all');renderKillers();showManage();toast('تم الاستيراد!','success');}}catch(err){toast('خطأ: '+err.message,'error');}};fr.readAsText(e.target.files[0]);};
+    inp.click();
+  };
+  document.getElementById('m-rst').onclick=()=>{
+    if(!confirm('سيُحذف كل شيء. متأكد؟'))return;
+    if(!confirm('تأكيد نهائي — لا رجعة!'))return;
+    ['dbdKillers','dbdBuilds','dbdRatings','dbdCurrentUser','dbdLastUpdate'].forEach(k=>localStorage.removeItem(k));
+    killers=defaults();builds=[];ratings={};me=null;
+    save('all');ui();renderKillers();showManage();toast('تمت إعادة التعيين','success');
+  };
+  body.querySelectorAll('.dkb').forEach(btn=>{
+    btn.onclick=()=>{
+      const id=parseInt(btn.dataset.id),k=killers.find(x=>x.id===id);
+      const rel=builds.filter(b=>b.killerId===id).length;
+      if(!confirm(`حذف "${k.name}"${rel?' و'+rel+' بيلد؟':'؟'}`))return;
+      builds=builds.filter(b=>b.killerId!==id);killers=killers.filter(x=>x.id!==id);
+      save('all');renderKillers();showManage();toast(`حُذف "${k.name}"!`,'warning');
+    };
+  });
+}
+
+/* ═══ EVENTS ═══ */
+function setupAll(){
+  document.getElementById('logo-link').onclick=e=>{e.preventDefault();scrollTo({top:0,behavior:'smooth'});setNav('nav-killers');};
+  document.getElementById('hero-add-btn').onclick=()=>{ if(me) showAdd(selKiller); else document.getElementById('login-overlay').style.display='flex'; };
+  document.getElementById('nav-killers').onclick=e=>{e.preventDefault();document.getElementById('killers-sec').scrollIntoView({behavior:'smooth'});document.getElementById('manage-sec').style.display='none';setNav('nav-killers');};
+  document.getElementById('nav-builds').onclick=e=>{e.preventDefault();if(selKiller){document.getElementById('builds-sec').scrollIntoView({behavior:'smooth'});setNav('nav-builds');}else toast('اختر كيلراً أولاً','info');};
+  document.getElementById('nav-add').onclick=e=>{e.preventDefault();if(me)showAdd(selKiller);else document.getElementById('login-overlay').style.display='flex';};
+  document.getElementById('nav-manage').onclick=e=>{e.preventDefault();showManage();document.getElementById('manage-sec').scrollIntoView({behavior:'smooth'});setNav('nav-manage');};
+  document.getElementById('bc-home').onclick=()=>document.getElementById('killers-sec').scrollIntoView({behavior:'smooth'});
+
+  // difficulty filter
+  document.querySelectorAll('.filter-bar .filt').forEach(b=>b.addEventListener('click',()=>{dFilter=b.dataset.d;document.querySelectorAll('.filter-bar .filt').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderKillers();}));
+
+  // builds filter
+  document.addEventListener('click',e=>{const b=e.target.closest('#builds-toolbar .filt');if(b&&b.dataset.f){cFilter=b.dataset.f;if(selKiller)renderBuilds(selKiller);}});
+
+  // search
+  const si=document.getElementById('global-search'), cl=document.getElementById('clear-s');
+  si.oninput=()=>{searchQ=si.value.trim();cl.style.display=searchQ?'block':'none';renderKillers();if(selKiller)renderBuilds(selKiller);};
+  cl.onclick=()=>{si.value='';searchQ='';cl.style.display='none';renderKillers();if(selKiller)renderBuilds(selKiller);};
+
+  // login
+  document.getElementById('login-btn').onclick=()=>{
+    if(me){me=null;localStorage.removeItem('dbdCurrentUser');ui();toast('تم الخروج','info');}
+    else document.getElementById('login-overlay').style.display='flex';
+  };
+  document.getElementById('l-cancel').onclick=()=>{document.getElementById('login-overlay').style.display='none';document.getElementById('lform').reset();};
+  document.getElementById('login-overlay').onclick=e=>{if(e.target===document.getElementById('login-overlay')){document.getElementById('login-overlay').style.display='none';document.getElementById('lform').reset();}};
+  document.getElementById('lform').onsubmit=e=>{
+    e.preventDefault();
+    const u=document.getElementById('l-user').value,p=document.getElementById('l-pass').value;
+    const msg=document.getElementById('lmsg');
+    if(u===VU&&p===VP){
+      me={username:u};localStorage.setItem('dbdCurrentUser',JSON.stringify(me));
+      msg.className='lmsg ok';msg.innerHTML='<i class="fas fa-check-circle"></i> تم الدخول بنجاح!';
+      setTimeout(()=>{document.getElementById('login-overlay').style.display='none';ui();document.getElementById('lform').reset();msg.className='lmsg';msg.innerHTML='أدخل بيانات المسؤول.';toast('مرحباً '+u+'!','success');},1200);
+    } else {
+      msg.className='lmsg err';msg.innerHTML='<i class="fas fa-exclamation-circle"></i> بيانات غير صحيحة!';
+    }
+  };
+
+  // detail modal close
+  document.getElementById('modal-close').onclick=closeDetail;
+  document.getElementById('detail-overlay').onclick=e=>{if(e.target===document.getElementById('detail-overlay'))closeDetail();};
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDetail();});
+
+  // rating
+  document.querySelectorAll('#stars-pick .s').forEach(s=>s.onclick=()=>{const v=+s.dataset.v;document.querySelectorAll('#stars-pick .s').forEach((x,i)=>x.classList.toggle('on',i<v));});
+  document.getElementById('rate-cancel').onclick=()=>document.getElementById('rate-overlay').style.display='none';
+  document.getElementById('rate-overlay').onclick=e=>{if(e.target===document.getElementById('rate-overlay'))document.getElementById('rate-overlay').style.display='none';};
+  document.getElementById('rate-submit').onclick=()=>{
+    if(!ratingTarget)return;
+    const active=document.querySelectorAll('#stars-pick .s.on').length;
+    if(!active){toast('اختر تقييماً','warning');return;}
+    if(!ratings[ratingTarget])ratings[ratingTarget]=[];
+    const idx=ratings[ratingTarget].findIndex(r=>r.user===(me?me.username:'زائر'));
+    if(idx>-1)ratings[ratingTarget][idx].rating=active;
+    else ratings[ratingTarget].push({user:me?me.username:'زائر',rating:active,date:new Date().toISOString()});
+    save('r');document.getElementById('rate-overlay').style.display='none';
+    if(selKiller)renderBuilds(selKiller);
+    toast('شكراً على تقييمك! ⭐','success');ratingTarget=null;
+  };
+
+  // delete
+  document.getElementById('del-cancel').onclick=()=>document.getElementById('del-overlay').style.display='none';
+  document.getElementById('del-overlay').onclick=e=>{if(e.target===document.getElementById('del-overlay'))document.getElementById('del-overlay').style.display='none';};
+  document.getElementById('del-confirm').onclick=()=>{
+    if(deleteTarget){doDelete(deleteTarget);document.getElementById('del-overlay').style.display='none';deleteTarget=null;}
+  };
+}
+
+/* ═══════════════════════════════════════════
+   VISUAL EFFECTS
+═══════════════════════════════════════════ */
+
+/* ─── CUSTOM CURSOR ─── */
+function cursor(){
+  const c=document.getElementById('cursor'), d=document.getElementById('cursor-dot');
+  let mx=0,my=0,cx=0,cy=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;d.style.left=mx+'px';d.style.top=my+'px';});
+  function move(){cx+=(mx-cx)*.15;cy+=(my-cy)*.15;c.style.left=(cx-9)+'px';c.style.top=(cy-9)+'px';requestAnimationFrame(move);}
+  move();
+  document.querySelectorAll('a,button,.killer-card,.build-card,.filt').forEach(el=>{
+    el.addEventListener('mouseenter',()=>c.classList.add('hovering'));
+    el.addEventListener('mouseleave',()=>c.classList.remove('hovering'));
+  });
+}
+
+/* ─── SCROLL PROGRESS ─── */
+function scrollProg(){
+  const bar=document.getElementById('prog');
+  document.addEventListener('scroll',()=>{
+    const pct=scrollY/(document.documentElement.scrollHeight-innerHeight)*100;
+    bar.style.width=pct+'%';
+  });
+}
+
+/* ─── BACKGROUND CANVAS (blood drips / particles) ─── */
+function bgCanvas(){
+  const canvas=document.getElementById('bg-canvas');
+  const ctx=canvas.getContext('2d');
+  let W,H,dots=[];
+  function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight;}
+  resize(); window.addEventListener('resize',resize);
+  class Dot{
+    constructor(){this.reset();}
+    reset(){
+      this.x=Math.random()*W; this.y=Math.random()*H;
+      this.r=Math.random()*1.5+0.3;
+      this.vx=(Math.random()-.5)*.25; this.vy=(Math.random()-.5)*.25;
+      this.alpha=Math.random()*.4+.1;
+      this.col=Math.random()<.4?'192,57,43':'255,255,255';
+    }
+    draw(){
+      ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(${this.col},${this.alpha})`;ctx.fill();
+    }
+    update(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>W||this.y<0||this.y>H)this.reset();}
+  }
+  for(let i=0;i<130;i++) dots.push(new Dot());
+
+  // lines between close dots
+  function drawLines(){
+    for(let i=0;i<dots.length;i++){
+      for(let j=i+1;j<dots.length;j++){
+        const dx=dots[i].x-dots[j].x, dy=dots[i].y-dots[j].y;
+        const dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<110){
+          ctx.beginPath();ctx.moveTo(dots[i].x,dots[i].y);ctx.lineTo(dots[j].x,dots[j].y);
+          ctx.strokeStyle=`rgba(192,57,43,${.08*(1-dist/110)})`;ctx.lineWidth=.4;ctx.stroke();
         }
+      }
+    }
+  }
+  function loop(){
+    ctx.clearRect(0,0,W,H);
+    dots.forEach(d=>{d.update();d.draw();});
+    drawLines();
+    requestAnimationFrame(loop);
+  }
+  loop();
+}
 
-        // حفظ البيلدات في localStorage
-        function saveBuilds() {
-            localStorage.setItem('dbdBuilds', JSON.stringify(builds));
-        }
+/* ─── FLOATING BLOOD PARTICLES ─── */
+function particles(){
+  function spawn(){
+    const p=document.createElement('div'); p.className='particle';
+    const size=Math.random()*4+2;
+    p.style.cssText=`
+      width:${size}px;height:${size}px;
+      left:${Math.random()*100}vw;bottom:-10px;
+      background:rgba(192,57,43,${Math.random()*.5+.2});
+      --dx:${(Math.random()-.5)*2};
+      animation-duration:${Math.random()*12+8}s;
+      animation-delay:${Math.random()*5}s;
+    `;
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),(parseFloat(p.style.animationDuration)+parseFloat(p.style.animationDelay))*1000+200);
+  }
+  setInterval(spawn, 800);
+}
 
-        // حفظ التقييمات في localStorage
-        function saveRatings() {
-            localStorage.setItem('dbdRatings', JSON.stringify(ratings));
-        }
-
-        // عرض رسالة أن الموقع فارغ
-        function showEmptyMessage() {
-            const buildsContainer = document.getElementById('builds-container');
-            buildsContainer.innerHTML = `
-                <div class="empty-message">
-                    <i class="fas fa-box-open"></i>
-                    <h3>لا توجد بيلدات بعد</h3>
-                    <p>لم يتم إضافة أي بيلدات بعد. سجل الدخول لإضافة أول بيلد لك!</p>
-                    <button class="btn btn-primary" id="login-to-add-btn">سجل الدخول الآن</button>
-                </div>
-            `;
-            
-            buildsContainer.style.display = 'block';
-        }
-
-        // عرض الكيلرات
-        function renderKillers() {
-            const killersGrid = document.getElementById('killers-grid');
-            killersGrid.innerHTML = '';
-            
-            if (killers.length === 0) {
-                killersGrid.innerHTML = `
-                    <div class="empty-message" style="grid-column: 1 / -1;">
-                        <i class="fas fa-user-plus"></i>
-                        <h3>لا توجد كيلرات بعد</h3>
-                        <p>سجل الدخول ثم انتقل إلى قسم "إدارة الكيلرات" لإضافة كيلرات جديدة.</p>
-                        <button class="btn btn-primary" id="login-to-manage-btn">سجل الدخول للإدارة</button>
-                    </div>
-                `;
-                return;
-            }
-            
-            killers.forEach(killer => {
-                const killerCard = document.createElement('div');
-                killerCard.className = 'killer-card';
-                killerCard.dataset.id = killer.id;
-                
-                killerCard.innerHTML = `
-                    <div class="killer-icon" style="background-color: ${killer.color}40;">
-                        <i class="${killer.icon}" style="color: ${killer.color};"></i>
-                    </div>
-                    <div class="killer-info">
-                        <h3>${killer.name}</h3>
-                        <p>${killer.description}</p>
-                        <div class="killer-tags">
-                            <span class="tag">الصعوبة: ${killer.difficulty}</span>
-                        </div>
-                    </div>
-                `;
-                
-                killersGrid.appendChild(killerCard);
-            });
-        }
-
-        // حساب متوسط التقييم للبيلد
-        function calculateAverageRating(buildId) {
-            if (!ratings[buildId] || ratings[buildId].length === 0) {
-                return 0;
-            }
-            
-            const sum = ratings[buildId].reduce((total, rating) => total + rating.rating, 0);
-            return (sum / ratings[buildId].length).toFixed(1);
-        }
-
-        // الحصول على تقييم المستخدم الحالي للبيلد
-        function getUserRating(buildId) {
-            if (!currentUser || !ratings[buildId]) return 0;
-            
-            const userRating = ratings[buildId].find(r => r.user === currentUser.username);
-            return userRating ? userRating.rating : 0;
-        }
-
-        // عرض البيلدات لكيلر معين
-        function renderBuildsForKiller(killerId) {
-            const buildsContainer = document.getElementById('builds-container');
-            const killer = killers.find(k => k.id === killerId);
-            
-            if (!killer) return;
-            
-            selectedKillerName = killer.name;
-            document.getElementById('selected-killer-name').textContent = killer.name;
-            
-            // عرض البيلدات الخاصة بهذا الكيلر فقط
-            const killerBuilds = builds.filter(build => build.killerId === killerId);
-            
-            if (killerBuilds.length === 0) {
-                buildsContainer.innerHTML = `
-                    <div class="empty-message">
-                        <i class="fas fa-info-circle"></i>
-                        <h3>لا توجد بيلدات لهذا الكيلر بعد</h3>
-                        <p>لم يتم إضافة أي بيلدات لـ ${killer.name} بعد. ${currentUser ? 'كن أول من يضيف بيلداً لهذا الكيلر!' : 'سجل الدخول لإضافة أول بيلد!'}</p>
-                        ${currentUser ? `<button class="btn btn-primary" id="add-for-killer-btn">أضف بيلد لـ ${killer.name}</button>` : `<button class="btn btn-primary" id="login-to-add-killer-btn">سجل الدخول لإضافة بيلد</button>`}
-                    </div>
-                `;
-            } else {
-                let buildsHTML = '<div class="builds-grid">';
-                
-                killerBuilds.forEach(build => {
-                    const avgRating = calculateAverageRating(build.id);
-                    const userRating = getUserRating(build.id);
-                    const killer = killers.find(k => k.id === build.killerId);
-                    const killerColor = killer ? killer.color : '#3b82f6';
-                    const killerIcon = killer ? killer.icon : 'fas fa-skull';
-                    
-                    buildsHTML += `
-                        <div class="build-card" data-build-id="${build.id}">
-                            <div class="build-header">
-                                <h3>${build.name}</h3>
-                                <div class="build-meta">
-                                    <div>
-                                        <span>بواسطة: ${build.author}</span>
-                                        ${build.suggestedBy ? `<br><span class="build-suggested">اقتراح من: ${build.suggestedBy}</span>` : ''}
-                                    </div>
-                                    <span>${build.date}</span>
-                                </div>
-                            </div>
-                            <div class="build-body">
-                                <div class="build-killer-info">
-                                    <div class="killer-icon-small" style="background-color: ${killerColor}40;">
-                                        <i class="${killerIcon}" style="color: ${killerColor};"></i>
-                                    </div>
-                                    <div>
-                                        <h4 style="color: #f8fafc; margin-bottom: 5px;">${build.killerName}</h4>
-                                        <p style="color: #94a3b8; font-size: 0.9rem;">${build.author === 'admin' ? 'مدير النظام' : 'مستخدم'}</p>
-                                    </div>
-                                </div>
-                                
-                                <p class="build-description">${build.description}</p>
-                                
-                                <div class="upload-section">
-                                    <div class="upload-title"><i class="fas fa-gem"></i> البيركات</div>
-                                    <div class="build-perks">
-                                        ${build.perkImages && build.perkImages.length > 0 ? 
-                                            build.perkImages.map((img, index) => `
-                                                <div class="perk">
-                                                    ${img ? `<img src="${img}" alt="بيرك ${index+1}">` : `<i class="fas fa-question"></i>`}
-                                                    <div class="perk-number">${index+1}</div>
-                                                </div>
-                                            `).join('') : 
-                                            [1,2,3,4].map(i => `
-                                                <div class="perk">
-                                                    <i class="fas fa-question"></i>
-                                                    <div class="perk-number">${i}</div>
-                                                </div>
-                                            `).join('')}
-                                    </div>
-                                    
-                                    <div class="upload-title"><i class="fas fa-plus"></i> الإضافات (Add-ons)</div>
-                                    <div class="build-addons">
-                                        ${build.addonImages && build.addonImages.length > 0 ? 
-                                            build.addonImages.map((img, index) => `
-                                                <div class="addon">
-                                                    ${img ? `<img src="${img}" alt="إضافة ${index+1}">` : `<i class="fas fa-plus"></i>`}
-                                                </div>
-                                            `).join('') : 
-                                            [1,2].map(() => `
-                                                <div class="addon">
-                                                    <i class="fas fa-plus"></i>
-                                                </div>
-                                            `).join('')}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="build-footer">
-                                <div class="rating-section">
-                                    <div class="build-rating">
-                                        ${renderRatingStars(avgRating)}
-                                        <span>(${avgRating})</span>
-                                    </div>
-                                    <div class="rating-count">
-                                        ${ratings[build.id] ? ratings[build.id].length : 0} تقييم
-                                    </div>
-                                </div>
-                                <div style="display: flex; gap: 10px;">
-                                    <button class="btn btn-secondary btn-small rate-build-btn" data-build-id="${build.id}">
-                                        ${userRating > 0 ? 'عدّل تقييمك' : 'قيم هذا البيلد'}
-                                    </button>
-                                    ${currentUser && currentUser.username === 'admin' ? 
-                                        `<button class="btn btn-danger btn-small delete-build-btn" data-build-id="${build.id}">
-                                            <i class="fas fa-trash"></i> حذف
-                                        </button>` : ''}
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-                
-                buildsHTML += '</div>';
-                buildsContainer.innerHTML = buildsHTML;
-                
-                // إضافة أحداث لأزرار التقييم
-                document.querySelectorAll('.rate-build-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const buildId = parseInt(this.dataset.buildId);
-                        openRatingModal(buildId);
-                    });
-                });
-                
-                // إضافة أحداث لأزرار حذف البيلد (للمدير فقط)
-                if (currentUser && currentUser.username === 'admin') {
-                    document.querySelectorAll('.delete-build-btn').forEach(btn => {
-                        btn.addEventListener('click', function() {
-                            const buildId = parseInt(this.dataset.buildId);
-                            openDeleteModal(buildId);
-                        });
-                    });
-                }
-            }
-            
-            // إظهار قسم البيلدات
-            buildsContainer.style.display = 'block';
-            buildsContainer.classList.add('active');
-            
-            // إخفاء أقسام أخرى
-            document.getElementById('add-build-form').style.display = 'none';
-            document.getElementById('add-build-form').classList.remove('active');
-            
-            // تحديث التنقل النشط
-            updateActiveNav('nav-builds');
-            
-            // إضافة أحداث للأزرار الجديدة
-            setTimeout(() => {
-                const addForKillerBtn = document.getElementById('add-for-killer-btn');
-                const loginToAddKillerBtn = document.getElementById('login-to-add-killer-btn');
-                
-                if (addForKillerBtn) {
-                    addForKillerBtn.addEventListener('click', function() {
-                        showAddBuildForm();
-                        document.getElementById('build-killer').value = killerId;
-                    });
-                }
-                
-                if (loginToAddKillerBtn) {
-                    loginToAddKillerBtn.addEventListener('click', function() {
-                        document.getElementById('login-overlay').style.display = 'flex';
-                    });
-                }
-            }, 100);
-        }
-
-        // عرض نجوم التقييم
-        function renderRatingStars(rating) {
-            let stars = '';
-            const numericRating = parseFloat(rating) || 0;
-            const fullStars = Math.floor(numericRating);
-            const hasHalfStar = numericRating % 1 >= 0.5;
-            
-            for (let i = 0; i < fullStars; i++) {
-                stars += '<i class="fas fa-star"></i>';
-            }
-            
-            if (hasHalfStar) {
-                stars += '<i class="fas fa-star-half-alt"></i>';
-                for (let i = fullStars + 1; i < 5; i++) {
-                    stars += '<i class="far fa-star"></i>';
-                }
-            } else {
-                for (let i = fullStars; i < 5; i++) {
-                    stars += '<i class="far fa-star"></i>';
-                }
-            }
-            
-            return stars;
-        }
-
-        // فتح نافذة التقييم
-        function openRatingModal(buildId) {
-            currentRatingBuildId = buildId;
-            const userRating = getUserRating(buildId);
-            
-            // إعادة تعيين النجوم
-            document.querySelectorAll('#rating-modal-stars .star').forEach((star, index) => {
-                star.classList.remove('active');
-                if (index < userRating) {
-                    star.classList.add('active');
-                }
-            });
-            
-            // إظهار النافذة
-            document.getElementById('rating-modal').style.display = 'flex';
-        }
-
-        // فتح نافذة تأكيد حذف البيلد
-        function openDeleteModal(buildId) {
-            currentDeleteBuildId = buildId;
-            document.getElementById('delete-modal').style.display = 'flex';
-        }
-
-        // حذف البيلد
-        function deleteBuild(buildId) {
-            // حذف البيلد
-            builds = builds.filter(build => build.id !== buildId);
-            saveBuilds();
-            
-            // حذف التقييمات المرتبطة
-            if (ratings[buildId]) {
-                delete ratings[buildId];
-                saveRatings();
-            }
-            
-            // إعادة عرض البيلدات
-            if (selectedKillerId) {
-                renderBuildsForKiller(selectedKillerId);
-            }
-            
-            alert('تم حذف البيلد بنجاح!');
-        }
-
-        // تحديث واجهة المستخدم بناءً على حالة تسجيل الدخول
-        function updateUIForLogin() {
-            const userInfo = document.getElementById('user-info');
-            const loginBtn = document.getElementById('login-btn');
-            const navManageKillers = document.getElementById('nav-manage-killers');
-            
-            if (currentUser) {
-                userInfo.innerHTML = `<i class="fas fa-user-circle"></i><span>${currentUser.username === 'admin' ? 'مدير' : 'مستخدم'}</span>`;
-                loginBtn.textContent = 'تسجيل الخروج';
-                navManageKillers.style.display = 'block';
-                
-                // إظهار نموذج إضافة البيلد إذا كان المستخدم في قسم إضافة البيلد
-                if (document.getElementById('nav-add-build').classList.contains('active')) {
-                    showAddBuildForm();
-                }
-                
-                // إظهار واجهة إدارة الكيلرات إذا كان في قسم الإدارة
-                if (document.getElementById('nav-manage-killers').classList.contains('active')) {
-                    showManageKillers();
-                }
-            } else {
-                userInfo.innerHTML = '<i class="fas fa-user-circle"></i><span>زائر</span>';
-                loginBtn.textContent = 'تسجيل الدخول';
-                navManageKillers.style.display = 'none';
-                
-                // إخفاء نموذج إضافة البيلد إذا كان زائراً
-                if (document.getElementById('nav-add-build').classList.contains('active')) {
-                    showLoginRequiredMessage();
-                }
-                
-                // إخفاء واجهة إدارة الكيلرات
-                if (document.getElementById('nav-manage-killers').classList.contains('active')) {
-                    document.getElementById('manage-killers-section').style.display = 'none';
-                    document.getElementById('nav-killers').click();
-                }
-            }
-        }
-
-        // إظهار رسالة تسجيل الدخول المطلوب
-        function showLoginRequiredMessage() {
-            const addBuildForm = document.getElementById('add-build-form');
-            addBuildForm.innerHTML = `
-                <div class="empty-message">
-                    <i class="fas fa-lock"></i>
-                    <h3>تسجيل الدخول مطلوب</h3>
-                    <p>يجب تسجيل الدخول لإضافة بيلدات جديدة.</p>
-                    <button class="btn btn-primary" id="login-to-add-form-btn">سجل الدخول الآن</button>
-                </div>
-            `;
-            addBuildForm.style.display = 'block';
-            addBuildForm.classList.add('active');
-        }
-
-        // إظهار نموذج إضافة البيلد
-        function showAddBuildForm() {
-            if (!currentUser) {
-                showLoginRequiredMessage();
-                return;
-            }
-            
-            const addBuildForm = document.getElementById('add-build-form');
-            addBuildForm.innerHTML = `
-                <div class="discord-info">
-                    <p><i class="fab fa-discord"></i> يمكنك إرسال اقتراحات البيلدات إلى <strong>medo_dv</strong> على ديسكورد</p>
-                </div>
-                <form id="new-build-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="build-killer">اختر الكيلر *</label>
-                            <select class="form-control" id="build-killer" name="build-killer" required>
-                                <option value="">-- اختر كيلر --</option>
-                                ${killers.map(killer => `<option value="${killer.id}">${killer.name}</option>`).join('')}
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="build-name">اسم البيلد *</label>
-                            <input type="text" class="form-control" id="build-name" name="build-name" placeholder="مثال: بيلد التخفي والسرعة" required>
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="build-suggested">اقتراح من (اختياري)</label>
-                            <input type="text" class="form-control" id="build-suggested" name="build-suggested" placeholder="مثال: من قناة فلان على اليوتيوب أو medo_dv على ديسكورد">
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="build-description">شرح البيلد *</label>
-                        <textarea class="form-control" id="build-description" name="build-description" placeholder="اكتب شرح مفصل للبيلد واستراتيجية استخدامه..." required></textarea>
-                    </div>
-                    
-                    <div class="upload-section">
-                        <div class="upload-title"><i class="fas fa-gem"></i> رفع صور البيركات (4 صور)</div>
-                        <div class="perks-upload">
-                            ${[1,2,3,4].map(i => `
-                                <div class="perk-upload-item">
-                                    <div class="perk-upload-box" data-perk="${i}">
-                                        <i class="fas fa-cloud-upload-alt"></i>
-                                        <div class="upload-number">${i}</div>
-                                    </div>
-                                    <span>البيرك ${i}</span>
-                                    <input type="file" class="perk-file-input" data-perk="${i}" accept="image/*" hidden>
-                                </div>
-                            `).join('')}
-                        </div>
-                        
-                        <div class="upload-title"><i class="fas fa-plus"></i> رفع صور الإضافات (Add-ons) (2 صورة)</div>
-                        <div class="addons-upload">
-                            ${[1,2].map(i => `
-                                <div class="addon-upload-item">
-                                    <div class="addon-upload-box" data-addon="${i}">
-                                        <i class="fas fa-cloud-upload-alt"></i>
-                                    </div>
-                                    <span>الإضافة ${i}</span>
-                                    <input type="file" class="addon-file-input" data-addon="${i}" accept="image/*" hidden>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                    
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-secondary" id="cancel-build-btn">إلغاء</button>
-                        <button type="submit" class="btn btn-primary" id="submit-build-btn">إضافة البيلد</button>
-                        <button type="button" class="btn btn-discord" id="discord-suggest-btn">
-                            <i class="fab fa-discord"></i> اقتراح على ديسكورد
-                        </button>
-                    </div>
-                </form>
-            `;
-            addBuildForm.style.display = 'block';
-            addBuildForm.classList.add('active');
-            
-            // إخفاء أقسام أخرى
-            document.getElementById('builds-container').style.display = 'none';
-            document.getElementById('builds-container').classList.remove('active');
-            
-            // إضافة أحداث للنموذج
-            setupAddBuildFormEvents();
-        }
-
-        // إعداد أحداث نموذج إضافة البيلد
-        function setupAddBuildFormEvents() {
-            // زر إرسال إلى ديسكورد
-            document.getElementById('discord-suggest-btn')?.addEventListener('click', function() {
-                alert('يمكنك إرسال اقتراحات البيلدات إلى medo_dv على ديسكورد!\n\n' +
-                      '1. افتح تطبيق ديسكورد\n' +
-                      '2. ابحث عن المستخدم: medo_dv\n' +
-                      '3. أرسل له اقتراح البيلد مع التفاصيل\n' +
-                      '4. سأضيف البيلد لك في الموقع!');
-            });
-            
-            // أحداث رفع صور البيركات
-            document.querySelectorAll('.perk-upload-box').forEach(box => {
-                box.addEventListener('click', function() {
-                    const perkNum = this.dataset.perk;
-                    document.querySelector(`.perk-file-input[data-perk="${perkNum}"]`).click();
-                });
-            });
-            
-            document.querySelectorAll('.perk-file-input').forEach(input => {
-                input.addEventListener('change', function() {
-                    const perkNum = this.dataset.perk;
-                    const file = this.files[0];
-                    
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            const box = document.querySelector(`.perk-upload-box[data-perk="${perkNum}"]`);
-                            box.innerHTML = `
-                                <img src="${e.target.result}" class="perk-preview" style="display: block; width: 90%; height: 90%; border-radius: 50%; object-fit: cover; border: 2px solid #3b82f6;">
-                                <div class="upload-number">${perkNum}</div>
-                            `;
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
-            });
-            
-            // أحداث رفع صور الإضافات
-            document.querySelectorAll('.addon-upload-box').forEach(box => {
-                box.addEventListener('click', function() {
-                    const addonNum = this.dataset.addon;
-                    document.querySelector(`.addon-file-input[data-addon="${addonNum}"]`).click();
-                });
-            });
-            
-            document.querySelectorAll('.addon-file-input').forEach(input => {
-                input.addEventListener('change', function() {
-                    const addonNum = this.dataset.addon;
-                    const file = this.files[0];
-                    
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            const box = document.querySelector(`.addon-upload-box[data-addon="${addonNum}"]`);
-                            box.innerHTML = `<img src="${e.target.result}" class="addon-preview" style="display: block; width: 90%; height: 90%; border-radius: 6px; object-fit: cover; border: 2px solid #10b981;">`;
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
-            });
-            
-            // إلغاء إضافة البيلد
-            document.getElementById('cancel-build-btn')?.addEventListener('click', function() {
-                document.getElementById('add-build-form').style.display = 'none';
-                document.getElementById('add-build-form').classList.remove('active');
-                updateActiveNav('nav-killers');
-            });
-            
-            // إرسال البيلد
-            document.getElementById('new-build-form')?.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const killerId = parseInt(document.getElementById('build-killer').value);
-                const name = document.getElementById('build-name').value;
-                const description = document.getElementById('build-description').value;
-                const suggestedBy = document.getElementById('build-suggested').value;
-                
-                if (!killerId || !name || !description) {
-                    alert('يرجى ملء جميع الحقول المطلوبة');
-                    return;
-                }
-                
-                const killer = killers.find(k => k.id === killerId);
-                if (!killer) return;
-                
-                // جمع صور البيركات
-                const perkImages = [];
-                const perkPromises = [];
-                
-                document.querySelectorAll('.perk-file-input').forEach(input => {
-                    if (input.files[0]) {
-                        const reader = new FileReader();
-                        perkPromises.push(new Promise(resolve => {
-                            reader.onload = function(e) {
-                                perkImages.push(e.target.result);
-                                resolve();
-                            };
-                            reader.readAsDataURL(input.files[0]);
-                        }));
-                    } else {
-                        perkImages.push('');
-                    }
-                });
-                
-                // جمع صور الإضافات
-                const addonImages = [];
-                const addonPromises = [];
-                
-                document.querySelectorAll('.addon-file-input').forEach(input => {
-                    if (input.files[0]) {
-                        const reader = new FileReader();
-                        addonPromises.push(new Promise(resolve => {
-                            reader.onload = function(e) {
-                                addonImages.push(e.target.result);
-                                resolve();
-                            };
-                            reader.readAsDataURL(input.files[0]);
-                        }));
-                    } else {
-                        addonImages.push('');
-                    }
-                });
-                
-                // انتظار تحميل جميع الصور
-                Promise.all([...perkPromises, ...addonPromises]).then(() => {
-                    // إنشاء البيلد الجديد
-                    const newBuild = {
-                        id: builds.length > 0 ? Math.max(...builds.map(b => b.id)) + 1 : 1,
-                        killerId: killerId,
-                        killerName: killer.name,
-                        name: name,
-                        description: description,
-                        suggestedBy: suggestedBy || null,
-                        perkImages: perkImages,
-                        addonImages: addonImages,
-                        author: currentUser.username,
-                        date: new Date().toLocaleDateString('ar-EG'),
-                        rating: 0
-                    };
-                    
-                    // إضافة البيلد إلى القائمة
-                    builds.push(newBuild);
-                    
-                    // حفظ في localStorage
-                    saveBuilds();
-                    
-                    // إنشاء مصفوفة تقييمات فارغة للبيلد الجديد
-                    if (!ratings[newBuild.id]) {
-                        ratings[newBuild.id] = [];
-                        saveRatings();
-                    }
-                    
-                    // إظهار رسالة نجاح
-                    alert('تم إضافة البيلد بنجاح!');
-                    
-                    // إعادة تعيين النموذج
-                    document.getElementById('new-build-form').reset();
-                    
-                    // إعادة تحميل الصور
-                    document.querySelectorAll('.perk-upload-box').forEach(box => {
-                        const perkNum = box.dataset.perk;
-                        box.innerHTML = `
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <div class="upload-number">${perkNum}</div>
-                        `;
-                    });
-                    
-                    document.querySelectorAll('.addon-upload-box').forEach(box => {
-                        box.innerHTML = '<i class="fas fa-cloud-upload-alt"></i>';
-                    });
-                    
-                    // عرض البيلدات لهذا الكيلر
-                    renderBuildsForKiller(killerId);
-                });
-            });
-        }
-
-        // إظهار واجهة إدارة الكيلرات
-        function showManageKillers() {
-            if (!currentUser) {
-                alert('يجب تسجيل الدخول للوصول إلى إدارة الكيلرات');
-                document.getElementById('login-overlay').style.display = 'flex';
-                return;
-            }
-            
-            const manageSection = document.getElementById('manage-killers-section');
-            manageSection.style.display = 'block';
-            
-            const manageContent = document.getElementById('manage-killers');
-            let html = `
-                <div class="killer-form">
-                    <h3><i class="fas fa-plus-circle"></i> إضافة كيلر جديد</h3>
-                    <form id="add-killer-form">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="killer-name">اسم الكيلر *</label>
-                                <input type="text" class="form-control" id="killer-name" name="killer-name" placeholder="مثال: The Trapper" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="killer-difficulty">مستوى الصعوبة *</label>
-                                <select class="form-control" id="killer-difficulty" name="killer-difficulty" required>
-                                    <option value="">-- اختر مستوى --</option>
-                                    <option value="سهل">سهل</option>
-                                    <option value="متوسط">متوسط</option>
-                                    <option value="صعب">صعب</option>
-                                    <option value="صعب جداً">صعب جداً</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="killer-description">وصف الكيلر *</label>
-                            <textarea class="form-control" id="killer-description" name="killer-description" placeholder="اكتب وصفاً مختصراً للكيلر وقدراته..." required></textarea>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="killer-icon">أيقونة الكيلر *</label>
-                                <select class="form-control" id="killer-icon" name="killer-icon" required>
-                                    <option value="">-- اختر أيقونة --</option>
-                                    <option value="fas fa-gem">ألماسة</option>
-                                    <option value="fas fa-ghost">شبح</option>
-                                    <option value="fas fa-tachometer-alt">سرعة</option>
-                                    <option value="fas fa-procedures">ممرضة</option>
-                                    <option value="fas fa-hat-cowboy">صياد</option>
-                                    <option value="fas fa-mask">قناع</option>
-                                    <option value="fas fa-users">مجموعة</option>
-                                    <option value="fas fa-fist-raised">قوة</option>
-                                    <option value="fas fa-skull">جمجمة</option>
-                                    <option value="fas fa-spider">عنكبوت</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="killer-color">لون الكيلر *</label>
-                                <input type="color" class="form-control" id="killer-color" name="killer-color" value="#3b82f6" required style="height: 45px; padding: 5px;">
-                            </div>
-                        </div>
-                        
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-primary">إضافة الكيلر</button>
-                        </div>
-                    </form>
-                </div>
-                
-                <div class="killer-form">
-                    <h3><i class="fas fa-list"></i> الكيلرات المضافة (${killers.length})</h3>
-                    <div id="killer-list">
-            `;
-            
-            if (killers.length === 0) {
-                html += `<p style="text-align: center; color: #94a3b8; padding: 20px;">لا توجد كيلرات مضافة بعد.</p>`;
-            } else {
-                killers.forEach(killer => {
-                    html += `
-                        <div class="killer-item" style="background-color: #0f172a; padding: 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
-                            <div style="display: flex; align-items: center; gap: 15px;">
-                                <div style="width: 40px; height: 40px; border-radius: 50%; background-color: ${killer.color}; display: flex; align-items: center; justify-content: center;">
-                                    <i class="${killer.icon}" style="color: white;"></i>
-                                </div>
-                                <div>
-                                    <h4 style="color: #f8fafc; margin-bottom: 5px;">${killer.name}</h4>
-                                    <p style="color: #94a3b8; font-size: 0.9rem;">${killer.difficulty}</p>
-                                </div>
-                            </div>
-                            <div>
-                                <button class="btn btn-danger btn-small delete-killer-btn" data-id="${killer.id}">حذف</button>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-            
-            html += `
-                    </div>
-                </div>
-            `;
-            
-            manageContent.innerHTML = html;
-            
-            // إضافة أحداث لواجهة إدارة الكيلرات
-            setupManageKillersEvents();
-        }
-
-        // إعداد أحداث واجهة إدارة الكيلرات
-        function setupManageKillersEvents() {
-            // إضافة كيلر جديد
-            document.getElementById('add-killer-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const name = document.getElementById('killer-name').value;
-                const difficulty = document.getElementById('killer-difficulty').value;
-                const description = document.getElementById('killer-description').value;
-                const icon = document.getElementById('killer-icon').value;
-                const color = document.getElementById('killer-color').value;
-                
-                if (!name || !difficulty || !description || !icon || !color) {
-                    alert('يرجى ملء جميع الحقول المطلوبة');
-                    return;
-                }
-                
-                // إنشاء كيلر جديد
-                const newKiller = {
-                    id: killers.length > 0 ? Math.max(...killers.map(k => k.id)) + 1 : 1,
-                    name: name,
-                    description: description,
-                    difficulty: difficulty,
-                    icon: icon,
-                    color: color
-                };
-                
-                // إضافة الكيلر إلى القائمة
-                killers.push(newKiller);
-                
-                // حفظ في localStorage
-                saveKillers();
-                
-                // إعادة تعيين النموذج
-                document.getElementById('add-killer-form').reset();
-                
-                // إعادة عرض الكيلرات
-                renderKillers();
-                
-                // تحديث واجهة الإدارة
-                showManageKillers();
-                
-                alert('تم إضافة الكيلر بنجاح! سيظهر الآن في قائمة الكيلرات.');
-            });
-            
-            // حذف الكيلر
-            document.querySelectorAll('.delete-killer-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const killerId = parseInt(this.dataset.id);
-                    
-                    // التحقق إذا كان هناك بيلدات مرتبطة بهذا الكيلر
-                    const relatedBuilds = builds.filter(b => b.killerId === killerId);
-                    if (relatedBuilds.length > 0) {
-                        if (!confirm(`هذا الكيلر لديه ${relatedBuilds.length} بيلدات مرتبطة به. حذفه سيحذف جميع البيلدات المرتبطة به. هل أنت متأكد من الحذف؟`)) {
-                            return;
-                        }
-                        
-                        // حذف البيلدات المرتبطة
-                        builds = builds.filter(b => b.killerId !== killerId);
-                        saveBuilds();
-                    }
-                    
-                    killers = killers.filter(k => k.id !== killerId);
-                    saveKillers();
-                    renderKillers();
-                    showManageKillers();
-                    alert('تم حذف الكيلر بنجاح!');
-                });
-            });
-        }
-
-        // تحديث التنقل النشط
-        function updateActiveNav(activeId) {
-            document.querySelectorAll('nav a').forEach(link => {
-                link.classList.remove('active');
-            });
-            document.getElementById(activeId)?.classList.add('active');
-        }
-
-        // إعداد معالجي الأحداث
-        function setupEventListeners() {
-            // أحداث أزرار التنقل
-            document.getElementById('nav-killers').addEventListener('click', function(e) {
-                e.preventDefault();
-                document.getElementById('killers-section').scrollIntoView({ behavior: 'smooth' });
-                updateActiveNav('nav-killers');
-                document.getElementById('manage-killers-section').style.display = 'none';
-            });
-            
-            document.getElementById('nav-builds').addEventListener('click', function(e) {
-                e.preventDefault();
-                if (selectedKillerId) {
-                    document.getElementById('builds-section').scrollIntoView({ behavior: 'smooth' });
-                    updateActiveNav('nav-builds');
-                    document.getElementById('manage-killers-section').style.display = 'none';
-                } else {
-                    alert('يرجى اختيار كيلر أولاً لعرض البيلدات');
-                }
-            });
-            
-            document.getElementById('nav-add-build').addEventListener('click', function(e) {
-                e.preventDefault();
-                if (currentUser) {
-                    showAddBuildForm();
-                    document.getElementById('add-build-section').scrollIntoView({ behavior: 'smooth' });
-                    updateActiveNav('nav-add-build');
-                    document.getElementById('manage-killers-section').style.display = 'none';
-                } else {
-                    document.getElementById('login-overlay').style.display = 'flex';
-                }
-            });
-            
-            document.getElementById('nav-manage-killers').addEventListener('click', function(e) {
-                e.preventDefault();
-                if (currentUser) {
-                    showManageKillers();
-                    document.getElementById('manage-killers-section').scrollIntoView({ behavior: 'smooth' });
-                    updateActiveNav('nav-manage-killers');
-                } else {
-                    document.getElementById('login-overlay').style.display = 'flex';
-                }
-            });
-            
-            // زر عرض الكيلرات
-            document.getElementById('view-killers-btn').addEventListener('click', function() {
-                document.getElementById('killers-section').scrollIntoView({ behavior: 'smooth' });
-            });
-            
-            // أحداث الكيلرات
-            document.getElementById('killers-grid').addEventListener('click', function(e) {
-                const killerCard = e.target.closest('.killer-card');
-                if (killerCard) {
-                    const killerId = parseInt(killerCard.dataset.id);
-                    selectedKillerId = killerId;
-                    
-                    // إزالة النشط من جميع الكيلرات
-                    document.querySelectorAll('.killer-card').forEach(card => {
-                        card.classList.remove('active');
-                    });
-                    
-                    // إضافة النشط للكيلر المحدد
-                    killerCard.classList.add('active');
-                    
-                    // عرض البيلدات
-                    renderBuildsForKiller(killerId);
-                    
-                    // التمرير إلى قسم البيلدات
-                    setTimeout(() => {
-                        document.getElementById('builds-section').scrollIntoView({ behavior: 'smooth' });
-                    }, 300);
-                }
-                
-                // أحداث الأزرار الديناميكية
-                if (e.target.id === 'login-to-manage-btn' || e.target.closest('#login-to-manage-btn')) {
-                    document.getElementById('login-overlay').style.display = 'flex';
-                }
-            });
-            
-            // أحداث تسجيل الدخول
-            document.getElementById('login-btn').addEventListener('click', function() {
-                if (currentUser) {
-                    // تسجيل الخروج
-                    currentUser = null;
-                    localStorage.removeItem('dbdCurrentUser');
-                    updateUIForLogin();
-                    this.textContent = 'تسجيل الدخول';
-                } else {
-                    // عرض نموذج تسجيل الدخول
-                    document.getElementById('login-overlay').style.display = 'flex';
-                }
-            });
-            
-            // إلغاء تسجيل الدخول
-            document.getElementById('cancel-login-btn').addEventListener('click', function() {
-                document.getElementById('login-overlay').style.display = 'none';
-                document.getElementById('login-form').reset();
-                document.getElementById('login-message').className = 'login-message';
-                document.getElementById('login-message').innerHTML = 'أدخل اسم المستخدم وكلمة المرور للوصول إلى ميزات إدارة الموقع.';
-            });
-            
-            // تسجيل الدخول
-            document.getElementById('login-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
-                const loginMessage = document.getElementById('login-message');
-                
-                if (username === validUsername && password === validPassword) {
-                    // تسجيل الدخول ناجح
-                    currentUser = { username: username };
-                    localStorage.setItem('dbdCurrentUser', JSON.stringify(currentUser));
-                    
-                    loginMessage.className = 'login-message success';
-                    loginMessage.textContent = 'تم تسجيل الدخول بنجاح!';
-                    
-                    setTimeout(() => {
-                        document.getElementById('login-overlay').style.display = 'none';
-                        updateUIForLogin();
-                        document.getElementById('login-form').reset();
-                        
-                        // إذا كان في قسم إضافة البيلد، عرض النموذج
-                        if (document.getElementById('nav-add-build').classList.contains('active')) {
-                            showAddBuildForm();
-                        }
-                        
-                        // إذا كان في قسم إدارة الكيلرات، عرض الواجهة
-                        if (document.getElementById('nav-manage-killers').classList.contains('active')) {
-                            showManageKillers();
-                        }
-                    }, 1500);
-                } else {
-                    // فشل تسجيل الدخول
-                    loginMessage.className = 'login-message error';
-                    loginMessage.textContent = 'اسم المستخدم أو كلمة المرور غير صحيحة!';
-                }
-            });
-            
-            // إغلاق نافذة تسجيل الدخول بالنقر خارجها
-            document.getElementById('login-overlay').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    this.style.display = 'none';
-                    document.getElementById('login-form').reset();
-                    document.getElementById('login-message').className = 'login-message';
-                    document.getElementById('login-message').innerHTML = 'أدخل اسم المستخدم وكلمة المرور للوصول إلى ميزات إدارة الموقع.';
-                }
-            });
-            
-            // أحداث نافذة التقييم
-            document.querySelectorAll('#rating-modal-stars .star').forEach(star => {
-                star.addEventListener('click', function() {
-                    const rating = parseInt(this.dataset.rating);
-                    
-                    // تحديث النجوم
-                    document.querySelectorAll('#rating-modal-stars .star').forEach((s, index) => {
-                        s.classList.remove('active');
-                        if (index < rating) {
-                            s.classList.add('active');
-                        }
-                    });
-                });
-            });
-            
-            // إلغاء التقييم
-            document.getElementById('cancel-rating-btn').addEventListener('click', function() {
-                document.getElementById('rating-modal').style.display = 'none';
-                currentRatingBuildId = null;
-            });
-            
-            // تأكيد التقييم
-            document.getElementById('submit-rating-btn').addEventListener('click', function() {
-                if (!currentRatingBuildId) return;
-                
-                const activeStars = document.querySelectorAll('#rating-modal-stars .star.active').length;
-                if (activeStars === 0) {
-                    alert('يرجى اختيار تقييم من 1 إلى 5 نجوم');
-                    return;
-                }
-                
-                // حفظ التقييم
-                const ratingValue = activeStars;
-                
-                if (!ratings[currentRatingBuildId]) {
-                    ratings[currentRatingBuildId] = [];
-                }
-                
-                // التحقق إذا كان المستخدم قد قيم بالفعل
-                const userIndex = ratings[currentRatingBuildId].findIndex(r => r.user === (currentUser ? currentUser.username : 'زائر'));
-                
-                if (userIndex !== -1) {
-                    // تحديث التقييم القديم
-                    ratings[currentRatingBuildId][userIndex].rating = ratingValue;
-                } else {
-                    // إضافة تقييم جديد
-                    ratings[currentRatingBuildId].push({
-                        user: currentUser ? currentUser.username : 'زائر',
-                        rating: ratingValue,
-                        date: new Date().toISOString()
-                    });
-                }
-                
-                // حفظ التقييمات
-                saveRatings();
-                
-                // إغلاق النافذة
-                document.getElementById('rating-modal').style.display = 'none';
-                
-                // إعادة عرض البيلدات لتحديث التقييم
-                if (selectedKillerId) {
-                    renderBuildsForKiller(selectedKillerId);
-                }
-                
-                alert('شكراً لتقييمك!');
-                currentRatingBuildId = null;
-            });
-            
-            // إغلاق نافذة التقييم بالنقر خارجها
-            document.getElementById('rating-modal').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    this.style.display = 'none';
-                    currentRatingBuildId = null;
-                }
-            });
-            
-            // أحداث نافذة الحذف
-            document.getElementById('cancel-delete-btn').addEventListener('click', function() {
-                document.getElementById('delete-modal').style.display = 'none';
-                currentDeleteBuildId = null;
-            });
-            
-            document.getElementById('confirm-delete-btn').addEventListener('click', function() {
-                if (currentDeleteBuildId) {
-                    deleteBuild(currentDeleteBuildId);
-                    document.getElementById('delete-modal').style.display = 'none';
-                    currentDeleteBuildId = null;
-                }
-            });
-            
-            // إغلاق نافذة الحذف بالنقر خارجها
-            document.getElementById('delete-modal').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    this.style.display = 'none';
-                    currentDeleteBuildId = null;
-                }
-            });
-            
-            // أحداث الأزرار الديناميكية
-            document.addEventListener('click', function(e) {
-                if (e.target.id === 'login-to-add-btn' || e.target.closest('#login-to-add-btn')) {
-                    document.getElementById('login-overlay').style.display = 'flex';
-                }
-                
-                if (e.target.id === 'login-to-add-form-btn' || e.target.closest('#login-to-add-form-btn')) {
-                    document.getElementById('login-overlay').style.display = 'flex';
-                }
-            });
-        }
-    </script>
+/* ─── SCROLL REVEAL ─── */
+function animOnScroll(){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target);}});
+  },{threshold:0.1});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+}
+</script>
 </body>
 </html>
