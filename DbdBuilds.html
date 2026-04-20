@@ -614,7 +614,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('btt').onclick=()=>scrollTo({top:0,behavior:'smooth'});
 
   // Check cloud config
-  if (69e62babaaba8821971b7155 && $2a$10$ludTQ56jkHb1gSMX5bfvRek8zU2WJHE6HFvPl5nGn2f.XiKfU5UTa) {
+ if (CLOUD_BIN_ID && CLOUD_API_KEY) {
     await loadFromCloud();
     // Auto-refresh every 30s
     setInterval(()=>{ if(!saving) loadFromCloud(true); }, 30000);
