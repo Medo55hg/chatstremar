@@ -9,9 +9,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-:root {
+:root{
   --blood:#c0392b;--blood2:#8b0000;--blood3:#ff4444;
-  --dark:#050508;--dark2:#0a0a12;--dark3:#0f0f1a;--dark4:#141422;
+  --dark:#050508;--dark2:#0a0a12;--dark3:#0f0f1a;
   --panel:rgba(255,255,255,0.03);--panel2:rgba(255,255,255,0.06);
   --border:rgba(255,255,255,0.07);--border2:rgba(192,57,43,0.35);
   --text:#e8e0d5;--text2:#8a8070;--text3:#5a5248;
@@ -20,570 +20,319 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{
-  background:var(--dark);color:var(--text);font-family:var(--font-body);
-  min-height:100vh;overflow-x:hidden;cursor:default;
-}
+body{background:var(--dark);color:var(--text);font-family:var(--font-body);min-height:100vh;overflow-x:hidden}
 
-/* ─── CURSOR ─── */
-.cursor{position:fixed;width:18px;height:18px;border:2px solid var(--blood3);border-radius:50%;pointer-events:none;z-index:99999;transition:transform .15s,border-color .2s;mix-blend-mode:difference}
+/* CURSOR */
+.cursor{position:fixed;width:18px;height:18px;border:2px solid var(--blood3);border-radius:50%;pointer-events:none;z-index:99999;transition:transform .15s,border-color .2s;mix-blend-mode:difference;transform:translate(-50%,-50%)}
 .cursor-dot{position:fixed;width:5px;height:5px;background:var(--blood3);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%)}
-.cursor.hovering{transform:scale(2.4);border-color:var(--gold)}
-
-/* ─── CANVAS BG ─── */
-#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:0.18;pointer-events:none}
-
-/* ─── NOISE OVERLAY ─── */
-body::before{
-  content:'';position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-  opacity:0.35;
-}
-
-/* ─── VIGNETTE ─── */
-body::after{
-  content:'';position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;
-  background:radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.7) 100%);
-}
-
+.cursor.hov{transform:translate(-50%,-50%) scale(2.4);border-color:var(--gold)}
+#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:.18;pointer-events:none}
+body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");opacity:.35}
+body::after{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,0,.7) 100%)}
 .container{max-width:1380px;margin:0 auto;padding:0 24px;position:relative;z-index:10}
 
-/* ─── HEADER ─── */
-header{
-  position:sticky;top:0;z-index:1000;
-  background:rgba(5,5,8,0.92);
-  backdrop-filter:blur(20px) saturate(150%);
-  border-bottom:1px solid var(--border2);
-  padding:0;
-}
-.header-bar{
-  display:flex;align-items:center;gap:16px;padding:12px 24px;
-  max-width:1380px;margin:0 auto;
-}
+/* HEADER */
+header{position:sticky;top:0;z-index:1000;background:rgba(5,5,8,.94);backdrop-filter:blur(20px);border-bottom:1px solid var(--border2);padding:0}
+.hbar{display:flex;align-items:center;gap:16px;padding:11px 24px;max-width:1380px;margin:0 auto}
 .logo{display:flex;align-items:center;gap:12px;text-decoration:none;flex-shrink:0}
-.logo-icon{
-  width:42px;height:42px;border-radius:10px;
-  background:linear-gradient(135deg,var(--blood2),var(--blood));
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.2rem;color:#fff;
-  box-shadow:0 0 20px rgba(192,57,43,0.5);
-  animation:logo-pulse 3s ease-in-out infinite;
-}
-@keyframes logo-pulse{0%,100%{box-shadow:0 0 20px rgba(192,57,43,0.5)}50%{box-shadow:0 0 35px rgba(192,57,43,0.9),0 0 60px rgba(192,57,43,0.3)}}
+.logo-icon{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,var(--blood2),var(--blood));display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#fff;box-shadow:0 0 20px rgba(192,57,43,.5);animation:lpulse 3s ease-in-out infinite}
+@keyframes lpulse{0%,100%{box-shadow:0 0 20px rgba(192,57,43,.5)}50%{box-shadow:0 0 35px rgba(192,57,43,.9),0 0 60px rgba(192,57,43,.3)}}
 .logo-text{display:flex;flex-direction:column;line-height:1}
-.logo-main{font-family:var(--font-title);font-size:1.05rem;color:#fff;letter-spacing:0.5px}
-.logo-sub{font-size:0.7rem;color:var(--gold);letter-spacing:3px;text-transform:uppercase;margin-top:2px}
-
-.search-wrap{flex:1;max-width:360px;position:relative}
-.search-wrap input{
-  width:100%;padding:9px 40px 9px 18px;
-  background:rgba(255,255,255,0.05);
-  border:1px solid var(--border);border-radius:8px;
-  color:var(--text);font-family:var(--font-body);font-size:0.88rem;
-  transition:all .3s;
-}
-.search-wrap input:focus{outline:none;border-color:var(--blood3);background:rgba(255,255,255,0.08);box-shadow:0 0 0 3px rgba(192,57,43,0.15)}
-.search-wrap input::placeholder{color:var(--text3)}
-.search-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:0.82rem;pointer-events:none}
-.clear-s{position:absolute;right:11px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);cursor:pointer;font-size:0.8rem;display:none;padding:2px;transition:color .2s}
-.clear-s:hover{color:var(--blood3)}
-
+.logo-main{font-family:var(--font-title);font-size:1rem;color:#fff}
+.logo-sub{font-size:.65rem;color:var(--gold);letter-spacing:3px;text-transform:uppercase;margin-top:2px}
+.sw{flex:1;max-width:340px;position:relative}
+.sw input{width:100%;padding:8px 38px 8px 16px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font-body);font-size:.85rem;transition:all .3s}
+.sw input:focus{outline:none;border-color:var(--blood3);box-shadow:0 0 0 3px rgba(192,57,43,.15)}
+.sw input::placeholder{color:var(--text3)}
+.sw .si{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:.78rem;pointer-events:none}
+.sw .cls{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);cursor:pointer;font-size:.75rem;display:none;padding:2px;transition:color .2s}
+.sw .cls:hover{color:var(--blood3)}
 nav{margin-right:auto}
-nav ul{display:flex;list-style:none;gap:2px;background:rgba(255,255,255,0.03);padding:4px;border-radius:10px;border:1px solid var(--border)}
-nav a{
-  color:var(--text2);text-decoration:none;
-  font-family:var(--font-body);font-weight:600;font-size:0.85rem;
-  padding:7px 14px;border-radius:7px;display:flex;align-items:center;gap:6px;
-  transition:all .25s;white-space:nowrap;
-}
-nav a:hover{color:var(--text);background:rgba(255,255,255,0.06)}
-nav a.active{color:#fff;background:rgba(192,57,43,0.2);border:1px solid rgba(192,57,43,0.4);box-shadow:inset 0 1px 0 rgba(255,255,255,0.1)}
-nav a i{font-size:0.78rem}
-
-.user-wrap{display:flex;align-items:center;gap:9px}
-.user-chip{
-  display:flex;align-items:center;gap:7px;
-  background:rgba(255,255,255,0.04);
-  border:1px solid var(--border);border-radius:20px;
-  padding:6px 13px;font-size:0.82rem;color:var(--text2);
-}
-.user-chip .dot{width:6px;height:6px;border-radius:50%;background:#4ade80;animation:blink 2s infinite}
+nav ul{display:flex;list-style:none;gap:2px;background:rgba(255,255,255,.03);padding:4px;border-radius:10px;border:1px solid var(--border)}
+nav a{color:var(--text2);text-decoration:none;font-family:var(--font-body);font-weight:600;font-size:.82rem;padding:7px 13px;border-radius:7px;display:flex;align-items:center;gap:5px;transition:all .25s;white-space:nowrap}
+nav a:hover{color:var(--text);background:rgba(255,255,255,.06)}
+nav a.active{color:#fff;background:rgba(192,57,43,.2);border:1px solid rgba(192,57,43,.4)}
+nav a i{font-size:.72rem}
+.uw{display:flex;align-items:center;gap:9px}
+.uchip{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:20px;padding:6px 12px;font-size:.78rem;color:var(--text2)}
+.udot{width:6px;height:6px;border-radius:50%;background:#4ade80;animation:blink 2s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 
-/* ─── BUTTONS ─── */
-.btn{
-  padding:9px 20px;border-radius:8px;border:none;
-  font-family:var(--font-body);font-weight:700;cursor:pointer;
-  transition:all .25s;font-size:0.85rem;
-  display:inline-flex;align-items:center;gap:7px;position:relative;overflow:hidden;
-}
-.btn::after{content:'';position:absolute;top:50%;left:50%;width:0;height:0;background:rgba(255,255,255,0.15);border-radius:50%;transform:translate(-50%,-50%);transition:width .4s,height .4s,opacity .4s}
+/* BUTTONS */
+.btn{padding:8px 18px;border-radius:8px;border:none;font-family:var(--font-body);font-weight:700;cursor:pointer;transition:all .25s;font-size:.82rem;display:inline-flex;align-items:center;gap:6px;position:relative;overflow:hidden}
+.btn::after{content:'';position:absolute;top:50%;left:50%;width:0;height:0;background:rgba(255,255,255,.15);border-radius:50%;transform:translate(-50%,-50%);transition:width .4s,height .4s,opacity .4s}
 .btn:active::after{width:200px;height:200px;opacity:0}
 .btn-blood{background:linear-gradient(135deg,var(--blood),var(--blood2));color:#fff}
-.btn-blood:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(192,57,43,0.45)}
-.btn-ghost{background:rgba(255,255,255,0.06);color:var(--text);border:1px solid var(--border)}
-.btn-ghost:hover{background:rgba(255,255,255,0.1);transform:translateY(-1px)}
-.btn-danger{background:rgba(139,0,0,0.4);color:#ff6b6b;border:1px solid rgba(139,0,0,0.5)}
-.btn-danger:hover{background:rgba(139,0,0,0.6)}
-.btn-sm{padding:6px 13px;font-size:0.78rem}
-.btn-xs{padding:4px 10px;font-size:0.73rem}
-.btn-outline-gold{background:transparent;border:1px solid rgba(201,168,76,0.4);color:var(--gold)}
-.btn-outline-gold:hover{background:rgba(201,168,76,0.1)}
+.btn-blood:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(192,57,43,.45)}
+.btn-ghost{background:rgba(255,255,255,.06);color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{background:rgba(255,255,255,.1);transform:translateY(-1px)}
+.btn-danger{background:rgba(139,0,0,.4);color:#ff6b6b;border:1px solid rgba(139,0,0,.5)}
+.btn-danger:hover{background:rgba(139,0,0,.6)}
+.btn-sm{padding:6px 13px;font-size:.78rem}
+.btn-xs{padding:4px 9px;font-size:.7rem}
+.btn-gold{background:transparent;border:1px solid rgba(201,168,76,.4);color:var(--gold)}
+.btn-gold:hover{background:rgba(201,168,76,.1)}
 
-/* ─── HERO ─── */
-.hero{
-  position:relative;overflow:hidden;
-  padding:90px 0 70px;text-align:center;
-  margin-bottom:50px;
+/* CLOUD STATUS BAR */
+.cloud-bar{
+  background:rgba(0,0,0,.4);border-bottom:1px solid var(--border);
+  padding:7px 24px;display:flex;align-items:center;gap:10px;font-size:.75rem;
+  position:sticky;top:65px;z-index:999;
 }
-.hero-glow{
-  position:absolute;top:0;left:50%;transform:translateX(-50%);
-  width:800px;height:400px;
-  background:radial-gradient(ellipse, rgba(192,57,43,0.15) 0%, transparent 70%);
-  pointer-events:none;
-}
-.hero-title{
-  font-family:var(--font-title);
-  font-size:clamp(2.2rem,5vw,4.2rem);
-  color:#fff;line-height:1.1;margin-bottom:16px;
-  text-shadow:0 0 60px rgba(192,57,43,0.5);
-  animation:hero-in 1s ease both;
-}
-@keyframes hero-in{from{opacity:0;transform:translateY(30px) scale(0.95)}to{opacity:1;transform:none}}
-.hero-title span{color:var(--blood3);position:relative}
-.hero-title span::after{
-  content:'';position:absolute;bottom:-4px;left:0;width:100%;height:2px;
-  background:linear-gradient(90deg,transparent,var(--blood3),transparent);
-  animation:line-in 1.2s .5s ease both;transform-origin:center;
-}
-@keyframes line-in{from{transform:scaleX(0)}to{transform:scaleX(1)}}
-.hero-sub{font-size:1.05rem;color:var(--text2);max-width:620px;margin:0 auto 36px;line-height:1.8;animation:hero-in 1s .15s ease both}
-.hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;animation:hero-in 1s .3s ease both}
+.cloud-bar.ok{border-color:rgba(74,222,128,.2)}
+.cloud-bar.err{border-color:rgba(192,57,43,.3)}
+.cloud-bar.syncing{border-color:rgba(59,130,246,.2)}
+.cs-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.cs-dot.ok{background:#4ade80;box-shadow:0 0 8px #4ade80}
+.cs-dot.err{background:var(--blood3)}
+.cs-dot.syncing{background:#60a5fa;animation:blink .8s infinite}
+.cs-text{color:var(--text2)}
+.cs-text strong{color:var(--text)}
+.cs-right{margin-right:auto;display:flex;align-items:center;gap:8px}
+.cs-time{color:var(--text3);font-size:.7rem}
 
-/* ─── STATS ROW ─── */
-.stats-row{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;
-  margin-bottom:50px;
+/* SETUP BANNER */
+.setup-banner{
+  background:linear-gradient(135deg,rgba(201,168,76,.1),rgba(192,57,43,.1));
+  border:1px solid rgba(201,168,76,.3);border-radius:14px;
+  padding:24px;margin:20px 0;text-align:center;
 }
-.stat-card{
-  background:var(--panel);border:1px solid var(--border);border-radius:12px;
-  padding:20px 18px;position:relative;overflow:hidden;
-  transition:all .35s;cursor:default;
-}
-.stat-card::before{
-  content:'';position:absolute;top:0;right:0;width:60px;height:60px;
-  background:radial-gradient(circle at top right, rgba(192,57,43,0.12), transparent 70%);
-  pointer-events:none;
-}
-.stat-card:hover{border-color:rgba(192,57,43,0.3);transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,0.4)}
-.stat-icon{font-size:1.6rem;margin-bottom:10px;display:block}
-.stat-num{font-family:var(--font-title);font-size:2.2rem;color:#fff;font-weight:700;line-height:1;display:block}
-.stat-lbl{font-size:0.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:2px;margin-top:5px}
-.stat-card.s-blood .stat-num{color:var(--blood3)}
-.stat-card.s-gold .stat-num{color:var(--gold)}
-.stat-card.s-green .stat-num{color:#4ade80}
+.setup-banner h3{font-family:var(--font-title);color:var(--gold);font-size:1.2rem;margin-bottom:10px}
+.setup-banner p{color:var(--text2);font-size:.88rem;line-height:1.7;margin-bottom:18px;max-width:700px;margin-left:auto;margin-right:auto}
+.setup-steps{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:18px}
+.setup-step{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:10px;padding:14px 18px;text-align:center;min-width:160px}
+.setup-step .sn{font-family:var(--font-title);font-size:1.5rem;color:var(--blood3);margin-bottom:6px}
+.setup-step p{color:var(--text2);font-size:.78rem;line-height:1.5}
+.api-input-row{display:flex;gap:10px;max-width:600px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+.api-input{flex:1;min-width:200px;padding:10px 14px;background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:monospace;font-size:.82rem}
+.api-input:focus{outline:none;border-color:var(--blood3)}
 
-/* ─── SECTION HEADER ─── */
-.sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px}
-.sec-title{
-  font-family:var(--font-title);font-size:1.6rem;color:#fff;
-  display:flex;align-items:center;gap:12px;
-}
-.sec-title i{color:var(--blood3);font-size:1.2rem}
-.sec-badge{
-  font-size:0.7rem;background:rgba(192,57,43,0.15);color:var(--blood3);
-  border:1px solid rgba(192,57,43,0.3);padding:3px 10px;border-radius:20px;
-  font-family:var(--font-body);letter-spacing:1px;font-weight:600;
-}
+/* HERO */
+.hero{position:relative;overflow:hidden;padding:80px 0 60px;text-align:center;margin-bottom:40px}
+.hero-glow{position:absolute;top:0;left:50%;transform:translateX(-50%);width:800px;height:400px;background:radial-gradient(ellipse,rgba(192,57,43,.15) 0%,transparent 70%);pointer-events:none}
+.hero-title{font-family:var(--font-title);font-size:clamp(2rem,5vw,3.8rem);color:#fff;line-height:1.1;margin-bottom:14px;text-shadow:0 0 60px rgba(192,57,43,.5);animation:hin 1s ease both}
+@keyframes hin{from{opacity:0;transform:translateY(30px) scale(.95)}to{opacity:1;transform:none}}
+.hero-title span{color:var(--blood3)}
+.hero-sub{font-size:1rem;color:var(--text2);max-width:600px;margin:0 auto 30px;line-height:1.8;animation:hin 1s .15s ease both}
+.hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;animation:hin 1s .3s ease both}
 
-/* ─── FILTER BAR ─── */
-.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;align-items:center}
-.filter-bar .lbl{font-size:0.78rem;color:var(--text3);letter-spacing:1px;text-transform:uppercase}
-.filt{
-  padding:5px 14px;border-radius:20px;
-  border:1px solid var(--border);background:transparent;
-  color:var(--text2);cursor:pointer;font-family:var(--font-body);font-size:0.8rem;
-  transition:all .2s;
-}
-.filt:hover{border-color:rgba(192,57,43,0.4);color:var(--text)}
-.filt.active{background:rgba(192,57,43,0.18);border-color:rgba(192,57,43,0.5);color:#fff}
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:14px;margin-bottom:45px}
+.stat-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:18px 16px;position:relative;overflow:hidden;transition:all .35s;cursor:default}
+.stat-card::before{content:'';position:absolute;top:0;right:0;width:60px;height:60px;background:radial-gradient(circle at top right,rgba(192,57,43,.12),transparent 70%);pointer-events:none}
+.stat-card:hover{border-color:rgba(192,57,43,.3);transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.4)}
+.stat-icon{font-size:1.4rem;margin-bottom:8px;display:block}
+.stat-num{font-family:var(--font-title);font-size:2rem;color:#fff;font-weight:700;line-height:1;display:block}
+.stat-lbl{font-size:.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:2px;margin-top:4px}
+.s-blood .stat-num{color:var(--blood3)}.s-gold .stat-num{color:var(--gold)}.s-green .stat-num{color:#4ade80}
 
-/* ─── KILLERS GRID ─── */
-.killers-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:20px}
-.killer-card{
-  background:var(--panel);border:1px solid var(--border);border-radius:16px;
-  overflow:hidden;cursor:pointer;transition:all .4s cubic-bezier(.25,.8,.25,1);
-  position:relative;group:true;
-}
-.killer-card::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(192,57,43,0.08),transparent 60%);
-  opacity:0;transition:opacity .4s;border-radius:16px;z-index:1;
-}
-.killer-card:hover{transform:translateY(-8px) scale(1.015);border-color:rgba(192,57,43,0.45);box-shadow:0 24px 50px rgba(0,0,0,0.6),0 0 0 1px rgba(192,57,43,0.15)}
-.killer-card:hover::before{opacity:1}
-.killer-card.active{border-color:var(--blood3);box-shadow:0 0 0 1px rgba(192,57,43,0.4),0 20px 40px rgba(0,0,0,0.5)}
-.killer-card.hidden{display:none}
+/* SECTION */
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:10px}
+.sec-title{font-family:var(--font-title);font-size:1.5rem;color:#fff;display:flex;align-items:center;gap:10px}
+.sec-title i{color:var(--blood3);font-size:1.1rem}
+.sec-badge{font-size:.68rem;background:rgba(192,57,43,.15);color:var(--blood3);border:1px solid rgba(192,57,43,.3);padding:3px 9px;border-radius:20px;font-family:var(--font-body);letter-spacing:1px;font-weight:600}
+.fbar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:24px;align-items:center}
+.fbar .lbl{font-size:.72rem;color:var(--text3);letter-spacing:1px;text-transform:uppercase}
+.filt{padding:4px 13px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;font-family:var(--font-body);font-size:.76rem;transition:all .2s}
+.filt:hover{border-color:rgba(192,57,43,.4);color:var(--text)}
+.filt.active{background:rgba(192,57,43,.18);border-color:rgba(192,57,43,.5);color:#fff}
 
-.k-icon-wrap{
-  height:130px;display:flex;align-items:center;justify-content:center;
-  position:relative;overflow:hidden;
-}
-.k-icon-wrap::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(to bottom,transparent 40%,var(--dark3));
-}
-.k-icon{font-size:3.6rem;position:relative;z-index:2;transition:transform .4s,filter .4s}
-.killer-card:hover .k-icon{transform:scale(1.15) rotate(-5deg);filter:drop-shadow(0 0 20px currentColor)}
+/* KILLERS GRID */
+.killers-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
+.kcard{background:var(--panel);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:all .4s cubic-bezier(.25,.8,.25,1);position:relative}
+.kcard::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(192,57,43,.08),transparent 60%);opacity:0;transition:opacity .4s;border-radius:14px;z-index:1}
+.kcard:hover{transform:translateY(-7px) scale(1.01);border-color:rgba(192,57,43,.45);box-shadow:0 20px 45px rgba(0,0,0,.6)}
+.kcard:hover::before{opacity:1}
+.kcard.active{border-color:var(--blood3);box-shadow:0 0 0 1px rgba(192,57,43,.4),0 18px 35px rgba(0,0,0,.5)}
+.kcard.hidden{display:none}
+.k-active-bar{position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,transparent,var(--blood3),transparent);transform:scaleX(0);transition:transform .4s}
+.kcard.active .k-active-bar{transform:scaleX(1)}
+.k-icon-wrap{height:115px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.k-icon-wrap::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,var(--dark3))}
+.k-icon{font-size:3.2rem;position:relative;z-index:2;transition:transform .4s,filter .4s}
+.kcard:hover .k-icon{transform:scale(1.15) rotate(-5deg);filter:drop-shadow(0 0 18px currentColor)}
+.k-body{padding:15px 16px 14px}
+.k-name{font-family:var(--font-title);font-size:1rem;color:#fff;margin-bottom:6px}
+.k-desc{color:var(--text2);font-size:.78rem;line-height:1.6;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.k-tags{display:flex;gap:6px;flex-wrap:wrap}
+.k-tag{font-size:.66rem;padding:2px 9px;border-radius:20px;border:1px solid;font-weight:600}
+.k-tag-diff{background:rgba(192,57,43,.12);color:var(--blood3);border-color:rgba(192,57,43,.25)}
+.k-tag-builds{background:rgba(201,168,76,.1);color:var(--gold);border-color:rgba(201,168,76,.25)}
+.top-ribbon{position:absolute;top:12px;left:-20px;background:var(--gold);color:var(--dark);font-size:.58rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 28px;transform:rotate(-45deg);box-shadow:0 2px 8px rgba(0,0,0,.5);pointer-events:none;z-index:5}
+.no-results{grid-column:1/-1;text-align:center;padding:55px;color:var(--text3)}
+.no-results i{font-size:2.8rem;display:block;margin-bottom:14px;opacity:.25}
 
-.k-body{padding:18px 18px 16px}
-.k-name{font-family:var(--font-title);font-size:1.1rem;color:#fff;margin-bottom:7px}
-.k-desc{color:var(--text2);font-size:0.82rem;line-height:1.6;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.k-tags{display:flex;gap:7px;flex-wrap:wrap}
-.k-tag{
-  font-size:0.7rem;padding:3px 10px;border-radius:20px;
-  border:1px solid;font-weight:600;
-}
-.k-tag-diff{background:rgba(192,57,43,0.12);color:var(--blood3);border-color:rgba(192,57,43,0.25)}
-.k-tag-builds{background:rgba(201,168,76,0.1);color:var(--gold);border-color:rgba(201,168,76,0.25)}
-
-/* ─── ACTIVE INDICATOR ─── */
-.k-active-bar{
-  position:absolute;top:0;left:0;width:100%;height:3px;
-  background:linear-gradient(90deg,transparent,var(--blood3),transparent);
-  transform:scaleX(0);transition:transform .4s;
-}
-.killer-card.active .k-active-bar{transform:scaleX(1)}
-
-/* ─── NO RESULTS ─── */
-.no-results{grid-column:1/-1;text-align:center;padding:60px;color:var(--text3)}
-.no-results i{font-size:3rem;display:block;margin-bottom:16px;opacity:.3}
-
-/* ─── BREADCRUMB ─── */
-.breadcrumb{display:flex;align-items:center;gap:8px;margin-bottom:20px;font-size:0.8rem;color:var(--text3)}
+/* BREADCRUMB */
+.breadcrumb{display:flex;align-items:center;gap:7px;margin-bottom:18px;font-size:.76rem;color:var(--text3)}
 .breadcrumb a{color:var(--text2);text-decoration:none;cursor:pointer;transition:color .2s}
 .breadcrumb a:hover{color:var(--blood3)}
-.breadcrumb i{font-size:0.65rem;opacity:.5}
+.breadcrumb i{font-size:.6rem;opacity:.5}
 
-/* ─── BUILDS TOOLBAR ─── */
-.builds-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px;align-items:center}
-.builds-toolbar .bc{margin-right:auto;font-size:0.8rem;color:var(--text3)}
+/* BUILDS */
+.builds-toolbar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:20px;align-items:center}
+.builds-toolbar .bc{margin-right:auto;font-size:.76rem;color:var(--text3)}
+.builds-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(370px,1fr));gap:18px}
+.bcard{background:var(--panel);border:1px solid var(--border);border-radius:13px;overflow:hidden;cursor:pointer;transition:all .35s;position:relative}
+.bcard::after{content:'';position:absolute;inset:0;border-radius:13px;background:linear-gradient(135deg,rgba(192,57,43,.06),transparent);opacity:0;transition:opacity .35s;pointer-events:none}
+.bcard:hover{transform:translateY(-5px);border-color:rgba(192,57,43,.3);box-shadow:0 18px 36px rgba(0,0,0,.5)}
+.bcard:hover::after{opacity:1}
+.b-hdr{padding:14px 16px;background:rgba(0,0,0,.25);border-bottom:1px solid var(--border)}
+.b-name{font-family:var(--font-title);font-size:.95rem;color:#fff;margin-bottom:7px}
+.b-meta{display:flex;justify-content:space-between;font-size:.72rem;color:var(--text3);flex-wrap:wrap;gap:4px}
+.b-sugg{color:var(--gold);font-style:italic}
+.b-body{padding:14px 16px}
+.b-kr{display:flex;align-items:center;gap:11px;margin-bottom:13px;padding:11px;background:rgba(0,0,0,.2);border-radius:9px}
+.b-ki{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.b-desc{font-size:.78rem;color:var(--text2);line-height:1.7;margin-bottom:13px;padding:11px 13px;background:rgba(0,0,0,.18);border-radius:8px;border-right:3px solid var(--blood)}
+.plbl,.albl{font-size:.67rem;text-transform:uppercase;letter-spacing:2px;color:var(--text3);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.plbl i{color:#60a5fa}.albl i{color:#34d399}
+.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:12px}
+.agrid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:4px}
+.ppill{background:rgba(96,165,250,.07);border:1px solid rgba(96,165,250,.15);border-radius:8px;padding:8px 9px;transition:all .25s;position:relative}
+.ppill:hover{background:rgba(96,165,250,.14);border-color:rgba(96,165,250,.35);transform:translateY(-2px)}
+.pnum{position:absolute;top:-5px;right:-5px;width:16px;height:16px;background:#2563eb;color:#fff;border-radius:50%;font-size:.58rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+.pname{font-size:.7rem;color:#fff;font-weight:600;margin-bottom:2px;line-height:1.3}
+.pdesc{font-size:.63rem;color:var(--text3);line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.apill{background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.15);border-radius:8px;padding:8px 9px;transition:all .25s}
+.apill:hover{background:rgba(52,211,153,.14);border-color:rgba(52,211,153,.35);transform:translateY(-2px)}
+.aname{font-size:.7rem;color:#fff;font-weight:600;margin-bottom:2px}
+.adesc{font-size:.63rem;color:var(--text3);line-height:1.3}
+.b-ftr{padding:11px 16px;background:rgba(0,0,0,.2);border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:9px}
+.rrow{display:flex;align-items:center;gap:8px;font-size:.78rem}
+.sdisp{color:#fbbf24;font-size:.78rem}
+.rval{color:#fff;font-weight:700}
+.rcnt{color:var(--text3)}
+.bacts{display:flex;gap:6px;flex-wrap:wrap}
 
-/* ─── BUILD CARD ─── */
-.builds-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:20px}
-.build-card{
-  background:var(--panel);border:1px solid var(--border);border-radius:14px;
-  overflow:hidden;cursor:pointer;transition:all .35s;
-  position:relative;
-}
-.build-card::after{
-  content:'';position:absolute;inset:0;border-radius:14px;
-  background:linear-gradient(135deg,rgba(192,57,43,0.06),transparent);
-  opacity:0;transition:opacity .35s;pointer-events:none;
-}
-.build-card:hover{transform:translateY(-5px);border-color:rgba(192,57,43,0.3);box-shadow:0 20px 40px rgba(0,0,0,.5)}
-.build-card:hover::after{opacity:1}
+/* EMPTY */
+.empty-state{text-align:center;padding:55px 28px;background:var(--panel);border:1px dashed var(--border);border-radius:14px;margin:16px 0}
+.empty-state i{font-size:3rem;display:block;margin-bottom:14px;opacity:.2}
+.empty-state h3{font-family:var(--font-title);font-size:1.3rem;color:#fff;margin-bottom:9px}
+.empty-state p{color:var(--text2);font-size:.84rem;max-width:440px;margin:0 auto 20px;line-height:1.7}
 
-.b-header{padding:16px 18px;background:rgba(0,0,0,.25);border-bottom:1px solid var(--border)}
-.b-name{font-family:var(--font-title);font-size:1rem;color:#fff;margin-bottom:8px}
-.b-meta{display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text3);flex-wrap:wrap;gap:5px}
-.b-suggested{color:var(--gold);font-style:italic}
-
-.b-body{padding:16px 18px}
-.b-killer-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding:12px;background:rgba(0,0,0,.2);border-radius:10px}
-.b-ki{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0}
-.b-desc{
-  font-size:0.82rem;color:var(--text2);line-height:1.7;margin-bottom:14px;
-  padding:12px 14px;background:rgba(0,0,0,.18);border-radius:9px;
-  border-right:3px solid var(--blood);
-}
-
-/* ─── PERKS GRID ─── */
-.perks-label,.addons-label{
-  font-size:0.72rem;text-transform:uppercase;letter-spacing:2px;
-  color:var(--text3);margin-bottom:10px;display:flex;align-items:center;gap:7px;
-}
-.perks-label i{color:#60a5fa}.addons-label i{color:#34d399}
-.perks-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
-.addons-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:4px}
-
-.perk-pill{
-  background:rgba(96,165,250,0.07);border:1px solid rgba(96,165,250,0.15);
-  border-radius:9px;padding:9px 10px;transition:all .25s;position:relative;
-}
-.perk-pill:hover{background:rgba(96,165,250,0.14);border-color:rgba(96,165,250,0.35);transform:translateY(-2px)}
-.pp-num{
-  position:absolute;top:-6px;right:-6px;
-  width:18px;height:18px;background:#2563eb;color:#fff;
-  border-radius:50%;font-size:0.65rem;font-weight:700;
-  display:flex;align-items:center;justify-content:center;
-}
-.pp-name{font-size:0.75rem;color:#fff;font-weight:600;margin-bottom:3px;line-height:1.3}
-.pp-desc{font-size:0.67rem;color:var(--text3);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-
-.addon-pill{
-  background:rgba(52,211,153,0.07);border:1px solid rgba(52,211,153,0.15);
-  border-radius:9px;padding:9px 10px;transition:all .25s;
-}
-.addon-pill:hover{background:rgba(52,211,153,0.14);border-color:rgba(52,211,153,0.35);transform:translateY(-2px)}
-.ap-name{font-size:0.75rem;color:#fff;font-weight:600;margin-bottom:3px}
-.ap-desc{font-size:0.67rem;color:var(--text3);line-height:1.4}
-
-.b-footer{
-  padding:12px 18px;background:rgba(0,0,0,.2);border-top:1px solid var(--border);
-  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;
-}
-.rating-row{display:flex;align-items:center;gap:9px;font-size:0.8rem}
-.stars-disp{color:#fbbf24;font-size:0.82rem}
-.rating-val{color:#fff;font-weight:700}
-.rating-cnt{color:var(--text3)}
-.b-actions{display:flex;gap:7px;flex-wrap:wrap}
-
-/* ─── RIBBON ─── */
-.top-ribbon{
-  position:absolute;top:14px;left:-22px;
-  background:var(--gold);color:var(--dark);
-  font-size:0.62rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
-  padding:3px 30px;transform:rotate(-45deg);box-shadow:0 2px 8px rgba(0,0,0,.5);
-  pointer-events:none;z-index:5;
-}
-
-/* ─── EMPTY STATE ─── */
-.empty-state{
-  text-align:center;padding:60px 30px;
-  background:var(--panel);border:1px dashed var(--border);border-radius:16px;
-  margin:20px 0;
-}
-.empty-state i{font-size:3.5rem;display:block;margin-bottom:16px;opacity:.2}
-.empty-state h3{font-family:var(--font-title);font-size:1.4rem;color:#fff;margin-bottom:10px}
-.empty-state p{color:var(--text2);font-size:0.88rem;max-width:480px;margin:0 auto 22px;line-height:1.7}
-
-/* ─── MODAL ─── */
-.overlay{
-  position:fixed;inset:0;
-  background:rgba(0,0,0,0.88);backdrop-filter:blur(12px);
-  z-index:2000;display:none;
-  animation:ovl-in .3s ease;
-}
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.9);backdrop-filter:blur(12px);z-index:2000;display:none;animation:ovlin .3s ease}
 .overlay.open{display:flex;align-items:center;justify-content:center}
-@keyframes ovl-in{from{opacity:0}to{opacity:1}}
+@keyframes ovlin{from{opacity:0}to{opacity:1}}
+.modal{width:92%;max-width:800px;max-height:88vh;overflow-y:auto;background:linear-gradient(160deg,#0e0e18,#080810);border:1px solid rgba(192,57,43,.3);border-radius:18px;position:relative;animation:modlin .35s cubic-bezier(.25,.8,.25,1);box-shadow:0 0 80px rgba(192,57,43,.15),0 40px 80px rgba(0,0,0,.8)}
+@keyframes modlin{from{opacity:0;transform:scale(.88) translateY(30px)}to{opacity:1;transform:none}}
+.mcls{position:absolute;top:13px;left:13px;width:32px;height:32px;border-radius:50%;background:rgba(192,57,43,.2);border:1px solid rgba(192,57,43,.3);color:#fff;cursor:pointer;font-size:.85rem;display:flex;align-items:center;justify-content:center;transition:all .25s;z-index:10}
+.mcls:hover{background:rgba(192,57,43,.45);transform:rotate(90deg)}
 
-.modal{
-  width:92%;max-width:820px;max-height:88vh;overflow-y:auto;
-  background:linear-gradient(160deg,#0e0e18,#080810);
-  border:1px solid rgba(192,57,43,0.3);border-radius:20px;
-  position:relative;animation:modal-in .35s cubic-bezier(.25,.8,.25,1);
-  box-shadow:0 0 80px rgba(192,57,43,0.15),0 40px 80px rgba(0,0,0,.8);
-}
-@keyframes modal-in{from{opacity:0;transform:scale(0.88) translateY(30px)}to{opacity:1;transform:none}}
-.modal-close-btn{
-  position:absolute;top:14px;left:14px;
-  width:34px;height:34px;border-radius:50%;
-  background:rgba(192,57,43,0.2);border:1px solid rgba(192,57,43,0.3);
-  color:#fff;cursor:pointer;font-size:0.9rem;
-  display:flex;align-items:center;justify-content:center;
-  transition:all .25s;z-index:10;
-}
-.modal-close-btn:hover{background:rgba(192,57,43,0.45);transform:rotate(90deg)}
-
-/* ─── FORM STYLES ─── */
-.section{margin-bottom:50px}
-.form-wrap{
-  background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:28px;
-  display:none;
-}
-.form-wrap.open{display:block;animation:hero-in .35s ease}
-.form-group{margin-bottom:18px}
-.form-group label{
-  display:block;margin-bottom:7px;
-  font-size:0.8rem;color:var(--text2);letter-spacing:1px;text-transform:uppercase;
-  display:flex;align-items:center;gap:7px;
-}
-.form-group label i{color:var(--blood3);font-size:0.75rem}
-.fc{
-  width:100%;padding:11px 14px;
-  background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:9px;
-  color:var(--text);font-family:var(--font-body);font-size:0.88rem;
-  transition:all .25s;
-}
-.fc:focus{outline:none;border-color:rgba(192,57,43,0.5);box-shadow:0 0 0 3px rgba(192,57,43,0.1);background:rgba(0,0,0,.45)}
-textarea.fc{min-height:120px;resize:vertical;line-height:1.6}
+/* FORMS */
+.section{margin-bottom:45px}
+.fwrap{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:24px;display:none}
+.fwrap.open{display:block;animation:hin .35s ease}
+.fg{margin-bottom:16px}
+.fg label{display:block;margin-bottom:6px;font-size:.75rem;color:var(--text2);letter-spacing:1px;text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.fg label i{color:var(--blood3);font-size:.7rem}
+.fc{width:100%;padding:10px 13px;background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font-body);font-size:.85rem;transition:all .25s}
+.fc:focus{outline:none;border-color:rgba(192,57,43,.5);box-shadow:0 0 0 3px rgba(192,57,43,.1);background:rgba(0,0,0,.45)}
+textarea.fc{min-height:115px;resize:vertical;line-height:1.6}
 .fc option{background:#0f0f1a;color:var(--text)}
-.form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
-.perk-block,.addon-block{
-  background:rgba(0,0,0,.25);border:1px solid rgba(96,165,250,0.12);
-  border-radius:10px;padding:14px;margin-bottom:12px;
-}
-.addon-block{border-color:rgba(52,211,153,0.12)}
-.perk-block label{color:rgba(96,165,250,0.7)!important}
-.addon-block label{color:rgba(52,211,153,0.7)!important}
-.pinput{
-  width:100%;padding:9px 12px;margin-bottom:8px;
-  background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,0.07);
-  border-radius:7px;color:#fff;font-family:var(--font-body);font-size:0.85rem;
-  transition:border-color .2s;
-}
-.pinput:focus{outline:none;border-color:rgba(96,165,250,0.4)}
-.addon-block .pinput:focus{border-color:rgba(52,211,153,0.4)}
-.fa-row{display:flex;justify-content:flex-end;gap:10px;margin-top:22px;padding-top:18px;border-top:1px solid var(--border)}
-.discord-note{
-  background:rgba(88,101,242,0.08);border:1px solid rgba(88,101,242,0.2);
-  border-radius:10px;padding:12px 16px;margin-bottom:20px;
-  font-size:0.82rem;color:var(--text2);
-}
-.discord-note strong{color:#818cf8}
+.form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:15px}
+.pblock,.ablock{background:rgba(0,0,0,.25);border:1px solid rgba(96,165,250,.12);border-radius:9px;padding:13px;margin-bottom:11px}
+.ablock{border-color:rgba(52,211,153,.12)}
+.pblock label{color:rgba(96,165,250,.7)!important}
+.ablock label{color:rgba(52,211,153,.7)!important}
+.pin{width:100%;padding:8px 11px;margin-bottom:7px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.07);border-radius:7px;color:#fff;font-family:var(--font-body);font-size:.82rem;transition:border-color .2s}
+.pin:focus{outline:none;border-color:rgba(96,165,250,.4)}
+.ablock .pin:focus{border-color:rgba(52,211,153,.4)}
+.farow{display:flex;justify-content:flex-end;gap:9px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+.dnote{background:rgba(88,101,242,.08);border:1px solid rgba(88,101,242,.2);border-radius:9px;padding:11px 14px;margin-bottom:18px;font-size:.78rem;color:var(--text2)}
+.dnote strong{color:#818cf8}
 
-/* ─── MANAGE ─── */
-.manage-block{
-  background:var(--panel);border:1px solid var(--border);border-radius:14px;
-  padding:24px;margin-bottom:20px;
-}
-.manage-block h3{font-family:var(--font-title);font-size:1.1rem;color:#fff;margin-bottom:18px;display:flex;align-items:center;gap:10px}
-.manage-block h3 i{color:var(--blood3)}
-.killer-item{
-  background:rgba(0,0,0,.2);border:1px solid var(--border);border-radius:10px;
-  padding:14px 16px;margin-bottom:10px;
-  display:flex;justify-content:space-between;align-items:center;
-  transition:border-color .2s;
-}
-.killer-item:hover{border-color:rgba(192,57,43,0.2)}
-.io-row{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:16px}
+/* MANAGE */
+.mblock{background:var(--panel);border:1px solid var(--border);border-radius:13px;padding:22px;margin-bottom:18px}
+.mblock h3{font-family:var(--font-title);font-size:1.05rem;color:#fff;margin-bottom:15px;display:flex;align-items:center;gap:9px}
+.mblock h3 i{color:var(--blood3)}
+.kitem{background:rgba(0,0,0,.2);border:1px solid var(--border);border-radius:9px;padding:13px 15px;margin-bottom:9px;display:flex;justify-content:space-between;align-items:center;transition:border-color .2s}
+.kitem:hover{border-color:rgba(192,57,43,.2)}
+.io-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.batch-ta{width:100%;min-height:130px;padding:11px;background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:monospace;font-size:.82rem;line-height:1.8;resize:vertical}
+.batch-ta:focus{outline:none;border-color:rgba(192,57,43,.5)}
+.inote{background:rgba(192,57,43,.07);border-right:3px solid var(--blood);border-radius:0 7px 7px 0;padding:9px 12px;font-size:.76rem;color:var(--text2);margin-top:9px}
 
-/* ─── LOGIN MODAL ─── */
-.login-box{
-  width:90%;max-width:400px;
-  background:linear-gradient(160deg,#0e0e18,#080810);
-  border:1px solid rgba(192,57,43,0.3);border-radius:20px;padding:36px;
-  box-shadow:0 40px 80px rgba(0,0,0,.8);
-  animation:modal-in .35s ease;
-}
-.login-box h2{font-family:var(--font-title);text-align:center;font-size:1.5rem;color:#fff;margin-bottom:22px}
-.lmsg{padding:10px 14px;border-radius:8px;font-size:0.82rem;margin-bottom:16px;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--text2)}
+/* LOGIN / SMALL MODALS */
+.lbox,.smbox{width:90%;max-width:400px;background:linear-gradient(160deg,#0e0e18,#080810);border:1px solid rgba(192,57,43,.3);border-radius:18px;padding:32px;box-shadow:0 40px 80px rgba(0,0,0,.8);animation:modlin .35s ease}
+.smbox{text-align:center}
+.lbox h2,.smbox h3{font-family:var(--font-title);text-align:center;font-size:1.4rem;color:#fff;margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:10px}
+.lmsg{padding:9px 13px;border-radius:7px;font-size:.8rem;margin-bottom:14px;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--text2)}
 .lmsg.ok{background:rgba(74,222,128,.08);border-color:rgba(74,222,128,.3);color:#4ade80}
 .lmsg.err{background:rgba(192,57,43,.1);border-color:rgba(192,57,43,.3);color:var(--blood3)}
+.smbox p{color:var(--text2);font-size:.84rem;line-height:1.6;margin-bottom:20px}
+.spick{display:flex;justify-content:center;gap:11px;margin-bottom:24px}
+.spick .s{font-size:2.2rem;color:#1e293b;cursor:pointer;transition:all .2s}
+.spick .s:hover,.spick .s.on{color:#fbbf24;transform:scale(1.25)}
 
-/* ─── RATING / DELETE MODAL ─── */
-.sm-box{
-  width:90%;max-width:380px;
-  background:linear-gradient(160deg,#0e0e18,#080810);
-  border:1px solid var(--border);border-radius:16px;padding:30px;text-align:center;
-  animation:modal-in .3s ease;
-}
-.sm-box h3{font-family:var(--font-title);font-size:1.2rem;color:#fff;margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:10px}
-.sm-box p{color:var(--text2);font-size:0.88rem;line-height:1.6;margin-bottom:22px}
-.stars-pick{display:flex;justify-content:center;gap:12px;margin-bottom:26px}
-.stars-pick .s{font-size:2.4rem;color:#1e293b;cursor:pointer;transition:all .2s}
-.stars-pick .s:hover,.stars-pick .s.on{color:#fbbf24;transform:scale(1.25)}
-
-/* ─── SCROLL PROGRESS ─── */
-#prog{
-  position:fixed;top:0;left:0;height:2px;z-index:9999;
-  background:linear-gradient(90deg,var(--blood2),var(--blood3));
-  transition:width .1s;pointer-events:none;
-}
-
-/* ─── BACK TO TOP ─── */
-#btt{
-  position:fixed;bottom:20px;right:20px;
-  width:40px;height:40px;border-radius:50%;
-  background:rgba(192,57,43,0.3);border:1px solid rgba(192,57,43,0.5);
-  color:#fff;font-size:0.9rem;cursor:pointer;
-  display:none;align-items:center;justify-content:center;z-index:500;
-  transition:all .25s;box-shadow:0 4px 16px rgba(192,57,43,.3);
-}
+/* PROGRESS & BACK-TO-TOP */
+#prog{position:fixed;top:0;left:0;height:2px;z-index:9999;background:linear-gradient(90deg,var(--blood2),var(--blood3));transition:width .1s;pointer-events:none}
+#btt{position:fixed;bottom:20px;right:20px;width:40px;height:40px;border-radius:50%;background:rgba(192,57,43,.3);border:1px solid rgba(192,57,43,.5);color:#fff;font-size:.85rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:500;transition:all .25s;box-shadow:0 4px 16px rgba(192,57,43,.3)}
 #btt.show{display:flex}
 #btt:hover{background:rgba(192,57,43,.6);transform:translateY(-3px)}
 
-/* ─── TOAST ─── */
-#toast-c{position:fixed;bottom:20px;left:20px;z-index:9998;display:flex;flex-direction:column;gap:8px}
-.tst{
-  padding:10px 16px;border-radius:9px;font-size:0.82rem;font-family:var(--font-body);
-  display:flex;align-items:center;gap:9px;
-  box-shadow:0 6px 20px rgba(0,0,0,.5);
-  animation:tst-in .3s ease;backdrop-filter:blur(10px);
-}
-@keyframes tst-in{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:none}}
+/* TOAST */
+#tc{position:fixed;bottom:20px;left:20px;z-index:9998;display:flex;flex-direction:column;gap:8px}
+.tst{padding:9px 15px;border-radius:8px;font-size:.78rem;font-family:var(--font-body);display:flex;align-items:center;gap:8px;box-shadow:0 6px 20px rgba(0,0,0,.5);animation:tin .3s ease;backdrop-filter:blur(10px)}
+@keyframes tin{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:none}}
 
-/* ─── FLOATING PARTICLES ─── */
-.particle{position:fixed;pointer-events:none;z-index:2;border-radius:50%;animation:float-up linear infinite}
-@keyframes float-up{
-  0%{transform:translateY(0) translateX(0) scale(1);opacity:.8}
-  100%{transform:translateY(-100vh) translateX(calc(var(--dx)*60px)) scale(0);opacity:0}
-}
+/* PARTICLES */
+.particle{position:fixed;pointer-events:none;z-index:2;border-radius:50%;animation:fup linear infinite}
+@keyframes fup{0%{transform:translateY(0) translateX(0) scale(1);opacity:.8}100%{transform:translateY(-100vh) translateX(calc(var(--dx)*60px)) scale(0);opacity:0}}
 
-/* ─── SECTION ANIMATIONS ─── */
-.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
 .reveal.in{opacity:1;transform:none}
 
-/* ─── FOOTER ─── */
-footer{
-  border-top:1px solid var(--border);margin-top:70px;padding:30px 0;
-  background:rgba(0,0,0,.3);
-}
-.footer-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px}
-.footer-copy{font-size:0.78rem;color:var(--text3);line-height:1.7}
-.footer-copy strong{color:var(--gold)}
-.social-row{display:flex;gap:12px}
-.soc{
-  width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;
-  background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--text3);
-  font-size:0.9rem;transition:all .25s;text-decoration:none;
-}
+/* LOADING SPINNER */
+.spin-wrap{display:flex;align-items:center;justify-content:center;padding:60px;color:var(--text3);gap:12px;font-size:.88rem}
+.spinner{width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--blood3);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);margin-top:60px;padding:26px 0;background:rgba(0,0,0,.3)}
+.fi{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.fc2{font-size:.74rem;color:var(--text3);line-height:1.7}
+.fc2 strong{color:var(--gold)}
+.srow{display:flex;gap:10px}
+.soc{width:34px;height:34px;border-radius:7px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--text3);font-size:.85rem;transition:all .25s;text-decoration:none}
 .soc:hover{background:rgba(192,57,43,.15);border-color:rgba(192,57,43,.35);color:var(--blood3);transform:translateY(-3px)}
 
-/* ─── RESPONSIVE ─── */
+/* RESPONSIVE */
 @media(max-width:860px){
-  .header-bar{flex-wrap:wrap;padding:10px 16px}
-  .search-wrap{order:3;max-width:100%;flex:0 0 100%}
+  .hbar{flex-wrap:wrap;padding:9px 14px}
+  .sw{order:3;max-width:100%;flex:0 0 100%}
   nav a span.nt{display:none}
-  .hero-title{font-size:2rem}
+  .hero-title{font-size:1.9rem}
   .builds-grid{grid-template-columns:1fr}
+  .cloud-bar{top:57px}
 }
 @media(max-width:560px){
   .killers-grid{grid-template-columns:1fr 1fr}
-  .perks-grid{grid-template-columns:repeat(2,1fr)}
-  .stats-row{grid-template-columns:repeat(3,1fr)}
-  .hero{padding:50px 0 40px}
+  .pgrid{grid-template-columns:repeat(2,1fr)}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
 }
 
-/* ─── SCROLLBAR ─── */
+::selection{background:rgba(192,57,43,.35);color:#fff}
 ::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-track{background:rgba(0,0,0,.2)}
 ::-webkit-scrollbar-thumb{background:var(--blood2);border-radius:6px}
 ::-webkit-scrollbar-thumb:hover{background:var(--blood3)}
 
-/* ─── SELECTION ─── */
-::selection{background:rgba(192,57,43,.35);color:#fff}
-
-/* ─── BATCH TEXTAREA ─── */
-.batch-ta{width:100%;min-height:140px;padding:12px;background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:9px;color:var(--text);font-family:monospace;font-size:0.85rem;line-height:1.8;resize:vertical}
-.batch-ta:focus{outline:none;border-color:rgba(192,57,43,.5)}
-.info-note{background:rgba(192,57,43,.07);border-right:3px solid var(--blood);border-radius:0 8px 8px 0;padding:10px 14px;font-size:0.8rem;color:var(--text2);margin-top:10px}
-
-/* ─── ACTIVE KILLER SECTION TITLE ─── */
-#sel-killer-display{
-  display:inline-flex;align-items:center;gap:8px;
-  background:rgba(192,57,43,0.12);border:1px solid rgba(192,57,43,0.3);
-  border-radius:8px;padding:3px 14px;margin-right:12px;
-  font-family:var(--font-title);color:var(--blood3);font-size:1rem;
-}
+/* SEL KILLER DISPLAY */
+#sel-kd{display:none;align-items:center;gap:7px;background:rgba(192,57,43,.12);border:1px solid rgba(192,57,43,.3);border-radius:7px;padding:3px 12px;font-family:var(--font-title);color:var(--blood3);font-size:.9rem}
 </style>
 </head>
 <body>
 
-<!-- CURSOR -->
 <div class="cursor" id="cursor"></div>
 <div class="cursor-dot" id="cursor-dot"></div>
-
-<!-- SCROLL PROGRESS -->
 <div id="prog"></div>
-
-<!-- BG CANVAS -->
 <canvas id="bg-canvas"></canvas>
 
-<!-- ═══════════ HEADER ═══════════ -->
+<!-- ═══ HEADER ═══ -->
 <header>
-  <div class="header-bar">
+  <div class="hbar">
     <a class="logo" href="#" id="logo-link">
       <div class="logo-icon"><i class="fas fa-skull"></i></div>
       <div class="logo-text">
@@ -591,81 +340,82 @@ footer{
         <span class="logo-sub">Killer Builds</span>
       </div>
     </a>
-
-    <div class="search-wrap">
-      <i class="fas fa-search search-icon"></i>
-      <input type="text" id="global-search" placeholder="ابحث عن كيلر أو بيلد...">
-      <button class="clear-s" id="clear-s"><i class="fas fa-times"></i></button>
+    <div class="sw">
+      <i class="fas fa-search si"></i>
+      <input type="text" id="gsearch" placeholder="ابحث عن كيلر أو بيلد...">
+      <button class="cls" id="cls-btn"><i class="fas fa-times"></i></button>
     </div>
-
-    <nav id="main-nav">
+    <nav>
       <ul>
-        <li><a href="#" class="active" id="nav-killers"><i class="fas fa-skull-crossbones"></i><span class="nt"> الكيلرات</span></a></li>
-        <li><a href="#" id="nav-builds"><i class="fas fa-hammer"></i><span class="nt"> البيلدات</span></a></li>
+        <li><a href="#" class="active" id="nav-k"><i class="fas fa-skull-crossbones"></i><span class="nt"> الكيلرات</span></a></li>
+        <li><a href="#" id="nav-b"><i class="fas fa-hammer"></i><span class="nt"> البيلدات</span></a></li>
         <li><a href="#" id="nav-add"><i class="fas fa-plus-circle"></i><span class="nt"> إضافة</span></a></li>
-        <li><a href="#" id="nav-manage" style="display:none"><i class="fas fa-cog"></i><span class="nt"> إدارة</span></a></li>
+        <li><a href="#" id="nav-m" style="display:none"><i class="fas fa-cog"></i><span class="nt"> إدارة</span></a></li>
       </ul>
     </nav>
-
-    <div class="user-wrap">
-      <div class="user-chip" id="user-chip">
-        <span class="dot"></span>
-        <span id="user-lbl">زائر</span>
-      </div>
-      <button class="btn btn-blood btn-sm" id="login-btn"><i class="fas fa-sign-in-alt"></i> <span id="login-lbl">دخول</span></button>
+    <div class="uw">
+      <div class="uchip" id="uchip"><span class="udot"></span><span id="ulbl">زائر</span></div>
+      <button class="btn btn-blood btn-sm" id="lbtn"><i class="fas fa-sign-in-alt"></i> <span id="llbl">دخول</span></button>
     </div>
   </div>
 </header>
 
-<!-- ═══════════ MAIN ═══════════ -->
+<!-- ═══ CLOUD STATUS BAR ═══ -->
+<div class="cloud-bar" id="cloud-bar">
+  <div class="cs-dot syncing" id="cs-dot"></div>
+  <span class="cs-text" id="cs-text">جارٍ الاتصال بالخادم...</span>
+  <div class="cs-right">
+    <span class="cs-time" id="cs-time"></span>
+    <button class="btn btn-xs btn-ghost" id="sync-btn" title="مزامنة يدوية"><i class="fas fa-sync-alt"></i></button>
+  </div>
+</div>
+
 <main class="container">
 
+  <!-- SETUP BANNER (shown when no API key) -->
+  <div class="setup-banner" id="setup-banner" style="display:none">
+    <h3><i class="fas fa-cloud" style="margin-left:8px"></i> إعداد التخزين السحابي</h3>
+    <p>لمشاركة البيلدات بين جميع المستخدمين، نحتاج ربط الموقع بـ JSONBin.io (مجاني). يكفي تسجيل مرة واحدة كمسؤول.</p>
+    <div class="setup-steps">
+      <div class="setup-step"><div class="sn">١</div><p>سجّل في <strong>jsonbin.io</strong> مجاناً</p></div>
+      <div class="setup-step"><div class="sn">٢</div><p>أنشئ Bin جديد وانسخ الـ BIN ID</p></div>
+      <div class="setup-step"><div class="sn">٣</div><p>انسخ الـ API Key من حسابك</p></div>
+      <div class="setup-step"><div class="sn">٤</div><p>أدخلهما أدناه واضغط حفظ</p></div>
+    </div>
+    <div class="api-input-row">
+      <input type="text" class="api-input" id="inp-binid" placeholder="BIN ID (مثل: 65abc123...)">
+      <input type="text" class="api-input" id="inp-apikey" placeholder="API Key ($2a$10$...)">
+      <button class="btn btn-blood" id="save-api-btn"><i class="fas fa-save"></i> حفظ وربط</button>
+    </div>
+    <p style="margin-top:14px;font-size:.75rem;color:var(--text3)">يُحفظ هذا الإعداد في متصفح المسؤول فقط — المستخدمون العاديون لا يحتاجون لأي إعداد.</p>
+  </div>
+
   <!-- HERO -->
-  <section class="hero" id="hero-section">
+  <section class="hero" id="hero-sec">
     <div class="hero-glow"></div>
     <h1 class="hero-title">أفضل بيلدات<br><span>Dead by Daylight</span></h1>
-    <p class="hero-sub">اكتشف أقوى البيلدات المحترفة لكل كيلر مع شرح استراتيجي تفصيلي لكل بيلد.</p>
+    <p class="hero-sub">اكتشف أقوى البيلدات المحترفة لكل كيلر مع شرح استراتيجي تفصيلي — تُحدَّث فورياً لجميع المستخدمين.</p>
     <div class="hero-cta">
-      <button class="btn btn-blood" onclick="document.getElementById('killers-sec').scrollIntoView({behavior:'smooth'})">
-        <i class="fas fa-play"></i> ابدأ الاستكشاف
-      </button>
-      <button class="btn btn-outline-gold" id="hero-add-btn">
-        <i class="fas fa-plus"></i> أضف بيلد
-      </button>
+      <button class="btn btn-blood" onclick="document.getElementById('killers-sec').scrollIntoView({behavior:'smooth'})"><i class="fas fa-play"></i> ابدأ الاستكشاف</button>
+      <button class="btn btn-gold" id="hero-add-btn"><i class="fas fa-plus"></i> أضف بيلد</button>
     </div>
   </section>
 
   <!-- STATS -->
-  <div class="stats-row reveal" id="stats-row">
-    <div class="stat-card s-blood">
-      <span class="stat-icon">💀</span>
-      <span class="stat-num" id="st-killers">0</span>
-      <span class="stat-lbl">كيلر</span>
-    </div>
-    <div class="stat-card s-gold">
-      <span class="stat-icon">⚔️</span>
-      <span class="stat-num" id="st-builds">0</span>
-      <span class="stat-lbl">بيلد</span>
-    </div>
-    <div class="stat-card s-green">
-      <span class="stat-icon">⭐</span>
-      <span class="stat-num" id="st-ratings">0</span>
-      <span class="stat-lbl">تقييم</span>
-    </div>
-    <div class="stat-card">
-      <span class="stat-icon">🏆</span>
-      <span class="stat-num" id="st-top">—</span>
-      <span class="stat-lbl">الأعلى تقييماً</span>
-    </div>
+  <div class="stats-row reveal">
+    <div class="stat-card s-blood"><span class="stat-icon">💀</span><span class="stat-num" id="st-k">0</span><span class="stat-lbl">كيلر</span></div>
+    <div class="stat-card s-gold"><span class="stat-icon">⚔️</span><span class="stat-num" id="st-b">0</span><span class="stat-lbl">بيلد</span></div>
+    <div class="stat-card s-green"><span class="stat-icon">⭐</span><span class="stat-num" id="st-r">0</span><span class="stat-lbl">تقييم</span></div>
+    <div class="stat-card"><span class="stat-icon">🏆</span><span class="stat-num" id="st-top">—</span><span class="stat-lbl">الأعلى تقييماً</span></div>
   </div>
 
-  <!-- KILLERS SECTION -->
+  <!-- KILLERS -->
   <section class="section reveal" id="killers-sec">
-    <div class="sec-header">
+    <div class="sec-hdr">
       <h2 class="sec-title"><i class="fas fa-skull-crossbones"></i> الكيلرات <span class="sec-badge" id="k-badge">0</span></h2>
     </div>
-    <div class="filter-bar">
-      <span class="lbl"><i class="fas fa-filter"></i> تصفية</span>
+    <div class="fbar">
+      <span class="lbl"><i class="fas fa-filter"></i> صعوبة</span>
       <button class="filt active" data-d="all">الكل</button>
       <button class="filt" data-d="سهل">سهل</button>
       <button class="filt" data-d="متوسط">متوسط</button>
@@ -675,70 +425,61 @@ footer{
     <div class="killers-grid" id="killers-grid"></div>
   </section>
 
-  <!-- BUILDS SECTION -->
+  <!-- BUILDS -->
   <section class="section reveal" id="builds-sec">
-    <div class="breadcrumb" id="breadcrumb" style="display:none">
+    <div class="breadcrumb" id="bc" style="display:none">
       <a id="bc-home"><i class="fas fa-home"></i> الرئيسية</a>
-      <i class="fas fa-chevron-left"></i>
-      <span id="bc-name">—</span>
+      <i class="fas fa-chevron-left"></i><span id="bc-name">—</span>
     </div>
-    <div class="sec-header">
+    <div class="sec-hdr">
       <h2 class="sec-title">
         <i class="fas fa-hammer"></i>
-        <span id="sel-killer-display" style="display:none"></span>
-        <span id="builds-title-text">اختر كيلراً</span>
+        <span id="sel-kd"></span>
+        <span id="btitle">اختر كيلراً</span>
         <span class="sec-badge" id="b-badge">0</span>
       </h2>
     </div>
-    <div class="builds-toolbar" id="builds-toolbar" style="display:none">
+    <div class="builds-toolbar" id="btoolbar" style="display:none">
       <button class="filt active" data-f="all">الكل</button>
       <button class="filt" data-f="top"><i class="fas fa-star"></i> الأعلى</button>
       <button class="filt" data-f="new"><i class="fas fa-clock"></i> الأحدث</button>
-      <span class="bc" id="b-count-txt"></span>
+      <span class="bc" id="bcnt"></span>
     </div>
-    <div id="builds-container"></div>
+    <div id="builds-cont"></div>
   </section>
 
-  <!-- ADD BUILD SECTION -->
+  <!-- ADD BUILD -->
   <section class="section reveal" id="add-sec">
-    <div class="sec-header" id="add-sec-hdr" style="display:none">
+    <div class="sec-hdr" id="add-hdr" style="display:none">
       <h2 class="sec-title"><i class="fas fa-plus-circle"></i> إضافة بيلد جديد</h2>
     </div>
-    <div class="form-wrap" id="add-form-wrap"></div>
+    <div class="fwrap" id="add-wrap"></div>
   </section>
 
-  <!-- MANAGE SECTION -->
+  <!-- MANAGE -->
   <section class="section reveal" id="manage-sec" style="display:none">
-    <div class="sec-header">
-      <h2 class="sec-title"><i class="fas fa-cog"></i> إدارة النظام</h2>
-    </div>
+    <div class="sec-hdr"><h2 class="sec-title"><i class="fas fa-cog"></i> إدارة النظام</h2></div>
     <div id="manage-body"></div>
   </section>
 
-  <!-- BUILD DETAIL OVERLAY -->
-  <div class="overlay" id="detail-overlay">
+  <!-- DETAIL OVERLAY -->
+  <div class="overlay" id="detail-ol">
     <div class="modal" id="detail-modal">
-      <button class="modal-close-btn" id="modal-close"><i class="fas fa-times"></i></button>
+      <button class="mcls" id="mcls"><i class="fas fa-times"></i></button>
       <div id="modal-body"></div>
     </div>
   </div>
 
   <!-- LOGIN OVERLAY -->
-  <div class="overlay" id="login-overlay" style="display:none;align-items:center;justify-content:center">
-    <div class="login-box">
-      <h2><i class="fas fa-skull" style="color:var(--blood3);margin-left:10px"></i> تسجيل الدخول</h2>
+  <div class="overlay" id="login-ol" style="display:none">
+    <div class="lbox">
+      <h2><i class="fas fa-skull" style="color:var(--blood3)"></i> تسجيل الدخول</h2>
       <div class="lmsg" id="lmsg">أدخل بيانات المسؤول.</div>
       <form id="lform">
-        <div class="form-group">
-          <label><i class="fas fa-user"></i> اسم المستخدم</label>
-          <input type="text" class="fc" id="l-user" placeholder="اسم المستخدم" autocomplete="username" required>
-        </div>
-        <div class="form-group">
-          <label><i class="fas fa-lock"></i> كلمة المرور</label>
-          <input type="password" class="fc" id="l-pass" placeholder="كلمة المرور" autocomplete="current-password" required>
-        </div>
-        <div class="fa-row">
-          <button type="button" class="btn btn-ghost" id="l-cancel">إلغاء</button>
+        <div class="fg"><label><i class="fas fa-user"></i> اسم المستخدم</label><input type="text" class="fc" id="l-u" autocomplete="username" required></div>
+        <div class="fg"><label><i class="fas fa-lock"></i> كلمة المرور</label><input type="password" class="fc" id="l-p" autocomplete="current-password" required></div>
+        <div class="farow">
+          <button type="button" class="btn btn-ghost" id="lcancel">إلغاء</button>
           <button type="submit" class="btn btn-blood"><i class="fas fa-sign-in-alt"></i> دخول</button>
         </div>
       </form>
@@ -746,17 +487,15 @@ footer{
   </div>
 
   <!-- RATING OVERLAY -->
-  <div class="overlay" id="rate-overlay" style="display:none;align-items:center;justify-content:center">
-    <div class="sm-box">
-      <h3><i class="fas fa-star" style="color:#fbbf24"></i> قيّم هذا البيلد</h3>
-      <div class="stars-pick" id="stars-pick">
-        <i class="fas fa-star s" data-v="1"></i>
-        <i class="fas fa-star s" data-v="2"></i>
-        <i class="fas fa-star s" data-v="3"></i>
-        <i class="fas fa-star s" data-v="4"></i>
+  <div class="overlay" id="rate-ol" style="display:none">
+    <div class="smbox">
+      <h3><i class="fas fa-star" style="color:#fbbf24"></i> قيّم البيلد</h3>
+      <div class="spick" id="spick">
+        <i class="fas fa-star s" data-v="1"></i><i class="fas fa-star s" data-v="2"></i>
+        <i class="fas fa-star s" data-v="3"></i><i class="fas fa-star s" data-v="4"></i>
         <i class="fas fa-star s" data-v="5"></i>
       </div>
-      <div style="display:flex;gap:10px;justify-content:center">
+      <div style="display:flex;gap:9px;justify-content:center">
         <button class="btn btn-ghost" id="rate-cancel">إلغاء</button>
         <button class="btn btn-blood" id="rate-submit">تأكيد</button>
       </div>
@@ -764,11 +503,11 @@ footer{
   </div>
 
   <!-- DELETE OVERLAY -->
-  <div class="overlay" id="del-overlay" style="display:none;align-items:center;justify-content:center">
-    <div class="sm-box">
+  <div class="overlay" id="del-ol" style="display:none">
+    <div class="smbox">
       <h3><i class="fas fa-exclamation-triangle" style="color:var(--blood3)"></i> تأكيد الحذف</h3>
-      <p>هل أنت متأكد من حذف هذا البيلد؟ لا يمكن التراجع عن هذا الإجراء.</p>
-      <div style="display:flex;gap:10px;justify-content:center">
+      <p>هل أنت متأكد؟ لا يمكن التراجع عن هذا الإجراء.</p>
+      <div style="display:flex;gap:9px;justify-content:center">
         <button class="btn btn-ghost" id="del-cancel">إلغاء</button>
         <button class="btn btn-danger" id="del-confirm"><i class="fas fa-trash"></i> احذف</button>
       </div>
@@ -778,12 +517,12 @@ footer{
 </main>
 
 <footer>
-  <div class="container footer-inner">
-    <div class="footer-copy">
+  <div class="container fi">
+    <div class="fc2">
       <p>جميع الحقوق محفوظة &copy; 2024 — Dead by Daylight Builds</p>
-      <p style="margin-top:5px"><i class="fab fa-discord" style="color:#818cf8;margin-left:5px"></i> اقتراحات البيلدات: <strong>medo_dv</strong> على ديسكورد</p>
+      <p style="margin-top:4px"><i class="fab fa-discord" style="color:#818cf8;margin-left:5px"></i> اقتراحات البيلدات: <strong>medo_dv</strong> على ديسكورد</p>
     </div>
-    <div class="social-row">
+    <div class="srow">
       <a href="#" class="soc"><i class="fab fa-discord"></i></a>
       <a href="#" class="soc"><i class="fab fa-youtube"></i></a>
       <a href="#" class="soc"><i class="fab fa-twitter"></i></a>
@@ -792,155 +531,223 @@ footer{
 </footer>
 
 <button id="btt" title="للأعلى"><i class="fas fa-chevron-up"></i></button>
-
-<div id="toast-c"></div>
+<div id="tc"></div>
 
 <script>
-/* ═══════════════════════════════════════════
-   DATA & STATE
-═══════════════════════════════════════════ */
-let killers = JSON.parse(localStorage.getItem('dbdKillers')) || [];
-let builds  = JSON.parse(localStorage.getItem('dbdBuilds'))  || [];
-let ratings = JSON.parse(localStorage.getItem('dbdRatings')) || {};
-const VU='MEDO', VP='123459876';
-let me = JSON.parse(localStorage.getItem('dbdCurrentUser')) || null;
-let selKiller=null, cFilter='all', dFilter='all', searchQ='', ratingTarget=null, deleteTarget=null;
+/* ══════════════════════════════════════════
+   FIXED KILLERS DATA (ثابتة — لا تُعدَّل)
+══════════════════════════════════════════ */
+const KILLERS = [
+  // سهل Easy
+  {id:1,name:"The Trapper",description:"خبير في وضع الفخاخ الخفية التي تُمسك الناجين بفاعلية عالية.",difficulty:"سهل",icon:"fas fa-mask",color:"#c0392b"},
+  {id:2,name:"The Wraith",description:"شبحي يختفي ويظهر بشكل مفاجئ ليباغت الناجين.",difficulty:"سهل",icon:"fas fa-ghost",color:"#6d28d9"},
+  {id:3,name:"The Hillbilly",description:"سريع جداً بمنشاره المميت الذي يقطع مسافات طويلة.",difficulty:"سهل",icon:"fas fa-tachometer-alt",color:"#16a34a"},
+  {id:4,name:"The Shape",description:"مايكل مايرز — يختبئ ويراقب حتى يصل لقوته القصوى.",difficulty:"سهل",icon:"fas fa-eye",color:"#374151"},
+  {id:5,name:"The Doctor",description:"يُجنّ الناجين ويكشف مواقعهم بالصعق الكهربائي.",difficulty:"سهل",icon:"fas fa-bolt",color:"#2563eb"},
+  {id:6,name:"The Huntress",description:"ترمي فؤوساً على الناجين عن بُعد بدقة عالية.",difficulty:"سهل",icon:"fas fa-hat-cowboy",color:"#b45309"},
+  {id:7,name:"The Cannibal",description:"ليذرفيس بمنشاره — يُغلق مناطق بالكامل.",difficulty:"سهل",icon:"fas fa-skull",color:"#7c3aed"},
+  {id:8,name:"The Nightmare",description:"فريدي كروغر — يهاجم الناجين في أحلامهم.",difficulty:"سهل",icon:"fas fa-moon",color:"#dc2626"},
+  {id:9,name:"The Clown",description:"يرمي قنابل تُبطئ الناجين أو تُعيق رؤيتهم.",difficulty:"سهل",icon:"fas fa-candy-cane",color:"#9333ea"},
+  {id:10,name:"The Legion",description:"سرعة عالية وضربات متتالية تُنهك الناجين.",difficulty:"سهل",icon:"fas fa-fist-raised",color:"#0891b2"},
+  {id:11,name:"The Ghost Face",description:"يتخفى ويراقب لمضاعفة ضرره على الناجين.",difficulty:"سهل",icon:"fas fa-user-secret",color:"#1e293b"},
+  {id:12,name:"The Demogorgon",description:"يستخدم أنفاقاً للتنقل بسرعة عبر الخريطة.",difficulty:"سهل",icon:"fas fa-spider",color:"#7f1d1d"},
+  {id:13,name:"The Deathslinger",description:"يطلق خطافاً يشد الناجين من بُعد.",difficulty:"سهل",icon:"fas fa-crosshairs",color:"#78350f"},
+  {id:14,name:"The Nemesis",description:"نيمسيس من Resident Evil — يُصاب الناجين بالفيروس.",difficulty:"سهل",icon:"fas fa-biohazard",color:"#166534"},
+  {id:15,name:"The Cenobite",description:"بينهيد — يُطلق سلاسل تُقيّد الناجين.",difficulty:"سهل",icon:"fas fa-link",color:"#1e3a5f"},
+  {id:16,name:"The Artist",description:"ترسل غرباناً تلاحق الناجين وتكشف مواقعهم.",difficulty:"سهل",icon:"fas fa-crow",color:"#111827"},
+  {id:17,name:"The Knight",description:"يستدعي حراساً يطاردون الناجين.",difficulty:"سهل",icon:"fas fa-shield-alt",color:"#374151"},
+  {id:18,name:"The Skull Merchant",description:"تضع طائرات مسيّرة تكشف الناجين وتقيّدهم.",difficulty:"سهل",icon:"fas fa-drone",color:"#6b21a8"},
+  {id:19,name:"The Good Guy",description:"شاكي — صغير لكن مخيف، يختبئ بسهولة.",difficulty:"سهل",icon:"fas fa-child",color:"#b91c1c"},
+  {id:20,name:"The Houndmaster",description:"ترسل كلبها لملاحقة الناجين وشلّ حركتهم.",difficulty:"سهل",icon:"fas fa-dog",color:"#854d0e"},
+  // متوسط Medium
+  {id:21,name:"The Hag",description:"تضع مصائد سحرية تستدعيها عن بُعد فور تفعيلها.",difficulty:"متوسط",icon:"fas fa-magic",color:"#4c1d95"},
+  {id:22,name:"The Pig",description:"أماندا يونغ — تضع فخاخ رأس قاتلة على الناجين.",difficulty:"متوسط",icon:"fas fa-mask",color:"#7f1d1d"},
+  {id:23,name:"The Spirit",description:"تتحرك بسرعة فائقة في بُعد آخر — صعبة التصدي.",difficulty:"متوسط",icon:"fas fa-wind",color:"#0e7490"},
+  {id:24,name:"The Plague",description:"تُصيب الناجين بمرض يُضعفهم تدريجياً.",difficulty:"متوسط",icon:"fas fa-disease",color:"#15803d"},
+  {id:25,name:"The Oni",description:"يمتص دماء الناجين ليتحول لوحش لا يُقهر.",difficulty:"متوسط",icon:"fas fa-fire",color:"#9a3412"},
+  {id:26,name:"The Executioner",description:"بيراميد هيد — يخلق مسارات عقاب تؤذي الناجين.",difficulty:"متوسط",icon:"fas fa-gavel",color:"#7f1d1d"},
+  {id:27,name:"The Twins",description:"فيكتور وشارلوت — يضغطان من اتجاهين.",difficulty:"متوسط",icon:"fas fa-user-friends",color:"#1e293b"},
+  {id:28,name:"The Trickster",description:"يرمي شفرات متعددة بسرعة تُنهك الناجين.",difficulty:"متوسط",icon:"fas fa-star-of-david",color:"#be185d"},
+  {id:29,name:"The Onryō",description:"صادكو — تنبثق من التلفزيون وتُرعب الناجين.",difficulty:"متوسط",icon:"fas fa-tv",color:"#374151"},
+  {id:30,name:"The Dredge",description:"يتنقل عبر خزانات الأشياء ويُظلم الخريطة.",difficulty:"متوسط",icon:"fas fa-box-open",color:"#1e1b4b"},
+  {id:31,name:"The Mastermind",description:"ويسكر من Resident Evil — يتحكم بالبيئة.",difficulty:"متوسط",icon:"fas fa-brain",color:"#065f46"},
+  {id:32,name:"The Singularity",description:"يستخدم بودات مستقبلية لمراقبة ونقل نفسه.",difficulty:"متوسط",icon:"fas fa-satellite",color:"#1d4ed8"},
+  {id:33,name:"The Xenomorph",description:"Alien — يتحرك في أنفاق ويلاحق بذيله.",difficulty:"متوسط",icon:"fas fa-alien",color:"#1e293b"},
+  {id:34,name:"The Unknown",description:"كيان غامض يُربك الناجين بهلوسات.",difficulty:"متوسط",icon:"fas fa-question",color:"#6d28d9"},
+  {id:35,name:"The Lich",description:"وسيلاس من D&D — يستخدم تعويذات قوية.",difficulty:"متوسط",icon:"fas fa-hat-wizard",color:"#1e3a5f"},
+  // صعب Hard
+  {id:36,name:"The Nurse",description:"تنتقل عبر الجدران بالتنفس — أقوى كيلر وأصعبهم.",difficulty:"صعب",icon:"fas fa-procedures",color:"#e2e8f0"},
+  {id:37,name:"The Blight",description:"يتحرك بسرعة مجنونة وينبثق من الجدران.",difficulty:"صعب",icon:"fas fa-running",color:"#f97316"},
+];
 
-/* ═══ INIT ═══ */
-window.addEventListener('DOMContentLoaded', () => {
-  if (!killers.length) { killers = defaults(); save('k'); }
-  ui(); renderKillers(); setupAll(); updateStats();
+/* ══════════════════════════════════════════
+   CLOUD CONFIG (JSONBin.io)
+══════════════════════════════════════════ */
+// يمكن للمسؤول إدخال هذه القيم عبر واجهة الإعداد
+// أو تعديلها مباشرة هنا قبل نشر الملف
+let CLOUD_BIN_ID   = localStorage.getItem('dbd_binid')   || '';
+let CLOUD_API_KEY  = localStorage.getItem('dbd_apikey')  || '';
+const BIN_BASE     = 'https://api.jsonbin.io/v3/b/';
+
+/* ══════════════════════════════════════════
+   STATE
+══════════════════════════════════════════ */
+let builds  = [];
+let ratings = {};
+const VU='MEDO', VP='123459876';
+let me = JSON.parse(localStorage.getItem('dbdMe')) || null;
+let selKid=null, cF='all', dF='all', sQ='', rTarget=null, dTarget=null;
+let saving=false;
+
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+window.addEventListener('DOMContentLoaded', async () => {
+  uiHeader();
+  renderKillers();
+  setupEvents();
+  bgCanvas(); particles(); cursorFx(); scrollProg();
   animOnScroll();
-  bgCanvas();
-  particles();
-  cursor();
-  scrollProg();
-  window.addEventListener('scroll', () => {
-    document.getElementById('btt').classList.toggle('show', scrollY > 500);
+  window.addEventListener('scroll',()=>{
+    document.getElementById('btt').classList.toggle('show',scrollY>400);
   });
-  document.getElementById('btt').onclick = () => scrollTo({top:0,behavior:'smooth'});
-  if (typeof BroadcastChannel !== 'undefined') {
-    new BroadcastChannel('dbd_u').onmessage = () => {
-      killers=JSON.parse(localStorage.getItem('dbdKillers'))||[];
-      builds=JSON.parse(localStorage.getItem('dbdBuilds'))||[];
-      ratings=JSON.parse(localStorage.getItem('dbdRatings'))||{};
-      renderKillers(); if(selKiller) renderBuilds(selKiller); updateStats();
-    };
+  document.getElementById('btt').onclick=()=>scrollTo({top:0,behavior:'smooth'});
+
+  // Check cloud config
+  if (CLOUD_BIN_ID && CLOUD_API_KEY) {
+    await loadFromCloud();
+    // Auto-refresh every 30s
+    setInterval(()=>{ if(!saving) loadFromCloud(true); }, 30000);
+  } else {
+    cloudStatus('err','⚠ لم يتم إعداد التخزين السحابي بعد — البيلدات تظهر فقط على هذا الجهاز');
+    // Fall back to localStorage for admin testing
+    builds  = JSON.parse(localStorage.getItem('dbd_builds_local'))  || [];
+    ratings = JSON.parse(localStorage.getItem('dbd_ratings_local')) || {};
+    if (me) document.getElementById('setup-banner').style.display='block';
+    updateStats();
   }
 });
 
-/* ═══ DEFAULTS ═══ */
-function defaults() {
-  return [
-    {id:1,name:"The Trapper",description:"خبير في وضع الفخاخ الخفية التي تُمسك الناجين بفاعلية.",difficulty:"متوسط",icon:"fas fa-mask",color:"#c0392b"},
-    {id:2,name:"The Hillbilly",description:"كيلر سريع بمنشار مميت يقطع مسافات طويلة بلحظات.",difficulty:"صعب",icon:"fas fa-tachometer-alt",color:"#16a34a"},
-    {id:3,name:"The Nurse",description:"شبحية تختفي وتظهر فجأة — تتطلب مهارة عالية للإتقان.",difficulty:"صعب جداً",icon:"fas fa-procedures",color:"#7c3aed"}
-  ];
-}
-
-/* ═══ SAVE ═══ */
-function save(t) {
-  if (t==='k'||t==='all') localStorage.setItem('dbdKillers',JSON.stringify(killers));
-  if (t==='b'||t==='all') localStorage.setItem('dbdBuilds',JSON.stringify(builds));
-  if (t==='r'||t==='all') localStorage.setItem('dbdRatings',JSON.stringify(ratings));
-  localStorage.setItem('dbdLastUpdate',new Date().toISOString());
-  if (typeof BroadcastChannel!=='undefined') new BroadcastChannel('dbd_u').postMessage({t:'upd'});
-  updateStats();
-}
-
-/* ═══ STATS ═══ */
-function updateStats() {
-  animNum('st-killers', killers.length);
-  animNum('st-builds', builds.length);
-  const tot = Object.values(ratings).reduce((a,b)=>a+b.length,0);
-  animNum('st-ratings', tot);
-  // top rated build name
-  let topBuild=null,topScore=0;
-  builds.forEach(b=>{ const a=parseFloat(avg(b.id))||0; if(a>topScore){topScore=a;topBuild=b;}});
-  const el=document.getElementById('st-top');
-  if(topBuild) el.textContent=topScore>0?topScore+'★':'—';
-  else el.textContent='—';
-}
-function animNum(id, target) {
-  const el=document.getElementById(id);
-  const cur=parseInt(el.textContent)||0;
-  if(cur===target) return;
-  let s=cur,step=(target-cur)/20;
-  const t=setInterval(()=>{
-    s+=step; if((step>0&&s>=target)||(step<0&&s<=target)){s=target;clearInterval(t);}
-    el.textContent=Math.round(s);
-  },30);
-}
-
-/* ═══ RATING HELPERS ═══ */
-function avg(id){
-  if(!ratings[id]||!ratings[id].length)return 0;
-  return (ratings[id].reduce((s,r)=>s+r.rating,0)/ratings[id].length).toFixed(1);
-}
-function myRating(id){
-  if(!me||!ratings[id])return 0;
-  const r=ratings[id].find(r=>r.user===me.username);return r?r.rating:0;
-}
-function starsHTML(r){
-  const n=parseFloat(r)||0,f=Math.floor(n),h=n%1>=.5;
-  let s='';
-  for(let i=0;i<f;i++) s+='<i class="fas fa-star"></i>';
-  if(h) s+='<i class="fas fa-star-half-alt"></i>';
-  for(let i=f+(h?1:0);i<5;i++) s+='<i class="far fa-star"></i>';
-  return s;
-}
-
-/* ═══ TOAST ═══ */
-function toast(msg,type='info',dur=3000){
-  const c=document.getElementById('toast-c');
-  const t=document.createElement('div');
-  t.className='tst';
-  const bg={success:'rgba(16,185,129,.85)',error:'rgba(192,57,43,.85)',warning:'rgba(245,158,11,.85)',info:'rgba(59,130,246,.85)'}[type];
-  const ic={success:'fa-check-circle',error:'fa-exclamation-circle',warning:'fa-exclamation-triangle',info:'fa-info-circle'}[type];
-  t.style.background=bg; t.style.color='#fff';
-  t.innerHTML=`<i class="fas ${ic}"></i><span>${msg}</span>`;
-  c.appendChild(t);
-  setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateX(-20px)'; t.style.transition='all .3s'; setTimeout(()=>t.remove(),320);},dur);
-}
-
-/* ═══ UI STATE ═══ */
-function ui(){
-  const chip=document.getElementById('user-chip');
-  const lbl=document.getElementById('login-lbl');
-  const nm=document.getElementById('nav-manage');
-  if(me){
-    document.getElementById('user-lbl').textContent=me.username==='MEDO'?'مسؤول':me.username;
-    chip.style.borderColor='rgba(74,222,128,0.3)';
-    lbl.textContent='خروج'; nm.style.display='';
-  } else {
-    document.getElementById('user-lbl').textContent='زائر';
-    chip.style.borderColor='';
-    lbl.textContent='دخول'; nm.style.display='none';
+/* ══════════════════════════════════════════
+   CLOUD API
+══════════════════════════════════════════ */
+async function loadFromCloud(silent=false) {
+  if (!CLOUD_BIN_ID || !CLOUD_API_KEY) return;
+  if (!silent) cloudStatus('syncing','جارٍ جلب البيانات...');
+  try {
+    const res = await fetch(`${BIN_BASE}${CLOUD_BIN_ID}/latest`, {
+      headers:{'X-Master-Key': CLOUD_API_KEY, 'X-Bin-Meta': 'false'}
+    });
+    if (!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    builds  = data.builds  || [];
+    ratings = data.ratings || {};
+    const t = new Date().toLocaleTimeString('ar');
+    cloudStatus('ok', `متصل بالسحابة — آخر تحديث: ${t}`);
+    document.getElementById('cs-time').textContent = '';
+    updateStats();
+    if (selKid) renderBuilds(selKid);
+  } catch(e) {
+    if (!silent) cloudStatus('err','❌ فشل الاتصال: '+e.message);
+    console.error(e);
   }
 }
-function setNav(id){
-  document.querySelectorAll('nav a').forEach(a=>a.classList.remove('active'));
-  document.getElementById(id)?.classList.add('active');
+
+async function saveToCloud() {
+  if (!CLOUD_BIN_ID || !CLOUD_API_KEY) {
+    // fallback local save
+    localStorage.setItem('dbd_builds_local',  JSON.stringify(builds));
+    localStorage.setItem('dbd_ratings_local', JSON.stringify(ratings));
+    updateStats();
+    return true;
+  }
+  saving=true;
+  cloudStatus('syncing','جارٍ الحفظ...');
+  try {
+    const res = await fetch(`${BIN_BASE}${CLOUD_BIN_ID}`, {
+      method:'PUT',
+      headers:{'Content-Type':'application/json','X-Master-Key':CLOUD_API_KEY},
+      body: JSON.stringify({builds, ratings})
+    });
+    if (!res.ok) throw new Error('HTTP '+res.status);
+    const t = new Date().toLocaleTimeString('ar');
+    cloudStatus('ok',`تم الحفظ ومشاركته مع الجميع — ${t}`);
+    updateStats();
+    saving=false;
+    return true;
+  } catch(e) {
+    cloudStatus('err','❌ فشل الحفظ: '+e.message);
+    saving=false; return false;
+  }
 }
 
-/* ═══ RENDER KILLERS ═══ */
+function cloudStatus(type, msg) {
+  const bar=document.getElementById('cloud-bar');
+  const dot=document.getElementById('cs-dot');
+  const txt=document.getElementById('cs-text');
+  bar.className='cloud-bar '+type;
+  dot.className='cs-dot '+type;
+  txt.innerHTML=msg;
+}
+
+/* ══════════════════════════════════════════
+   API KEY SETUP
+══════════════════════════════════════════ */
+document.addEventListener('click', async e => {
+  if (e.target.id==='save-api-btn') {
+    const bid = document.getElementById('inp-binid').value.trim();
+    const key = document.getElementById('inp-apikey').value.trim();
+    if (!bid||!key) { toast('أدخل BIN ID وAPI Key','error'); return; }
+    CLOUD_BIN_ID  = bid; CLOUD_API_KEY = key;
+    localStorage.setItem('dbd_binid', bid); localStorage.setItem('dbd_apikey', key);
+    document.getElementById('setup-banner').style.display='none';
+    toast('تم حفظ الإعداد! جارٍ الاتصال...','success');
+    // init bin with empty data
+    await saveToCloud();
+    await loadFromCloud();
+  }
+});
+
+/* ══════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════ */
+function avg(id){ if(!ratings[id]||!ratings[id].length)return 0; return(ratings[id].reduce((s,r)=>s+r.rating,0)/ratings[id].length).toFixed(1); }
+function myR(id){ if(!me||!ratings[id])return 0; const r=ratings[id].find(r=>r.user===me.username); return r?r.rating:0; }
+function stH(r){ const n=parseFloat(r)||0,f=Math.floor(n),h=n%1>=.5; let s=''; for(let i=0;i<f;i++)s+='<i class="fas fa-star"></i>'; if(h)s+='<i class="fas fa-star-half-alt"></i>'; for(let i=f+(h?1:0);i<5;i++)s+='<i class="far fa-star"></i>'; return s; }
+function toast(msg,type='info',dur=3000){ const c=document.getElementById('tc'); const t=document.createElement('div'); t.className='tst'; const bg={success:'rgba(16,185,129,.85)',error:'rgba(192,57,43,.85)',warning:'rgba(245,158,11,.85)',info:'rgba(59,130,246,.85)'}[type]; const ic={success:'fa-check-circle',error:'fa-exclamation-circle',warning:'fa-exclamation-triangle',info:'fa-info-circle'}[type]; t.style.background=bg; t.style.color='#fff'; t.innerHTML=`<i class="fas ${ic}"></i><span>${msg}</span>`; c.appendChild(t); setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-20px)';t.style.transition='all .3s';setTimeout(()=>t.remove(),320);},dur); }
+function setNav(id){ document.querySelectorAll('nav a').forEach(a=>a.classList.remove('active')); document.getElementById(id)?.classList.add('active'); }
+function animNum(id,target){ const el=document.getElementById(id); const cur=parseInt(el.textContent)||0; if(cur===target)return; let s=cur,step=(target-cur)/20; const ti=setInterval(()=>{s+=step;if((step>0&&s>=target)||(step<0&&s<=target)){s=target;clearInterval(ti);}el.textContent=Math.round(s);},30); }
+
+function updateStats(){
+  animNum('st-k', KILLERS.length);
+  animNum('st-b', builds.length);
+  const tot=Object.values(ratings).reduce((a,b)=>a+b.length,0);
+  animNum('st-r', tot);
+  let top=null,ts=0;
+  builds.forEach(b=>{ const a=parseFloat(avg(b.id))||0; if(a>ts){ts=a;top=b;}});
+  document.getElementById('st-top').textContent=top&&ts>0?ts+'★':'—';
+}
+
+/* ══════════════════════════════════════════
+   RENDER KILLERS
+══════════════════════════════════════════ */
 function renderKillers(){
-  const g=document.getElementById('killers-grid');
-  g.innerHTML='';
-  const q=searchQ.toLowerCase();
-  let vis=0;
-  killers.forEach(k=>{
+  const g=document.getElementById('killers-grid'); g.innerHTML='';
+  const q=sQ.toLowerCase(); let vis=0;
+  KILLERS.forEach(k=>{
     const ms=!q||k.name.toLowerCase().includes(q)||k.description.toLowerCase().includes(q);
-    const md=dFilter==='all'||k.difficulty===dFilter;
-    if(!ms||!md){return;}
+    const md=dF==='all'||k.difficulty===k.difficulty&&(dF==='all'||k.difficulty===dF);
+    const show=ms&&(dF==='all'||k.difficulty===dF);
+    if(!show) return;
     vis++;
     const bc=builds.filter(b=>b.killerId===k.id).length;
+    const topScore=bc>0?Math.max(...builds.filter(b=>b.killerId===k.id).map(b=>parseFloat(avg(b.id))||0)):0;
     const card=document.createElement('div');
-    card.className='killer-card'+(k.id===selKiller?' active':'');
+    card.className='kcard'+(k.id===selKid?' active':'');
     card.dataset.id=k.id;
     card.innerHTML=`
       <div class="k-active-bar"></div>
-      ${bc>0&&parseFloat(avg(builds.filter(b=>b.killerId===k.id).sort((a,c)=>parseFloat(avg(c.id))-parseFloat(avg(a.id)))[0]?.id))>=4?'<div class="top-ribbon">الأفضل</div>':''}
+      ${topScore>=4?'<div class="top-ribbon">الأفضل</div>':''}
       <div class="k-icon-wrap" style="background:linear-gradient(135deg,${k.color}22,${k.color}08)">
         <i class="k-icon ${k.icon}" style="color:${k.color}"></i>
       </div>
@@ -952,196 +759,162 @@ function renderKillers(){
           <span class="k-tag k-tag-builds"><i class="fas fa-hammer"></i> ${bc} بيلد</span>
         </div>
       </div>`;
-    card.addEventListener('click',()=>{
-      selKiller=k.id;
-      renderBuilds(k.id);
-      setTimeout(()=>document.getElementById('builds-sec').scrollIntoView({behavior:'smooth',block:'start'}),150);
-    });
+    card.addEventListener('click',()=>{ selKid=k.id; renderBuilds(k.id); setTimeout(()=>document.getElementById('builds-sec').scrollIntoView({behavior:'smooth',block:'start'}),120); });
     g.appendChild(card);
-    // stagger animation
-    card.style.opacity='0'; card.style.transform='translateY(20px)';
-    setTimeout(()=>{ card.style.transition='opacity .4s ease,transform .4s ease'; card.style.opacity='1'; card.style.transform='none'; }, vis*60);
+    card.style.opacity='0'; card.style.transform='translateY(18px)';
+    setTimeout(()=>{ card.style.transition='opacity .4s ease,transform .4s ease'; card.style.opacity='1'; card.style.transform='none'; }, vis*50);
   });
-  if(!vis) g.innerHTML=`<div class="no-results"><i class="fas fa-search"></i>لا نتائج تطابق البحث</div>`;
-  document.getElementById('k-badge').textContent=vis+'/'+killers.length;
+  if(!vis) g.innerHTML=`<div class="no-results"><i class="fas fa-search"></i>لا نتائج</div>`;
+  document.getElementById('k-badge').textContent=vis+'/'+KILLERS.length;
 }
 
-/* ═══ BUILD CARD HTML ═══ */
-function buildHTML(b, full=false){
-  const k=killers.find(x=>x.id===b.killerId)||{};
+/* ══════════════════════════════════════════
+   BUILD HTML
+══════════════════════════════════════════ */
+function bHTML(b, full=false){
+  const k=KILLERS.find(x=>x.id===b.killerId)||{};
   const kc=k.color||'#c0392b';
-  const a=avg(b.id), mr=myRating(b.id);
-  const rcnt=ratings[b.id]?ratings[b.id].length:0;
-  const perks=(b.perks||[]).slice(0,4);
-  const addons=(b.addons||[]).slice(0,2);
-  const desc=full?b.description:(b.description.length>200?b.description.slice(0,200)+'…':b.description);
-
-  return `<div class="build-card" data-bid="${b.id}">
+  const a=avg(b.id), mr=myR(b.id), rcnt=ratings[b.id]?ratings[b.id].length:0;
+  const perks=(b.perks||[]).slice(0,4), addons=(b.addons||[]).slice(0,2);
+  const desc=full?b.description:(b.description.length>190?b.description.slice(0,190)+'…':b.description);
+  return `<div class="bcard" data-bid="${b.id}">
     ${parseFloat(a)>=4.5?'<div class="top-ribbon">برو</div>':''}
-    <div class="b-header">
+    <div class="b-hdr">
       <div class="b-name">${b.name}</div>
       <div class="b-meta">
-        <span><i class="fas fa-user"></i> ${b.author}${b.suggestedBy?` · <span class="b-suggested"><i class="fas fa-lightbulb"></i> ${b.suggestedBy}</span>`:''}</span>
+        <span><i class="fas fa-user"></i> ${b.author}${b.suggestedBy?` · <span class="b-sugg"><i class="fas fa-lightbulb"></i> ${b.suggestedBy}</span>`:''}</span>
         <span><i class="far fa-calendar"></i> ${b.date}</span>
       </div>
     </div>
     <div class="b-body">
-      <div class="b-killer-row">
-        <div class="b-ki" style="background:${kc}22;border:1.5px solid ${kc}40"><i class="${k.icon||'fas fa-skull'}" style="color:${kc};font-size:1.4rem"></i></div>
-        <div>
-          <div style="color:#fff;font-weight:700;font-size:0.9rem;margin-bottom:2px">${b.killerName}</div>
-          <div style="color:var(--text3);font-size:0.72rem;letter-spacing:1px">مسؤول النظام</div>
-        </div>
+      <div class="b-kr">
+        <div class="b-ki" style="background:${kc}22;border:1.5px solid ${kc}44"><i class="${k.icon||'fas fa-skull'}" style="color:${kc};font-size:1.3rem"></i></div>
+        <div><div style="color:#fff;font-weight:700;font-size:.85rem;margin-bottom:2px">${b.killerName}</div><div style="color:var(--text3);font-size:.68rem;letter-spacing:1px">مسؤول النظام</div></div>
       </div>
       <div class="b-desc">${desc}</div>
-      <div class="perks-label"><i class="fas fa-gem"></i> البيركات</div>
-      <div class="perks-grid">
-        ${perks.map((p,i)=>`<div class="perk-pill"><div class="pp-num">${i+1}</div><div class="pp-name">${p.name}</div><div class="pp-desc">${p.description||''}</div></div>`).join('')}
-        ${perks.length<4?Array(4-perks.length).fill(0).map((_,i)=>`<div class="perk-pill" style="opacity:.3"><div class="pp-num">${perks.length+i+1}</div><div class="pp-name">—</div></div>`).join(''):''}
+      <div class="plbl"><i class="fas fa-gem"></i> البيركات</div>
+      <div class="pgrid">
+        ${perks.map((p,i)=>`<div class="ppill"><div class="pnum">${i+1}</div><div class="pname">${p.name}</div><div class="pdesc">${p.description||''}</div></div>`).join('')}
+        ${perks.length<4?Array(4-perks.length).fill(0).map((_,i)=>`<div class="ppill" style="opacity:.25"><div class="pnum">${perks.length+i+1}</div><div class="pname">—</div></div>`).join(''):''}
       </div>
-      <div class="addons-label"><i class="fas fa-plus-circle"></i> الإضافات</div>
-      <div class="addons-grid">
-        ${addons.map(a=>`<div class="addon-pill"><div class="ap-name">${a.name}</div><div class="ap-desc">${a.description||''}</div></div>`).join('')}
-        ${addons.length<2?Array(2-addons.length).fill(0).map(()=>`<div class="addon-pill" style="opacity:.3"><div class="ap-name">—</div></div>`).join(''):''}
+      <div class="albl"><i class="fas fa-plus-circle"></i> الإضافات</div>
+      <div class="agrid">
+        ${addons.map(a=>`<div class="apill"><div class="aname">${a.name}</div><div class="adesc">${a.description||''}</div></div>`).join('')}
+        ${addons.length<2?Array(2-addons.length).fill(0).map(()=>`<div class="apill" style="opacity:.25"><div class="aname">—</div></div>`).join(''):''}
       </div>
     </div>
-    <div class="b-footer">
-      <div class="rating-row">
-        <div class="stars-disp">${starsHTML(a)}</div>
-        <span class="rating-val">${a}</span>
-        <span class="rating-cnt"><i class="fas fa-users"></i> ${rcnt}</span>
-      </div>
-      <div class="b-actions">
-        ${!full?`<button class="btn btn-ghost btn-xs detail-btn" data-bid="${b.id}"><i class="fas fa-expand"></i> تفاصيل</button>`:''}
-        <button class="btn btn-outline-gold btn-xs rate-btn" data-bid="${b.id}"><i class="fas fa-star"></i> ${mr>0?'تعديل':'تقييم'}</button>
+    <div class="b-ftr">
+      <div class="rrow"><div class="sdisp">${stH(a)}</div><span class="rval">${a}</span><span class="rcnt"><i class="fas fa-users"></i> ${rcnt}</span></div>
+      <div class="bacts">
+        ${!full?`<button class="btn btn-ghost btn-xs dtl-btn" data-bid="${b.id}"><i class="fas fa-expand"></i> تفاصيل</button>`:''}
+        <button class="btn btn-gold btn-xs rate-btn" data-bid="${b.id}"><i class="fas fa-star"></i> ${mr>0?'تعديل':'تقييم'}</button>
         ${me&&me.username==='MEDO'?`<button class="btn btn-danger btn-xs del-btn" data-bid="${b.id}"><i class="fas fa-trash"></i></button>`:''}
       </div>
     </div>
   </div>`;
 }
 
-function attachCards(scope){
-  scope.querySelectorAll('.detail-btn').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();openDetail(+b.dataset.bid);}));
-  scope.querySelectorAll('.build-card').forEach(c=>c.addEventListener('click',e=>{if(!e.target.closest('.btn'))openDetail(+c.dataset.bid);}));
+function attachB(scope){
+  scope.querySelectorAll('.dtl-btn').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();openDetail(+b.dataset.bid);}));
+  scope.querySelectorAll('.bcard').forEach(c=>c.addEventListener('click',e=>{if(!e.target.closest('.btn'))openDetail(+c.dataset.bid);}));
   scope.querySelectorAll('.rate-btn').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();openRate(+b.dataset.bid);}));
   scope.querySelectorAll('.del-btn').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();openDel(+b.dataset.bid);}));
 }
 
-/* ═══ RENDER BUILDS ═══ */
+/* ══════════════════════════════════════════
+   RENDER BUILDS
+══════════════════════════════════════════ */
 function renderBuilds(kid){
-  selKiller=kid;
-  const k=killers.find(x=>x.id===kid); if(!k) return;
+  selKid=kid;
+  const k=KILLERS.find(x=>x.id===kid); if(!k) return;
   document.getElementById('bc-name').textContent=k.name;
-  document.getElementById('breadcrumb').style.display='flex';
-  document.getElementById('builds-toolbar').style.display='flex';
-  document.getElementById('sel-killer-display').textContent=k.name;
-  document.getElementById('sel-killer-display').style.display='inline-flex';
-  document.getElementById('builds-title-text').style.display='none';
-
+  document.getElementById('bc').style.display='flex';
+  document.getElementById('btoolbar').style.display='flex';
+  const skd=document.getElementById('sel-kd'); skd.textContent=k.name; skd.style.display='inline-flex';
+  document.getElementById('btitle').style.display='none';
   let list=builds.filter(b=>b.killerId===kid);
-  const q=searchQ.toLowerCase();
+  const q=sQ.toLowerCase();
   if(q) list=list.filter(b=>b.name.toLowerCase().includes(q)||b.description.toLowerCase().includes(q));
-  if(cFilter==='top') list.sort((a,b)=>parseFloat(avg(b.id))-parseFloat(avg(a.id)));
-  else if(cFilter==='new') list.sort((a,b)=>new Date(b.addedDate||0)-new Date(a.addedDate||0));
+  if(cF==='top') list.sort((a,b)=>parseFloat(avg(b.id))-parseFloat(avg(a.id)));
+  else if(cF==='new') list.sort((a,b)=>new Date(b.addedDate||0)-new Date(a.addedDate||0));
   else list.sort((a,b)=>b.id-a.id);
-
   document.getElementById('b-badge').textContent=list.length;
-  document.getElementById('b-count-txt').textContent=list.length+' بيلد';
-  document.querySelectorAll('#builds-toolbar .filt').forEach(x=>x.classList.toggle('active',x.dataset.f===cFilter));
-  document.querySelectorAll('.killer-card').forEach(c=>c.classList.toggle('active',parseInt(c.dataset.id)===kid));
-
-  const cont=document.getElementById('builds-container');
+  document.getElementById('bcnt').textContent=list.length+' بيلد';
+  document.querySelectorAll('#btoolbar .filt').forEach(x=>x.classList.toggle('active',x.dataset.f===cF));
+  document.querySelectorAll('.kcard').forEach(c=>c.classList.toggle('active',parseInt(c.dataset.id)===kid));
+  const cont=document.getElementById('builds-cont');
   if(!list.length){
-    cont.innerHTML=`<div class="empty-state"><i class="fas fa-info-circle"></i><h3>لا توجد بيلدات بعد</h3><p>لم يتم إضافة بيلدات لـ ${k.name} بعد.${me?' كن أول من يضيف!':' سجل الدخول لإضافة أول بيلد.'}</p>${me?`<button class="btn btn-blood" onclick="showAdd(${kid})"><i class="fas fa-plus-circle"></i> أضف بيلداً</button>`:''}</div>`;
+    cont.innerHTML=`<div class="empty-state"><i class="fas fa-info-circle"></i><h3>لا توجد بيلدات بعد</h3><p>لم يتم إضافة بيلدات لـ ${k.name} بعد.${me?' كن أول من يضيف!':' سجل الدخول كمسؤول لإضافة البيلدات.'}</p>${me?`<button class="btn btn-blood" onclick="showAdd(${kid})"><i class="fas fa-plus-circle"></i> أضف بيلداً</button>`:''}</div>`;
     return;
   }
-  cont.innerHTML=`<div class="builds-grid">${list.map(b=>buildHTML(b,false)).join('')}</div>`;
-  attachCards(cont);
-  setNav('nav-builds');
+  cont.innerHTML=`<div class="builds-grid">${list.map(b=>bHTML(b,false)).join('')}</div>`;
+  attachB(cont); setNav('nav-b');
 }
 
-/* ═══ DETAIL MODAL ═══ */
+/* ══════════════════════════════════════════
+   DETAIL MODAL
+══════════════════════════════════════════ */
 function openDetail(bid){
   const b=builds.find(x=>x.id===bid); if(!b) return;
-  document.getElementById('modal-body').innerHTML=buildHTML(b,true);
-  attachCards(document.getElementById('modal-body'));
-  const ol=document.getElementById('detail-overlay');
-  ol.style.display='flex';
-  ol.classList.add('open');
+  document.getElementById('modal-body').innerHTML=bHTML(b,true);
+  attachB(document.getElementById('modal-body'));
+  const ol=document.getElementById('detail-ol'); ol.style.display='flex'; ol.classList.add('open');
 }
-function closeDetail(){
-  const ol=document.getElementById('detail-overlay');
-  ol.style.display='none'; ol.classList.remove('open');
-}
+function closeDetail(){ const ol=document.getElementById('detail-ol'); ol.style.display='none'; ol.classList.remove('open'); }
 
-/* ═══ RATING ═══ */
-function openRate(bid){
-  ratingTarget=bid;
-  const mr=myRating(bid);
-  document.querySelectorAll('#stars-pick .s').forEach((s,i)=>s.classList.toggle('on',i<mr));
-  document.getElementById('rate-overlay').style.display='flex';
-}
+/* ══════════════════════════════════════════
+   RATING
+══════════════════════════════════════════ */
+function openRate(bid){ rTarget=bid; const mr=myR(bid); document.querySelectorAll('#spick .s').forEach((s,i)=>s.classList.toggle('on',i<mr)); document.getElementById('rate-ol').style.display='flex'; document.getElementById('rate-ol').classList.add('open'); }
 
-/* ═══ DELETE ═══ */
-function openDel(bid){ deleteTarget=bid; document.getElementById('del-overlay').style.display='flex'; }
-function doDelete(bid){
+/* ══════════════════════════════════════════
+   DELETE
+══════════════════════════════════════════ */
+function openDel(bid){ dTarget=bid; document.getElementById('del-ol').style.display='flex'; document.getElementById('del-ol').classList.add('open'); }
+async function doDelete(bid){
   builds=builds.filter(b=>b.id!==bid);
-  if(ratings[bid]){delete ratings[bid]; save('r');}
-  save('b'); closeDetail();
-  if(selKiller) renderBuilds(selKiller);
-  renderKillers();
-  toast('تم حذف البيلد','warning');
+  if(ratings[bid]){delete ratings[bid];}
+  const ok=await saveToCloud();
+  if(ok){ closeDetail(); if(selKid) renderBuilds(selKid); renderKillers(); toast('تم الحذف وتحديث الجميع','warning'); }
 }
 
-/* ═══ ADD FORM ═══ */
+/* ══════════════════════════════════════════
+   ADD FORM
+══════════════════════════════════════════ */
 function showAdd(kid){
-  if(!me){ document.getElementById('login-overlay').style.display='flex'; return; }
-  const wrap=document.getElementById('add-form-wrap');
-  document.getElementById('add-sec-hdr').style.display='flex';
-  wrap.innerHTML=`
-    <div class="discord-note"><i class="fab fa-discord" style="color:#818cf8"></i> لاقتراحات البيلدات: <strong>medo_dv</strong> على ديسكورد</div>
+  if(!me){ document.getElementById('login-ol').style.display='flex'; document.getElementById('login-ol').classList.add('open'); return; }
+  const w=document.getElementById('add-wrap');
+  document.getElementById('add-hdr').style.display='flex';
+  w.innerHTML=`
+    <div class="dnote"><i class="fab fa-discord" style="color:#818cf8"></i> لاقتراحات البيلدات: <strong>medo_dv</strong> على ديسكورد</div>
     <form id="nform">
       <div class="form-row">
-        <div class="form-group">
-          <label><i class="fas fa-skull"></i> الكيلر *</label>
+        <div class="fg"><label><i class="fas fa-skull"></i> الكيلر *</label>
           <select class="fc" id="nk" required>
             <option value="">-- اختر كيلر --</option>
-            ${killers.map(k=>`<option value="${k.id}" ${k.id===kid?'selected':''}>${k.name}</option>`).join('')}
+            ${KILLERS.map(k=>`<option value="${k.id}" ${k.id===kid?'selected':''}>${k.name}</option>`).join('')}
           </select>
         </div>
-        <div class="form-group">
-          <label><i class="fas fa-heading"></i> اسم البيلد *</label>
-          <input type="text" class="fc" id="nn" placeholder="مثال: بيلد الضغط المستمر" required>
-        </div>
+        <div class="fg"><label><i class="fas fa-heading"></i> اسم البيلد *</label><input type="text" class="fc" id="nn" placeholder="مثال: بيلد الضغط المستمر" required></div>
       </div>
-      <div class="form-group">
-        <label><i class="fas fa-lightbulb"></i> اقتراح من (اختياري)</label>
-        <input type="text" class="fc" id="nsg" placeholder="مصدر البيلد أو اسم المقترح">
-      </div>
-      <div class="form-group">
-        <label><i class="fas fa-file-alt"></i> شرح البيلد *</label>
-        <textarea class="fc" id="nd" placeholder="شرح مفصل للبيلد والاستراتيجية المثلى..." required></textarea>
-      </div>
-      <div style="color:var(--text2);font-size:0.78rem;text-transform:uppercase;letter-spacing:2px;margin-bottom:14px;display:flex;align-items:center;gap:8px"><i class="fas fa-gem" style="color:#60a5fa"></i> البيركات (4)</div>
-      ${[1,2,3,4].map(i=>`<div class="perk-block"><label><i class="fas fa-hashtag"></i> البيرك ${i} *</label><input type="text" class="pinput" id="p${i}n" placeholder="اسم البيرك ${i}" required><input type="text" class="pinput" id="p${i}d" placeholder="وصف البيرك ${i} (اختياري)"></div>`).join('')}
-      <div style="color:var(--text2);font-size:0.78rem;text-transform:uppercase;letter-spacing:2px;margin:18px 0 14px;display:flex;align-items:center;gap:8px"><i class="fas fa-plus" style="color:#34d399"></i> الإضافات (2)</div>
-      ${[1,2].map(i=>`<div class="addon-block"><label><i class="fas fa-hashtag"></i> الإضافة ${i} *</label><input type="text" class="pinput" id="a${i}n" placeholder="اسم الإضافة ${i}" required><input type="text" class="pinput" id="a${i}d" placeholder="وصف الإضافة ${i} (اختياري)"></div>`).join('')}
-      <div class="fa-row">
+      <div class="fg"><label><i class="fas fa-lightbulb"></i> اقتراح من (اختياري)</label><input type="text" class="fc" id="nsg" placeholder="مصدر البيلد أو اسم المقترح"></div>
+      <div class="fg"><label><i class="fas fa-file-alt"></i> شرح البيلد *</label><textarea class="fc" id="nd" placeholder="شرح مفصل للاستراتيجية..." required></textarea></div>
+      <div style="color:var(--text2);font-size:.72rem;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;display:flex;align-items:center;gap:7px"><i class="fas fa-gem" style="color:#60a5fa"></i> البيركات (4)</div>
+      ${[1,2,3,4].map(i=>`<div class="pblock"><label>البيرك ${i} *</label><input type="text" class="pin" id="p${i}n" placeholder="اسم البيرك ${i}" required><input type="text" class="pin" id="p${i}d" placeholder="وصف البيرك ${i} (اختياري)"></div>`).join('')}
+      <div style="color:var(--text2);font-size:.72rem;text-transform:uppercase;letter-spacing:2px;margin:16px 0 12px;display:flex;align-items:center;gap:7px"><i class="fas fa-plus" style="color:#34d399"></i> الإضافات (2)</div>
+      ${[1,2].map(i=>`<div class="ablock"><label>الإضافة ${i} *</label><input type="text" class="pin" id="a${i}n" placeholder="اسم الإضافة ${i}" required><input type="text" class="pin" id="a${i}d" placeholder="وصف الإضافة ${i} (اختياري)"></div>`).join('')}
+      <div class="farow">
         <button type="button" class="btn btn-ghost" id="n-cancel"><i class="fas fa-times"></i> إلغاء</button>
-        <button type="submit" class="btn btn-blood"><i class="fas fa-plus-circle"></i> إضافة البيلد</button>
+        <button type="submit" class="btn btn-blood" id="n-submit"><i class="fas fa-cloud-upload-alt"></i> إضافة ومشاركة مع الجميع</button>
       </div>
     </form>`;
-  wrap.classList.add('open');
-  document.getElementById('builds-container').innerHTML='';
+  w.classList.add('open');
+  document.getElementById('builds-cont').innerHTML='';
   document.getElementById('add-sec').scrollIntoView({behavior:'smooth',block:'start'});
   setNav('nav-add');
 
-  document.getElementById('n-cancel').onclick=()=>{
-    wrap.classList.remove('open'); wrap.innerHTML='';
-    document.getElementById('add-sec-hdr').style.display='none';
-    setNav('nav-killers');
-  };
-  document.getElementById('nform').addEventListener('submit',e=>{
+  document.getElementById('n-cancel').onclick=()=>{ w.classList.remove('open'); w.innerHTML=''; document.getElementById('add-hdr').style.display='none'; setNav('nav-k'); };
+  document.getElementById('nform').onsubmit=async e=>{
     e.preventDefault();
     const kid2=parseInt(document.getElementById('nk').value);
     const name=document.getElementById('nn').value.trim();
@@ -1149,331 +922,214 @@ function showAdd(kid){
     const sugg=document.getElementById('nsg').value.trim();
     if(!kid2||!name||!desc){toast('أكمل الحقول المطلوبة','error');return;}
     const perks=[],addons=[];
-    for(let i=1;i<=4;i++){
-      const n=document.getElementById(`p${i}n`).value.trim();
-      if(!n){toast(`أدخل اسم البيرك ${i}`,'error');return;}
-      perks.push({name:n,description:document.getElementById(`p${i}d`).value.trim()});
-    }
-    for(let i=1;i<=2;i++){
-      const n=document.getElementById(`a${i}n`).value.trim();
-      if(!n){toast(`أدخل اسم الإضافة ${i}`,'error');return;}
-      addons.push({name:n,description:document.getElementById(`a${i}d`).value.trim()});
-    }
-    const k2=killers.find(x=>x.id===kid2);
+    for(let i=1;i<=4;i++){ const n=document.getElementById(`p${i}n`).value.trim(); if(!n){toast(`أدخل اسم البيرك ${i}`,'error');return;} perks.push({name:n,description:document.getElementById(`p${i}d`).value.trim()}); }
+    for(let i=1;i<=2;i++){ const n=document.getElementById(`a${i}n`).value.trim(); if(!n){toast(`أدخل اسم الإضافة ${i}`,'error');return;} addons.push({name:n,description:document.getElementById(`a${i}d`).value.trim()}); }
+    const k2=KILLERS.find(x=>x.id===kid2);
+    const sb=document.getElementById('n-submit');
+    sb.disabled=true; sb.innerHTML='<i class="fas fa-spinner fa-spin"></i> جارٍ الحفظ...';
     builds.push({id:builds.length?Math.max(...builds.map(x=>x.id))+1:1,killerId:kid2,killerName:k2.name,name,description:desc,suggestedBy:sugg||null,perks,addons,author:me.username,date:new Date().toLocaleDateString('ar-EG'),addedDate:new Date().toISOString()});
-    save('b'); toast('تم إضافة البيلد!','success');
-    wrap.classList.remove('open'); wrap.innerHTML='';
-    document.getElementById('add-sec-hdr').style.display='none';
-    renderBuilds(kid2); renderKillers();
-    document.getElementById('builds-sec').scrollIntoView({behavior:'smooth'});
-  });
+    const ok=await saveToCloud();
+    sb.disabled=false;
+    if(ok){
+      toast('✅ تم إضافة البيلد وظهر للجميع!','success');
+      w.classList.remove('open'); w.innerHTML=''; document.getElementById('add-hdr').style.display='none';
+      renderBuilds(kid2); renderKillers();
+      document.getElementById('builds-sec').scrollIntoView({behavior:'smooth'});
+    } else {
+      builds.pop(); toast('فشل الحفظ، حاول مجدداً','error');
+    }
+  };
 }
 
-/* ═══ MANAGE ═══ */
+/* ══════════════════════════════════════════
+   MANAGE
+══════════════════════════════════════════ */
 function showManage(){
-  if(!me){document.getElementById('login-overlay').style.display='flex';return;}
-  const sec=document.getElementById('manage-sec'); sec.style.display='block';
+  if(!me){ document.getElementById('login-ol').style.display='flex'; document.getElementById('login-ol').classList.add('open'); return; }
+  document.getElementById('manage-sec').style.display='block';
   const body=document.getElementById('manage-body');
+
+  // Check if API configured
+  const apiConfigured = !!(CLOUD_BIN_ID&&CLOUD_API_KEY);
+
   body.innerHTML=`
-    <div class="manage-block">
-      <h3><i class="fas fa-database"></i> البيانات</h3>
-      <div class="io-row">
-        <button class="btn btn-ghost" id="m-exp"><i class="fas fa-download"></i> تصدير</button>
-        <button class="btn btn-ghost" id="m-imp"><i class="fas fa-upload"></i> استيراد</button>
-        <button class="btn btn-danger" id="m-rst"><i class="fas fa-trash"></i> إعادة تعيين</button>
+    <div class="mblock">
+      <h3><i class="fas fa-cloud"></i> إعداد التخزين السحابي</h3>
+      <p style="color:var(--text2);font-size:.82rem;margin-bottom:14px;line-height:1.7">
+        ${apiConfigured
+          ? `<span style="color:#4ade80"><i class="fas fa-check-circle"></i> متصل — BIN ID: <code style="background:rgba(255,255,255,.07);padding:2px 7px;border-radius:5px">${CLOUD_BIN_ID.slice(0,8)}...</code></span>`
+          : `<span style="color:var(--blood3)"><i class="fas fa-exclamation-circle"></i> غير متصل — البيلدات تُحفظ محلياً فقط</span>`}
+      </p>
+      <div class="form-row" style="margin-bottom:14px">
+        <div class="fg"><label>BIN ID</label><input type="text" class="fc" id="m-bid" value="${CLOUD_BIN_ID}" placeholder="BIN ID من jsonbin.io"></div>
+        <div class="fg"><label>API Key</label><input type="text" class="fc" id="m-key" value="${CLOUD_API_KEY}" placeholder="API Key"></div>
       </div>
-      <p style="color:var(--text3);font-size:0.8rem">البيانات محفوظة في المتصفح. استخدم تصدير/استيراد للمشاركة بين الأجهزة.</p>
-    </div>
-    <div class="manage-block" style="border-color:rgba(192,57,43,0.25)">
-      <h3><i class="fas fa-layer-group"></i> إضافة كيلرات دفعة واحدة</h3>
-      <p style="color:var(--text3);font-size:0.82rem;margin-bottom:12px">كل كيلر في سطر مستقل:</p>
-      <textarea class="batch-ta" id="batch-ta" placeholder="The Trapper&#10;The Hillbilly&#10;The Nurse&#10;The Huntress"></textarea>
-      <div class="form-row" style="margin-top:14px">
-        <div class="form-group"><label>الوصف الافتراضي</label><input type="text" class="fc" id="bd-desc" value="كيلر قوي في ديد باي ديلايت"></div>
-        <div class="form-group"><label>الصعوبة</label><select class="fc" id="bd-diff"><option>سهل</option><option selected>متوسط</option><option>صعب</option><option>صعب جداً</option></select></div>
-        <div class="form-group"><label>اللون</label><input type="color" class="fc" id="bd-col" value="#c0392b" style="height:44px"></div>
-        <div class="form-group"><label>الأيقونة</label>
-          <select class="fc" id="bd-ico">
-            <option value="fas fa-skull">جمجمة</option><option value="fas fa-ghost">شبح</option>
-            <option value="fas fa-mask">قناع</option><option value="fas fa-tachometer-alt">سرعة</option>
-            <option value="fas fa-procedures">ممرضة</option><option value="fas fa-hat-cowboy">صياد</option>
-            <option value="fas fa-fist-raised">مقاتل</option><option value="fas fa-spider">عنكبوت</option>
-            <option value="fas fa-fire">نار</option><option value="fas fa-bolt">برق</option>
-          </select>
-        </div>
+      <div style="display:flex;gap:9px;flex-wrap:wrap">
+        <button class="btn btn-blood btn-sm" id="m-save-api"><i class="fas fa-save"></i> حفظ الإعداد</button>
+        <button class="btn btn-ghost btn-sm" id="m-sync"><i class="fas fa-sync-alt"></i> مزامنة الآن</button>
+        <a href="https://jsonbin.io" target="_blank" class="btn btn-gold btn-sm"><i class="fas fa-external-link-alt"></i> فتح JSONBin.io</a>
       </div>
-      <button class="btn btn-blood" id="batch-go" style="width:100%;margin-top:8px;justify-content:center"><i class="fas fa-plus-circle"></i> إضافة الكيلرات</button>
-      <div class="info-note"><i class="fas fa-info-circle"></i> الأسطر الفارغة والكيلرات المكررة تُتجاهل تلقائياً.</div>
+      <div class="inote" style="margin-top:14px">
+        <i class="fas fa-info-circle"></i> <strong>كيف تعمل؟</strong><br>
+        سجّل في jsonbin.io ← أنشئ Bin جديد ← انسخ الـ ID والـ API Key وأدخلهما هنا.
+        بعدها كل بيلد تضيفه سيظهر فوراً لجميع من يزور الرابط.
+      </div>
     </div>
-    <div class="manage-block">
-      <h3><i class="fas fa-plus-circle"></i> إضافة كيلر فردي</h3>
-      <form id="ak-form">
-        <div class="form-row">
-          <div class="form-group"><label>الاسم *</label><input type="text" class="fc" id="ak-n" placeholder="The Trapper" required></div>
-          <div class="form-group"><label>الصعوبة *</label>
-            <select class="fc" id="ak-d" required>
-              <option value="">-- اختر --</option><option>سهل</option><option>متوسط</option><option>صعب</option><option>صعب جداً</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group"><label>الوصف *</label><textarea class="fc" id="ak-desc" rows="3" required></textarea></div>
-        <div class="form-row">
-          <div class="form-group"><label>الأيقونة *</label>
-            <select class="fc" id="ak-ico" required>
-              <option value="">-- اختر --</option>
-              <option value="fas fa-skull">جمجمة</option><option value="fas fa-ghost">شبح</option>
-              <option value="fas fa-mask">قناع</option><option value="fas fa-tachometer-alt">سرعة</option>
-              <option value="fas fa-procedures">ممرضة</option><option value="fas fa-hat-cowboy">صياد</option>
-              <option value="fas fa-fire">نار</option><option value="fas fa-bolt">برق</option>
-              <option value="fas fa-spider">عنكبوت</option><option value="fas fa-fist-raised">مقاتل</option>
-            </select>
-          </div>
-          <div class="form-group"><label>اللون *</label><input type="color" class="fc" id="ak-col" value="#3b82f6" style="height:44px"></div>
-        </div>
-        <div class="fa-row"><button type="submit" class="btn btn-blood"><i class="fas fa-plus-circle"></i> إضافة</button></div>
-      </form>
-    </div>
-    <div class="manage-block">
-      <h3><i class="fas fa-list"></i> الكيلرات (${killers.length})</h3>
-      ${killers.map(k=>{
-        const bc=builds.filter(b=>b.killerId===k.id).length;
-        return `<div class="killer-item">
-          <div style="display:flex;align-items:center;gap:12px">
-            <div style="width:40px;height:40px;border-radius:50%;background:${k.color}22;border:1.5px solid ${k.color}44;display:flex;align-items:center;justify-content:center">
-              <i class="${k.icon}" style="color:${k.color};font-size:1.1rem"></i>
+
+    <div class="mblock">
+      <h3><i class="fas fa-hammer"></i> البيلدات المحفوظة (${builds.length})</h3>
+      ${builds.length ? builds.map(b=>{
+        const k=KILLERS.find(x=>x.id===b.killerId)||{};
+        return `<div class="kitem">
+          <div style="display:flex;align-items:center;gap:11px">
+            <div style="width:36px;height:36px;border-radius:50%;background:${k.color||'#333'}22;border:1.5px solid ${k.color||'#333'}44;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <i class="${k.icon||'fas fa-skull'}" style="color:${k.color||'#fff'};font-size:1rem"></i>
             </div>
             <div>
-              <div style="color:#fff;font-weight:700;font-size:0.9rem">${k.name}</div>
-              <div style="color:var(--text3);font-size:0.72rem;margin-top:2px"><i class="fas fa-bolt"></i> ${k.difficulty} · <i class="fas fa-hammer"></i> ${bc} بيلد</div>
+              <div style="color:#fff;font-size:.85rem;font-weight:700">${b.name}</div>
+              <div style="color:var(--text3);font-size:.68rem;margin-top:2px">${b.killerName} · ${b.date}</div>
             </div>
           </div>
-          <button class="btn btn-danger btn-xs dkb" data-id="${k.id}"><i class="fas fa-trash"></i> حذف</button>
+          <button class="btn btn-danger btn-xs m-del-btn" data-bid="${b.id}"><i class="fas fa-trash"></i></button>
         </div>`;
-      }).join('')||'<p style="color:var(--text3);text-align:center;padding:20px">لا توجد كيلرات.</p>'}
+      }).join('') : '<p style="color:var(--text3);text-align:center;padding:20px">لا توجد بيلدات.</p>'}
+    </div>
+
+    <div class="mblock">
+      <h3><i class="fas fa-database"></i> نسخ احتياطية</h3>
+      <div class="io-row">
+        <button class="btn btn-ghost btn-sm" id="m-exp"><i class="fas fa-download"></i> تصدير JSON</button>
+        <button class="btn btn-ghost btn-sm" id="m-imp"><i class="fas fa-upload"></i> استيراد JSON</button>
+      </div>
     </div>`;
 
-  document.getElementById('ak-form').onsubmit=e=>{
-    e.preventDefault();
-    const n=document.getElementById('ak-n').value.trim(), d=document.getElementById('ak-d').value,
-          desc=document.getElementById('ak-desc').value.trim(), ico=document.getElementById('ak-ico').value,
-          col=document.getElementById('ak-col').value;
-    if(!n||!d||!desc||!ico){toast('أكمل جميع الحقول','error');return;}
-    killers.push({id:killers.length?Math.max(...killers.map(k=>k.id))+1:1,name:n,description:desc,difficulty:d,icon:ico,color:col});
-    save('k'); renderKillers(); showManage(); toast('تم إضافة الكيلر!','success');
+  // Events
+  document.getElementById('m-save-api').onclick=async()=>{
+    const bid=document.getElementById('m-bid').value.trim(), key=document.getElementById('m-key').value.trim();
+    if(!bid||!key){toast('أدخل BIN ID وAPI Key','error');return;}
+    CLOUD_BIN_ID=bid; CLOUD_API_KEY=key;
+    localStorage.setItem('dbd_binid',bid); localStorage.setItem('dbd_apikey',key);
+    toast('تم حفظ الإعداد!','success');
+    await loadFromCloud(); showManage();
   };
-  document.getElementById('batch-go').onclick=()=>{
-    const lines=document.getElementById('batch-ta').value.split('\n');
-    const ex=killers.map(k=>k.name.toLowerCase());
-    let added=0,skipped=0;
-    lines.forEach(l=>{
-      const n=l.trim(); if(!n) return;
-      if(ex.includes(n.toLowerCase())){skipped++;return;}
-      killers.push({id:killers.length?Math.max(...killers.map(k=>k.id))+1:1,name:n,
-        description:document.getElementById('bd-desc').value,difficulty:document.getElementById('bd-diff').value,
-        icon:document.getElementById('bd-ico').value,color:document.getElementById('bd-col').value});
-      ex.push(n.toLowerCase()); added++;
-    });
-    if(added){save('k');renderKillers();showManage();toast(`أُضيف ${added} كيلر${skipped?' (تخطي '+skipped+' مكرر)':''}!`,'success');document.getElementById('batch-ta').value='';}
-    else toast('لا كيلرات جديدة للإضافة','warning');
-  };
+  document.getElementById('m-sync').onclick=()=>loadFromCloud();
   document.getElementById('m-exp').onclick=()=>{
-    const a=document.createElement('a');
-    a.href='data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify({killers,builds,ratings,exportDate:new Date().toISOString()},null,2));
-    a.download='dbd-data-'+new Date().toISOString().slice(0,10)+'.json'; a.click();
-    toast('تم التصدير!','success');
+    const a=document.createElement('a'); a.href='data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify({builds,ratings},null,2)); a.download='dbd-builds-'+new Date().toISOString().slice(0,10)+'.json'; a.click(); toast('تم التصدير!','success');
   };
   document.getElementById('m-imp').onclick=()=>{
     const inp=document.createElement('input'); inp.type='file'; inp.accept='.json';
-    inp.onchange=e=>{const fr=new FileReader();fr.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(!Array.isArray(d.killers))throw new Error('ملف غير صالح');if(confirm(`استيراد ${d.killers.length} كيلر و${(d.builds||[]).length} بيلد؟`)){killers=d.killers;builds=d.builds||[];ratings=d.ratings||{};save('all');renderKillers();showManage();toast('تم الاستيراد!','success');}}catch(err){toast('خطأ: '+err.message,'error');}};fr.readAsText(e.target.files[0]);};
+    inp.onchange=async e=>{const fr=new FileReader();fr.onload=async ev=>{try{const d=JSON.parse(ev.target.result);if(!Array.isArray(d.builds))throw new Error('ملف غير صالح');if(confirm(`استيراد ${d.builds.length} بيلد؟`)){builds=d.builds;ratings=d.ratings||{};const ok=await saveToCloud();if(ok){renderKillers();showManage();toast('تم الاستيراد ومشاركته!','success');}}}catch(err){toast('خطأ: '+err.message,'error');}};fr.readAsText(e.target.files[0]);};
     inp.click();
   };
-  document.getElementById('m-rst').onclick=()=>{
-    if(!confirm('سيُحذف كل شيء. متأكد؟'))return;
-    if(!confirm('تأكيد نهائي — لا رجعة!'))return;
-    ['dbdKillers','dbdBuilds','dbdRatings','dbdCurrentUser','dbdLastUpdate'].forEach(k=>localStorage.removeItem(k));
-    killers=defaults();builds=[];ratings={};me=null;
-    save('all');ui();renderKillers();showManage();toast('تمت إعادة التعيين','success');
-  };
-  body.querySelectorAll('.dkb').forEach(btn=>{
-    btn.onclick=()=>{
-      const id=parseInt(btn.dataset.id),k=killers.find(x=>x.id===id);
-      const rel=builds.filter(b=>b.killerId===id).length;
-      if(!confirm(`حذف "${k.name}"${rel?' و'+rel+' بيلد؟':'؟'}`))return;
-      builds=builds.filter(b=>b.killerId!==id);killers=killers.filter(x=>x.id!==id);
-      save('all');renderKillers();showManage();toast(`حُذف "${k.name}"!`,'warning');
+  body.querySelectorAll('.m-del-btn').forEach(btn=>{
+    btn.onclick=async()=>{
+      const bid=parseInt(btn.dataset.bid); const b=builds.find(x=>x.id===bid);
+      if(!confirm(`حذف "${b?.name}"؟`)) return;
+      builds=builds.filter(x=>x.id!==bid); if(ratings[bid]) delete ratings[bid];
+      const ok=await saveToCloud(); if(ok){showManage();if(selKid)renderBuilds(selKid);renderKillers();toast('تم الحذف!','warning');}
     };
   });
 }
 
-/* ═══ EVENTS ═══ */
-function setupAll(){
-  document.getElementById('logo-link').onclick=e=>{e.preventDefault();scrollTo({top:0,behavior:'smooth'});setNav('nav-killers');};
-  document.getElementById('hero-add-btn').onclick=()=>{ if(me) showAdd(selKiller); else document.getElementById('login-overlay').style.display='flex'; };
-  document.getElementById('nav-killers').onclick=e=>{e.preventDefault();document.getElementById('killers-sec').scrollIntoView({behavior:'smooth'});document.getElementById('manage-sec').style.display='none';setNav('nav-killers');};
-  document.getElementById('nav-builds').onclick=e=>{e.preventDefault();if(selKiller){document.getElementById('builds-sec').scrollIntoView({behavior:'smooth'});setNav('nav-builds');}else toast('اختر كيلراً أولاً','info');};
-  document.getElementById('nav-add').onclick=e=>{e.preventDefault();if(me)showAdd(selKiller);else document.getElementById('login-overlay').style.display='flex';};
-  document.getElementById('nav-manage').onclick=e=>{e.preventDefault();showManage();document.getElementById('manage-sec').scrollIntoView({behavior:'smooth'});setNav('nav-manage');};
+/* ══════════════════════════════════════════
+   UI / HEADER
+══════════════════════════════════════════ */
+function uiHeader(){
+  const c=document.getElementById('uchip'), l=document.getElementById('llbl'), nm=document.getElementById('nav-m');
+  if(me){ document.getElementById('ulbl').textContent=me.username==='MEDO'?'مسؤول':me.username; c.style.borderColor='rgba(74,222,128,.3)'; l.textContent='خروج'; nm.style.display=''; }
+  else { document.getElementById('ulbl').textContent='زائر'; c.style.borderColor=''; l.textContent='دخول'; nm.style.display='none'; }
+}
+
+/* ══════════════════════════════════════════
+   EVENTS
+══════════════════════════════════════════ */
+function setupEvents(){
+  document.getElementById('logo-link').onclick=e=>{e.preventDefault();scrollTo({top:0,behavior:'smooth'});setNav('nav-k');};
+  document.getElementById('hero-add-btn').onclick=()=>{ if(me) showAdd(selKid); else{ document.getElementById('login-ol').style.display='flex'; document.getElementById('login-ol').classList.add('open'); } };
+  document.getElementById('nav-k').onclick=e=>{e.preventDefault();document.getElementById('killers-sec').scrollIntoView({behavior:'smooth'});document.getElementById('manage-sec').style.display='none';setNav('nav-k');};
+  document.getElementById('nav-b').onclick=e=>{e.preventDefault();if(selKid){document.getElementById('builds-sec').scrollIntoView({behavior:'smooth'});setNav('nav-b');}else toast('اختر كيلراً أولاً','info');};
+  document.getElementById('nav-add').onclick=e=>{e.preventDefault();if(me)showAdd(selKid);else{document.getElementById('login-ol').style.display='flex';document.getElementById('login-ol').classList.add('open');}};
+  document.getElementById('nav-m').onclick=e=>{e.preventDefault();showManage();document.getElementById('manage-sec').scrollIntoView({behavior:'smooth'});setNav('nav-m');};
   document.getElementById('bc-home').onclick=()=>document.getElementById('killers-sec').scrollIntoView({behavior:'smooth'});
+  document.getElementById('sync-btn').onclick=()=>loadFromCloud();
 
-  // difficulty filter
-  document.querySelectorAll('.filter-bar .filt').forEach(b=>b.addEventListener('click',()=>{dFilter=b.dataset.d;document.querySelectorAll('.filter-bar .filt').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderKillers();}));
-
+  // diff filter
+  document.querySelectorAll('.fbar .filt').forEach(b=>b.addEventListener('click',()=>{dF=b.dataset.d;document.querySelectorAll('.fbar .filt').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderKillers();}));
   // builds filter
-  document.addEventListener('click',e=>{const b=e.target.closest('#builds-toolbar .filt');if(b&&b.dataset.f){cFilter=b.dataset.f;if(selKiller)renderBuilds(selKiller);}});
+  document.addEventListener('click',e=>{const b=e.target.closest('#btoolbar .filt');if(b&&b.dataset.f){cF=b.dataset.f;if(selKid)renderBuilds(selKid);}});
 
   // search
-  const si=document.getElementById('global-search'), cl=document.getElementById('clear-s');
-  si.oninput=()=>{searchQ=si.value.trim();cl.style.display=searchQ?'block':'none';renderKillers();if(selKiller)renderBuilds(selKiller);};
-  cl.onclick=()=>{si.value='';searchQ='';cl.style.display='none';renderKillers();if(selKiller)renderBuilds(selKiller);};
+  const si=document.getElementById('gsearch'), cl=document.getElementById('cls-btn');
+  si.oninput=()=>{sQ=si.value.trim();cl.style.display=sQ?'block':'none';renderKillers();if(selKid)renderBuilds(selKid);};
+  cl.onclick=()=>{si.value='';sQ='';cl.style.display='none';renderKillers();if(selKid)renderBuilds(selKid);};
 
   // login
-  document.getElementById('login-btn').onclick=()=>{
-    if(me){me=null;localStorage.removeItem('dbdCurrentUser');ui();toast('تم الخروج','info');}
-    else document.getElementById('login-overlay').style.display='flex';
+  document.getElementById('lbtn').onclick=()=>{
+    if(me){me=null;localStorage.removeItem('dbdMe');uiHeader();toast('تم الخروج','info');}
+    else{document.getElementById('login-ol').style.display='flex';document.getElementById('login-ol').classList.add('open');}
   };
-  document.getElementById('l-cancel').onclick=()=>{document.getElementById('login-overlay').style.display='none';document.getElementById('lform').reset();};
-  document.getElementById('login-overlay').onclick=e=>{if(e.target===document.getElementById('login-overlay')){document.getElementById('login-overlay').style.display='none';document.getElementById('lform').reset();}};
+  document.getElementById('lcancel').onclick=()=>{document.getElementById('login-ol').style.display='none';document.getElementById('login-ol').classList.remove('open');document.getElementById('lform').reset();};
+  document.getElementById('login-ol').onclick=e=>{if(e.target===document.getElementById('login-ol')){document.getElementById('login-ol').style.display='none';document.getElementById('login-ol').classList.remove('open');document.getElementById('lform').reset();}};
   document.getElementById('lform').onsubmit=e=>{
     e.preventDefault();
-    const u=document.getElementById('l-user').value,p=document.getElementById('l-pass').value;
+    const u=document.getElementById('l-u').value, p=document.getElementById('l-p').value;
     const msg=document.getElementById('lmsg');
     if(u===VU&&p===VP){
-      me={username:u};localStorage.setItem('dbdCurrentUser',JSON.stringify(me));
+      me={username:u};localStorage.setItem('dbdMe',JSON.stringify(me));
       msg.className='lmsg ok';msg.innerHTML='<i class="fas fa-check-circle"></i> تم الدخول بنجاح!';
-      setTimeout(()=>{document.getElementById('login-overlay').style.display='none';ui();document.getElementById('lform').reset();msg.className='lmsg';msg.innerHTML='أدخل بيانات المسؤول.';toast('مرحباً '+u+'!','success');},1200);
-    } else {
-      msg.className='lmsg err';msg.innerHTML='<i class="fas fa-exclamation-circle"></i> بيانات غير صحيحة!';
-    }
+      setTimeout(()=>{document.getElementById('login-ol').style.display='none';document.getElementById('login-ol').classList.remove('open');uiHeader();document.getElementById('lform').reset();msg.className='lmsg';msg.innerHTML='أدخل بيانات المسؤول.';
+        if(!CLOUD_BIN_ID||!CLOUD_API_KEY) document.getElementById('setup-banner').style.display='block';
+        toast('مرحباً '+u+'!','success');
+      },1200);
+    } else { msg.className='lmsg err';msg.innerHTML='<i class="fas fa-exclamation-circle"></i> بيانات غير صحيحة!'; }
   };
 
-  // detail modal close
-  document.getElementById('modal-close').onclick=closeDetail;
-  document.getElementById('detail-overlay').onclick=e=>{if(e.target===document.getElementById('detail-overlay'))closeDetail();};
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDetail();});
+  // detail close
+  document.getElementById('mcls').onclick=closeDetail;
+  document.getElementById('detail-ol').onclick=e=>{if(e.target===document.getElementById('detail-ol'))closeDetail();};
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDetail();['rate-ol','del-ol','login-ol'].forEach(id=>{document.getElementById(id).style.display='none';document.getElementById(id).classList.remove('open');});}});
 
   // rating
-  document.querySelectorAll('#stars-pick .s').forEach(s=>s.onclick=()=>{const v=+s.dataset.v;document.querySelectorAll('#stars-pick .s').forEach((x,i)=>x.classList.toggle('on',i<v));});
-  document.getElementById('rate-cancel').onclick=()=>document.getElementById('rate-overlay').style.display='none';
-  document.getElementById('rate-overlay').onclick=e=>{if(e.target===document.getElementById('rate-overlay'))document.getElementById('rate-overlay').style.display='none';};
-  document.getElementById('rate-submit').onclick=()=>{
-    if(!ratingTarget)return;
-    const active=document.querySelectorAll('#stars-pick .s.on').length;
+  document.querySelectorAll('#spick .s').forEach(s=>s.onclick=()=>{const v=+s.dataset.v;document.querySelectorAll('#spick .s').forEach((x,i)=>x.classList.toggle('on',i<v));});
+  document.getElementById('rate-cancel').onclick=()=>{document.getElementById('rate-ol').style.display='none';document.getElementById('rate-ol').classList.remove('open');};
+  document.getElementById('rate-ol').onclick=e=>{if(e.target===document.getElementById('rate-ol')){document.getElementById('rate-ol').style.display='none';document.getElementById('rate-ol').classList.remove('open');}};
+  document.getElementById('rate-submit').onclick=async()=>{
+    if(!rTarget)return;
+    const active=document.querySelectorAll('#spick .s.on').length;
     if(!active){toast('اختر تقييماً','warning');return;}
-    if(!ratings[ratingTarget])ratings[ratingTarget]=[];
-    const idx=ratings[ratingTarget].findIndex(r=>r.user===(me?me.username:'زائر'));
-    if(idx>-1)ratings[ratingTarget][idx].rating=active;
-    else ratings[ratingTarget].push({user:me?me.username:'زائر',rating:active,date:new Date().toISOString()});
-    save('r');document.getElementById('rate-overlay').style.display='none';
-    if(selKiller)renderBuilds(selKiller);
-    toast('شكراً على تقييمك! ⭐','success');ratingTarget=null;
+    if(!ratings[rTarget])ratings[rTarget]=[];
+    const idx=ratings[rTarget].findIndex(r=>r.user===(me?me.username:'زائر'));
+    if(idx>-1)ratings[rTarget][idx].rating=active; else ratings[rTarget].push({user:me?me.username:'زائر',rating:active,date:new Date().toISOString()});
+    const ok=await saveToCloud();
+    document.getElementById('rate-ol').style.display='none'; document.getElementById('rate-ol').classList.remove('open');
+    if(ok&&selKid)renderBuilds(selKid);
+    toast('شكراً على تقييمك! ⭐','success'); rTarget=null;
   };
 
   // delete
-  document.getElementById('del-cancel').onclick=()=>document.getElementById('del-overlay').style.display='none';
-  document.getElementById('del-overlay').onclick=e=>{if(e.target===document.getElementById('del-overlay'))document.getElementById('del-overlay').style.display='none';};
-  document.getElementById('del-confirm').onclick=()=>{
-    if(deleteTarget){doDelete(deleteTarget);document.getElementById('del-overlay').style.display='none';deleteTarget=null;}
+  document.getElementById('del-cancel').onclick=()=>{document.getElementById('del-ol').style.display='none';document.getElementById('del-ol').classList.remove('open');};
+  document.getElementById('del-ol').onclick=e=>{if(e.target===document.getElementById('del-ol')){document.getElementById('del-ol').style.display='none';document.getElementById('del-ol').classList.remove('open');}};
+  document.getElementById('del-confirm').onclick=async()=>{
+    if(dTarget){await doDelete(dTarget);document.getElementById('del-ol').style.display='none';document.getElementById('del-ol').classList.remove('open');dTarget=null;}
   };
 }
 
-/* ═══════════════════════════════════════════
-   VISUAL EFFECTS
-═══════════════════════════════════════════ */
-
-/* ─── CUSTOM CURSOR ─── */
-function cursor(){
-  const c=document.getElementById('cursor'), d=document.getElementById('cursor-dot');
-  let mx=0,my=0,cx=0,cy=0;
-  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;d.style.left=mx+'px';d.style.top=my+'px';});
-  function move(){cx+=(mx-cx)*.15;cy+=(my-cy)*.15;c.style.left=(cx-9)+'px';c.style.top=(cy-9)+'px';requestAnimationFrame(move);}
-  move();
-  document.querySelectorAll('a,button,.killer-card,.build-card,.filt').forEach(el=>{
-    el.addEventListener('mouseenter',()=>c.classList.add('hovering'));
-    el.addEventListener('mouseleave',()=>c.classList.remove('hovering'));
-  });
-}
-
-/* ─── SCROLL PROGRESS ─── */
-function scrollProg(){
-  const bar=document.getElementById('prog');
-  document.addEventListener('scroll',()=>{
-    const pct=scrollY/(document.documentElement.scrollHeight-innerHeight)*100;
-    bar.style.width=pct+'%';
-  });
-}
-
-/* ─── BACKGROUND CANVAS (blood drips / particles) ─── */
+/* ══════════════════════════════════════════
+   VISUAL FX
+══════════════════════════════════════════ */
 function bgCanvas(){
-  const canvas=document.getElementById('bg-canvas');
-  const ctx=canvas.getContext('2d');
-  let W,H,dots=[];
-  function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight;}
+  const cv=document.getElementById('bg-canvas'), ctx=cv.getContext('2d'); let W,H,dots=[];
+  function resize(){W=cv.width=innerWidth;H=cv.height=innerHeight;}
   resize(); window.addEventListener('resize',resize);
-  class Dot{
-    constructor(){this.reset();}
-    reset(){
-      this.x=Math.random()*W; this.y=Math.random()*H;
-      this.r=Math.random()*1.5+0.3;
-      this.vx=(Math.random()-.5)*.25; this.vy=(Math.random()-.5)*.25;
-      this.alpha=Math.random()*.4+.1;
-      this.col=Math.random()<.4?'192,57,43':'255,255,255';
-    }
-    draw(){
-      ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
-      ctx.fillStyle=`rgba(${this.col},${this.alpha})`;ctx.fill();
-    }
-    update(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>W||this.y<0||this.y>H)this.reset();}
-  }
-  for(let i=0;i<130;i++) dots.push(new Dot());
-
-  // lines between close dots
-  function drawLines(){
-    for(let i=0;i<dots.length;i++){
-      for(let j=i+1;j<dots.length;j++){
-        const dx=dots[i].x-dots[j].x, dy=dots[i].y-dots[j].y;
-        const dist=Math.sqrt(dx*dx+dy*dy);
-        if(dist<110){
-          ctx.beginPath();ctx.moveTo(dots[i].x,dots[i].y);ctx.lineTo(dots[j].x,dots[j].y);
-          ctx.strokeStyle=`rgba(192,57,43,${.08*(1-dist/110)})`;ctx.lineWidth=.4;ctx.stroke();
-        }
-      }
-    }
-  }
-  function loop(){
-    ctx.clearRect(0,0,W,H);
-    dots.forEach(d=>{d.update();d.draw();});
-    drawLines();
-    requestAnimationFrame(loop);
-  }
+  class Dot{constructor(){this.reset();}reset(){this.x=Math.random()*W;this.y=Math.random()*H;this.r=Math.random()*1.5+.3;this.vx=(Math.random()-.5)*.22;this.vy=(Math.random()-.5)*.22;this.alpha=Math.random()*.35+.08;this.col=Math.random()<.38?'192,57,43':'255,255,255';}draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle=`rgba(${this.col},${this.alpha})`;ctx.fill();}update(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>W||this.y<0||this.y>H)this.reset();}}
+  for(let i=0;i<120;i++) dots.push(new Dot());
+  function loop(){ctx.clearRect(0,0,W,H);dots.forEach(d=>{d.update();d.draw();});for(let i=0;i<dots.length;i++){for(let j=i+1;j<dots.length;j++){const dx=dots[i].x-dots[j].x,dy=dots[i].y-dots[j].y,dist=Math.sqrt(dx*dx+dy*dy);if(dist<100){ctx.beginPath();ctx.moveTo(dots[i].x,dots[i].y);ctx.lineTo(dots[j].x,dots[j].y);ctx.strokeStyle=`rgba(192,57,43,${.07*(1-dist/100)})`;ctx.lineWidth=.3;ctx.stroke();}}}requestAnimationFrame(loop);}
   loop();
 }
-
-/* ─── FLOATING BLOOD PARTICLES ─── */
-function particles(){
-  function spawn(){
-    const p=document.createElement('div'); p.className='particle';
-    const size=Math.random()*4+2;
-    p.style.cssText=`
-      width:${size}px;height:${size}px;
-      left:${Math.random()*100}vw;bottom:-10px;
-      background:rgba(192,57,43,${Math.random()*.5+.2});
-      --dx:${(Math.random()-.5)*2};
-      animation-duration:${Math.random()*12+8}s;
-      animation-delay:${Math.random()*5}s;
-    `;
-    document.body.appendChild(p);
-    setTimeout(()=>p.remove(),(parseFloat(p.style.animationDuration)+parseFloat(p.style.animationDelay))*1000+200);
-  }
-  setInterval(spawn, 800);
-}
-
-/* ─── SCROLL REVEAL ─── */
-function animOnScroll(){
-  const obs=new IntersectionObserver(entries=>{
-    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target);}});
-  },{threshold:0.1});
-  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
-}
+function particles(){ function sp(){const p=document.createElement('div');p.className='particle';const s=Math.random()*4+2;p.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}vw;bottom:-10px;background:rgba(192,57,43,${Math.random()*.5+.2});--dx:${(Math.random()-.5)*2};animation-duration:${Math.random()*12+8}s;animation-delay:${Math.random()*5}s;`;document.body.appendChild(p);setTimeout(()=>p.remove(),(parseFloat(p.style.animationDuration)+parseFloat(p.style.animationDelay))*1000+200);} setInterval(sp,900); }
+function cursorFx(){ const c=document.getElementById('cursor'),d=document.getElementById('cursor-dot');let mx=0,my=0,cx=0,cy=0;document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;d.style.left=mx+'px';d.style.top=my+'px';});function mv(){cx+=(mx-cx)*.14;cy+=(my-cy)*.14;c.style.left=cx+'px';c.style.top=cy+'px';requestAnimationFrame(mv);}mv();document.querySelectorAll('a,button,.kcard,.bcard,.filt').forEach(el=>{el.addEventListener('mouseenter',()=>c.classList.add('hov'));el.addEventListener('mouseleave',()=>c.classList.remove('hov'));});}
+function scrollProg(){ const bar=document.getElementById('prog');document.addEventListener('scroll',()=>{bar.style.width=(scrollY/(document.documentElement.scrollHeight-innerHeight)*100)+'%';});}
+function animOnScroll(){ const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');obs.unobserve(x.target);}});},{threshold:.1});document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));}
 </script>
 </body>
 </html>
