@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>عجلة الشخصنة</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    <script src="tmi.min.js"></script>
+<script src="https://unpkg.com/tmi.js@1.8.5/dist/tmi.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#04040a;--s1:#070711;--s2:#0c0c1a;--s3:#111124;
+  --border:#1a1a35;--border2:#252545;
+  --c1:#00f5ff;--c2:#ff3cac;--c3:#f5a623;--c4:#7928ca;--c5:#00ff88;
+  --text:#e8eaf8;--muted:#5a5d7a;--dim:#2a2d4a;
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);display:grid;grid-template-columns:1fr 330px}
+
+#bgc{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.45}
+
+/* ══ MAIN ══ */
+.main{display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:1;overflow:hidden;gap:18px}
+
+/* HUD */
+.hud{position:absolute;top:0;left:0;right:0;height:52px;background:linear-gradient(180deg,rgba(0,245,255,0.04),transparent);border-bottom:1px solid rgba(0,245,255,0.08);display:flex;align-items:center;justify-content:space-between;padding:0 28px;z-index:10}
+.hud-g{display:flex;align-items:center;gap:20px}
+.hud-s{display:flex;align-items:center;gap:8px}
+.hud-s .lbl{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase}
+.hud-s .v{font-family:'Orbitron',monospace;font-size:18px;font-weight:700;color:var(--c1);text-shadow:0 0 12px rgba(0,245,255,0.6)}
+.hud-s.pk .v{color:var(--c2);text-shadow:0 0 12px rgba(255,60,172,0.6)}
+.hud-s.am .v{color:var(--c3);text-shadow:0 0 12px rgba(245,166,35,0.6)}
+.live-badge{display:flex;align-items:center;gap:6px;background:rgba(255,60,172,0.12);border:1px solid rgba(255,60,172,0.3);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:800;color:var(--c2);letter-spacing:1px}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--c2);animation:lp 1s infinite}
+@keyframes lp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.6)}}
+
+/* WHEEL */
+.wheel-wrap{position:relative;width:560px;height:560px}
+.deco-ring{position:absolute;inset:-28px;border-radius:50%;border:1px solid rgba(0,245,255,0.08);animation:rs 30s linear infinite;pointer-events:none}
+.deco-ring::before{content:'';position:absolute;inset:8px;border-radius:50%;border:1px dashed rgba(255,255,255,0.04)}
+@keyframes rs{to{transform:rotate(360deg)}}
+.wglow{position:absolute;inset:-40px;border-radius:50%;background:radial-gradient(circle,rgba(0,245,255,0.05),transparent 70%);pointer-events:none;transition:all .5s}
+.wglow.on{background:radial-gradient(circle,rgba(0,245,255,0.13),rgba(255,60,172,0.07) 50%,transparent 70%);animation:gwp .8s ease-in-out infinite alternate}
+@keyframes gwp{from{opacity:.6}to{opacity:1}}
+.ptr{position:absolute;top:-14px;left:50%;transform:translateX(-50%);z-index:30;display:flex;flex-direction:column;align-items:center;filter:drop-shadow(0 0 8px rgba(245,166,35,.8))}
+.ptr-tip{width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-top:32px solid var(--c3)}
+.ptr-stem{width:4px;height:28px;background:linear-gradient(to bottom,var(--c3),transparent)}
+#wheel{display:block;border-radius:50%;cursor:pointer;position:relative;z-index:2;transition:filter .3s}
+#wheel:hover{filter:brightness(1.06)}
+.hub{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:72px;height:72px;border-radius:50%;background:var(--bg);border:2px solid var(--border2);z-index:20;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;box-shadow:0 0 0 8px var(--bg),0 0 0 9px var(--border)}
+.hub::before{content:'';position:absolute;inset:-4px;border-radius:50%;background:conic-gradient(from 0deg,var(--c1),var(--c4),var(--c2),var(--c3),var(--c1));z-index:-1;opacity:0;transition:opacity .3s}
+.hub:hover::before,.hub.act::before{opacity:.6;animation:hr 2s linear infinite}
+@keyframes hr{to{transform:rotate(360deg)}}
+.hub:hover{border-color:var(--c1)}
+.hub-txt{font-family:'Orbitron',monospace;font-size:11px;font-weight:900;color:var(--c1);letter-spacing:1px;text-shadow:0 0 10px rgba(0,245,255,.8);pointer-events:none}
+.hub.spinning .hub-txt{animation:st .6s linear infinite}
+@keyframes st{to{transform:rotate(360deg)}}
+
+/* STATUS PILL */
+.status-pill{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.02);border:1px solid var(--border2);border-radius:50px;padding:10px 28px;position:relative;overflow:hidden;transition:all .3s}
+.status-pill::before{content:'';position:absolute;bottom:0;left:20%;right:20%;height:1px;background:linear-gradient(90deg,transparent,var(--c1),transparent);opacity:.4}
+.sp-dot{width:8px;height:8px;border-radius:50%;background:var(--dim);flex-shrink:0;transition:all .3s}
+.sp-dot.on{background:var(--c5);box-shadow:0 0 8px rgba(0,255,136,.7);animation:lp 1.5s infinite}
+.sp-dot.gold{background:var(--c3);box-shadow:0 0 8px rgba(245,166,35,.7)}
+.sp-txt{font-size:15px;font-weight:700;color:var(--text)}
+
+/* FLOAT PANEL — EVENT LOG */
+.float-panel{position:absolute;left:24px;top:64px;width:230px;max-height:calc(100vh - 120px);display:flex;flex-direction:column;z-index:10}
+.fp-head{background:rgba(0,245,255,.04);border:1px solid rgba(0,245,255,.12);border-bottom:none;border-radius:12px 12px 0 0;padding:10px 14px;display:flex;align-items:center;justify-content:space-between}
+.fp-title{font-size:11px;font-weight:800;color:var(--c1);letter-spacing:2px;text-transform:uppercase}
+.fp-clr{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);padding:2px 9px;font-size:10px;cursor:pointer;transition:all .15s;font-family:'Tajawal',sans-serif;font-weight:700}
+.fp-clr:hover{border-color:var(--c2);color:var(--c2)}
+.fp-body{background:rgba(7,7,17,.95);border:1px solid rgba(0,245,255,.08);border-radius:0 0 12px 12px;overflow-y:auto;flex:1;backdrop-filter:blur(10px);padding:6px}
+.fp-body::-webkit-scrollbar{width:2px}
+.fp-body::-webkit-scrollbar-thumb{background:var(--border2)}
+
+/* Event log items */
+.ev-item{
+  display:flex;align-items:flex-start;gap:8px;
+  padding:8px 10px;margin-bottom:5px;
+  border-radius:8px;background:var(--s3);
+  border:1px solid var(--border);
+  border-right:2px solid var(--c1);
+  animation:ev-in .25s ease;
+  position:relative;overflow:hidden;
+}
+@keyframes ev-in{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+.ev-item.ev-kick{border-right-color:var(--c2);background:rgba(255,60,172,.04)}
+.ev-item.ev-rev{border-right-color:var(--c5);background:rgba(0,255,136,.04)}
+.ev-item.ev-prot{border-right-color:var(--c4);background:rgba(121,40,202,.04)}
+.ev-item.ev-win{border-right-color:var(--c3);background:rgba(245,166,35,.04)}
+.ev-item.ev-join{border-right-color:var(--c1)}
+.ev-item.ev-info{border-right-color:var(--muted)}
+.ev-icon{font-size:15px;flex-shrink:0;margin-top:1px}
+.ev-body{flex:1;min-width:0}
+.ev-text{font-size:12px;font-weight:700;color:var(--text);line-height:1.4;word-break:break-word}
+.ev-text b{color:#fff}
+.ev-time{font-size:10px;color:var(--muted);margin-top:2px;font-family:'Orbitron',monospace}
+.fp-empty{padding:28px 12px;text-align:center;color:var(--muted);font-size:12px;line-height:1.8}
+
+/* FEED — hidden, we use float panel now */
+.feed{display:none}
+
+/* ══════════════════════════════════════════════
+   ACTION LIST OVERLAYS — each has unique design
+══════════════════════════════════════════════ */
+#action-panel{
+  position:fixed;inset:0;z-index:600;
+  display:none;pointer-events:none;
+}
+#action-panel.show{display:block}
+
+/* ── KICK LIST — RED DANGER STYLE ── */
+.al-kick{
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:520px;
+  pointer-events:all;
+  animation:al-in .35s cubic-bezier(.34,1.4,.64,1);
+}
+@keyframes al-in{from{opacity:0;transform:translate(-50%,-48%) scale(.92)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+
+.al-kick .al-bg{
+  background:#0d0006;
+  border:1px solid rgba(255,60,172,.25);
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 0 80px rgba(255,60,172,.15),inset 0 0 60px rgba(255,0,60,.04);
+  position:relative;
+}
+.al-kick .al-bg::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,transparent,var(--c2),transparent);
+}
+.al-kick-header{
+  padding:20px 24px 16px;
+  border-bottom:1px solid rgba(255,60,172,.15);
+  display:flex;align-items:center;gap:14px;
+}
+.al-kick-icon{
+  width:48px;height:48px;border-radius:12px;
+  background:rgba(255,60,172,.12);
+  border:1px solid rgba(255,60,172,.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;flex-shrink:0;
+  animation:icon-throb 1.5s ease-in-out infinite;
+}
+@keyframes icon-throb{0%,100%{box-shadow:0 0 0 0 rgba(255,60,172,.3)}50%{box-shadow:0 0 0 8px rgba(255,60,172,.0)}}
+.al-kick-title{font-size:20px;font-weight:900;color:#fff}
+.al-kick-sub{font-size:12px;color:rgba(255,60,172,.7);margin-top:3px}
+.al-kick-by{
+  margin-right:auto;
+  background:rgba(255,60,172,.1);border:1px solid rgba(255,60,172,.25);
+  border-radius:20px;padding:4px 14px;
+  font-size:12px;font-weight:700;color:var(--c2);
+}
+.al-kick-list{padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:8px;max-height:340px;overflow-y:auto}
+.al-kick-list::-webkit-scrollbar{width:3px}
+.al-kick-list::-webkit-scrollbar-thumb{background:rgba(255,60,172,.3)}
+.kick-card{
+  background:rgba(255,60,172,.05);
+  border:1px solid rgba(255,60,172,.12);
+  border-radius:10px;padding:12px 14px;
+  display:flex;align-items:center;gap:10px;
+  transition:all .15s;cursor:default;
+  position:relative;overflow:hidden;
+}
+.kick-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,60,172,.06),transparent);pointer-events:none}
+.kick-num{
+  font-family:'Orbitron',monospace;font-size:16px;font-weight:900;
+  color:var(--c2);text-shadow:0 0 10px rgba(255,60,172,.5);
+  min-width:24px;flex-shrink:0;
+}
+.kick-name{font-size:13px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.al-kick-footer{
+  padding:12px 16px 16px;
+  border-top:1px solid rgba(255,60,172,.1);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.al-footer-hint{
+  font-size:12px;color:var(--muted);
+  display:flex;align-items:center;gap:8px;
+}
+.al-footer-hint .chat-icon{
+  background:rgba(255,255,255,.06);border:1px solid var(--border2);
+  border-radius:6px;padding:3px 8px;
+  font-family:'Orbitron',monospace;font-size:10px;font-weight:700;color:var(--c2);
+}
+.al-timer{
+  font-family:'Orbitron',monospace;font-size:13px;font-weight:700;
+  color:rgba(255,60,172,.6);
+}
+.btn-al-cancel{
+  background:none;border:1px solid var(--border2);color:var(--muted);
+  padding:6px 14px;border-radius:7px;cursor:pointer;
+  font-family:'Tajawal',sans-serif;font-size:12px;font-weight:700;
+  transition:all .2s;
+}
+.btn-al-cancel:hover{border-color:var(--c2);color:var(--c2)}
+
+/* ── REVIVE LIST — GREEN REVIVAL STYLE ── */
+.al-rev{
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:520px;
+  pointer-events:all;
+  animation:al-in .35s cubic-bezier(.34,1.4,.64,1);
+}
+.al-rev .al-bg{
+  background:#00100a;
+  border:1px solid rgba(0,255,136,.2);
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 0 80px rgba(0,255,136,.1),inset 0 0 60px rgba(0,255,100,.03);
+  position:relative;
+}
+.al-rev .al-bg::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,transparent,var(--c5),transparent);
+}
+.al-rev-header{
+  padding:20px 24px 16px;
+  border-bottom:1px solid rgba(0,255,136,.12);
+  display:flex;align-items:center;gap:14px;
+}
+.al-rev-icon{
+  width:48px;height:48px;border-radius:12px;
+  background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.25);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;flex-shrink:0;
+  animation:rev-float 2s ease-in-out infinite;
+}
+@keyframes rev-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.al-rev-title{font-size:20px;font-weight:900;color:#fff}
+.al-rev-sub{font-size:12px;color:rgba(0,255,136,.6);margin-top:3px}
+.al-rev-by{
+  margin-right:auto;
+  background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.2);
+  border-radius:20px;padding:4px 14px;
+  font-size:12px;font-weight:700;color:var(--c5);
+}
+.al-rev-list{padding:16px;display:flex;flex-direction:column;gap:6px;max-height:340px;overflow-y:auto}
+.al-rev-list::-webkit-scrollbar{width:3px}
+.al-rev-list::-webkit-scrollbar-thumb{background:rgba(0,255,136,.2)}
+.rev-card{
+  background:rgba(0,255,136,.04);
+  border:1px solid rgba(0,255,136,.1);
+  border-radius:10px;padding:12px 16px;
+  display:flex;align-items:center;gap:12px;
+  position:relative;overflow:hidden;
+}
+.rev-card::before{
+  content:'';position:absolute;right:0;top:0;bottom:0;width:2px;
+  background:linear-gradient(to bottom,transparent,var(--c5),transparent);
+}
+.rev-num{
+  font-family:'Orbitron',monospace;font-size:20px;font-weight:900;
+  color:var(--c5);text-shadow:0 0 10px rgba(0,255,136,.4);
+  min-width:32px;text-align:center;flex-shrink:0;
+}
+.rev-name{font-size:14px;font-weight:700;flex:1}
+.rev-tag{
+  font-size:10px;font-weight:700;padding:3px 8px;
+  border-radius:12px;background:rgba(255,60,172,.1);
+  border:1px solid rgba(255,60,172,.2);color:var(--c2);
+  flex-shrink:0;
+}
+.al-rev-footer{
+  padding:12px 16px 16px;border-top:1px solid rgba(0,255,136,.08);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.al-rev-footer .chat-icon{
+  background:rgba(255,255,255,.06);border:1px solid var(--border2);
+  border-radius:6px;padding:3px 8px;
+  font-family:'Orbitron',monospace;font-size:10px;font-weight:700;color:var(--c5);
+}
+.al-rev-footer .al-timer{color:rgba(0,255,136,.5)}
+
+/* ── PROTECT LIST — PURPLE SHIELD STYLE ── */
+.al-prot{
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:520px;
+  pointer-events:all;
+  animation:al-in .35s cubic-bezier(.34,1.4,.64,1);
+}
+.al-prot .al-bg{
+  background:#08001a;
+  border:1px solid rgba(121,40,202,.3);
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 0 80px rgba(121,40,202,.15),inset 0 0 60px rgba(80,0,180,.04);
+  position:relative;
+}
+.al-prot .al-bg::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,transparent,var(--c4),#c77dff,var(--c4),transparent);
+}
+.al-prot-header{
+  padding:20px 24px 16px;
+  border-bottom:1px solid rgba(121,40,202,.15);
+  display:flex;align-items:center;gap:14px;
+}
+.al-prot-icon{
+  width:48px;height:48px;border-radius:12px;
+  background:rgba(121,40,202,.12);border:1px solid rgba(121,40,202,.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;flex-shrink:0;
+  animation:prot-spin-slow 6s linear infinite;
+}
+@keyframes prot-spin-slow{0%{box-shadow:0 0 0 0 rgba(121,40,202,.3)}50%{box-shadow:0 0 12px 4px rgba(121,40,202,.2)}100%{box-shadow:0 0 0 0 rgba(121,40,202,.3)}}
+.al-prot-title{font-size:20px;font-weight:900;color:#fff}
+.al-prot-sub{font-size:12px;color:rgba(121,40,202,.7);margin-top:3px}
+.al-prot-by{
+  margin-right:auto;
+  background:rgba(121,40,202,.1);border:1px solid rgba(121,40,202,.25);
+  border-radius:20px;padding:4px 14px;
+  font-size:12px;font-weight:700;color:#c77dff;
+}
+.al-prot-list{
+  padding:16px;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+  max-height:320px;overflow-y:auto;
+}
+.al-prot-list::-webkit-scrollbar{width:3px}
+.al-prot-list::-webkit-scrollbar-thumb{background:rgba(121,40,202,.3)}
+.prot-card{
+  background:rgba(121,40,202,.07);
+  border:1px solid rgba(121,40,202,.15);
+  border-radius:10px;padding:14px 10px;
+  text-align:center;
+  position:relative;overflow:hidden;
+}
+.prot-card::after{
+  content:'';position:absolute;top:-20px;left:50%;transform:translateX(-50%);
+  width:40px;height:40px;border-radius:50%;
+  background:radial-gradient(circle,rgba(121,40,202,.15),transparent 70%);
+}
+.prot-num{
+  font-family:'Orbitron',monospace;font-size:22px;font-weight:900;
+  color:#c77dff;text-shadow:0 0 12px rgba(121,40,202,.6);
+  display:block;margin-bottom:6px;
+}
+.prot-name{font-size:11px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.al-prot-footer{
+  padding:12px 16px 16px;border-top:1px solid rgba(121,40,202,.1);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.al-prot-footer .chat-icon{
+  background:rgba(255,255,255,.06);border:1px solid var(--border2);
+  border-radius:6px;padding:3px 8px;
+  font-family:'Orbitron',monospace;font-size:10px;font-weight:700;color:#c77dff;
+}
+.al-prot-footer .al-timer{color:rgba(121,40,202,.6)}
+
+/* ══ ACTION ANIMATIONS ══ */
+#anim-overlay{position:fixed;inset:0;z-index:700;pointer-events:none;display:none}
+#anim-overlay.show{display:block}
+.anim-kick{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;animation:kas 2.4s ease forwards}
+@keyframes kas{0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}12%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}22%{transform:translate(-50%,-50%) scale(1)}78%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-52%) scale(.9)}}
+.anim-kick .big{font-size:100px;display:block;filter:drop-shadow(0 0 28px rgba(255,60,172,1));animation:kshk .3s .12s ease}
+@keyframes kshk{0%,100%{transform:rotate(0)}30%{transform:rotate(-18deg)}70%{transform:rotate(18deg)}}
+.anim-kick .aname{font-size:34px;font-weight:900;color:#fff;text-shadow:0 0 30px rgba(255,60,172,.8);margin-top:10px}
+.anim-kick .albl{font-size:13px;font-weight:700;color:var(--c2);letter-spacing:3px;text-transform:uppercase;margin-top:6px;text-shadow:0 0 10px rgba(255,60,172,.6)}
+.shard{position:absolute;width:4px;height:20px;background:var(--c2);border-radius:2px;transform-origin:top center;animation:sf 1s ease forwards}
+@keyframes sf{0%{opacity:1;transform:rotate(var(--r)) translateY(0)}100%{opacity:0;transform:rotate(var(--r)) translateY(220px)}}
+.kick-flash{position:fixed;inset:0;background:rgba(255,60,172,.14);animation:fl .35s ease forwards}
+@keyframes fl{0%{opacity:1}100%{opacity:0}}
+
+.anim-rev{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;animation:ras 2.4s ease forwards}
+@keyframes ras{0%{opacity:0;transform:translate(-50%,-50%) scale(.3) rotate(-10deg)}12%{opacity:1;transform:translate(-50%,-50%) scale(1.1) rotate(2deg)}22%{transform:translate(-50%,-50%) scale(1) rotate(0)}78%{opacity:1}100%{opacity:0;transform:translate(-50%,-54%) scale(.9)}}
+.anim-rev .big{font-size:100px;display:block;filter:drop-shadow(0 0 28px rgba(0,255,136,1));animation:rpls .5s ease infinite alternate}
+@keyframes rpls{from{transform:scale(1)}to{transform:scale(1.08)}}
+.anim-rev .aname{font-size:34px;font-weight:900;color:#fff;text-shadow:0 0 30px rgba(0,255,136,.8);margin-top:10px}
+.anim-rev .albl{font-size:13px;font-weight:700;color:var(--c5);letter-spacing:3px;text-transform:uppercase;margin-top:6px}
+.rpart{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--c5);box-shadow:0 0 8px var(--c5);animation:rrise 1.5s ease forwards}
+@keyframes rrise{0%{opacity:1;transform:translate(var(--dx),0)}100%{opacity:0;transform:translate(var(--dx),-200px)}}
+.rev-flash{position:fixed;inset:0;background:rgba(0,255,136,.08);animation:fl .4s ease forwards}
+
+.anim-prot{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;animation:pas 2.4s ease forwards}
+@keyframes pas{0%{opacity:0;transform:translate(-50%,-50%) scale(.4)}12%{opacity:1;transform:translate(-50%,-50%) scale(1.12)}22%{transform:translate(-50%,-50%) scale(1)}78%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(.85)}}
+.anim-prot .big{font-size:100px;display:block;filter:drop-shadow(0 0 28px rgba(121,40,202,1))}
+.anim-prot .aname{font-size:34px;font-weight:900;color:#fff;text-shadow:0 0 30px rgba(121,40,202,.9);margin-top:10px}
+.anim-prot .albl{font-size:13px;font-weight:700;color:#c77dff;letter-spacing:3px;text-transform:uppercase;margin-top:6px}
+.pring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:2px solid rgba(121,40,202,.6);animation:pre var(--dur) ease forwards}
+@keyframes pre{0%{width:0;height:0;opacity:.8}100%{width:320px;height:320px;opacity:0}}
+.prot-flash{position:fixed;inset:0;background:rgba(121,40,202,.1);animation:fl .4s ease forwards}
+
+/* ══ WINNER OVERLAY ══ */
+#win-overlay{position:fixed;inset:0;background:rgba(2,2,10,.9);z-index:800;display:none;align-items:center;justify-content:center;backdrop-filter:blur(10px)}
+#win-overlay.show{display:flex;animation:ov-in .3s ease}
+@keyframes ov-in{from{opacity:0}to{opacity:1}}
+.w-card{background:var(--s2);border-radius:24px;padding:52px 68px;text-align:center;overflow:hidden;animation:wi .5s cubic-bezier(.34,1.56,.64,1);max-width:480px;width:90%;position:relative}
+@keyframes wi{from{transform:scale(.6) rotate(-5deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+.w-card::before{content:'';position:absolute;inset:-1px;border-radius:24px;background:linear-gradient(135deg,var(--c1),var(--c4),var(--c2),var(--c3));z-index:-1;animation:bspin 3s linear infinite}
+@keyframes bspin{to{filter:hue-rotate(360deg)}}
+.w-card::after{content:'';position:absolute;inset:1px;border-radius:23px;background:var(--s2);z-index:-1}
+.w-crown{font-size:60px;display:block;margin-bottom:12px;animation:ci .6s .2s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes ci{from{transform:scale(0) rotate(-30deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+.w-eyebrow{font-family:'Orbitron',monospace;font-size:10px;font-weight:700;color:var(--c3);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;text-shadow:0 0 10px rgba(245,166,35,.6)}
+.w-name{font-size:36px;font-weight:900;color:#fff;margin-bottom:14px}
+.w-perks{margin-bottom:24px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.w-perk{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;border:1px solid}
+.w-perk.kick{background:rgba(255,60,172,.1);border-color:rgba(255,60,172,.3);color:var(--c2)}
+.w-perk.rev{background:rgba(0,255,136,.1);border-color:rgba(0,255,136,.3);color:var(--c5)}
+.w-perk.prot{background:rgba(121,40,202,.1);border-color:rgba(121,40,202,.3);color:#c77dff}
+.btn-dismiss{background:transparent;border:1px solid var(--border2);color:var(--muted);padding:12px 28px;border-radius:8px;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:800;cursor:pointer;transition:all .2s}
+.btn-dismiss:hover{border-color:var(--c1);color:var(--c1);box-shadow:0 0 12px rgba(0,245,255,.2)}
+
+#cfx{position:fixed;inset:0;pointer-events:none;z-index:750}
+
+/* ══ SIDEBAR ══ */
+.sidebar{background:var(--s1);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;position:relative;z-index:2}
+.sidebar::before{content:'';position:absolute;top:0;right:0;width:1px;height:100%;background:linear-gradient(180deg,var(--c1),var(--c4),var(--c2));opacity:.2}
+.brand{padding:18px 18px 14px;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.brand::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--c1),transparent);opacity:.25}
+.brand-row{display:flex;align-items:center;gap:11px;margin-bottom:3px}
+.brand-orb{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,rgba(0,245,255,.15),rgba(255,60,172,.1));border:1px solid rgba(0,245,255,.2);display:flex;align-items:center;justify-content:center;font-size:17px}
+.brand-name{font-family:'Orbitron',monospace;font-size:12px;font-weight:900;color:var(--c1);letter-spacing:1px;text-shadow:0 0 15px rgba(0,245,255,.4)}
+.brand-sub{font-size:10px;color:var(--muted);letter-spacing:.5px}
+.ctl{padding:14px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:11px}
+.flabel{font-size:10px;font-weight:800;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px;display:flex;align-items:center;gap:8px}
+.live-ind{width:6px;height:6px;border-radius:50%;background:rgba(255,60,172,.4);transition:all .3s}
+.live-ind.on{background:var(--c5);box-shadow:0 0 6px rgba(0,255,136,.7);animation:lp 1.5s infinite}
+.row{display:flex;gap:7px;align-items:stretch}
+input[type=text]{flex:1;min-width:0;background:var(--s3);border:1px solid var(--border2);border-radius:8px;padding:9px 12px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:13px;outline:none;transition:all .2s}
+input[type=text]:focus{border-color:var(--c1);box-shadow:0 0 0 2px rgba(0,245,255,.1)}
+input[type=text]::placeholder{color:var(--muted)}
+.btn{border:none;border-radius:8px;font-family:'Tajawal',sans-serif;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .15s;white-space:nowrap}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.15)}.btn:active{transform:scale(.96)}
+.btn-ghost{background:var(--s3);border:1px solid var(--border2);color:var(--muted);padding:9px 11px;font-size:13px}
+.btn-ghost:hover{border-color:var(--c2);color:var(--c2)}
+.btn-conn{background:var(--s3);border:1px solid var(--border2);color:var(--text);padding:9px 13px;font-size:12px;font-weight:800}
+.btn-conn.on{background:rgba(0,255,136,.08);border-color:rgba(0,255,136,.3);color:var(--c5)}
+.limits-sect{padding:12px 14px;border-bottom:1px solid var(--border)}
+.limits-title{font-size:10px;font-weight:800;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px}
+.limit-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.limit-row:last-child{margin-bottom:0}
+.limit-label{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:var(--text)}
+.ldot{width:8px;height:8px;border-radius:50%}
+.ldot.kick{background:var(--c2);box-shadow:0 0 6px rgba(255,60,172,.5)}
+.ldot.rev{background:var(--c5);box-shadow:0 0 6px rgba(0,255,136,.5)}
+.ldot.prot{background:var(--c4);box-shadow:0 0 6px rgba(121,40,202,.5)}
+.lctrl{display:flex;align-items:center;gap:6px}
+.lcb{width:24px;height:24px;border-radius:6px;background:var(--s3);border:1px solid var(--border2);color:var(--text);font-size:15px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;line-height:1;padding:0}
+.lcb:hover{background:var(--border2)}
+.lcb.inf-on{background:rgba(245,166,35,.15);border-color:rgba(245,166,35,.5);color:var(--c3);box-shadow:0 0 8px rgba(245,166,35,.3)}
+.lcv{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;color:var(--c3);min-width:22px;text-align:center;text-shadow:0 0 8px rgba(245,166,35,.4)}
+.spin-wrap{padding:12px 14px;border-bottom:1px solid var(--border)}
+.slider-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.slider-val{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;color:var(--c3);text-shadow:0 0 8px rgba(245,166,35,.5)}
+input[type=range]{width:100%;appearance:none;height:3px;background:var(--border2);border-radius:2px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{appearance:none;width:16px;height:16px;border-radius:50%;background:var(--c3);box-shadow:0 0 8px rgba(245,166,35,.6);cursor:pointer}
+.btn-spin{width:100%;padding:15px;background:linear-gradient(135deg,#7928ca,#00a3ff);color:#fff;border-radius:10px;font-size:17px;font-weight:900;letter-spacing:.5px;position:relative;overflow:hidden;box-shadow:0 4px 24px rgba(121,40,202,.4);margin-top:10px}
+.btn-spin::after{content:'';position:absolute;top:-50%;left:-60%;width:40%;height:200%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);transform:skewX(-20deg);transition:left .5s}
+.btn-spin:hover::after{left:120%}
+.btn-spin:hover{box-shadow:0 6px 30px rgba(121,40,202,.6);transform:translateY(-2px)}
+.btn-spin:disabled{opacity:.4;cursor:not-allowed;transform:none;filter:none;box-shadow:none}
+.ps-sect{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.ps-head{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.ps-title{font-size:10px;font-weight:800;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase}
+.ps-count{font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:var(--c1);background:rgba(0,245,255,.08);border:1px solid rgba(0,245,255,.15);padding:2px 9px;border-radius:20px;text-shadow:0 0 8px rgba(0,245,255,.5)}
+.ps-scroll{flex:1;overflow-y:auto;padding:7px}
+.ps-scroll::-webkit-scrollbar{width:2px}.ps-scroll::-webkit-scrollbar-thumb{background:var(--border2)}
+.sp-row{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;margin-bottom:4px;background:var(--s2);border:1px solid var(--border);border-right:2px solid var(--c5);transition:all .2s;animation:pin .2s ease}
+.sp-row.elim{border-right-color:var(--c2);opacity:.3}.sp-row.prot{border-right-color:var(--c4)}
+.sp-row.wg{border-right-color:var(--c3);background:rgba(245,166,35,.06);box-shadow:inset 0 0 20px rgba(245,166,35,.05)}
+.sp-num{font-family:'Orbitron',monospace;font-size:10px;font-weight:700;color:var(--muted);width:20px;flex-shrink:0;text-align:center}
+.sp-name{font-size:12px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sp-ico{font-size:11px;flex-shrink:0}
+.ps-empty{padding:24px 12px;text-align:center;color:var(--dim);font-size:12px;line-height:1.8}
+.cmds{border-top:1px solid var(--border);padding:10px 14px;flex-shrink:0}
+.cmds-t{font-size:10px;font-weight:800;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:7px}
+.cmd-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.cmd-chip{background:var(--s2);border:1px solid var(--border);border-radius:6px;padding:5px 8px;display:flex;flex-direction:column;gap:1px}
+.cmd-name{font-family:'Orbitron',monospace;font-size:9px;font-weight:700;color:var(--c3);text-shadow:0 0 6px rgba(245,166,35,.4)}
+.cmd-desc{font-size:10px;color:var(--muted)}
+
+/* ── Active mode indicator on status pill ── */
+.status-pill.mode-kick{border-color:rgba(255,60,172,.4);box-shadow:0 0 20px rgba(255,60,172,.1)}
+.status-pill.mode-rev{border-color:rgba(0,255,136,.4);box-shadow:0 0 20px rgba(0,255,136,.1)}
+.status-pill.mode-prot{border-color:rgba(121,40,202,.4);box-shadow:0 0 20px rgba(121,40,202,.1)}
+
+/* ── CRYSTAL SHIELD OVERLAY ── */
+.crystal-overlay{
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  pointer-events:none;
+  z-index:15;
+  opacity:0;
+  transition:opacity .4s;
+}
+.wheel-wrap .crystal-layer{
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  pointer-events:none;
+  z-index:14;
+}
+/* crystal on protected player slice — drawn in canvas */
+</style>
+</head>
+<body>
+
+<canvas id="bgc"></canvas>
+<canvas id="cfx"></canvas>
+<div id="anim-overlay"></div>
+
+<!-- ══ ACTION PANEL ══ -->
+<div id="action-panel"></div>
+
+<!-- ══ WINNER ══ -->
+<div id="win-overlay">
+  <div class="w-card">
+    <span class="w-crown">👑</span>
+    <div class="w-eyebrow">الفائز بالجولة</div>
+    <div class="w-name" id="wname">-</div>
+    <div class="w-perks" id="wperks"></div>
+    <button class="btn-dismiss" onclick="closeWin()">متابعة اللعب ›</button>
+  </div>
+</div>
+
+<!-- ══ MAIN ══ -->
+<div class="main">
+  <div class="hud">
+    <div class="hud-g">
+      <div class="hud-s"><span class="lbl">جولة</span><span class="v" id="hud-r">00</span></div>
+      <div class="hud-s pk"><span class="lbl">مشارك</span><span class="v" id="hud-p">00</span></div>
+    </div>
+    <div class="live-badge" id="livebadge" style="opacity:.3"><div class="live-dot"></div>LIVE</div>
+    <div class="hud-g">
+      <div class="hud-s am"><span class="lbl">مطرود</span><span class="v" id="hud-e">00</span></div>
+    </div>
+  </div>
+
+  <div class="float-panel">
+    <div class="fp-head">
+      <span class="fp-title">سجل الأحداث</span>
+      <button class="fp-clr" onclick="clearEvLog()">مسح</button>
+    </div>
+    <div class="fp-body" id="evlog">
+      <div class="fp-empty">لا يوجد أحداث بعد</div>
+    </div>
+  </div>
+
+  <div class="wheel-wrap">
+    <div class="wglow" id="wglow"></div>
+    <div class="deco-ring"></div>
+    <div class="ptr"><div class="ptr-tip"></div><div class="ptr-stem"></div></div>
+    <canvas id="wheel" width="560" height="560" onclick="trySpinWheel()"></canvas>
+    <div class="hub" id="hub" onclick="trySpinWheel()"><div class="hub-txt" id="hub-txt">SPIN</div></div>
+  </div>
+
+  <div class="status-pill" id="status-pill">
+    <div class="sp-dot" id="spdot"></div>
+    <div class="sp-txt" id="sptxt">اتصل بقناتك لتبدأ</div>
+  </div>
+
+</div>
+
+<!-- ══ SIDEBAR ══ -->
+<div class="sidebar">
+  <div class="brand">
+    <div class="brand-row">
+      <div class="brand-orb">🎡</div>
+      <div><div class="brand-name">SPIN WHEEL</div><div class="brand-sub">Twitch Live Interactive</div></div>
+    </div>
+  </div>
+
+  <div class="ctl">
+    <div>
+      <div class="flabel"><span>القناة</span><div class="live-ind" id="liveind"></div></div>
+      <div class="row">
+        <input type="text" id="channelName" placeholder="اسم القناة...">
+        <button class="btn btn-conn" id="connBtn" onclick="connectTwitch()">اتصال</button>
+        <button class="btn btn-ghost" onclick="clearAll()" title="مسح">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="limits-sect">
+    <div class="limits-title">⚙️ حدود الأوامر (للفائز)</div>
+    <div class="limit-row">
+      <div class="limit-label"><div class="ldot kick"></div>عدد الطرد</div>
+      <div class="lctrl">
+        <button class="lcb" id="inf-kick" onclick="toggleInf('kick')" title="لا نهائي">∞</button>
+        <button class="lcb" onclick="chLim('kick',-1)">−</button>
+        <span class="lcv" id="lim-kick">1</span>
+        <button class="lcb" onclick="chLim('kick',1)">+</button>
+      </div>
+    </div>
+    <div class="limit-row">
+      <div class="limit-label"><div class="ldot rev"></div>إنعاش (لكل لاعب)</div>
+      <div class="lctrl">
+        <button class="lcb" onclick="chLim('rev',-1)">−</button>
+        <span class="lcv" id="lim-rev">1</span>
+        <button class="lcb" onclick="chLim('rev',1)">+</button>
+      </div>
+    </div>
+    <div class="limit-row">
+      <div class="limit-label"><div class="ldot prot"></div>فزعة (لكل لاعب)</div>
+      <div class="lctrl">
+        <button class="lcb" onclick="chLim('prot',-1)">−</button>
+        <span class="lcv" id="lim-prot">1</span>
+        <button class="lcb" onclick="chLim('prot',1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="spin-wrap">
+    <div class="slider-row">
+      <div class="flabel" style="margin:0">سرعة الدوران</div>
+      <span class="slider-val" id="speedVal">8s</span>
+    </div>
+    <input type="range" id="spinDur" min="3" max="18" value="8" oninput="document.getElementById('speedVal').textContent=this.value+'s'">
+    <button class="btn btn-spin" id="spinBtn" onclick="trySpinWheel()">▶ دوّر العجلة</button>
+  </div>
+
+  <div class="ps-sect">
+    <div class="ps-head">
+      <span class="ps-title">المشاركون</span>
+      <span class="ps-count" id="sbcount">0</span>
+    </div>
+    <div class="ps-scroll" id="plist">
+      <div class="ps-empty">لا يوجد مشاركين<br>اكتب <b>!دخول</b></div>
+    </div>
+  </div>
+
+  <div class="cmds">
+    <div class="cmds-t">أوامر الشات</div>
+    <div class="cmd-grid">
+      <div class="cmd-chip"><span class="cmd-name">!دخول</span><span class="cmd-desc">الانضمام</span></div>
+      <div class="cmd-chip"><span class="cmd-name">!طرد</span><span class="cmd-desc">للفائز فقط</span></div>
+      <div class="cmd-chip"><span class="cmd-name">!انعاش</span><span class="cmd-desc">للفائز فقط</span></div>
+      <div class="cmd-chip"><span class="cmd-name">!فزعه</span><span class="cmd-desc">للفائز فقط</span></div>
+      <div class="cmd-chip"><span class="cmd-name">!لاعبين</span><span class="cmd-desc">عدد المشاركين</span></div>
+      <div class="cmd-chip"><span class="cmd-name">!تصفير</span><span class="cmd-desc">مسح (مود)</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══ STATE ══════════════════════════════════════════════ */
+let players=[], spinning=false, angle=0, roundNum=0;
+let twitchClient=null, protected_=new Set();
+let currentWinner=null;
+// limits: kick = global per round, rev/prot = per player per round
+let limits={kick:1,rev:1,prot:1};
+let kickInfinite=false; // لا نهائي للطرد
+// winnerUsed: kick tracks global; rev/prot tracked per player id
+let winnerUsed={kick:0}; // kick only global
+// per-player usage this round: { playerId: {rev:N, prot:N} }
+let playerUsed={};
+
+let pendingAction=null;
+let actionTimer=null;
+
+const WC=document.getElementById('wheel');
+const ctx=WC.getContext('2d');
+const W=WC.width, CX=W/2, R=268;
+
+/* ══ LIMITS ═════════════════════════════════════════════ */
+function chLim(t,d){
+  limits[t]=Math.max(0,Math.min(99,limits[t]+d));
+  document.getElementById('lim-'+t).textContent=limits[t];
+}
+function toggleInf(t){
+  if(t==='kick'){
+    kickInfinite=!kickInfinite;
+    const btn=document.getElementById('inf-kick');
+    btn.classList.toggle('inf-on',kickInfinite);
+    document.getElementById('lim-kick').textContent=kickInfinite?'∞':limits.kick;
+  }
+}
+
+/* ══ BG PARTICLES ════════════════════════════════════════ */
+const bgC=document.getElementById('bgc'),bgX=bgC.getContext('2d');let pts=[];
+function initBG(){bgC.width=innerWidth;bgC.height=innerHeight;pts=Array.from({length:55},()=>({x:Math.random()*bgC.width,y:Math.random()*bgC.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.5+.5,col:['rgba(0,245,255,','rgba(121,40,202,','rgba(255,60,172,'][Math.floor(Math.random()*3)]}))}
+function drawBG(){bgX.clearRect(0,0,bgC.width,bgC.height);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=bgC.width;if(p.x>bgC.width)p.x=0;if(p.y<0)p.y=bgC.height;if(p.y>bgC.height)p.y=0;bgX.beginPath();bgX.arc(p.x,p.y,p.r,0,Math.PI*2);bgX.fillStyle=p.col+'0.55)';bgX.fill()});pts.forEach((a,i)=>pts.slice(i+1).forEach(b=>{const d=Math.hypot(a.x-b.x,a.y-b.y);if(d<110){bgX.beginPath();bgX.moveTo(a.x,a.y);bgX.lineTo(b.x,b.y);bgX.strokeStyle=`rgba(0,245,255,${.06*(1-d/110)})`;bgX.lineWidth=.5;bgX.stroke()}}));requestAnimationFrame(drawBG)}
+initBG();drawBG();
+
+/* ══ PALETTE ═════════════════════════════════════════════ */
+const PAL=[{bg:'#1a0533',s:'#9d4edd',t:'#d4a1ff'},{bg:'#001a2e',s:'#00b4d8',t:'#90e0ef'},{bg:'#2d0014',s:'#ff0055',t:'#ff6b9d'},{bg:'#1a1200',s:'#f5a623',t:'#ffd166'},{bg:'#001a0e',s:'#00c896',t:'#80ffca'},{bg:'#1a0a00',s:'#ff6b35',t:'#ffa87d'},{bg:'#001520',s:'#4cc9f0',t:'#90e0ef'},{bg:'#200020',s:'#c77dff',t:'#e0aaff'},{bg:'#001500',s:'#80b918',t:'#aacc00'},{bg:'#20000a',s:'#ef233c',t:'#ff6b81'}];
+
+/* ══ DRAW ════════════════════════════════════════════════ */
+function draw(){
+  ctx.clearRect(0,0,W,W);
+  const active=players.filter(p=>!p.eliminated);
+  updateHUD();
+  if(!active.length){
+    ctx.save();ctx.beginPath();ctx.arc(CX,CX,R,0,Math.PI*2);ctx.fillStyle='#070711';ctx.fill();
+    ctx.strokeStyle='rgba(0,245,255,.06)';ctx.lineWidth=1;ctx.setLineDash([6,6]);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='rgba(0,245,255,.15)';ctx.font='bold 17px Tajawal';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('لا يوجد مشاركين',CX,CX-10);ctx.font='13px Tajawal';ctx.fillStyle='rgba(255,255,255,.06)';
+    ctx.fillText('اكتبوا !دخول في الشات',CX,CX+14);ctx.restore();return;
+  }
+  const arc=(2*Math.PI)/active.length;
+  active.forEach((p,i)=>{
+    const c=PAL[i%PAL.length];const s=i*arc+angle,e=s+arc,m=s+arc/2;
+    ctx.beginPath();ctx.moveTo(CX,CX);ctx.arc(CX,CX,R,s,e);ctx.closePath();ctx.fillStyle=c.bg;ctx.fill();
+    ctx.beginPath();ctx.arc(CX,CX,R,s,e);ctx.strokeStyle=c.s+'88';ctx.lineWidth=3;ctx.stroke();
+    ctx.beginPath();ctx.moveTo(CX,CX);ctx.lineTo(CX+Math.cos(s)*R,CX+Math.sin(s)*R);ctx.strokeStyle='rgba(0,0,0,.5)';ctx.lineWidth=1.5;ctx.stroke();
+    ctx.save();const gr=ctx.createRadialGradient(CX,CX,0,CX,CX,R);gr.addColorStop(0,c.s+'18');gr.addColorStop(.6,'transparent');
+    ctx.beginPath();ctx.moveTo(CX,CX);ctx.arc(CX,CX,R,s,e);ctx.closePath();ctx.fillStyle=gr;ctx.fill();ctx.restore();
+    if(currentWinner&&p.id===currentWinner.id){ctx.save();ctx.beginPath();ctx.moveTo(CX,CX);ctx.arc(CX,CX,R,s,e);ctx.closePath();ctx.strokeStyle='rgba(245,166,35,.5)';ctx.lineWidth=4;ctx.stroke();ctx.restore()}
+    const tr=active.length===1?70:R*.6;
+    ctx.save();ctx.translate(CX,CX);ctx.rotate(m);ctx.textAlign='right';ctx.textBaseline='middle';
+    const fs=active.length>26?10:active.length>18?12:15;
+    ctx.shadowColor=c.s;ctx.shadowBlur=8;ctx.font=`800 ${fs}px Tajawal`;ctx.fillStyle=c.t;
+    ctx.fillText(p.name,tr,active.length>12?-6:-8,145);
+    ctx.shadowBlur=0;ctx.font='600 10px Orbitron';ctx.fillStyle=c.s+'99';ctx.fillText('#'+p.id,tr,active.length>12?7:10);
+    if(protected_.has(p.id)){
+      ctx.font='bold 18px Arial';
+      ctx.textAlign='right';
+      ctx.fillStyle='#ffffff';
+      ctx.shadowColor='rgba(0,0,0,0)';ctx.shadowBlur=0;
+      ctx.fillText('🛡',tr+20,6);
+    }
+    ctx.restore();
+  });
+  ctx.beginPath();ctx.arc(CX,CX,44,0,Math.PI*2);ctx.fillStyle='#04040a';ctx.fill();
+  ctx.strokeStyle=spinning?'rgba(0,245,255,.4)':'rgba(255,255,255,.06)';ctx.lineWidth=2;ctx.stroke();
+}
+
+/* ══ HUD ═════════════════════════════════════════════════ */
+function updateHUD(){
+  const active=players.filter(p=>!p.eliminated),elim=players.filter(p=>p.eliminated);
+  document.getElementById('hud-r').textContent=String(roundNum).padStart(2,'0');
+  document.getElementById('hud-p').textContent=String(active.length).padStart(2,'0');
+  document.getElementById('hud-e').textContent=String(elim.length).padStart(2,'0');
+  document.getElementById('sbcount').textContent=active.length;
+}
+
+/* ══ STATUS ══════════════════════════════════════════════ */
+function setStatus(txt,type=''){
+  document.getElementById('sptxt').textContent=txt;
+  const d=document.getElementById('spdot');d.className='sp-dot';
+  if(type==='on')d.classList.add('on');if(type==='gold')d.classList.add('gold');
+  const pill=document.getElementById('status-pill');
+  pill.className='status-pill';
+  if(type==='kick')pill.classList.add('mode-kick');
+  if(type==='rev')pill.classList.add('mode-rev');
+  if(type==='prot')pill.classList.add('mode-prot');
+}
+
+/* ══ EVENT LOG ══════════════════════════════════════════ */
+const EV_ICONS={join:'👋',kick:'💥',rev:'💫',prot:'🛡️',win:'🏆',info:'ℹ️',conn:'🔌'};
+function addEv(text,type='info'){
+  const log=document.getElementById('evlog');
+  // remove empty placeholder
+  const empty=log.querySelector('.fp-empty');if(empty)empty.remove();
+  const now=new Date();
+  const ts=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  const el=document.createElement('div');
+  el.className=`ev-item ev-${type}`;
+  el.innerHTML=`<div class="ev-icon">${EV_ICONS[type]||'•'}</div><div class="ev-body"><div class="ev-text">${text}</div><div class="ev-time">${ts}</div></div>`;
+  log.insertBefore(el,log.firstChild);
+  // keep max 60 events
+  while(log.children.length>60)log.removeChild(log.lastChild);
+}
+function addFeed(html,type=''){
+  // map old type codes to new
+  const map={j:'join',k:'kick',w:'win',i:'info',tj:'join',tk:'kick',tw:'win',ti:'info'};
+  addEv(html,map[type]||'info');
+}
+function clearEvLog(){
+  document.getElementById('evlog').innerHTML='<div class="fp-empty">لا يوجد أحداث بعد</div>';
+}
+
+/* ══ RENDER ══════════════════════════════════════════════ */
+function renderAll(){
+  const pl=document.getElementById('plist');
+  if(!players.length){
+    pl.innerHTML='<div class="ps-empty">لا يوجد مشاركين<br>اكتب <b>!دخول</b> في الشات</div>';
+  } else {
+    pl.innerHTML=players.map(p=>{
+      const isWin=currentWinner&&p.id===currentWinner.id;
+      const cls=p.eliminated?'elim':(protected_.has(p.id)?'prot':(isWin?'wg':''));
+      const ico=p.eliminated?'✕':(protected_.has(p.id)?'🛡':(isWin?'★':'✓'));
+      const icoC=p.eliminated?'color:var(--c2)':(protected_.has(p.id)?'color:var(--c4)':(isWin?'color:var(--c3)':'color:var(--c5)'));
+      // show per-player remaining uses
+      const pu=playerUsed[p.id]||{rev:0,prot:0};
+      const revLeft=Math.max(0,limits.rev-pu.rev);
+      const protLeft=Math.max(0,limits.prot-pu.prot);
+      const usageTip=(!p.eliminated&&(limits.rev>0||limits.prot>0))?
+        `<span style="font-size:9px;color:var(--muted);margin-right:4px">${limits.rev>0?'💫'+revLeft:''}${limits.prot>0?' 🛡'+protLeft:''}</span>`:'';
+      return`<div class="sp-row ${cls}" id="sp${p.id}">
+        <span class="sp-num">${p.id}</span>
+        <span class="sp-name">${p.name}</span>
+        ${usageTip}
+        <span class="sp-ico" style="${icoC};font-size:11px">${ico}</span>
+      </div>`;
+    }).join('');
+  }
+  draw();updateHUD();
+}
+
+/* ══ ACTION LISTS ════════════════════════════════════════ */
+function openActionList(type, winnerName, ch){
+  cancelAction();
+  const typeMap={
+    kick:{list:players.filter(p=>!p.eliminated&&!(currentWinner&&p.id===currentWinner.id))},
+    rev: {list:players.filter(p=>p.eliminated)},
+    prot:{list:players.filter(p=>!p.eliminated&&!protected_.has(p.id)&&!(currentWinner&&p.id===currentWinner.id))},
+  };
+  const list=typeMap[type].list;
+  if(!list.length){
+    const msg=type==='rev'?'لا يوجد لاعبين مطرودين!':'لا يوجد لاعبين متاحين!';
+    if(twitchClient)twitchClient.say(ch,`❌ ${msg}`);
+    return;
+  }
+  // winnerName هنا دائماً هو الفائز الفعلي (تم التحقق قبل الاستدعاء)
+  pendingAction={type, winnerName, ch, list};
+  let html='';
+  if(type==='kick'){
+    html=`<div class="al-kick"><div class="al-bg">
+      <div class="al-kick-header">
+        <div class="al-kick-icon">💥</div>
+        <div><div class="al-kick-title">اختر من تطرد</div><div class="al-kick-sub">اكتب الرقم في الشات</div></div>
+        <div class="al-kick-by">@${winnerName}</div>
+      </div>
+      <div class="al-kick-list">
+        ${list.map(p=>`<div class="kick-card"><span class="kick-num">${p.id}</span><span class="kick-name">${p.name}</span></div>`).join('')}
+      </div>
+      <div class="al-kick-footer">
+        <div class="al-footer-hint"><span class="chat-icon">CHAT</span> فقط @${winnerName} يكتب الرقم</div>
+        <span class="al-timer" id="al-timer">30</span>
+        <button class="btn-al-cancel" onclick="cancelAction()">إلغاء</button>
+      </div>
+    </div></div>`;
+    setStatus(`@${winnerName} — اكتب رقم اللاعب`,'kick');
+    if(twitchClient)twitchClient.say(ch,`💥 @${winnerName} اكتب رقم اللاعب اللي تبي تطرده!`);
+  }
+  else if(type==='rev'){
+    html=`<div class="al-rev"><div class="al-bg">
+      <div class="al-rev-header">
+        <div class="al-rev-icon">💫</div>
+        <div><div class="al-rev-title">اختر من تنعش</div><div class="al-rev-sub">اكتب الرقم في الشات</div></div>
+        <div class="al-rev-by">@${winnerName}</div>
+      </div>
+      <div class="al-rev-list">
+        ${list.map(p=>`<div class="rev-card"><span class="rev-num">${p.id}</span><span class="rev-name">${p.name}</span><span class="rev-tag">مطرود</span></div>`).join('')}
+      </div>
+      <div class="al-rev-footer">
+        <div class="al-footer-hint"><span class="chat-icon">CHAT</span> فقط @${winnerName} يكتب الرقم</div>
+        <span class="al-timer" id="al-timer">30</span>
+        <button class="btn-al-cancel" onclick="cancelAction()">إلغاء</button>
+      </div>
+    </div></div>`;
+    setStatus(`@${winnerName} — اكتب رقم اللاعب`,'rev');
+    if(twitchClient)twitchClient.say(ch,`💫 @${winnerName} اكتب رقم اللاعب اللي تبي تنعشه!`);
+  }
+  else if(type==='prot'){
+    html=`<div class="al-prot"><div class="al-bg">
+      <div class="al-prot-header">
+        <div class="al-prot-icon">🛡️</div>
+        <div><div class="al-prot-title">اختر من تحمي</div><div class="al-prot-sub">اكتب الرقم في الشات</div></div>
+        <div class="al-prot-by">@${winnerName}</div>
+      </div>
+      <div class="al-prot-list">
+        ${list.map(p=>`<div class="prot-card"><span class="prot-num">${p.id}</span><span class="prot-name">${p.name}</span></div>`).join('')}
+      </div>
+      <div class="al-prot-footer">
+        <div class="al-footer-hint"><span class="chat-icon">CHAT</span> فقط @${winnerName} يكتب الرقم</div>
+        <span class="al-timer" id="al-timer">30</span>
+        <button class="btn-al-cancel" onclick="cancelAction()">إلغاء</button>
+      </div>
+    </div></div>`;
+    setStatus(`@${winnerName} — اكتب رقم اللاعب`,'prot');
+    if(twitchClient)twitchClient.say(ch,`🛡️ @${winnerName} اكتب رقم اللاعب اللي تبي تحميه!`);
+  }
+  const panel=document.getElementById('action-panel');
+  panel.innerHTML=html;panel.classList.add('show');
+  let secs=30;
+  actionTimer=setInterval(()=>{
+    secs--;
+    const t=document.getElementById('al-timer');
+    if(t)t.textContent=secs;
+    if(secs<=0){cancelAction();if(twitchClient)twitchClient.say(ch,'⏰ انتهى الوقت!')}
+  },1000);
+}
+
+function cancelAction(){
+  clearInterval(actionTimer);actionTimer=null;pendingAction=null;
+  const panel=document.getElementById('action-panel');
+  panel.classList.remove('show');panel.innerHTML='';
+  setStatus(currentWinner?`الفائز: ${currentWinner.name}`:'جاهز','gold');
+}
+
+/* ── resolveAction: per-player usage for rev/prot ── */
+function resolveAction(numStr, user, ch){
+  if(!pendingAction)return;
+  // STRICT: فقط الفائز يقدر يكتب رقم — نفس الاسم بالضبط
+  if(user.toLowerCase()!==pendingAction.winnerName.toLowerCase())return;
+  const num=parseInt(numStr);
+  if(isNaN(num))return;
+  const target=pendingAction.list.find(p=>p.id===num);
+  if(!target){
+    if(twitchClient)twitchClient.say(ch,`❌ @${user} رقم ${num} غير موجود في القائمة!`);
+    return;
+  }
+  const type=pendingAction.type;
+  cancelAction();
+
+  if(type==='kick'){
+    if(protected_.has(target.id)){
+      setStatus(`${target.name} محمي! انكسرت الحماية`,'gold');
+      addEv(`🛡 <b>${target.name}</b> كان محمياً — انكسرت الحماية`,'prot');
+      protected_.delete(target.id);renderAll();
+      animProt(target.name);
+    } else {
+      target.eliminated=true;
+      if(!kickInfinite) winnerUsed.kick++;
+      renderAll();setStatus('الفائز: '+currentWinner.name,'gold');
+      addEv(`<b>${target.name}</b> انطرد بواسطة ${user}`,'kick');
+      animKick(target.name);
+      if(twitchClient)twitchClient.say(ch,`💥 ${target.name} انطرد من العجلة!`);
+    }
+  }
+  else if(type==='rev'){
+    target.eliminated=false;
+    if(!playerUsed[currentWinner.id])playerUsed[currentWinner.id]={rev:0,prot:0};
+    playerUsed[currentWinner.id].rev++;
+    renderAll();setStatus('الفائز: '+currentWinner.name,'gold');
+    addEv(`<b>${target.name}</b> رجع للعجلة بإنعاش من ${user}`,'rev');
+    animRev(target.name);
+    if(twitchClient)twitchClient.say(ch,`💫 ${target.name} رجع للعجلة!`);
+  }
+  else if(type==='prot'){
+    protected_.add(target.id);
+    if(!playerUsed[currentWinner.id])playerUsed[currentWinner.id]={rev:0,prot:0};
+    playerUsed[currentWinner.id].prot++;
+    renderAll();setStatus('الفائز: '+currentWinner.name,'gold');
+    addEv(`<b>${user}</b> حمى <b>${target.name}</b> 🛡`,'prot');
+    animProt(target.name);
+    if(twitchClient)twitchClient.say(ch,`🛡️ ${target.name} محمي من الطرد!`);
+  }
+}
+
+/* ══ ANIMATIONS ══════════════════════════════════════════ */
+function showAnim(html){
+  const ov=document.getElementById('anim-overlay');
+  ov.innerHTML=html;ov.classList.add('show');
+  setTimeout(()=>{ov.classList.remove('show');ov.innerHTML=''},2600);
+}
+
+function animKick(name){
+  const shards=Array.from({length:14},(_,i)=>`<div class="shard" style="--r:${i*(360/14)}deg;position:absolute;top:50%;left:50%;margin:-10px 0 0 -2px"></div>`).join('');
+  showAnim(`<div class="kick-flash"></div>${shards}<div class="anim-kick"><span class="big">💥</span><div class="aname">${name}</div><div class="albl">انطرد من العجلة</div></div>`);
+}
+function animRev(name){
+  const parts=Array.from({length:10},(_,i)=>`<div class="rpart" style="--dx:${(Math.random()-.5)*100}px;position:absolute;bottom:40%;left:${38+Math.random()*24}%;animation-delay:${i*.1}s"></div>`).join('');
+  showAnim(`<div class="rev-flash"></div>${parts}<div class="anim-rev"><span class="big">💫</span><div class="aname">${name}</div><div class="albl">رجع للعجلة</div></div>`);
+}
+function animProt(name){
+  const rings=['0.5s','0.9s','1.3s'].map(d=>`<div class="pring" style="--dur:${d}"></div>`).join('');
+  showAnim(`<div class="prot-flash"></div>${rings}<div class="anim-prot"><span class="big">🛡️</span><div class="aname">${name}</div><div class="albl">محمي من الطرد</div></div>`);
+}
+
+/* ══ SPIN ════════════════════════════════════════════════ */
+function trySpinWheel(){
+  if(spinning)return;
+  const active=players.filter(p=>!p.eliminated);
+  if(!active.length){setStatus('لا يوجد مشاركين!');return;}
+  if(active.length===1){celebrate(active[0]);return;}
+  doSpin();
+}
+function doSpin(){
+  spinning=true;roundNum++;currentWinner=null;
+  winnerUsed={kick:0};playerUsed={};
+  document.getElementById('spinBtn').disabled=true;
+  document.getElementById('hub').classList.add('act','spinning');
+  document.getElementById('hub-txt').textContent='GO';
+  document.getElementById('wglow').classList.add('on');
+  setStatus('العجلة تدور...','on');updateHUD();
+  const ms=parseInt(document.getElementById('spinDur').value)*1000;
+  const a0=angle,total=(10+Math.floor(Math.random()*10))*2*Math.PI+Math.random()*2*Math.PI,af=a0+total;
+  const t0=performance.now(),ease=t=>1-Math.pow(1-t,4);
+  function frame(now){const p=Math.min((now-t0)/ms,1);angle=a0+(af-a0)*ease(p);draw();if(p<1)requestAnimationFrame(frame);else finishSpin()}
+  requestAnimationFrame(frame);
+}
+function finishSpin(){
+  spinning=false;
+  document.getElementById('spinBtn').disabled=false;
+  document.getElementById('hub').classList.remove('act','spinning');
+  document.getElementById('hub-txt').textContent='SPIN';
+  document.getElementById('wglow').classList.remove('on');
+  const active=players.filter(p=>!p.eliminated);
+  const arc=(2*Math.PI)/active.length;
+  let a=((3*Math.PI/2-angle)%(2*Math.PI)+2*Math.PI)%(2*Math.PI);
+  let idx=Math.floor(a/arc);if(idx>=active.length)idx=0;
+  celebrate(active[idx]);
+}
+
+function celebrate(w){
+  currentWinner=w;
+  winnerUsed={kick:0};
+  playerUsed={};
+  setStatus('الفائز: '+w.name,'gold');renderAll();
+  addEv(`<b>${w.name}</b> فاز بالجولة!`,'win');
+  launchConfetti();
+  let perksHtml='';
+  if(kickInfinite)perksHtml+=`<div class="w-perk kick">💥 طرد ∞</div>`;
+  else if(limits.kick>0)perksHtml+=`<div class="w-perk kick">💥 طرد ×${limits.kick}</div>`;
+  if(limits.rev>0) perksHtml+=`<div class="w-perk rev">💫 إنعاش ×${limits.rev}/لاعب</div>`;
+  if(limits.prot>0)perksHtml+=`<div class="w-perk prot">🛡 فزعة ×${limits.prot}/لاعب</div>`;
+  document.getElementById('wperks').innerHTML=perksHtml;
+  document.getElementById('wname').textContent=w.name;
+  setTimeout(()=>document.getElementById('win-overlay').classList.add('show'),400);
+  if(twitchClient){
+    const ch=document.getElementById('channelName').value.trim();
+    const k=kickInfinite?'!طرد(∞)':(limits.kick>0?`!طرد(${limits.kick}x)`:'');
+    const cmds=[k,limits.rev>0?`!انعاش(${limits.rev}x/لاعب)`:'',limits.prot>0?`!فزعه(${limits.prot}x/لاعب)`:''].filter(Boolean).join(' ');
+    twitchClient.say(ch,`🏆 الفائز هو ${w.name}! صلاحياتك: ${cmds||'لا يوجد'} 🎉`);
+  }
+}
+function closeWin(){document.getElementById('win-overlay').classList.remove('show')}
+
+/* ══ CLEAR ═══════════════════════════════════════════════ */
+function clearAll(){
+  if(players.length&&!confirm('حذف جميع المشاركين؟'))return;
+  players=[];protected_.clear();roundNum=0;currentWinner=null;
+  winnerUsed={kick:0};playerUsed={};cancelAction();
+  renderAll();setStatus('تم مسح القائمة');addEv('تم مسح القائمة','info');
+}
+
+/* ══ CONFETTI ════════════════════════════════════════════ */
+const cfC=document.getElementById('cfx'),cfX=cfC.getContext('2d');let cfPcs=[],cfOn=false;
+const CFC=['#00f5ff','#ff3cac','#f5a623','#7928ca','#00ff88','#ffffff'];
+function launchConfetti(){cfC.width=innerWidth;cfC.height=innerHeight;cfPcs=Array.from({length:130},()=>({x:Math.random()*cfC.width,y:-20,vx:(Math.random()-.5)*6,vy:2.5+Math.random()*5,rot:Math.random()*360,rs:(Math.random()-.5)*10,w:5+Math.random()*10,h:3+Math.random()*6,col:CFC[Math.floor(Math.random()*CFC.length)],shape:Math.random()>.5?'r':'c',alpha:.8+Math.random()*.2}));if(!cfOn){cfOn=true;cfLoop()}}
+function cfLoop(){cfX.clearRect(0,0,cfC.width,cfC.height);cfPcs=cfPcs.filter(p=>p.y<cfC.height+20);cfPcs.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.rot+=p.rs;cfX.save();cfX.globalAlpha=p.alpha;cfX.translate(p.x,p.y);cfX.rotate(p.rot*Math.PI/180);cfX.fillStyle=p.col;if(p.shape==='c'){cfX.beginPath();cfX.arc(0,0,p.w/2,0,Math.PI*2);cfX.fill()}else cfX.fillRect(-p.w/2,-p.h/2,p.w,p.h);cfX.restore()});if(cfPcs.length)requestAnimationFrame(cfLoop);else{cfOn=false;cfX.clearRect(0,0,cfC.width,cfC.height)}}
+
+/* ══ TWITCH ══════════════════════════════════════════════ */
+function connectTwitch(){
+  const ch=document.getElementById('channelName').value.trim();
+  if(!ch){alert('يرجى إدخال اسم القناة');return;}
+  setStatus('جاري الاتصال...');
+  if(twitchClient){try{twitchClient.disconnect()}catch(e){}}
+  const client=new tmi.Client({connection:{reconnect:true,secure:true},channels:[ch]});
+  client.connect().then(()=>{
+    twitchClient=client;setStatus('متصل بـ '+ch,'on');
+    document.getElementById('connBtn').textContent='متصل ✓';document.getElementById('connBtn').classList.add('on');
+    document.getElementById('liveind').classList.add('on');document.getElementById('livebadge').style.opacity='1';
+    client.say(ch,'🎡 عجلة الشخصنة جاهزة! اكتبوا !دخول للمشاركة 🎉');
+    addEv(`متصل بشات <b>${ch}</b>`,'conn');
+  }).catch(()=>{setStatus('فشل الاتصال ← تأكد من اسم القناة');document.getElementById('connBtn').textContent='إعادة محاولة'});
+  client.on('message',(c,tags,msg,self)=>{if(self)return;handleCmd(tags,msg.trim(),c)});
+}
+
+/* ══ COMMANDS ════════════════════════════════════════════ */
+function handleCmd(tags,msg,ch){
+  const user=tags['display-name']||tags.username;
+  const isMod=!!(tags.mod||tags.badges?.broadcaster);
+  const raw=msg.trim();
+  const cmd=raw.split(' ')[0].toLowerCase();
+
+  // ══ GATE 1: لما القائمة مفتوحة ══
+  // أي رسالة من أي شخص — نتحقق: هو الفائز؟
+  // إذا رقم وهو الفائز → ننفذ. بخلاف ذلك → تجاهل تام بلا رد
+  if(pendingAction){
+    const isThisWinner=(user.toLowerCase()===pendingAction.winnerName.toLowerCase());
+    if(/^\d+$/.test(raw)){
+      if(isThisWinner) resolveAction(raw,user,ch);
+      // أي شخص آخر يكتب رقم — صمت مطبق
+      return;
+    }
+    // أي أمر من أي شخص غير الفائز وهي القائمة مفتوحة — صمت
+    if(!isThisWinner) return;
+  }
+
+  // ══ GATE 2: !دخول مفتوح للكل دائماً ══
+  if(cmd==='!دخول'){
+    if(players.find(p=>p.name.toLowerCase()===user.toLowerCase()))return;
+    const id=players.length?Math.max(...players.map(p=>p.id))+1:1;
+    players.push({id,name:user,eliminated:false});renderAll();
+    setStatus(`${user} دخل العجلة!`);
+    addEv(`<b>${user}</b> انضم (#${id})`,'join');
+    return;
+  }
+
+  // ══ GATE 3: !لاعبين مفتوح للكل ══
+  if(cmd==='!لاعبين'){
+    const n=players.filter(p=>!p.eliminated).length;
+    twitchClient&&twitchClient.say(ch,`👥 المشاركين: ${n} لاعب`);
+    return;
+  }
+
+  // ══ GATE 4: !تصفير للمودز فقط ══
+  if(cmd==='!تصفير'&&isMod){
+    players=[];protected_.clear();roundNum=0;currentWinner=null;
+    winnerUsed={kick:0};playerUsed={};cancelAction();
+    renderAll();setStatus('تم تصفير القائمة');
+    addEv('تصفير بواسطة '+user,'info');
+    twitchClient&&twitchClient.say(ch,'🗑 تم تصفير قائمة العجلة');
+    return;
+  }
+
+  // ══ GATE 5: باقي الأوامر — الفائز الحالي فقط، بدون استثناء ══
+  const isWinner=!!(currentWinner&&currentWinner.name.toLowerCase()===user.toLowerCase());
+  if(!isWinner){
+    // أي شخص غير الفائز يكتب !طرد/!انعاش/!فزعه — صمت مطبق (لا رد)
+    return;
+  }
+
+  // من هنا: المستخدم هو الفائز بالتأكيد
+  if(cmd==='!طرد'){
+    if(!kickInfinite&&winnerUsed.kick>=limits.kick){
+      twitchClient&&twitchClient.say(ch,`❌ @${user} استنفدت الطرد! (${limits.kick}/${limits.kick})`);
+      return;
+    }
+    openActionList('kick',user,ch);
+    return;
+  }
+
+  if(cmd==='!انعاش'){
+    const pu=playerUsed[currentWinner.id]||{rev:0,prot:0};
+    if(pu.rev>=limits.rev){
+      twitchClient&&twitchClient.say(ch,`❌ @${user} استنفدت الإنعاش! (${limits.rev}/${limits.rev})`);
+      return;
+    }
+    openActionList('rev',user,ch);
+    return;
+  }
+
+  if(cmd==='!فزعه'){
+    const pu=playerUsed[currentWinner.id]||{rev:0,prot:0};
+    if(pu.prot>=limits.prot){
+      twitchClient&&twitchClient.say(ch,`❌ @${user} استنفدت الفزعة! (${limits.prot}/${limits.prot})`);
+      return;
+    }
+    openActionList('prot',user,ch);
+    return;
+  }
+}
+
+/* ══ INIT ════════════════════════════════════════════════ */
+draw();renderAll();setStatus('اتصل بقناتك لتبدأ');
+addEv('العجلة جاهزة! اتصل بالقناة وابدأ 🎡','info');
+</script>
+</body>
+</html>
