@@ -3,13 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <title>🎯 لعبة الكلمات المبعثرة - النسخة الفاخرة</title>
-  <!-- خط Cairo -->
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <script src="tmi.min.js"></script>
+  <script src="tmi.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tmi.js@1.8.5/dist/tmi.min.js"></script>
   <style>
     :root {
-      /* الألوان الرئيسية */
       --primary: #ff3b5c;
       --primary-dark: #d32f4e;
       --primary-light: #ff6b8b;
@@ -24,8 +22,6 @@
       --info-dark: #0077cc;
       --danger: #ff3333;
       --danger-dark: #cc0000;
-      
-      /* الألوان المحايدة */
       --dark-1: #0a0b14;
       --dark-2: #0e0f1a;
       --dark-3: #1a1b26;
@@ -34,36 +30,29 @@
       --light-2: #e9ecef;
       --light-3: #dee2e6;
       --light-4: #ced4da;
-      
-      /* التدرجات */
       --gradient-primary: linear-gradient(135deg, var(--primary), var(--accent));
       --gradient-dark: linear-gradient(135deg, var(--dark-1), var(--dark-3));
       --gradient-success: linear-gradient(135deg, var(--success), var(--info));
       --gradient-warning: linear-gradient(135deg, var(--warning), var(--danger));
-      
-      /* الظلال */
+      --gradient-blue: linear-gradient(135deg, #0099ff, #004e8a);
+      --gradient-red: linear-gradient(135deg, #ff3333, #8a0000);
       --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
       --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.2);
       --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.3);
       --shadow-xl: 0 16px 64px rgba(0, 0, 0, 0.4);
       --shadow-primary: 0 4px 20px rgba(255, 59, 92, 0.3);
       --shadow-accent: 0 4px 20px rgba(145, 70, 255, 0.3);
-      
-      /* الزوايا */
       --radius-sm: 8px;
       --radius-md: 16px;
       --radius-lg: 24px;
       --radius-xl: 32px;
       --radius-full: 9999px;
-      
-      /* الأنيميشن */
       --transition-fast: 150ms ease;
       --transition-normal: 300ms ease;
       --transition-slow: 500ms ease;
       --transition-bounce: 500ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
     }
 
-    /* إعادة الضبط */
     * {
       margin: 0;
       padding: 0;
@@ -78,7 +67,6 @@
       overflow-x: hidden;
     }
 
-    /* الخلفية المتقدمة */
     .bg-animation {
       position: fixed;
       top: 0;
@@ -96,24 +84,6 @@
       animation: gradientBG 15s ease infinite;
     }
 
-    .particles {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -2;
-      pointer-events: none;
-    }
-
-    .particle {
-      position: absolute;
-      background: var(--primary);
-      border-radius: 50%;
-      opacity: 0.1;
-      animation: float 20s infinite linear;
-    }
-
     .glow-effect {
       position: fixed;
       top: 50%;
@@ -129,7 +99,14 @@
       pointer-events: none;
     }
 
-    /* الأنيميشنات */
+    .particle {
+      position: absolute;
+      background: var(--primary);
+      border-radius: 50%;
+      opacity: 0.1;
+      animation: float 20s infinite linear;
+    }
+
     @keyframes gradientBG {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
@@ -146,9 +123,24 @@
       50% { transform: scale(1.05); }
     }
 
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 20px rgba(255, 59, 92, 0.3); }
+      50% { box-shadow: 0 0 40px rgba(255, 59, 92, 0.6); }
+    }
+
     @keyframes slideIn {
       from { transform: translateY(-20px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes slideInRight {
+      from { transform: translateX(50px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes slideInLeft {
+      from { transform: translateX(-50px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
     }
 
     @keyframes fadeIn {
@@ -161,17 +153,11 @@
       to { opacity: 0; }
     }
 
-    @keyframes glow {
-      0%, 100% { box-shadow: 0 0 20px var(--primary); }
-      50% { box-shadow: 0 0 40px var(--primary); }
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
     }
 
-    @keyframes typing {
-      from { width: 0; }
-      to { width: 100%; }
-    }
-
-    /* الهيكل الرئيسي */
     .container {
       max-width: 1800px;
       margin: 0 auto;
@@ -180,13 +166,13 @@
       z-index: 1;
     }
 
-    /* الشريط العلوي */
+    /* ============ الشريط العلوي ============ */
     .top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 30px;
-      padding: 20px;
+      padding: 20px 28px;
       background: rgba(26, 27, 38, 0.8);
       backdrop-filter: blur(10px);
       border-radius: var(--radius-lg);
@@ -213,13 +199,8 @@
       animation: pulse 2s infinite;
     }
 
-    .logo-text {
-      display: flex;
-      flex-direction: column;
-    }
-
     .logo-text h1 {
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 800;
       background: linear-gradient(135deg, var(--primary), var(--accent));
       -webkit-background-clip: text;
@@ -228,18 +209,18 @@
     }
 
     .logo-text span {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--light-3);
       font-weight: 300;
     }
 
-    /* الأزرار */
+    /* ============ الأزرار ============ */
     .btn {
-      padding: 12px 24px;
+      padding: 12px 22px;
       border: none;
       border-radius: var(--radius-md);
       font-family: 'Cairo', sans-serif;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
       cursor: pointer;
       transition: all var(--transition-fast);
@@ -249,6 +230,7 @@
       gap: 8px;
       position: relative;
       overflow: hidden;
+      white-space: nowrap;
     }
 
     .btn::before {
@@ -262,46 +244,16 @@
       transition: left var(--transition-normal);
     }
 
-    .btn:hover::before {
-      left: 100%;
-    }
+    .btn:hover::before { left: 100%; }
+    .btn:hover { transform: translateY(-2px); }
 
-    .btn-primary {
-      background: var(--gradient-primary);
-      color: white;
-      box-shadow: var(--shadow-primary);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.2);
-      transform: translateY(-2px);
-    }
-
-    .btn-success {
-      background: var(--gradient-success);
-      color: white;
-    }
-
-    .btn-warning {
-      background: var(--gradient-warning);
-      color: white;
-    }
-
-    .btn-danger {
-      background: linear-gradient(135deg, var(--danger), var(--danger-dark));
-      color: white;
-    }
+    .btn-primary { background: var(--gradient-primary); color: white; box-shadow: var(--shadow-primary); }
+    .btn-secondary { background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.2); }
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.2); }
+    .btn-success { background: var(--gradient-success); color: white; }
+    .btn-warning { background: var(--gradient-warning); color: white; }
+    .btn-info { background: linear-gradient(135deg, var(--info), var(--info-dark)); color: white; }
+    .btn-danger { background: linear-gradient(135deg, var(--danger), var(--danger-dark)); color: white; }
 
     .btn-icon {
       width: 40px;
@@ -310,22 +262,612 @@
       border-radius: var(--radius-full);
     }
 
-    /* البطاقات */
+    /* ============ منطقة اللعبة الرئيسية - شبكة منظمة ============ */
+    .game-stage {
+      display: grid;
+      grid-template-columns: 320px 1fr 320px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 1300px) {
+      .game-stage {
+        grid-template-columns: 280px 1fr 280px;
+        gap: 18px;
+      }
+    }
+
+    @media (max-width: 1100px) {
+      .game-stage {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+    }
+
+    /* ============ مربعات الفريقين - تصميم منظم وأنيق ============ */
+    .team-panel {
+      background: rgba(26, 27, 38, 0.85);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius-lg);
+      border: 2px solid;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 20px;
+    }
+
+    .team-blue {
+      border-color: var(--info);
+      box-shadow: 0 0 25px rgba(0, 153, 255, 0.25);
+      animation: slideInRight var(--transition-normal);
+    }
+
+    .team-red {
+      border-color: var(--danger);
+      box-shadow: 0 0 25px rgba(255, 51, 51, 0.25);
+      animation: slideInLeft var(--transition-normal);
+    }
+
+    /* رأس مربع الفريق */
+    .team-header {
+      padding: 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .team-blue .team-header {
+      background: linear-gradient(135deg, rgba(0, 153, 255, 0.25), rgba(0, 119, 204, 0.1));
+      border-bottom: 2px solid rgba(0, 153, 255, 0.3);
+    }
+
+    .team-red .team-header {
+      background: linear-gradient(135deg, rgba(255, 51, 51, 0.25), rgba(204, 0, 0, 0.1));
+      border-bottom: 2px solid rgba(255, 51, 51, 0.3);
+    }
+
+    .team-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+      animation: shimmer 3s infinite;
+    }
+
+    .team-name {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .team-blue .team-name { color: #4db8ff; }
+    .team-red .team-name { color: #ff6666; }
+
+    .team-score-box {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 28px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .team-score-number {
+      font-size: 42px;
+      font-weight: 900;
+      line-height: 1;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    .team-blue .team-score-number { color: var(--info); text-shadow: 0 0 15px rgba(0, 153, 255, 0.5); }
+    .team-red .team-score-number { color: var(--danger); text-shadow: 0 0 15px rgba(255, 51, 51, 0.5); }
+
+    .team-score-label {
+      font-size: 12px;
+      color: var(--light-3);
+      margin-top: 4px;
+      letter-spacing: 1px;
+    }
+
+    /* عداد اللاعبين */
+    .team-stats {
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 16px;
+      background: rgba(0, 0, 0, 0.2);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .team-stat {
+      text-align: center;
+    }
+
+    .team-stat-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .team-stat-label {
+      font-size: 11px;
+      color: var(--light-3);
+      margin-top: 2px;
+    }
+
+    /* قائمة اللاعبين */
+    .players-list {
+      max-height: 480px;
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .players-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .players-list::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 3px;
+    }
+
+    .players-list::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+    }
+
+    .players-list::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .player-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all var(--transition-fast);
+    }
+
+    .player-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateX(-3px);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .player-item.current-turn {
+      background: linear-gradient(135deg, rgba(255, 59, 92, 0.25), rgba(145, 70, 255, 0.15));
+      border-color: var(--primary);
+      animation: pulseGlow 2s infinite;
+      transform: scale(1.02);
+    }
+
+    .player-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .player-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 15px;
+      flex-shrink: 0;
+      color: white;
+    }
+
+    .team-blue .player-avatar { background: var(--gradient-blue); }
+    .team-red .player-avatar { background: var(--gradient-red); }
+
+    .player-details {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .player-name {
+      font-weight: 600;
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .player-turn-indicator {
+      font-size: 11px;
+      color: var(--primary);
+      font-weight: 600;
+      margin-top: 2px;
+      animation: fadeIn 0.5s;
+    }
+
+    .player-remove-btn {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      border: none;
+      background: rgba(255, 51, 51, 0.15);
+      color: var(--danger);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      font-size: 12px;
+      transition: all var(--transition-fast);
+      flex-shrink: 0;
+      opacity: 0.6;
+    }
+
+    .player-item:hover .player-remove-btn {
+      opacity: 1;
+    }
+
+    .player-remove-btn:hover {
+      background: var(--danger);
+      color: white;
+      transform: scale(1.1);
+    }
+
+    .empty-team {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--light-3);
+    }
+
+    .empty-team-icon {
+      font-size: 48px;
+      margin-bottom: 14px;
+      opacity: 0.5;
+    }
+
+    .empty-team-text {
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .empty-team-cmd {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 6px 14px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-full);
+      font-size: 13px;
+      font-family: monospace;
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    /* ============ مربع اللعبة المركزي - تنظيم محسّن ============ */
+    .game-area {
+      background: rgba(26, 27, 38, 0.85);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius-xl);
+      border: 3px solid var(--primary);
+      box-shadow: 
+        var(--shadow-xl),
+        0 0 40px rgba(255, 59, 92, 0.25),
+        inset 0 0 40px rgba(255, 59, 92, 0.05);
+      overflow: hidden;
+      animation: slideIn var(--transition-normal);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* القسم 1: شريط أزرار التحكم */
+    .game-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      background: linear-gradient(135deg, rgba(255, 59, 92, 0.1), rgba(145, 70, 255, 0.05));
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      flex-wrap: wrap;
+    }
+
+    .controls-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* القسم 2: عرض اللاعب الحالي */
+    .player-turn-section {
+      padding: 24px 20px 16px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.2);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .current-player-display {
+      display: inline-flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 28px;
+      background: rgba(255, 59, 92, 0.15);
+      border-radius: var(--radius-lg);
+      border: 2px solid var(--primary);
+      min-width: 280px;
+      justify-content: center;
+    }
+
+    .current-player-icon {
+      font-size: 28px;
+    }
+
+    .current-player-info {
+      text-align: right;
+    }
+
+    .current-player-name {
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .current-player-team {
+      font-size: 13px;
+      color: var(--light-3);
+      margin-top: 3px;
+    }
+
+    /* القسم 3: الكلمة المبعثرة */
+    .word-section {
+      padding: 30px 20px;
+      position: relative;
+    }
+
+    .difficulty-badge {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--warning), var(--danger));
+      color: white;
+      padding: 7px 18px;
+      border-radius: var(--radius-full);
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: var(--shadow-md);
+      z-index: 2;
+      white-space: nowrap;
+    }
+
+    .scrambled-word {
+      font-size: 80px;
+      font-weight: 900;
+      letter-spacing: 16px;
+      line-height: 1.2;
+      text-align: center;
+      min-height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 20px;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: var(--radius-lg);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      margin-top: 16px;
+    }
+
+    .word-letters {
+      color: white;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    @media (max-width: 768px) {
+      .scrambled-word {
+        font-size: 44px;
+        letter-spacing: 8px;
+        min-height: 100px;
+        padding: 20px 10px;
+      }
+      .difficulty-badge {
+        font-size: 12px;
+        padding: 5px 14px;
+      }
+    }
+
+    /* القسم 4: المؤقت */
+    .timer-section {
+      padding: 0 20px 24px;
+    }
+
+    .timer-display {
+      font-size: 32px;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 14px;
+      font-family: monospace;
+    }
+
+    .progress-bar {
+      height: 16px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--gradient-primary);
+      width: 100%;
+      transition: width 1s linear;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      animation: shimmer 2s infinite;
+    }
+
+    /* القسم 5: نتيجة التخمين */
+    .guess-result-section {
+      padding: 0 20px 20px;
+      min-height: 30px;
+    }
+
+    /* القسم 6: لوحة النقاط السفلية */
+    .scoreboard {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.25);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .score-item {
+      text-align: center;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all var(--transition-fast);
+    }
+
+    .score-item:hover {
+      transform: translateY(-2px);
+    }
+
+    .score-item.blue { border-color: rgba(0, 153, 255, 0.4); }
+    .score-item.red { border-color: rgba(255, 51, 51, 0.4); }
+
+    .score-label {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .score-item.blue .score-label { color: var(--info); }
+    .score-item.red .score-label { color: var(--danger); }
+
+    .score-value {
+      font-size: 42px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .score-item.blue .score-value { color: var(--info); }
+    .score-item.red .score-value { color: var(--danger); }
+
+    /* ============ صناديق ثابتة ============ */
+    .answer-box {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(26, 27, 38, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      border: 2px solid var(--accent);
+      box-shadow: var(--shadow-xl);
+      z-index: 1000;
+      animation: slideIn var(--transition-normal);
+      min-width: 240px;
+    }
+
+    .answer-box h4 {
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: var(--accent);
+    }
+
+    .answer-text {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--success);
+      margin-bottom: 12px;
+      text-align: center;
+      padding: 8px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: var(--radius-sm);
+    }
+
+    .stats-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      width: 56px;
+      height: 56px;
+      animation: pulse 2s infinite;
+    }
+
+    /* ============ المودالات ============ */
+    .modal-backdrop {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      z-index: 1900;
+      display: none;
+      animation: fadeIn var(--transition-normal);
+    }
+
+    .modal-backdrop.active { display: block; }
+
+    .modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 1000px;
+      z-index: 2000;
+      display: none;
+      animation: slideIn var(--transition-bounce);
+    }
+
+    .modal.active { display: block; }
+
+    .modal-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .modal-grid { grid-template-columns: 1fr; }
+    }
+
     .card {
-      background: rgba(26, 27, 38, 0.8);
+      background: rgba(26, 27, 38, 0.95);
       backdrop-filter: blur(10px);
       border-radius: var(--radius-lg);
       border: 1px solid rgba(255, 255, 255, 0.1);
       padding: 24px;
       box-shadow: var(--shadow-lg);
-      transition: all var(--transition-normal);
-      animation: slideIn var(--transition-normal);
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-xl);
-      border-color: rgba(255, 59, 92, 0.3);
     }
 
     .card-header {
@@ -345,72 +887,8 @@
       gap: 10px;
     }
 
-    /* الأقسام القابلة للطي */
-    .collapsible-section {
-      margin-bottom: 20px;
-    }
-
-    .section-header {
-      background: rgba(42, 43, 58, 0.8);
-      padding: 20px;
-      border-radius: var(--radius-md);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-      transition: all var(--transition-fast);
-      border: 1px solid transparent;
-    }
-
-    .section-header:hover {
-      background: rgba(42, 43, 58, 1);
-      border-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .section-header.open {
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
-      border-color: var(--primary);
-    }
-
-    .section-header h3 {
-      font-size: 18px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .toggle-icon {
-      transition: transform var(--transition-fast);
-    }
-
-    .section-header.open .toggle-icon {
-      transform: rotate(180deg);
-    }
-
-    .section-content {
-      background: rgba(26, 27, 38, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-top: none;
-      border-radius: 0 0 var(--radius-md) var(--radius-md);
-      padding: 20px;
-      display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 20px;
-      animation: fadeIn var(--transition-normal);
-    }
-
-    @media (max-width: 1200px) {
-      .section-content {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* نماذج الإدخال */
-    .form-group {
-      margin-bottom: 20px;
-    }
+    /* ============ نماذج الإدخال ============ */
+    .form-group { margin-bottom: 18px; }
 
     .form-label {
       display: block;
@@ -422,13 +900,13 @@
 
     .form-control {
       width: 100%;
-      padding: 14px 16px;
+      padding: 12px 16px;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: var(--radius-md);
       color: white;
       font-family: 'Cairo', sans-serif;
-      font-size: 16px;
+      font-size: 15px;
       transition: all var(--transition-fast);
     }
 
@@ -442,463 +920,14 @@
       appearance: none;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
-      background-position: right 16px center;
+      background-position: right 12px center;
       background-size: 20px;
-      padding-right: 50px;
+      padding-right: 40px;
     }
 
-    /* الشبكات */
-    .grid {
-      display: grid;
-      gap: 20px;
-    }
+    .grid { display: grid; gap: 16px; }
+    .grid-2 { grid-template-columns: repeat(2, 1fr); }
 
-    .grid-2 {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    .grid-3 {
-      grid-template-columns: repeat(3, 1fr);
-    }
-
-    .grid-4 {
-      grid-template-columns: repeat(4, 1fr);
-    }
-
-    @media (max-width: 768px) {
-      .grid-2, .grid-3, .grid-4 {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* منطقة اللعبة */
-    .game-stage {
-      display: grid;
-      grid-template-columns: 1fr 2fr 1fr;
-      gap: 30px;
-      margin-top: 30px;
-    }
-
-    @media (max-width: 1200px) {
-      .game-stage {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .team-panel {
-      background: rgba(26, 27, 38, 0.8);
-      backdrop-filter: blur(10px);
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      border: 2px solid;
-      box-shadow: var(--shadow-lg);
-      animation: slideIn var(--transition-normal);
-    }
-
-    .team-blue {
-      border-color: var(--info);
-      box-shadow: 0 0 20px rgba(0, 153, 255, 0.2);
-    }
-
-    .team-red {
-      border-color: var(--danger);
-      box-shadow: 0 0 20px rgba(255, 51, 51, 0.2);
-    }
-
-    .team-header {
-      text-align: center;
-      margin-bottom: 20px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .team-header h3 {
-      font-size: 22px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .players-list {
-      max-height: 400px;
-      overflow-y: auto;
-      padding: 16px;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: var(--radius-md);
-    }
-
-    .player-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 16px;
-      margin-bottom: 8px;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: var(--radius-md);
-      border: 1px solid transparent;
-      transition: all var(--transition-fast);
-    }
-
-    .player-item:hover {
-      background: rgba(255, 255, 255, 0.1);
-      transform: translateX(5px);
-    }
-
-    .player-item.current-turn {
-      background: rgba(255, 59, 92, 0.2);
-      border-color: var(--primary);
-      animation: pulse 2s infinite;
-    }
-
-    .player-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .player-avatar {
-      width: 40px;
-      height: 40px;
-      background: var(--gradient-primary);
-      border-radius: var(--radius-full);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-    }
-
-    .player-name {
-      font-weight: 600;
-      font-size: 16px;
-    }
-
-    .player-turn-indicator {
-      font-size: 12px;
-      color: var(--primary);
-      font-weight: 500;
-    }
-
-    /* منطقة اللعبة المركزية */
-    .game-area {
-      background: rgba(26, 27, 38, 0.8);
-      backdrop-filter: blur(10px);
-      border-radius: var(--radius-xl);
-      padding: 32px;
-      border: 3px solid var(--primary);
-      box-shadow: 
-        var(--shadow-xl),
-        0 0 40px rgba(255, 59, 92, 0.3),
-        inset 0 0 40px rgba(255, 59, 92, 0.1);
-      animation: slideIn var(--transition-normal);
-    }
-
-    .game-controls {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-      padding: 20px;
-      background: rgba(42, 43, 58, 0.8);
-      border-radius: var(--radius-lg);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .game-info {
-      text-align: center;
-      margin: 30px 0;
-    }
-
-    .current-player-display {
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 20px;
-      padding: 16px 32px;
-      background: rgba(255, 59, 92, 0.2);
-      border-radius: var(--radius-lg);
-      border: 2px solid var(--primary);
-      display: inline-block;
-    }
-
-    .word-container {
-      margin: 40px 0;
-      position: relative;
-    }
-
-    .difficulty-badge {
-      position: absolute;
-      top: -15px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: linear-gradient(135deg, var(--warning), var(--danger));
-      color: white;
-      padding: 8px 20px;
-      border-radius: var(--radius-full);
-      font-size: 16px;
-      font-weight: 600;
-      box-shadow: var(--shadow-md);
-      z-index: 2;
-      white-space: nowrap;
-    }
-
-    .scrambled-word {
-      font-size: 96px;
-      font-weight: 900;
-      letter-spacing: 20px;
-      line-height: 1.2;
-      text-align: center;
-      min-height: 150px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 20px;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: var(--radius-lg);
-      border: 2px solid rgba(255, 255, 255, 0.1);
-      margin-top: 20px;
-      animation: pulse 3s infinite;
-    }
-
-    .word-letters {
-      color: white;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    @media (max-width: 768px) {
-      .scrambled-word {
-        font-size: 48px;
-        letter-spacing: 10px;
-        min-height: 100px;
-        padding: 20px 10px;
-      }
-      
-      .difficulty-badge {
-        font-size: 14px;
-        padding: 6px 15px;
-        top: -12px;
-      }
-    }
-
-    .timer-container {
-      margin: 40px auto;
-      max-width: 600px;
-    }
-
-    .timer-display {
-      font-size: 36px;
-      font-weight: 800;
-      text-align: center;
-      margin-bottom: 20px;
-      font-family: monospace;
-    }
-
-    .progress-bar {
-      height: 20px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: var(--radius-full);
-      overflow: hidden;
-      border: 2px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: var(--gradient-primary);
-      width: 100%;
-      transition: width 1s linear;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .progress-fill::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.4), 
-        transparent);
-      animation: shimmer 2s infinite;
-    }
-
-    @keyframes shimmer {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
-    }
-
-    .scoreboard {
-      display: flex;
-      justify-content: center;
-      gap: 60px;
-      margin-top: 40px;
-      padding: 24px;
-      background: rgba(42, 43, 58, 0.8);
-      border-radius: var(--radius-lg);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .score-item {
-      text-align: center;
-    }
-
-    .score-label {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-
-    .score-value {
-      font-size: 48px;
-      font-weight: 900;
-      background: var(--gradient-primary);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    /* صندوق الإجابة */
-    .answer-box {
-      position: fixed;
-      bottom: 30px;
-      left: 30px;
-      background: rgba(26, 27, 38, 0.95);
-      backdrop-filter: blur(10px);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      border: 2px solid var(--accent);
-      box-shadow: var(--shadow-xl);
-      z-index: 1000;
-      animation: slideIn var(--transition-normal);
-    }
-
-    .answer-box h4 {
-      font-size: 18px;
-      margin-bottom: 10px;
-      color: var(--accent);
-    }
-
-    .answer-text {
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--success);
-      margin-bottom: 15px;
-    }
-
-    /* الإحصائيات */
-    .stats-button {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      z-index: 1000;
-      width: 60px;
-      height: 60px;
-      animation: pulse 2s infinite;
-    }
-
-    .stats-panel {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 90%;
-      max-width: 1200px;
-      max-height: 90vh;
-      overflow-y: auto;
-      z-index: 2000;
-      display: none;
-      animation: fadeIn var(--transition-normal);
-    }
-
-    .stats-panel.active {
-      display: block;
-    }
-
-    /* الشات المؤقت */
-    .chat-flash {
-      position: fixed;
-      top: 100px;
-      right: 30px;
-      width: 300px;
-      max-height: 400px;
-      overflow-y: auto;
-      z-index: 900;
-      display: none;
-      background: rgba(26, 27, 38, 0.95);
-      backdrop-filter: blur(10px);
-      border-radius: var(--radius-lg);
-      border: 2px solid var(--info);
-      box-shadow: var(--shadow-xl);
-      padding: 15px;
-    }
-
-    .chat-flash.active {
-      display: block;
-      animation: fadeIn 0.3s ease;
-    }
-
-    .chat-flash.fading {
-      animation: fadeOut 0.3s ease forwards;
-    }
-
-    .chat-message {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: var(--radius-md);
-      padding: 12px 16px;
-      margin-bottom: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      animation: slideIn 0.3s ease;
-    }
-
-    /* المودال */
-    .modal-backdrop {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(5px);
-      z-index: 1900;
-      display: none;
-      animation: fadeIn var(--transition-normal);
-    }
-
-    .modal-backdrop.active {
-      display: block;
-    }
-
-    .modal {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 90%;
-      max-width: 1000px;
-      z-index: 2000;
-      display: none;
-      animation: slideIn var(--transition-bounce);
-    }
-
-    .modal.active {
-      display: block;
-    }
-
-    .modal-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-
-    @media (max-width: 768px) {
-      .modal-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* تخصيصات */
     .status-chip {
       display: inline-flex;
       align-items: center;
@@ -925,23 +954,16 @@
     .switch {
       position: relative;
       display: inline-block;
-      width: 50px;
-      height: 28px;
+      width: 46px;
+      height: 26px;
     }
 
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
+    .switch input { opacity: 0; width: 0; height: 0; }
 
     .slider {
       position: absolute;
       cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      top: 0; left: 0; right: 0; bottom: 0;
       background-color: rgba(255, 255, 255, 0.1);
       transition: var(--transition-fast);
       border-radius: var(--radius-full);
@@ -950,8 +972,8 @@
     .slider:before {
       position: absolute;
       content: "";
-      height: 20px;
-      width: 20px;
+      height: 18px;
+      width: 18px;
       left: 4px;
       bottom: 4px;
       background-color: white;
@@ -959,20 +981,15 @@
       border-radius: 50%;
     }
 
-    input:checked + .slider {
-      background-color: var(--primary);
-    }
+    input:checked + .slider { background-color: var(--primary); }
+    input:checked + .slider:before { transform: translateX(20px); }
 
-    input:checked + .slider:before {
-      transform: translateX(22px);
-    }
-
-    /* التنبيهات */
+    /* ============ التنبيهات ============ */
     .notification {
       position: fixed;
       top: 30px;
       right: 30px;
-      padding: 20px;
+      padding: 18px;
       background: rgba(26, 27, 38, 0.95);
       backdrop-filter: blur(10px);
       border-radius: var(--radius-lg);
@@ -981,43 +998,53 @@
       z-index: 3000;
       animation: slideIn var(--transition-normal);
       display: none;
-      max-width: 400px;
+      max-width: 380px;
     }
 
-    .notification.success {
-      border-left-color: var(--success);
+    .notification.success { border-left-color: var(--success); }
+    .notification.error { border-left-color: var(--danger); }
+    .notification.warning { border-left-color: var(--warning); }
+    .notification.info { border-left-color: var(--info); }
+    .notification.active { display: block; }
+
+    .chat-flash {
+      position: fixed;
+      top: 100px;
+      right: 30px;
+      width: 300px;
+      max-height: 400px;
+      overflow-y: auto;
+      z-index: 900;
+      display: none;
+      background: rgba(26, 27, 38, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius-lg);
+      border: 2px solid var(--info);
+      box-shadow: var(--shadow-xl);
+      padding: 15px;
     }
 
-    .notification.error {
-      border-left-color: var(--danger);
-    }
-
-    .notification.warning {
-      border-left-color: var(--warning);
-    }
-
-    .notification.info {
-      border-left-color: var(--info);
-    }
-
-    .notification.active {
+    .chat-flash.active {
       display: block;
+      animation: fadeIn 0.3s ease;
     }
 
-    /* تأثيرات النص */
-    .typing-effect {
-      overflow: hidden;
-      white-space: nowrap;
-      animation: typing 2s steps(40, end);
+    .chat-flash.fading { animation: fadeOut 0.3s ease forwards; }
+
+    .chat-message {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      margin-bottom: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      animation: slideIn 0.3s ease;
     }
 
-    /* التحميل */
+    /* ============ التحميل ============ */
     .loader {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       background: var(--dark-1);
       display: flex;
       flex-direction: column;
@@ -1025,10 +1052,6 @@
       justify-content: center;
       z-index: 9999;
       transition: opacity var(--transition-normal);
-    }
-
-    .loader-content {
-      text-align: center;
     }
 
     .spinner {
@@ -1041,47 +1064,13 @@
       margin-bottom: 20px;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* التجاوب */
-    @media (max-width: 768px) {
-      .container {
-        padding: 10px;
-      }
-      
-      .top-bar {
-        flex-direction: column;
-        gap: 20px;
-        text-align: center;
-      }
-      
-      .game-controls {
-        flex-direction: column;
-        gap: 15px;
-      }
-      
-      .scoreboard {
-        flex-direction: column;
-        gap: 30px;
-      }
-      
-      .answer-box, .stats-button {
-        bottom: 10px;
-        left: 10px;
-        right: 10px;
-        width: calc(100% - 20px);
-      }
-    }
-
-    /* تأثيرات خاصة */
+    /* الكونفيتي */
     .particles-container {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       pointer-events: none;
       z-index: -1;
     }
@@ -1095,87 +1084,52 @@
     }
 
     @keyframes confetti-fall {
-      0% {
-        transform: translateY(-100px) rotate(0deg);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(100vh) rotate(720deg);
-        opacity: 0;
-      }
+      0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
     }
 
-    /* تلميحات */
-    .tooltip {
-      position: relative;
-      display: inline-block;
-    }
-
-    .tooltip .tooltip-text {
-      visibility: hidden;
-      width: 200px;
-      background-color: rgba(26, 27, 38, 0.95);
-      color: white;
-      text-align: center;
-      padding: 8px;
-      border-radius: var(--radius-md);
-      position: absolute;
-      z-index: 1;
-      bottom: 125%;
-      left: 50%;
-      transform: translateX(-50%);
-      opacity: 0;
-      transition: opacity var(--transition-fast);
-      font-size: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: var(--shadow-md);
-    }
-
-    .tooltip:hover .tooltip-text {
-      visibility: visible;
-      opacity: 1;
+    /* ============ التجاوب ============ */
+    @media (max-width: 768px) {
+      .container { padding: 10px; }
+      .top-bar { flex-direction: column; gap: 16px; text-align: center; }
+      .game-controls { flex-direction: column; }
+      .controls-group { width: 100%; justify-content: center; }
+      .scoreboard { grid-template-columns: 1fr; }
+      .answer-box { left: 10px; right: 10px; bottom: 10px; }
+      .team-panel { position: static; }
     }
   </style>
 </head>
 <body>
-  <!-- الخلفيات المتقدمة -->
   <div class="bg-animation"></div>
   <div class="glow-effect"></div>
   <div class="particles-container" id="particles"></div>
 
-  <!-- شاشة التحميل -->
   <div class="loader" id="loader">
-    <div class="loader-content">
+    <div style="text-align: center;">
       <div class="spinner"></div>
       <h2 style="color: var(--primary); margin-bottom: 10px;">🎯 تحميل اللعبة</h2>
       <p style="color: var(--light-3);">جاري تحميل المحتوى...</p>
     </div>
   </div>
 
-  <!-- التنبيهات -->
   <div class="notification" id="notification"></div>
-
-  <!-- المودالات -->
   <div class="modal-backdrop" id="modalBackdrop"></div>
 
-  <!-- نافذة موحدة للاتصال والتحكم -->
+  <!-- نافذة التحكم -->
   <div class="modal" id="controlModal">
     <div class="card" style="max-height: 90vh; overflow-y: auto;">
       <div class="card-header">
         <h2><span>⚙️</span> التحكم والاتصال</h2>
         <button class="btn btn-icon" onclick="closeControlModal()">✖</button>
       </div>
-      
       <div class="modal-grid">
-        <!-- لوحة الاتصال -->
         <div class="card">
           <h3 style="margin-bottom: 20px; color: var(--info);">🔗 اتصال الشات</h3>
-          
           <div class="form-group">
             <label class="form-label">📺 اسم القناة</label>
             <input type="text" class="form-control" id="channelInput" placeholder="مثال: streamer_name">
           </div>
-          
           <div class="form-group">
             <label class="form-label">🌐 المنصة</label>
             <select class="form-control form-select" id="platformSelect">
@@ -1183,7 +1137,6 @@
               <option value="kick">Kick</option>
             </select>
           </div>
-          
           <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 20px;">
             <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
               <div class="switch">
@@ -1192,76 +1145,45 @@
               </div>
               <span>💾 تذكّرني</span>
             </label>
-            
             <div id="statusDisplay" class="status-chip">
               <span>🔴</span> غير متصل
             </div>
           </div>
-          
           <button class="btn btn-primary" onclick="connectChat()" style="width: 100%;">
             <span>🚀</span> اتصال بالشات
           </button>
-          
-          <div style="margin-top: 20px; padding: 15px; background: rgba(0, 153, 255, 0.1); border-radius: var(--radius-md); font-size: 14px;">
-            <span>💡</span> تعليمات: اكتب اسم قناتك، اختر المنصة، ثم اضغط اتصال
-          </div>
         </div>
-        
-        <!-- لوحة التحكم -->
         <div class="card">
           <h3 style="margin-bottom: 20px; color: var(--warning);">🎮 تحكم الستريمر</h3>
-          
-          <div class="grid grid-2" style="gap: 15px; margin-bottom: 20px;">
-            <div class="form-group">
+          <div class="grid grid-2" style="margin-bottom: 20px;">
+            <div class="form-group" style="margin: 0;">
               <label class="form-label">⏱️ وقت الجولة</label>
               <input type="number" class="form-control" id="roundTime" value="30" min="10" max="180">
             </div>
-            
-            <div class="form-group">
+            <div class="form-group" style="margin: 0;">
               <label class="form-label">🏆 النقاط المطلوبة</label>
               <input type="number" class="form-control" id="targetScore" value="15" min="5" max="100">
             </div>
           </div>
-          
-          <div class="grid grid-2" style="gap: 15px; margin-bottom: 20px;">
-            <label style="display: flex; align-items: center; gap: 10px; padding: 12px; background: rgba(255, 255, 255, 0.05); border-radius: var(--radius-md);">
+          <div class="grid grid-2" style="margin-bottom: 20px;">
+            <label style="display: flex; align-items: center; gap: 10px; padding: 10px; background: rgba(255, 255, 255, 0.05); border-radius: var(--radius-md);">
               <div class="switch">
                 <input type="checkbox" id="autoTimer" checked>
                 <span class="slider"></span>
               </div>
-              <span>بدء المؤقت تلقائياً</span>
+              <span style="font-size: 13px;">مؤقت تلقائي</span>
             </label>
-            
-            <label style="display: flex; align-items: center; gap: 10px; padding: 12px; background: rgba(255, 255, 255, 0.05); border-radius: var(--radius-md);">
+            <label style="display: flex; align-items: center; gap: 10px; padding: 10px; background: rgba(255, 255, 255, 0.05); border-radius: var(--radius-md);">
               <div class="switch">
                 <input type="checkbox" id="autoNext" checked>
                 <span class="slider"></span>
               </div>
-              <span>الانتقال التلقائي</span>
+              <span style="font-size: 13px;">انتقال تلقائي</span>
             </label>
-          </div>
-          
-          <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
-            <h4 style="margin-bottom: 15px; color: var(--primary);">🎛️ الأزرار السريعة</h4>
-            <div class="grid grid-2" style="gap: 10px;">
-              <button class="btn btn-primary" onclick="startGame(); closeControlModal();">
-                <span>🚀</span> بدء اللعبة
-              </button>
-              <button class="btn btn-warning" onclick="skipTurn(); closeControlModal();">
-                <span>⏭️</span> تخطي
-              </button>
-              <button class="btn btn-secondary" onclick="startTimer(); closeControlModal();">
-                <span>⏱️</span> مؤقت
-              </button>
-              <button class="btn btn-info" onclick="useHint(); closeControlModal();">
-                <span>💡</span> تلميح
-              </button>
-            </div>
           </div>
         </div>
       </div>
-      
-      <div style="text-align: center; margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+      <div style="text-align: center; margin-top: 20px;">
         <button class="btn btn-secondary" onclick="closeControlModal()" style="width: 200px;">إغلاق</button>
       </div>
     </div>
@@ -1274,67 +1196,26 @@
         <h2><span>📘</span> شرح اللعبة</h2>
         <button class="btn btn-icon" onclick="closeHelp()">✖</button>
       </div>
-      <div class="content" style="padding: 20px; line-height: 1.8;">
-        <h3 style="color: var(--primary); margin-bottom: 20px;">🎮 كيفية اللعب</h3>
+      <div style="padding: 10px; line-height: 1.8;">
         <p>في كل دور، تظهر كلمة <b style="color: var(--accent)">مبعثرة</b>. على اللاعب الحالي إعادة ترتيبها بشكل صحيح خلال الوقت المحدد.</p>
-        
-        <div style="margin: 25px 0;">
-          <h4 style="color: var(--info); margin-bottom: 15px;">🛠️ الأوامر الأساسية:</h4>
-          <div class="grid grid-2" style="gap: 15px;">
-            <div class="card" style="background: rgba(0, 153, 255, 0.1);">
-              <h5 style="color: var(--info);">!ازرق</h5>
-              <p style="font-size: 14px;">الانضمام للفريق الأزرق</p>
-            </div>
-            <div class="card" style="background: rgba(255, 51, 51, 0.1);">
-              <h5 style="color: var(--danger);">!احمر</h5>
-              <p style="font-size: 14px;">الانضمام للفريق الأحمر</p>
-            </div>
-            <div class="card" style="background: rgba(255, 204, 0, 0.1);">
-              <h5 style="color: var(--warning);">!نقاطي</h5>
-              <p style="font-size: 14px;">عرض نقاطك الشخصية</p>
-            </div>
-            <div class="card" style="background: rgba(0, 255, 204, 0.1);">
-              <h5 style="color: var(--success);">!تحدي @اسم</h5>
-              <p style="font-size: 14px;">تحدّي لاعب آخر</p>
-            </div>
+        <h4 style="color: var(--info); margin: 20px 0 12px;">🛠️ الأوامر:</h4>
+        <div class="grid grid-2">
+          <div style="padding: 12px; background: rgba(0, 153, 255, 0.1); border-radius: var(--radius-md);">
+            <b style="color: var(--info);">!ازرق</b> — انضمام للفريق الأزرق
           </div>
-        </div>
-
-        <div style="margin: 25px 0;">
-          <h4 style="color: var(--primary); margin-bottom: 15px;">⚡ اختصارات لوحة المفاتيح:</h4>
-          <div class="grid grid-2" style="gap: 10px;">
-            <div style="display: flex; align-items: center; gap: 10px; padding: 10px; background: rgba(255, 255, 255, 0.05); border-radius: var(--radius-md);">
-              <span style="background: var(--dark-4); padding: 4px 12px; border-radius: var(--radius-sm); font-family: monospace;">Space</span>
-              <span>إيقاف/تشغيل المؤقت</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 10px; padding: 10px; background: rgba(255, 255, 255, 0.05); border-radius: var(--radius-md);">
-              <span style="background: var(--dark-4); padding: 4px 12px; border-radius: var(--radius-sm); font-family: monospace;">N</span>
-              <span>الدور التالي</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 10px; padding: 10px; background: rgba(255, 255, 255, 0.05); border-radius: var(--radius-md);">
-              <span style="background: var(--dark-4); padding: 4px 12px; border-radius: var(--radius-sm); font-family: monospace;">H</span>
-              <span>طلب تلميح</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 10px; padding: 10px; background: rgba(255, 255, 255, 0.05); border-radius: var(--radius-md);">
-              <span style="background: var(--dark-4); padding: 4px 12px; border-radius: var(--radius-sm); font-family: monospace;">S</span>
-              <span>الإحصائيات</span>
-            </div>
+          <div style="padding: 12px; background: rgba(255, 51, 51, 0.1); border-radius: var(--radius-md);">
+            <b style="color: var(--danger);">!احمر</b> — انضمام للفريق الأحمر
           </div>
-        </div>
-
-        <div style="margin-top: 30px; padding: 20px; background: rgba(255, 59, 92, 0.1); border-radius: var(--radius-md); border-left: 4px solid var(--primary);">
-          <h5 style="color: var(--primary);">💡 نصائح مهمة:</h5>
-          <ul style="margin-top: 10px; padding-right: 20px;">
-            <li>يمكن للاعبين الانضمام لأي فريق أثناء اللعبة</li>
-            <li>كل إجابة صحيحة تمنح نقاطاً حسب صعوبة الكلمة</li>
-            <li>التلميح يكشف أول وآخر حرف ويخصم 5 ثوانٍ من الوقت</li>
-            <li>تخطي الدور يخصم نقطتين من الفريق</li>
-            <li>يمكن تخصيص وقت الجولة والنقاط المطلوبة من إعدادات الستريمر</li>
-          </ul>
+          <div style="padding: 12px; background: rgba(255, 204, 0, 0.1); border-radius: var(--radius-md);">
+            <b style="color: var(--warning);">!نقاطي</b> — عرض نقاطك
+          </div>
+          <div style="padding: 12px; background: rgba(0, 255, 204, 0.1); border-radius: var(--radius-md);">
+            <b style="color: var(--success);">!تحدي @اسم</b> — تحدّي لاعب
+          </div>
         </div>
       </div>
-      <div style="text-align: center; padding: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
-        <button class="btn btn-primary" onclick="closeHelp()" style="width: 200px;">فهمت! دعنا نلعب</button>
+      <div style="text-align: center; padding-top: 20px;">
+        <button class="btn btn-primary" onclick="closeHelp()" style="width: 200px;">فهمت!</button>
       </div>
     </div>
   </div>
@@ -1346,13 +1227,10 @@
         <h2><span>📊</span> إحصائيات اللاعبين</h2>
         <button class="btn btn-icon" onclick="closeStats()">✖</button>
       </div>
-      <div id="statsContent" style="padding: 20px; max-height: 60vh; overflow-y: auto;">
-        <!-- محتوى الإحصائيات -->
-      </div>
+      <div id="statsContent" style="padding: 20px; max-height: 60vh; overflow-y: auto;"></div>
     </div>
   </div>
 
-  <!-- شات مؤقت -->
   <div class="chat-flash" id="chatFlash">
     <div id="chatMessages"></div>
   </div>
@@ -1367,8 +1245,7 @@
           <span>نسخة فاخرة مع اتصال مباشر بالشات</span>
         </div>
       </div>
-      
-      <div style="display: flex; gap: 15px;">
+      <div style="display: flex; gap: 12px;">
         <button class="btn btn-primary" onclick="showHelp()">
           <span>❔</span> شرح اللعبة
         </button>
@@ -1378,26 +1255,37 @@
       </div>
     </div>
 
-    <!-- منطقة اللعبة -->
+    <!-- ============ منطقة اللعبة المنظمة ============ -->
     <div class="game-stage">
-      <!-- الفريق الأزرق -->
+      
+      <!-- ===== مربع الفريق الأزرق ===== -->
       <div class="team-panel team-blue">
         <div class="team-header">
-          <h3 style="color: var(--info);">🔵 الفريق الأزرق</h3>
-          <div style="font-size: 32px; font-weight: 800; color: var(--info);" id="blueScore">0</div>
-          <div style="color: var(--light-3); font-size: 14px;">نقطة</div>
+          <div class="team-name">🔵 الفريق الأزرق</div>
+          <div class="team-score-box">
+            <div class="team-score-number" id="blueScore">0</div>
+            <div class="team-score-label">نقطة</div>
+          </div>
         </div>
-        
-        <div class="players-list" id="bluePlayers">
-          <!-- قائمة اللاعبين -->
+        <div class="team-stats">
+          <div class="team-stat">
+            <div class="team-stat-value" id="bluePlayerCount">0</div>
+            <div class="team-stat-label">👥 لاعب</div>
+          </div>
+          <div class="team-stat">
+            <div class="team-stat-value" id="blueCorrectCount">0</div>
+            <div class="team-stat-label">✅ صحيح</div>
+          </div>
         </div>
+        <div class="players-list" id="bluePlayers"></div>
       </div>
 
-      <!-- منطقة اللعبة المركزية -->
+      <!-- ===== مربع اللعبة المركزي ===== -->
       <div class="game-area">
-        <!-- شريط التحكم داخل اللعبة -->
+        
+        <!-- 1. شريط أزرار التحكم -->
         <div class="game-controls">
-          <div style="display: flex; gap: 10px;">
+          <div class="controls-group">
             <button class="btn btn-primary" onclick="startGame()">
               <span>🚀</span> بدء اللعبة
             </button>
@@ -1405,8 +1293,7 @@
               <span>⏭️</span> تخطي
             </button>
           </div>
-          
-          <div style="display: flex; gap: 10px;">
+          <div class="controls-group">
             <button class="btn btn-secondary" onclick="startTimer()">
               <span>⏱️</span> مؤقت
             </button>
@@ -1419,64 +1306,73 @@
           </div>
         </div>
 
-        <!-- معلومات اللاعب الحالي -->
-        <div class="game-info">
+        <!-- 2. اللاعب الحالي -->
+        <div class="player-turn-section">
           <div class="current-player-display" id="currentPlayer">
-            ⏳ جاري تحضير اللعبة...
+            <div class="current-player-icon">⏳</div>
+            <div class="current-player-info">
+              <div class="current-player-name">جاري تحضير اللعبة...</div>
+              <div class="current-player-team">اضغط بدء للبدء</div>
+            </div>
           </div>
         </div>
 
-        <!-- الكلمة المبعثرة مع مستوى الصعوبة -->
-        <div class="word-container">
-          <div class="difficulty-badge" id="difficultyBadge">
-            ⚡ متوسط
-          </div>
+        <!-- 3. الكلمة المبعثرة -->
+        <div class="word-section">
+          <div class="difficulty-badge" id="difficultyBadge">⚡ متوسط</div>
           <div class="scrambled-word" id="scrambledWord">
             🎯 ابدأ اللعبة
           </div>
         </div>
 
-        <!-- المؤقت -->
-        <div class="timer-container">
-          <div class="timer-display" id="timerDisplay">
-            ⏰ 00:00
-          </div>
+        <!-- 4. المؤقت -->
+        <div class="timer-section">
+          <div class="timer-display" id="timerDisplay">⏰ 00:00</div>
           <div class="progress-bar">
             <div class="progress-fill" id="progressFill"></div>
           </div>
         </div>
 
-        <!-- نتيجة التخمين -->
-        <div style="text-align: center; margin: 30px 0; min-height: 40px;">
-          <div id="guessResult" style="font-size: 20px; font-weight: 600;"></div>
+        <!-- 5. نتيجة التخمين -->
+        <div class="guess-result-section">
+          <div id="guessResult" style="text-align: center; font-weight: 600;"></div>
         </div>
 
-        <!-- النقاط -->
+        <!-- 6. لوحة النقاط السفلية -->
         <div class="scoreboard">
-          <div class="score-item">
-            <div class="score-label" style="color: var(--info);">🔵 الفريق الأزرق</div>
+          <div class="score-item blue">
+            <div class="score-label">🔵 الفريق الأزرق</div>
             <div class="score-value" id="blueScoreDisplay">0</div>
           </div>
-          
-          <div class="score-item">
-            <div class="score-label" style="color: var(--danger);">🔴 الفريق الأحمر</div>
+          <div class="score-item red">
+            <div class="score-label">🔴 الفريق الأحمر</div>
             <div class="score-value" id="redScoreDisplay">0</div>
           </div>
         </div>
       </div>
 
-      <!-- الفريق الأحمر -->
+      <!-- ===== مربع الفريق الأحمر ===== -->
       <div class="team-panel team-red">
         <div class="team-header">
-          <h3 style="color: var(--danger);">🔴 الفريق الأحمر</h3>
-          <div style="font-size: 32px; font-weight: 800; color: var(--danger);" id="redScore">0</div>
-          <div style="color: var(--light-3); font-size: 14px;">نقطة</div>
+          <div class="team-name">🔴 الفريق الأحمر</div>
+          <div class="team-score-box">
+            <div class="team-score-number" id="redScore">0</div>
+            <div class="team-score-label">نقطة</div>
+          </div>
         </div>
-        
-        <div class="players-list" id="redPlayers">
-          <!-- قائمة اللاعبين -->
+        <div class="team-stats">
+          <div class="team-stat">
+            <div class="team-stat-value" id="redPlayerCount">0</div>
+            <div class="team-stat-label">👥 لاعب</div>
+          </div>
+          <div class="team-stat">
+            <div class="team-stat-value" id="redCorrectCount">0</div>
+            <div class="team-stat-label">✅ صحيح</div>
+          </div>
         </div>
+        <div class="players-list" id="redPlayers"></div>
       </div>
+
     </div>
   </div>
 
@@ -1485,109 +1381,17 @@
     <h4>🔍 الإجابة الصحيحة:</h4>
     <div class="answer-text" id="answerText">❓</div>
     <button class="btn btn-secondary" onclick="toggleAnswer()" style="width: 100%;">
-      <span>👁️</span> إخفاء/إظهار الإجابة
+      <span>👁️</span> إخفاء/إظهار
     </button>
   </div>
 
   <!-- زر الإحصائيات -->
-  <button class="btn btn-primary stats-button" onclick="toggleStats()">
-    <span>📊</span>
+  <button class="btn btn-primary stats-button btn-icon" onclick="toggleStats()" style="width: 56px; height: 56px; font-size: 22px;">
+    📊
   </button>
 
 <script>
-/* ========= النظام الفاخر ========= */
-
-// تهيئة الجسيمات
-function initParticles() {
-  const container = document.getElementById('particles');
-  const colors = ['#ff3b5c', '#9146ff', '#00ffcc', '#0099ff', '#ffcc00'];
-  
-  for (let i = 0; i < 50; i++) {
-    const particle = document.createElement('div');
-    particle.className = 'particle';
-    
-    const size = Math.random() * 10 + 5;
-    particle.style.width = `${size}px`;
-    particle.style.height = `${size}px`;
-    particle.style.left = `${Math.random() * 100}%`;
-    particle.style.top = `${Math.random() * 100}%`;
-    particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-    particle.style.opacity = Math.random() * 0.2 + 0.05;
-    particle.style.animationDuration = `${Math.random() * 20 + 10}s`;
-    particle.style.animationDelay = `${Math.random() * 5}s`;
-    
-    container.appendChild(particle);
-  }
-}
-
-// إظهار التنبيهات
-function showNotification(message, type = 'info') {
-  const notification = document.getElementById('notification');
-  const icons = {
-    success: '✅',
-    error: '❌',
-    warning: '⚠️',
-    info: 'ℹ️'
-  };
-  
-  notification.innerHTML = `
-    <div style="display: flex; align-items: start; gap: 15px;">
-      <div style="font-size: 24px;">${icons[type]}</div>
-      <div>
-        <div style="font-weight: 600; margin-bottom: 5px;">${type === 'success' ? 'نجاح' : type === 'error' ? 'خطأ' : type === 'warning' ? 'تحذير' : 'معلومة'}</div>
-        <div style="color: var(--light-3);">${message}</div>
-      </div>
-    </div>
-  `;
-  
-  notification.className = `notification ${type} active`;
-  
-  setTimeout(() => {
-    notification.classList.remove('active');
-  }, 5000);
-}
-
-// إخفاء شاشة التحميل
-window.addEventListener('load', () => {
-  setTimeout(() => {
-    document.getElementById('loader').style.opacity = '0';
-    setTimeout(() => {
-      document.getElementById('loader').style.display = 'none';
-      initParticles();
-      showNotification('تم تحميل اللعبة بنجاح! 🎮', 'success');
-    }, 500);
-  }, 1000);
-});
-
-// نظام التأثيرات البصرية
-function createConfetti() {
-  const container = document.getElementById('particles');
-  const colors = ['#ff3b5c', '#9146ff', '#00ffcc', '#0099ff', '#ffcc00'];
-  
-  for (let i = 0; i < 50; i++) {
-    const confetti = document.createElement('div');
-    confetti.className = 'confetti';
-    
-    const size = Math.random() * 15 + 5;
-    confetti.style.width = `${size}px`;
-    confetti.style.height = `${size}px`;
-    confetti.style.left = `${Math.random() * 100}%`;
-    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
-    confetti.style.animationDuration = `${Math.random() * 3 + 2}s`;
-    confetti.style.animationDelay = `${Math.random() * 0.5}s`;
-    
-    container.appendChild(confetti);
-    
-    setTimeout(() => {
-      confetti.remove();
-    }, 5000);
-  }
-}
-
-/* ========= الوظائف الأساسية ========= */
-
-// الحالة
+/* ========= الحالة ========= */
 const bluePlayers = [];
 const redPlayers = [];
 let blueTurnOrder = [];
@@ -1596,6 +1400,8 @@ let turnIndex = 0;
 let currentAnswer = "";
 let blueScore = 0;
 let redScore = 0;
+let blueCorrectCount = 0;
+let redCorrectCount = 0;
 let roundSeconds = 30;
 let targetScore = 15;
 let autoTimer = true;
@@ -1609,10 +1415,7 @@ let currentPlayerName = "";
 let answeringTeam = "";
 const usedWords = [];
 const playerStats = {};
-const blacklistedUsers = [];
-const commandCooldowns = {};
 
-// قائمة الكلمات
 const words = [
   "أمل","حياة","نور","سعادة","شمس","قمر","سماء","نجمة","بحر","نهر",
   "جبل","وردة","زهرة","شجرة","غابة","طيور","أسد","نمر","فهد","ذئب",
@@ -1620,7 +1423,6 @@ const words = [
   "نملة","عصفور","ببغاء","صقر","بومة","ديك","دجاجة","بط","وزة","بطة",
   "كلب","قطة","جمل","قرش","تمساح","سلحفاة","ثعبان","عقرب","ضفدع","قرد",
   "كنغر","طاووس","نعامة","حمامة","غراب","بلبل","يمامة","دراج","دبور","جرادة",
-  "صرصور","يراعة","خفاش","أرنب","حرباء","غرير","لاما","موظ","ظبي","ضبع",
   "تنين","أسطورة","ساحر","قلعة","عرش","تاج","ملك","ملكة","أمير","أميرة",
   "وزير","جيش","سيف","درع","رمح","قوس","سهم","حربة","خوذة","فرس",
   "نسر","شعلة","لهب","جمر","ريح","عاصفة","ثلج","برد","صقيع","صحراء",
@@ -1632,71 +1434,77 @@ const words = [
   "لوحة","ساعة","كتاب","دفتر","قلم","فرشاة","ممحاة","مسطرة","مقص","مرآة",
   "كرسي","طاولة","سرير","خزانة","باب","نافذة","ستارة","سجادة","وسادة","بطانية",
   "حقيبة","صندوق","درج","رف","طبق","كوب","ملعقة","سكين","شوكة","قدر",
-  "مقلاة","غلاية","زجاجة","جرة","وعاء","مصفاة","مغسلة","ثلاجة","فرن","مكيف",
-  "مدفأة","مروحة","غسالة","مجفف","مكنسة","ممسحة","سلة","علبة","مغلف","مطرقة",
-  "مسمار","مفتاح","كماشة","منشار","مبرد","مثقاب","حبل","سلسلة","قفل","ميزان",
-  "ميزاب","خرطوم","برميل","دلو","سطل","اسفنجة","صابون","معجون","مرطب","مرهم",
-  "دواء","عطر","بخور","منشفة","شرشف","حجاب","قبعة","قميص","بنطال","تنورة",
-  "فستان","جاكيت","معطف","حذاء","جورب","قفاز","نظارة","حزام","محفظة",
-  "خاتم","قلادة","حلق","زينة","مظلة","شرفة","سطح","سرداب","قبو",
-  "دهليز","ردهة","صالة","مطبخ","ممر","بوابة","سور","سياج","رصيف",
-  "جسر","نفق","ميدان","شارع","زقاق","درب","طريق","مسار","رحلة","سفرة",
-  "جولة","نزهة","مغامرة","اكتشاف","بحث","لقاء","موعد","اجتماع","محادثة","نقاش",
-  "اتفاق","عقد","صفقة","تجارة","بيع","شراء","تبادل","هدية","تذكار","تحفة",
-  "صورة","رسم","تمثال","طابع","ختم","ظرف","وثيقة","بطاقة","جواز",
-  "ترخيص","فاتورة","إيصال","سجل","مفكرة","مذكرة","تقرير","قصة","رواية",
-  "مجلة","جريدة","إعلان","دعاية","شعار","علامة","رمز","خريطة","جدول","تصميم",
-  "خطة","برنامج","طريقة","نمط","شكل","بنية","هيكل","عمارة","زخرفة","نقش",
-  "تطريز","صباغة","ترميم","صيانة","تصوير","طباعة","نسخ","ترجمة","تحرير","إعداد",
-  "إنتاج","نشر","إذاعة","تسجيل","عرض","مشاركة","توزيع","تحميل","تشغيل","إيقاف",
-  "بدء","تحديث","تطوير","إصلاح","تغيير","حذف","إضافة","لصق","حفظ",
-  "رفع","تنزيل","إرسال","استقبال","ضبط","تهيئة","تفعيل","إلغاء","حماية",
-  "تشفير","برمجة","اختبار","توثيق","دعم","متابعة","إدارة","قيادة",
-  "تنظيم","توجيه","مراقبة","تقييم","تحليل","ابتكار","استكشاف","تعليم","تدريب","تدريس",
-  "شرح","توضيح","إيضاح","تحسين","تعديل","تجربة","محاولة","إنجاز","نجاح","تميز",
-  "شغف","إلهام","إبداع","خيال","فكر","وعي","إدراك","حكمة","معرفة","خبرة",
-  "موهبة","مهارة","قدرة","كفاءة","تخصص","اهتمام","فضول","رغبة","عزيمة",
-  "إرادة","طموح","تفاؤل","إيمان","يقين","ثقة","إخلاص","محبة",
-  "مودة","رحمة","عطف","حنان","رعاية","تعاون","مساعدة","تضامن","مواساة",
-  "صداقة","أخوة","قرابة","جار","ضيف","زميل","شريك","رفيق","معارف","ناس",
-  "شخص","رجل","امرأة","طفل","شاب","فتاة","كهل","شيخ","مسن","عجوز",
-  "رضيع","مراهق","يتيم","أرمل","أعزب","متزوج","مطلق","حبيب","خطيب","صديق",
-  "عدو","خصم","منافس","تابع","مستقل","محايد","زعيم","قائد","رئيس",
-  "وكيل","نائب","سفير","والي","حاكم","قاضي","محامي","شرطي","جندي",
-  "طيار","بحار","سائق","عامل","حارس","مزارع","صياد","صانع","بائع","تاجر",
-  "نجار","حداد","خياط","حلاق","مصور","مخرج","ممثل","مغني",
-  "شاعر","كاتب","مؤلف","ناقد","موسيقي","فنان","أديب","عالم","باحث","مخترع",
-  "مبتكر","مكتشف","مدير","مسؤول","مدرب","معلم","مرشد","واعظ","إمام",
-  "داعية","زاهد","حكيم","فقيه","مؤرخ","صحفي","مذيع","مراسل","محرر",
-  "مترجم","مدقق","ناشر","موزع","مسوق","مطور","مبرمج","مصمم","منتج","منشد",
-  "مؤذن","حافظ","قارئ","ناسخ","خطاط","زخرف","منقوش","كهربائي",
-  "سباك","بناء","راعي","مربي","طباخ","جزار","خباز",
-  "ساعي","مستشار","سلطان","خليفة","أستاذ","محاسب",
-  "طبيب","صيدلي","ممرض","جراح","معالج","خبير","فني","مهندس","مفكر","ناظر",
-  "مفتش","مراقب","مشغل","ملاحظ","نادل","خادم","حمال","بواب","ناطور","مشرف",
   "ابتسامة","إصرار","إنجاز","إيثار","بساطة","بهجة","تحدي","تفاني","تماسك","ثبات",
   "جمال","جود","حب","حلم","خجل","دعم","ذكاء","روح","زهد","سخاء",
-  "سلام","شجاعة","صبر","ضحك","طمأنينة","عطاء","فرح","فخر","قوة","كرم",
-  "لطف","مرح","نقاء","هدوء","وفاء","يسر","أمان","إبداع","براءة","تآلف",
-  "تسامح","تواضع","جاذبية","حكمة","خيال","دفء","رقة","شهامة","صفاء","عزيمة",
-  "عفوية","غرور","فطرة","قناعة","لباقة","مروءة","نبل","هيبة","وداعة","يأس",
-  "إتقان","بشاشة","تألق","تعاطف","جد","حزم","خبرة","دقة","رزانة","سعادة",
-  "شموخ","صدق","طموح","عفة","غموض","فطنة","قدر","كياسة","مثابرة","نشاط",
-  "همة","ألفة","بشر","تكافل","ثقة","حياة","خوف","ذوق","رحيل","زهو",
-  "شوق","صمود","عشق","فروسية","قدرة","كلمة","مودة","نقاش","همس","وجد",
-  "إحسان","بصيرة","تميز","حكمة","دلال","راحة","سحر","شغف","ضياء","عبرة",
-  "فن","قيمة","لغة","مهارة","نور","هوية","ابتكار","بريق","تحمل","تعلق",
-  "جلال","حنين","دعابة","رومانسية","سمو","شعر","صخب","عظمة","فلسفة","قبس",
-  "لمسة","مزاج","نغم","هبة","إرث","بسالة","تأمل","جرأة","حضور","خبر",
-  "دين","ريادة","سكون","شراكة","صديق","عطش","فكر","قدوة","لقاء","مبدأ",
-  "نضج","هيام","إشراق","بزوغ","تحقيق","تضحية","جذل","حكاية","دراية","رغبة",
-  "سرد","شكر","صدى","عز","فهم","قلب","مقصد","نهضة","وجدان","إلهام",
-  "بزوغ","تناغم","حوار","ذكاء","رواية","سعادة","شعر","صوت","عالم","فنون",
-  "قصة","مكتب","نهاية","هندسة","ابتكار","بحر","تاريخ","حضارة","دواء","رسم",
-  "سفر","شمس","صحة","علم","فلك","قمر","موسيقى","نجوم","هواء","ياقوت"
+  "سلام","شجاعة","صبر","ضحك","طمأنينة","عطاء","فرح","فخر","قوة","كرم"
 ];
 
-// الأدوات المساعدة
+/* ========= الجسيمات ========= */
+function initParticles() {
+  const container = document.getElementById('particles');
+  const colors = ['#ff3b5c', '#9146ff', '#00ffcc', '#0099ff', '#ffcc00'];
+  for (let i = 0; i < 30; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    const size = Math.random() * 10 + 5;
+    particle.style.width = `${size}px`;
+    particle.style.height = `${size}px`;
+    particle.style.left = `${Math.random() * 100}%`;
+    particle.style.top = `${Math.random() * 100}%`;
+    particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+    particle.style.opacity = Math.random() * 0.2 + 0.05;
+    particle.style.animationDuration = `${Math.random() * 20 + 10}s`;
+    particle.style.animationDelay = `${Math.random() * 5}s`;
+    container.appendChild(particle);
+  }
+}
+
+function showNotification(message, type = 'info') {
+  const notification = document.getElementById('notification');
+  const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+  notification.innerHTML = `
+    <div style="display: flex; align-items: start; gap: 12px;">
+      <div style="font-size: 22px;">${icons[type]}</div>
+      <div>
+        <div style="font-weight: 600; margin-bottom: 4px;">${type === 'success' ? 'نجاح' : type === 'error' ? 'خطأ' : type === 'warning' ? 'تحذير' : 'معلومة'}</div>
+        <div style="color: var(--light-3); font-size: 14px;">${message}</div>
+      </div>
+    </div>
+  `;
+  notification.className = `notification ${type} active`;
+  setTimeout(() => notification.classList.remove('active'), 4000);
+}
+
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loader').style.opacity = '0';
+    setTimeout(() => {
+      document.getElementById('loader').style.display = 'none';
+      initParticles();
+      showNotification('تم تحميل اللعبة بنجاح! 🎮', 'success');
+    }, 500);
+  }, 800);
+});
+
+function createConfetti() {
+  const container = document.getElementById('particles');
+  const colors = ['#ff3b5c', '#9146ff', '#00ffcc', '#0099ff', '#ffcc00'];
+  for (let i = 0; i < 40; i++) {
+    const confetti = document.createElement('div');
+    confetti.className = 'confetti';
+    const size = Math.random() * 12 + 5;
+    confetti.style.width = `${size}px`;
+    confetti.style.height = `${size}px`;
+    confetti.style.left = `${Math.random() * 100}%`;
+    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+    confetti.style.animationDuration = `${Math.random() * 3 + 2}s`;
+    container.appendChild(confetti);
+    setTimeout(() => confetti.remove(), 5000);
+  }
+}
+
+/* ========= الأدوات ========= */
 function normalizeArabic(s) {
   if (!s) return "";
   return s.replace(/[\u0640]/g, '')
@@ -1728,26 +1536,22 @@ function getDifficultyLevel(word) {
   return { level: '🔴 صعب', time: 50, points: 3 };
 }
 
-// المؤقت
+/* ========= المؤقت ========= */
 function startTimer() {
   if (timerRunning) return;
-  
-  roundSeconds = parseInt(document.getElementById('roundTime').value);
+  roundSeconds = parseInt(document.getElementById('roundTime').value) || 30;
   timeLeft = roundSeconds;
-  
   updateTimerDisplay();
   clearInterval(timerInterval);
   timerRunning = true;
-  
   timerInterval = setInterval(() => {
     timeLeft--;
     updateTimerDisplay();
-    
     if (timeLeft <= 0) {
       clearInterval(timerInterval);
       timerRunning = false;
       document.getElementById('timerDisplay').innerHTML = '⏰ انتهى الوقت!';
-      showNotification('انتهى الوقت! انتقل للدور التالي', 'warning');
+      showNotification('انتهى الوقت!', 'warning');
     }
   }, 1000);
 }
@@ -1760,13 +1564,9 @@ function stopTimer() {
 function updateTimerDisplay() {
   const timerDisplay = document.getElementById('timerDisplay');
   const progressFill = document.getElementById('progressFill');
-  
   timerDisplay.innerHTML = `⏰ ${timeLeft.toString().padStart(2, '0')}:00`;
-  
   const percentage = (timeLeft / roundSeconds) * 100;
   progressFill.style.width = `${percentage}%`;
-  
-  // تغيير اللون حسب الوقت المتبقي
   if (timeLeft <= 10) {
     progressFill.style.background = 'linear-gradient(135deg, var(--danger), var(--danger-dark))';
     timerDisplay.style.color = 'var(--danger)';
@@ -1779,41 +1579,40 @@ function updateTimerDisplay() {
   }
 }
 
-// تحديث اللاعبين
+/* ========= قوائم اللاعبين ========= */
 function updatePlayerList(team) {
   const listId = team === 'blue' ? "bluePlayers" : "redPlayers";
   const players = team === 'blue' ? bluePlayers : redPlayers;
   const container = document.getElementById(listId);
   
+  // تحديث العداد
+  document.getElementById(team === 'blue' ? 'bluePlayerCount' : 'redPlayerCount').innerText = players.length;
+
   if (players.length === 0) {
     container.innerHTML = `
-      <div style="text-align: center; padding: 40px; color: var(--light-3);">
-        <div style="font-size: 48px; margin-bottom: 20px;">👤</div>
-        <div>لا يوجد لاعبين بعد</div>
-        <div style="font-size: 14px; margin-top: 10px;">اكتب <b>!${team === 'blue' ? 'ازرق' : 'احمر'}</b> في الشات للانضمام</div>
+      <div class="empty-team">
+        <div class="empty-team-icon">👥</div>
+        <div class="empty-team-text">لا يوجد لاعبين بعد</div>
+        <div style="font-size: 12px; color: var(--light-4); margin-top: 6px;">اكتب الأمر التالي للانضمام:</div>
+        <div class="empty-team-cmd">!${team === 'blue' ? 'ازرق' : 'احمر'}</div>
       </div>
     `;
     return;
   }
-  
+
   container.innerHTML = players.map((player, index) => {
     const isCurrent = (player === currentPlayerName);
     const avatarLetter = player.charAt(0).toUpperCase();
-    
     return `
       <div class="player-item ${isCurrent ? 'current-turn' : ''}">
         <div class="player-info">
-          <div class="player-avatar" style="background: ${team === 'blue' ? 'linear-gradient(135deg, var(--info), var(--info-dark))' : 'linear-gradient(135deg, var(--danger), var(--danger-dark))'}">
-            ${avatarLetter}
-          </div>
-          <div>
+          <div class="player-avatar">${avatarLetter}</div>
+          <div class="player-details">
             <div class="player-name">${player}</div>
             ${isCurrent ? '<div class="player-turn-indicator">🎮 دورك الآن!</div>' : ''}
           </div>
         </div>
-        <button class="btn btn-icon" onclick="removePlayer('${team}', ${index})" style="background: rgba(255, 51, 51, 0.2); color: var(--danger);">
-          🗑️
-        </button>
+        <button class="player-remove-btn" onclick="removePlayer('${team}', ${index})" title="إزالة">✖</button>
       </div>
     `;
   }).join('');
@@ -1824,62 +1623,42 @@ function removePlayer(team, index) {
   if (team === 'blue') {
     removed = bluePlayers.splice(index, 1)[0];
     blueTurnOrder = blueTurnOrder.filter(p => p !== removed);
-    delete playerStats[removed];
   } else {
     removed = redPlayers.splice(index, 1)[0];
     redTurnOrder = redTurnOrder.filter(p => p !== removed);
-    delete playerStats[removed];
   }
-  
+  delete playerStats[removed];
   updatePlayerList(team);
-  showNotification(`تم إزالة اللاعب ${removed}`, 'info');
+  showNotification(`تم إزالة ${removed}`, 'info');
 }
 
-// الجولة
+/* ========= اللعبة ========= */
 function startGame() {
   if (!words.length) {
-    showNotification('لا توجد كلمات في القائمة!', 'error');
+    showNotification('لا توجد كلمات!', 'error');
     return;
   }
-  
   blueTurnOrder = [...bluePlayers];
   redTurnOrder = [...redPlayers];
   turnIndex = 0;
-  
-  document.querySelectorAll('#startButton, .btn-primary').forEach(btn => {
-    btn.disabled = true;
-  });
-  
   showNotification('بدأت اللعبة! 🎮', 'success');
   nextTurn();
 }
 
 function pickNewWord() {
-  if (!words.length) {
-    currentAnswer = "";
-    document.getElementById("scrambledWord").innerText = "⚠️ لا توجد كلمات";
-    document.getElementById("answerText").innerText = "❓";
-    return;
-  }
-  
+  if (!words.length) return;
   let available = words.filter(w => !usedWords.includes(w));
   if (available.length === 0) {
     usedWords.length = 0;
     available = words.slice();
   }
-  
   const w = available[Math.floor(Math.random() * available.length)];
   usedWords.push(w);
   currentAnswer = w;
-  
+
   const difficulty = getDifficultyLevel(w);
+  document.getElementById('difficultyBadge').innerHTML = `${difficulty.level} | ⏱️ ${difficulty.time}ث | ⭐ ${difficulty.points} نقطة`;
   
-  // تحديث شارة مستوى الصعوبة
-  document.getElementById('difficultyBadge').innerHTML = `
-    ${difficulty.level} | ⏱️ ${difficulty.time}ث | ⭐ ${difficulty.points} نقطة
-  `;
-  
-  // تعيين لون الشارة حسب الصعوبة
   const badge = document.getElementById('difficultyBadge');
   if (difficulty.level.includes('سهل')) {
     badge.style.background = 'linear-gradient(135deg, var(--success), var(--success-dark))';
@@ -1888,26 +1667,20 @@ function pickNewWord() {
   } else {
     badge.style.background = 'linear-gradient(135deg, var(--danger), var(--danger-dark))';
   }
-  
+
   if (autoTimer) {
     roundSeconds = difficulty.time;
     document.getElementById('roundTime').value = roundSeconds;
   }
-  
-  // عرض الكلمة المبعثرة
+
   const scrambled = shuffleWord(w);
-  const scrambledDisplay = scrambled.split('').join(' ');
-  
   document.getElementById("scrambledWord").innerHTML = `
     <div class="word-letters" style="color: ${answeringTeam === 'blue' ? 'var(--info)' : 'var(--danger)'};">
-      ${scrambledDisplay}
+      ${scrambled.split('').join(' ')}
     </div>
   `;
-  
   document.getElementById("answerText").innerText = w;
   document.getElementById("guessResult").innerHTML = "";
-  
-  // تحديث العرض
   updateTimerDisplay();
 }
 
@@ -1915,15 +1688,12 @@ function nextTurn() {
   stopTimer();
   document.getElementById("timerDisplay").innerText = "⏰ 00:00";
   document.getElementById("progressFill").style.width = "100%";
-  
+
   if (blueTurnOrder.length === 0 || redTurnOrder.length === 0) {
     showNotification("يجب وجود لاعبين في كلا الفريقين!", "error");
-    document.querySelectorAll('#startButton, .btn-primary').forEach(btn => {
-      btn.disabled = false;
-    });
     return;
   }
-  
+
   const isBlueTurn = turnIndex % 2 === 0;
   if (isBlueTurn) {
     const i = Math.floor(turnIndex / 2) % blueTurnOrder.length;
@@ -1934,127 +1704,88 @@ function nextTurn() {
     currentPlayerName = redTurnOrder[i];
     answeringTeam = 'red';
   }
-  
+
   document.getElementById("currentPlayer").innerHTML = `
-    <div style="display: flex; align-items: center; gap: 15px;">
-      <div style="font-size: 32px;">🎮</div>
-      <div style="text-align: right;">
-        <div style="font-size: 20px; font-weight: 700; color: ${answeringTeam === 'blue' ? 'var(--info)' : 'var(--danger)'}">
-          ${currentPlayerName}
-        </div>
-        <div style="font-size: 16px; color: var(--light-3);">
-          الفريق ${answeringTeam === 'blue' ? '🔵 الأزرق' : '🔴 الأحمر'}
-        </div>
+    <div class="current-player-icon">🎮</div>
+    <div class="current-player-info">
+      <div class="current-player-name" style="color: ${answeringTeam === 'blue' ? 'var(--info)' : 'var(--danger)'};">
+        ${currentPlayerName}
+      </div>
+      <div class="current-player-team">
+        الفريق ${answeringTeam === 'blue' ? '🔵 الأزرق' : '🔴 الأحمر'}
       </div>
     </div>
   `;
-  
+
   turnIndex++;
   pickNewWord();
-  
   updatePlayerList('blue');
   updatePlayerList('red');
-  
+
   if (autoTimer) {
     setTimeout(() => startTimer(), 1000);
   }
-  
-  // إرسال إشعار للاعب الحالي
   showFlashMessage(`🎮 دور <b>${currentPlayerName}</b> الآن!`);
 }
 
-// التلميح
 function useHint() {
   if (!timerRunning && timeLeft === 0) return;
-  
   timeLeft = Math.max(0, timeLeft - 5);
   updateTimerDisplay();
-  
   const ans = currentAnswer;
   if (ans && ans.length >= 2) {
     const first = ans[0], last = ans[ans.length - 1];
     document.getElementById('guessResult').innerHTML = `
-      <div style="background: rgba(0, 153, 255, 0.1); padding: 15px; border-radius: var(--radius-md); border-left: 4px solid var(--info);">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <span style="font-size: 24px;">💡</span>
-          <div>
-            <div style="font-weight: 600; margin-bottom: 5px;">تلميح</div>
-            <div>يبدأ بـ <b style="color: var(--success);">${first}</b> وينتهي بـ <b style="color: var(--success);">${last}</b></div>
-            <div style="color: var(--danger); font-size: 14px; margin-top: 5px;">⏱️ -5 ثوانٍ</div>
-          </div>
-        </div>
+      <div style="background: rgba(0, 153, 255, 0.1); padding: 12px; border-radius: var(--radius-md); border-left: 4px solid var(--info); display: inline-block;">
+        💡 يبدأ بـ <b style="color: var(--success);">${first}</b> وينتهي بـ <b style="color: var(--success);">${last}</b>
+        <span style="color: var(--danger); margin-right: 10px;">⏱️ -5 ثوانٍ</span>
       </div>
     `;
-    
     showNotification('تم استخدام تلميح! -5 ثوانٍ', 'info');
   }
 }
 
-// التخطي
 function skipTurn() {
   if (!currentPlayerName) return;
-  
-  // خصم نقطتين من الفريق
   if (answeringTeam === 'blue') {
     blueScore = Math.max(0, blueScore - 2);
-    document.getElementById('blueScore').innerText = blueScore;
-    document.getElementById('blueScoreDisplay').innerText = blueScore;
   } else {
     redScore = Math.max(0, redScore - 2);
-    document.getElementById('redScore').innerText = redScore;
-    document.getElementById('redScoreDisplay').innerText = redScore;
   }
-  
+  updateScores();
   document.getElementById('guessResult').innerHTML = `
-    <div style="background: rgba(255, 204, 0, 0.1); padding: 15px; border-radius: var(--radius-md); border-left: 4px solid var(--warning);">
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <span style="font-size: 24px;">⏭️</span>
-        <div>
-          <div style="font-weight: 600; margin-bottom: 5px;">تم تخطي الدور!</div>
-          <div><b>${currentPlayerName}</b> تخطى الدور</div>
-          <div style="color: var(--danger); font-size: 14px; margin-top: 5px;">-2 نقطة للفريق ${answeringTeam === 'blue' ? 'الأزرق' : 'الأحمر'}</div>
-        </div>
-      </div>
+    <div style="background: rgba(255, 204, 0, 0.1); padding: 12px; border-radius: var(--radius-md); border-left: 4px solid var(--warning); display: inline-block;">
+      ⏭️ تم تخطي دور <b>${currentPlayerName}</b> | <span style="color: var(--danger);">-2 نقطة</span>
     </div>
   `;
-  
-  showNotification(`تم تخطي دور ${currentPlayerName}! -2 نقطة`, 'warning');
-  
-  // الانتقال للدور التالي بعد ثانية
-  setTimeout(() => {
-    nextTurn();
-  }, 1500);
+  showNotification(`تم تخطي دور ${currentPlayerName}!`, 'warning');
+  setTimeout(() => nextTurn(), 1500);
 }
 
-// الإجابة
+function updateScores() {
+  document.getElementById('blueScore').innerText = blueScore;
+  document.getElementById('redScore').innerText = redScore;
+  document.getElementById('blueScoreDisplay').innerText = blueScore;
+  document.getElementById('redScoreDisplay').innerText = redScore;
+  document.getElementById('blueCorrectCount').innerText = blueCorrectCount;
+  document.getElementById('redCorrectCount').innerText = redCorrectCount;
+}
+
 function checkAnswer(username, content) {
   if (!timerRunning) return;
   if (username !== currentPlayerName) return;
-  
   const ok = normalizeArabic(content) === normalizeArabic(currentAnswer);
-  
   if (ok) {
     createConfetti();
-    
     document.getElementById("guessResult").innerHTML = `
-      <div style="background: rgba(0, 255, 204, 0.1); padding: 15px; border-radius: var(--radius-md); border-left: 4px solid var(--success); animation: pulse 0.5s;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <span style="font-size: 24px;">✅</span>
-          <div>
-            <div style="font-weight: 600; margin-bottom: 5px; color: var(--success);">إجابة صحيحة!</div>
-            <div><b>${username}</b> أجاب بشكل صحيح!</div>
-          </div>
-        </div>
+      <div style="background: rgba(0, 255, 204, 0.1); padding: 12px; border-radius: var(--radius-md); border-left: 4px solid var(--success); display: inline-block;">
+        ✅ <b>${username}</b> أجاب بشكل صحيح!
       </div>
     `;
-    
-    // إضافة النقاط حسب الصعوبة
     const difficulty = getDifficultyLevel(currentAnswer);
     if (answeringTeam === 'red') {
       redScore += difficulty.points;
-      document.getElementById("redScore").innerText = redScore;
-      document.getElementById("redScoreDisplay").innerText = redScore;
-      
+      redCorrectCount++;
       if (redScore >= targetScore) {
         showNotification("🏆 الفريق الأحمر فاز!", "success");
         createConfetti();
@@ -2062,41 +1793,27 @@ function checkAnswer(username, content) {
       }
     } else {
       blueScore += difficulty.points;
-      document.getElementById("blueScore").innerText = blueScore;
-      document.getElementById("blueScoreDisplay").innerText = blueScore;
-      
+      blueCorrectCount++;
       if (blueScore >= targetScore) {
         showNotification("🏆 الفريق الأزرق فاز!", "success");
         createConfetti();
         setTimeout(() => resetScores(), 3000);
       }
     }
-    
+    updateScores();
     showNotification(`إجابة صحيحة! +${difficulty.points} نقطة`, 'success');
-    
     if (autoNext) {
-      setTimeout(() => {
-        nextTurn();
-      }, 1500);
+      setTimeout(() => nextTurn(), 1500);
     }
   } else {
     document.getElementById("guessResult").innerHTML = `
-      <div style="background: rgba(255, 51, 51, 0.1); padding: 15px; border-radius: var(--radius-md); border-left: 4px solid var(--danger);">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <span style="font-size: 24px;">❌</span>
-          <div>
-            <div style="font-weight: 600; margin-bottom: 5px; color: var(--danger);">إجابة غير صحيحة</div>
-            <div><b>${username}</b>: حاول مرة أخرى!</div>
-          </div>
-        </div>
+      <div style="background: rgba(255, 51, 51, 0.1); padding: 12px; border-radius: var(--radius-md); border-left: 4px solid var(--danger); display: inline-block;">
+        ❌ <b>${username}</b>: حاول مرة أخرى!
       </div>
     `;
-    
-    showNotification('إجابة غير صحيحة! حاول مرة أخرى', 'error');
   }
 }
 
-// الأزرار الأخرى
 function toggleAnswer() {
   const el = document.getElementById("answerText");
   el.style.visibility = el.style.visibility === "hidden" ? "visible" : "hidden";
@@ -2105,75 +1822,59 @@ function toggleAnswer() {
 function resetScores() {
   blueScore = 0;
   redScore = 0;
-  document.getElementById('blueScore').innerText = blueScore;
-  document.getElementById('redScore').innerText = redScore;
-  document.getElementById('blueScoreDisplay').innerText = blueScore;
-  document.getElementById('redScoreDisplay').innerText = redScore;
-  
+  blueCorrectCount = 0;
+  redCorrectCount = 0;
+  updateScores();
   showNotification('تم إعادة تعيين النقاط!', 'info');
 }
 
-// المودالات
+/* ========= المودالات ========= */
 function showControlModal() {
   document.getElementById('modalBackdrop').classList.add('active');
   document.getElementById('controlModal').classList.add('active');
 }
-
 function closeControlModal() {
   document.getElementById('modalBackdrop').classList.remove('active');
   document.getElementById('controlModal').classList.remove('active');
 }
-
 function showHelp() {
   document.getElementById('modalBackdrop').classList.add('active');
   document.getElementById('helpModal').classList.add('active');
 }
-
 function closeHelp() {
   document.getElementById('modalBackdrop').classList.remove('active');
   document.getElementById('helpModal').classList.remove('active');
 }
-
 function toggleStats() {
   const modal = document.getElementById('statsModal');
   const backdrop = document.getElementById('modalBackdrop');
-  
   if (modal.classList.contains('active')) {
     modal.classList.remove('active');
     backdrop.classList.remove('active');
   } else {
-    loadStats();
     showStats();
     modal.classList.add('active');
     backdrop.classList.add('active');
   }
 }
-
 function closeStats() {
   document.getElementById('modalBackdrop').classList.remove('active');
   document.getElementById('statsModal').classList.remove('active');
 }
 
-// الشات المؤقت
 let chatTimeout;
 function showFlashMessage(message) {
   const chatFlash = document.getElementById('chatFlash');
   const chatMessages = document.getElementById('chatMessages');
-  
   const messageElement = document.createElement('div');
   messageElement.className = 'chat-message';
   messageElement.innerHTML = message;
-  
   chatMessages.prepend(messageElement);
   chatFlash.classList.add('active');
   chatFlash.classList.remove('fading');
-  
-  // حذف الرسائل القديمة
   if (chatMessages.children.length > 3) {
     chatMessages.removeChild(chatMessages.lastChild);
   }
-  
-  // إخفاء بعد ثانيتين
   clearTimeout(chatTimeout);
   chatTimeout = setTimeout(() => {
     chatFlash.classList.add('fading');
@@ -2181,21 +1882,16 @@ function showFlashMessage(message) {
       chatFlash.classList.remove('active');
       chatMessages.innerHTML = '';
     }, 300);
-  }, 2000);
+  }, 2500);
 }
 
-// الإحصائيات
 function updatePlayerStats(username, correct) {
   if (!playerStats[username]) {
     playerStats[username] = {
-      correct: 0,
-      wrong: 0,
-      total: 0,
-      score: 0,
+      correct: 0, wrong: 0, total: 0, score: 0,
       team: bluePlayers.includes(username) ? 'blue' : 'red'
     };
   }
-  
   playerStats[username].total++;
   if (correct) {
     playerStats[username].correct++;
@@ -2204,94 +1900,41 @@ function updatePlayerStats(username, correct) {
   } else {
     playerStats[username].wrong++;
   }
-  
-  saveStats();
-}
-
-function saveStats() {
-  localStorage.setItem('wm_playerStats', JSON.stringify(playerStats));
-}
-
-function loadStats() {
-  try {
-    const saved = JSON.parse(localStorage.getItem('wm_playerStats') || '{}');
-    Object.assign(playerStats, saved);
-  } catch (e) {
-    console.log("خطأ في تحميل الإحصائيات:", e);
-  }
 }
 
 function showStats() {
   const statsContainer = document.getElementById('statsContent');
   const allPlayers = [...new Set([...bluePlayers, ...redPlayers])];
-  
   if (allPlayers.length === 0) {
     statsContainer.innerHTML = `
-      <div style="text-align: center; padding: 60px; color: var(--light-3);">
-        <div style="font-size: 64px; margin-bottom: 20px;">📊</div>
-        <div style="font-size: 20px; margin-bottom: 10px;">لا توجد إحصائيات بعد</div>
-        <div>ابدأ اللعبة وسجل النقاط!</div>
+      <div style="text-align: center; padding: 50px; color: var(--light-3);">
+        <div style="font-size: 56px; margin-bottom: 16px;">📊</div>
+        <div style="font-size: 18px;">لا توجد إحصائيات بعد</div>
       </div>
     `;
     return;
   }
-  
-  // ترتيب اللاعبين حسب النقاط
-  const sortedPlayers = allPlayers.sort((a, b) => {
-    const scoreA = playerStats[a]?.score || 0;
-    const scoreB = playerStats[b]?.score || 0;
-    return scoreB - scoreA;
-  });
-  
+  const sortedPlayers = allPlayers.sort((a, b) => (playerStats[b]?.score || 0) - (playerStats[a]?.score || 0));
   statsContainer.innerHTML = `
-    <div class="grid grid-3" style="gap: 20px;">
+    <div class="grid" style="grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px;">
       ${sortedPlayers.map((player, index) => {
-        const stat = playerStats[player] || {
-          correct: 0,
-          wrong: 0,
-          total: 0,
-          score: 0,
-          team: 'none'
-        };
-        
+        const stat = playerStats[player] || { correct: 0, wrong: 0, total: 0, score: 0, team: 'none' };
         const accuracy = stat.total > 0 ? Math.round((stat.correct / stat.total) * 100) : 0;
         const teamColor = stat.team === 'blue' ? 'var(--info)' : stat.team === 'red' ? 'var(--danger)' : '#aaa';
-        const rank = index + 1;
-        
         return `
-          <div class="card" style="border-color: ${teamColor};">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-              <div>
-                <div style="font-size: 12px; color: var(--light-3);">الترتيب</div>
-                <div style="font-size: 32px; font-weight: 800; color: ${teamColor};">#${rank}</div>
-              </div>
+          <div style="padding: 16px; background: rgba(255,255,255,0.04); border-radius: var(--radius-md); border: 2px solid ${teamColor};">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+              <div style="font-size: 28px; font-weight: 800; color: ${teamColor};">#${index + 1}</div>
               <div style="text-align: right;">
-                <div style="font-size: 20px; font-weight: 700; color: ${teamColor};">${player}</div>
-                <div style="font-size: 14px; color: var(--light-3);">الفريق ${stat.team === 'blue' ? '🔵 الأزرق' : stat.team === 'red' ? '🔴 الأحمر' : '⚪'}</div>
+                <div style="font-size: 16px; font-weight: 700; color: ${teamColor};">${player}</div>
+                <div style="font-size: 12px; color: var(--light-3);">${stat.team === 'blue' ? '🔵 أزرق' : '🔴 أحمر'}</div>
               </div>
             </div>
-            
-            <div style="margin-bottom: 15px;">
-              <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                <span style="color: var(--light-3);">✅ صحيح:</span>
-                <span style="color: var(--success); font-weight: 600;">${stat.correct}</span>
-              </div>
-              <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                <span style="color: var(--light-3);">❌ خطأ:</span>
-                <span style="color: var(--danger); font-weight: 600;">${stat.wrong}</span>
-              </div>
-              <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                <span style="color: var(--light-3);">🎯 الدقة:</span>
-                <span style="color: var(--warning); font-weight: 600;">${accuracy}%</span>
-              </div>
-              <div style="display: flex; justify-content: space-between;">
-                <span style="color: var(--light-3);">⭐ النقاط:</span>
-                <span style="color: #ffcc00; font-weight: 600; font-size: 18px;">${stat.score}</span>
-              </div>
-            </div>
-            
-            <div style="background: rgba(255, 255, 255, 0.05); height: 8px; border-radius: var(--radius-full); overflow: hidden; margin-top: 15px;">
-              <div style="height: 100%; background: linear-gradient(90deg, var(--success), #00cc99); width: ${accuracy}%; transition: width 1s ease;"></div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 13px;">
+              <div>✅ صحيح: <b style="color: var(--success);">${stat.correct}</b></div>
+              <div>❌ خطأ: <b style="color: var(--danger);">${stat.wrong}</b></div>
+              <div>🎯 الدقة: <b style="color: var(--warning);">${accuracy}%</b></div>
+              <div>⭐ النقاط: <b style="color: #ffcc00;">${stat.score}</b></div>
             </div>
           </div>
         `;
@@ -2300,44 +1943,28 @@ function showStats() {
   `;
 }
 
-// معالجة رسائل الشات
+/* ========= معالجة الشات ========= */
 function handleChatMessage(username, content) {
   content = content.trim();
-  const command = content.split(' ')[0];
-  
   if (content === "!ازرق") {
-    if (!bluePlayers.includes(username)) {
+    if (!bluePlayers.includes(username) && !redPlayers.includes(username)) {
       bluePlayers.push(username);
       blueTurnOrder.push(username);
       updatePlayerList("blue");
       showFlashMessage(`🎮 <b style="color: var(--info);">${username}</b> انضم إلى الفريق الأزرق!`);
-      showNotification(`${username} انضم للفريق الأزرق`, 'info');
+      showNotification(`${username} انضم للأزرق`, 'info');
     }
   } else if (content === "!احمر") {
-    if (!redPlayers.includes(username)) {
+    if (!redPlayers.includes(username) && !bluePlayers.includes(username)) {
       redPlayers.push(username);
       redTurnOrder.push(username);
       updatePlayerList("red");
       showFlashMessage(`🎮 <b style="color: var(--danger);">${username}</b> انضم إلى الفريق الأحمر!`);
-      showNotification(`${username} انضم للفريق الأحمر`, 'info');
+      showNotification(`${username} انضم للأحمر`, 'info');
     }
   } else if (content === "!نقاطي") {
     const stat = playerStats[username] || { score: 0 };
     showFlashMessage(`⭐ <b>${username}</b>: لديك <b style="color: #ffcc00;">${stat.score}</b> نقطة`);
-  } else if (content === "!ترتيبي") {
-    if (bluePlayers.includes(username)) {
-      const index = blueTurnOrder.indexOf(username);
-      showFlashMessage(`🔵 <b>${username}</b>: ترتيبك في الفريق الأزرق هو <b>${index + 1}</b>`);
-    } else if (redPlayers.includes(username)) {
-      const index = redTurnOrder.indexOf(username);
-      showFlashMessage(`🔴 <b>${username}</b>: ترتيبك في الفريق الأحمر هو <b>${index + 1}</b>`);
-    }
-  } else if (content.startsWith("!تحدي @")) {
-    const target = content.replace("!تحدي @", "").trim();
-    if (bluePlayers.includes(target) || redPlayers.includes(target)) {
-      showFlashMessage(`⚔️ <b>${username}</b> يتحدى <b>${target}</b> في الجولة القادمة!`);
-      showNotification(`${username} يتحدى ${target}!`, 'warning');
-    }
   } else if (timerRunning && username === currentPlayerName) {
     if (normalizeArabic(content) === normalizeArabic(currentAnswer)) {
       updatePlayerStats(username, true);
@@ -2349,81 +1976,65 @@ function handleChatMessage(username, content) {
   }
 }
 
-// الاتصال بالشات
+/* ========= الاتصال ========= */
 function connectChat() {
   const platform = document.getElementById("platformSelect").value;
   const channel = document.getElementById("channelInput").value.trim();
   const remember = document.getElementById("rememberMe").checked;
   const statusDisplay = document.getElementById("statusDisplay");
-  
+
   if (!channel) {
     showNotification("اكتب اسم القناة أولاً!", "error");
     return;
   }
-  
-  // حفظ القناة إذا طلب المستخدم
+
   if (remember) {
     localStorage.setItem('wm_saved_channel', channel);
   }
-  
-  // قطع الاتصال السابق
-  if (twitchClient) {
-    try { twitchClient.disconnect(); } catch (e) {}
-  }
-  if (kickSocket) {
-    try { kickSocket.close(); } catch (e) {}
-  }
-  
+
+  if (twitchClient) { try { twitchClient.disconnect(); } catch (e) {} }
+  if (kickSocket) { try { kickSocket.close(); } catch (e) {} }
+
   statusDisplay.innerHTML = '<span>🔄</span> جاري الاتصال...';
   statusDisplay.className = 'status-chip';
-  
+
   if (platform === "twitch") {
     twitchClient = new tmi.Client({
       connection: { reconnect: true, secure: true },
       channels: [channel]
     });
-    
     twitchClient.connect().then(() => {
       statusDisplay.innerHTML = '<span>✅</span> متصل بـ Twitch';
       statusDisplay.classList.add('connected');
-      showNotification(`تم الاتصال بقناة ${channel} على Twitch!`, 'success');
-      showFlashMessage(`✅ <b>تم الاتصال بـ Twitch:</b> ${channel}`);
+      showNotification(`تم الاتصال بـ ${channel}!`, 'success');
       closeControlModal();
-    }).catch((error) => {
+    }).catch(() => {
       statusDisplay.innerHTML = '<span>❌</span> فشل الاتصال';
       statusDisplay.classList.add('disconnected');
-      showNotification(`فشل الاتصال بقناة ${channel}`, 'error');
+      showNotification(`فشل الاتصال`, 'error');
     });
-    
     twitchClient.on('message', (channel, tags, message, self) => {
       if (self) return;
       const username = tags['display-name'] || tags['username'] || 'مجهول';
       handleChatMessage(username, message);
     });
-    
   } else {
-    // Kick API
     (async () => {
       try {
         const res = await fetch(`https://kick.com/api/v2/channels/${channel}`);
         const data = await res.json();
         const roomId = data.chatroom.id;
-        
         kickSocket = new WebSocket("wss://ws-us2.pusher.com/app/32cbd69e4b950bf97679?protocol=7&client=js&version=8.4.0-rc2&flash=false");
-        
         kickSocket.onopen = () => {
           kickSocket.send(JSON.stringify({
             event: "pusher:subscribe",
             data: { auth: "", channel: `chatrooms.${roomId}.v2` }
           }));
-          
           statusDisplay.innerHTML = '<span>✅</span> متصل بـ Kick';
           statusDisplay.classList.add('connected');
-          showNotification(`تم الاتصال بقناة ${channel} على Kick!`, 'success');
-          showFlashMessage(`✅ <b>تم الاتصال بـ Kick:</b> ${channel}`);
+          showNotification(`تم الاتصال بـ ${channel}!`, 'success');
           closeControlModal();
         };
-        
         kickSocket.onmessage = (event) => {
           const msg = JSON.parse(event.data);
           if (msg.event === "App\\Events\\ChatMessageEvent") {
@@ -2433,96 +2044,45 @@ function connectChat() {
             handleChatMessage(username, content);
           }
         };
-        
         kickSocket.onerror = () => {
           statusDisplay.innerHTML = '<span>❌</span> فشل الاتصال';
           statusDisplay.classList.add('disconnected');
-          showNotification(`فشل الاتصال بقناة ${channel}`, 'error');
         };
-        
       } catch (error) {
         statusDisplay.innerHTML = '<span>❌</span> فشل الاتصال';
         statusDisplay.classList.add('disconnected');
-        showNotification(`فشل الاتصال بقناة ${channel}`, 'error');
+        showNotification(`فشل الاتصال`, 'error');
       }
     })();
   }
 }
 
-// تحميل الحالة المحفوظة
 function loadState() {
   try {
-    // تحميل القناة المحفوظة
     const savedChannel = localStorage.getItem('wm_saved_channel');
     if (savedChannel) {
       document.getElementById('channelInput').value = savedChannel;
       document.getElementById('rememberMe').checked = true;
     }
-    
-    // تحميل الإعدادات
-    const settings = JSON.parse(localStorage.getItem('wm_settings') || '{}');
-    if (settings.roundSeconds) {
-      roundSeconds = settings.roundSeconds;
-      document.getElementById('roundTime').value = roundSeconds;
-    }
-    if (settings.targetScore) {
-      targetScore = settings.targetScore;
-      document.getElementById('targetScore').value = targetScore;
-    }
-    if (typeof settings.autoTimer === 'boolean') {
-      autoTimer = settings.autoTimer;
-      document.getElementById('autoTimer').checked = autoTimer;
-    }
-    if (typeof settings.autoNext === 'boolean') {
-      autoNext = settings.autoNext;
-      document.getElementById('autoNext').checked = autoNext;
-    }
-    
-    loadStats();
-    
-  } catch (e) {
-    console.log("خطأ في تحميل الحالة:", e);
-  }
+  } catch (e) {}
 }
 
-// اختصارات لوحة المفاتيح
 document.addEventListener('keydown', (e) => {
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-  
   switch (e.key.toLowerCase()) {
-    case ' ':
-      e.preventDefault();
-      if (timerRunning) stopTimer();
-      else startTimer();
-      break;
-    case 'n':
-      nextTurn();
-      break;
-    case 'h':
-      useHint();
-      break;
-    case 's':
-      toggleStats();
-      break;
-    case 'k':
-      skipTurn();
-      break;
-    case 'escape':
-      closeHelp();
-      closeStats();
-      closeControlModal();
-      break;
+    case ' ': e.preventDefault(); if (timerRunning) stopTimer(); else startTimer(); break;
+    case 'n': nextTurn(); break;
+    case 'h': useHint(); break;
+    case 's': toggleStats(); break;
+    case 'k': skipTurn(); break;
+    case 'escape': closeHelp(); closeStats(); closeControlModal(); break;
   }
 });
 
-// التهيئة
 window.addEventListener('DOMContentLoaded', () => {
   loadState();
-  
-  // إعداد القوائم المنبثقة
-  document.querySelectorAll('.section-content').forEach(content => {
-    content.style.display = 'grid';
-  });
+  updatePlayerList('blue');
+  updatePlayerList('red');
 });
 </script>
 </body>
