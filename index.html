@@ -405,7 +405,7 @@ header {
 .section-head span { font-size:.9rem;color:var(--c-sub);margin-right:auto; }
 
 /* ============================================================
-   HOW IT WORKS
+   HOW IT WORKS — COMPACT HORIZONTAL
 ============================================================ */
 .how-wrap {
   background: var(--c-surface);
@@ -413,46 +413,53 @@ header {
   border-bottom:1px solid rgba(255,255,255,.04);
 }
 
+/* Reduced vertical padding */
+.how-wrap .section {
+  padding: 2.2rem 2rem;
+}
+
+.how-wrap .section-head {
+  margin-bottom: 1.6rem;
+}
+
+/* Three columns side by side, compact */
 .steps {
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:1px;
   background:rgba(255,255,255,.04);
-  border-radius:var(--r-xl);
+  border-radius:var(--r-lg);
   overflow:hidden;
 }
+
 .step {
   background:var(--c-surface);
-  padding:3rem 2.5rem;
+  padding: 1.6rem 1.8rem;
   position:relative;
   transition:background .3s ease;
+  display:flex;
+  align-items:center;
+  gap:1.2rem;
 }
 .step:hover { background:var(--c-raise); }
 
-.step-num {
-  font-family:'Orbitron',sans-serif;
-  font-size:4rem;
-  font-weight:900;
-  color:rgba(255,45,85,.08);
-  line-height:1;
-  margin-bottom:1.5rem;
-  transition:color .3s ease;
-}
-.step:hover .step-num { color:rgba(255,45,85,.16); }
+/* Hide large step number */
+.step-num { display:none; }
 
 .step-icon {
-  width:52px;height:52px;
+  width:46px;height:46px;
   border-radius:14px;
   display:flex;align-items:center;justify-content:center;
-  font-size:1.4rem;
-  margin-bottom:1.5rem;
+  font-size:1.25rem;
+  flex-shrink:0;
 }
 .step:nth-child(1) .step-icon { background:var(--c-red-dim);color:var(--c-red); }
 .step:nth-child(2) .step-icon { background:var(--c-cyan-dim);color:var(--c-cyan); }
 .step:nth-child(3) .step-icon { background:var(--c-green-dim);color:var(--c-green); }
 
-.step h3 { font-size:1.3rem;font-weight:800;margin-bottom:.7rem; }
-.step p { color:var(--c-sub);line-height:1.7;font-size:.95rem; }
+.step-text {}
+.step h3 { font-size:1rem;font-weight:800;margin-bottom:.25rem; }
+.step p  { color:var(--c-sub);line-height:1.55;font-size:.84rem; }
 
 /* ============================================================
    SEARCH + FILTERS
@@ -768,99 +775,6 @@ header {
 .streamer-cta:hover { transform:translateY(-2px);box-shadow:0 12px 24px rgba(191,90,242,.35); }
 
 /* ============================================================
-   PREMIUM
-============================================================ */
-.premium-section { max-width:1380px;margin:0 auto;padding:2rem 2rem 5rem; }
-
-.premium-card {
-  background:linear-gradient(135deg,var(--c-surface),rgba(191,90,242,.08));
-  border:1px solid rgba(191,90,242,.25);
-  border-radius:var(--r-xl);
-  padding:3.5rem;
-  position:relative;
-  overflow:hidden;
-}
-.premium-card::before {
-  content:'';position:absolute;
-  top:-80px;left:-80px;
-  width:300px;height:300px;
-  background:var(--c-purple);
-  border-radius:50%;
-  filter:blur(100px);
-  opacity:.1;
-  animation:drift 15s ease infinite;
-}
-.premium-card::after {
-  content:'';position:absolute;
-  bottom:-80px;right:-80px;
-  width:250px;height:250px;
-  background:var(--c-red);
-  border-radius:50%;
-  filter:blur(100px);
-  opacity:.08;
-  animation:drift 20s ease infinite reverse;
-}
-
-.premium-toggle {
-  display:flex;align-items:center;justify-content:space-between;
-  cursor:pointer;position:relative;z-index:1;
-}
-.premium-toggle h3 {
-  font-size:2rem;font-weight:900;
-  display:flex;align-items:center;gap:14px;
-}
-.crown { font-size:1.8rem;filter:drop-shadow(0 0 14px rgba(255,214,10,.6)); }
-.chevron { font-size:1.3rem;color:var(--c-sub);transition:transform .3s ease; }
-
-.premium-body {
-  margin-top:2.5rem;
-  position:relative;z-index:1;
-  display:none;
-  animation:slideDown .35s ease;
-}
-@keyframes slideDown { from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:translateY(0);} }
-
-.premium-body > p { font-size:1.1rem;color:var(--c-sub);margin-bottom:2rem;line-height:1.7; }
-
-.features-grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
-  gap:1rem;
-  margin-bottom:2.5rem;
-}
-.feature-item {
-  background:var(--c-raise);
-  border:1px solid rgba(255,255,255,.04);
-  border-radius:var(--r-md);
-  padding:1.2rem;
-  display:flex;align-items:center;gap:10px;
-  font-size:.92rem;color:var(--c-sub);
-  transition:all .25s ease;
-}
-.feature-item:hover { border-color:rgba(191,90,242,.3);color:var(--c-text); }
-.feature-item i { color:var(--c-green);font-size:1rem; }
-
-.price-tag {
-  font-family:'Orbitron',sans-serif;
-  font-size:3rem;font-weight:900;
-  color:var(--c-purple);
-  margin-bottom:2rem;
-  filter:drop-shadow(0 0 20px rgba(191,90,242,.4));
-}
-.price-tag span { font-size:1.2rem;color:var(--c-sub);font-family:'Cairo',sans-serif;font-weight:400; }
-
-.premium-ctas { display:flex;gap:1rem;flex-wrap:wrap; }
-.cta-purple {
-  padding:.85rem 2rem;border-radius:100px;border:none;
-  background:linear-gradient(135deg,var(--c-purple),#6b2dff);
-  color:#fff;
-  font-family:'Cairo',sans-serif;font-weight:700;font-size:1rem;
-  cursor:pointer;display:inline-flex;align-items:center;gap:9px;
-  transition:all .3s ease;text-decoration:none;
-}
-.cta-purple:hover { transform:translateY(-3px);box-shadow:0 16px 36px rgba(191,90,242,.4); }
-
-/* ============================================================
    FOOTER
 ============================================================ */
 footer {
@@ -943,10 +857,17 @@ footer {
 /* ============================================================
    RESPONSIVE
 ============================================================ */
+@media(max-width:768px){
+  .welcome-cards { grid-template-columns:1fr; }
+  .welcome-modal { max-width:98vw; }
+  .welcome-inner { padding:1.5rem; }
+}
+
 @media(max-width:1024px){
   .hero { grid-template-columns:1fr; }
   .hero-info-card { display:none; }
   .steps { grid-template-columns:1fr; }
+  .step { padding:1.2rem 1.4rem; }
 }
 @media(max-width:768px){
   .nav-links { display:none; }
@@ -962,10 +883,239 @@ footer {
   .hero h1 { font-size:2.5rem; }
   .hero-stats { flex-wrap:wrap;gap:1.2rem; }
   .section { padding:3.5rem 1.5rem; }
-  .premium-card { padding:2rem; }
-  .premium-toggle h3 { font-size:1.4rem; }
-  .price-tag { font-size:2rem; }
+  .how-wrap .section { padding:1.8rem 1.5rem; }
 }
+
+/* maintenance overlay */
+.game-maintenance {
+  position:absolute;inset:0;
+  background:rgba(5,6,8,.82);
+  backdrop-filter:blur(4px);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:.6rem;
+  z-index:5;
+  border-radius:inherit;
+}
+.maintenance-icon {
+  font-size:2.2rem;
+  animation:spin 3s linear infinite;
+}
+@keyframes spin { to{transform:rotate(360deg);} }
+.maintenance-label {
+  font-size:.88rem;
+  font-weight:800;
+  color:var(--c-gold);
+  background:var(--c-gold-dim);
+  border:1px solid rgba(255,214,10,.35);
+  padding:.35rem 1rem;
+  border-radius:100px;
+  letter-spacing:.04em;
+}
+.maintenance-sub {
+  font-size:.78rem;
+  color:var(--c-muted);
+}
+.game-card.is-maintenance {
+  cursor:not-allowed;
+  opacity:.85;
+}
+.game-card.is-maintenance:hover {
+  transform:none;
+  border-color:rgba(255,214,10,.3);
+  box-shadow:0 0 24px -8px rgba(255,214,10,.2);
+}
+
+/* ============================================================
+   WELCOME MODAL
+============================================================ */
+.welcome-bg {
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.82);
+  backdrop-filter:blur(16px) saturate(150%);
+  display:flex;
+  align-items:center;justify-content:center;
+  z-index:2000;
+  padding:1rem;
+  animation:wFadeIn .4s ease;
+}
+@keyframes wFadeIn { from{opacity:0;} to{opacity:1;} }
+
+.welcome-bg.closing {
+  animation:wFadeOut .35s ease forwards;
+}
+@keyframes wFadeOut { to{opacity:0;} }
+
+.welcome-modal {
+  background: var(--c-surface);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:var(--r-xl);
+  padding:0;
+  max-width:780px;
+  width:100%;
+  position:relative;
+  overflow:hidden;
+  animation:wPopIn .45s cubic-bezier(.175,.885,.32,1.275);
+}
+@keyframes wPopIn { from{transform:scale(.82) translateY(30px);opacity:0;} to{transform:scale(1) translateY(0);opacity:1;} }
+
+/* Top gradient bar */
+.welcome-bar {
+  height:5px;
+  background:linear-gradient(90deg, var(--c-red), var(--c-purple), var(--c-cyan));
+  background-size:200% 100%;
+  animation:barSlide 3s linear infinite;
+}
+@keyframes barSlide { 0%{background-position:0% 0%} 100%{background-position:200% 0%} }
+
+.welcome-inner { padding:2rem 2.5rem 1.8rem; }
+
+/* Logo area */
+.welcome-logo {
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:1.4rem;
+}
+.welcome-logo-mark {
+  width:52px;height:52px;
+  background:linear-gradient(135deg,var(--c-red),var(--c-purple));
+  border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;color:#fff;
+  box-shadow:0 10px 28px var(--c-red-glow);
+  flex-shrink:0;
+  animation:logoPulse 2.5s ease infinite;
+}
+@keyframes logoPulse {
+  0%,100%{box-shadow:0 10px 28px var(--c-red-glow);}
+  50%{box-shadow:0 10px 40px rgba(191,90,242,.5);}
+}
+.welcome-logo-text {
+  font-family:'Orbitron',sans-serif;
+  font-weight:900;
+  font-size:1.3rem;
+  background:linear-gradient(90deg,#fff,var(--c-sub));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.welcome-logo-sub {
+  font-size:.78rem;
+  color:var(--c-muted);
+  font-family:'Cairo',sans-serif;
+  margin-top:1px;
+}
+
+.welcome-title {
+  font-size:1.5rem;
+  font-weight:900;
+  margin-bottom:.5rem;
+  line-height:1.3;
+}
+.welcome-title em {
+  font-style:normal;
+  background:linear-gradient(135deg,var(--c-red),var(--c-purple));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.welcome-desc {
+  color:var(--c-sub);
+  font-size:.9rem;
+  line-height:1.65;
+  margin-bottom:1.4rem;
+}
+
+/* Info cards */
+.welcome-cards {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:.75rem;
+  margin-bottom:1.6rem;
+}
+.welcome-card {
+  background:var(--c-raise);
+  border:1px solid rgba(255,255,255,.04);
+  border-radius:var(--r-md);
+  padding:1rem 1.2rem;
+  display:flex;align-items:flex-start;gap:12px;
+  transition:border-color .25s ease;
+}
+.welcome-card:hover { border-color:rgba(255,45,85,.2); }
+.welcome-card-icon {
+  width:36px;height:36px;
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;
+  flex-shrink:0;
+}
+.welcome-card:nth-child(1) .welcome-card-icon { background:var(--c-red-dim);color:var(--c-red); }
+.welcome-card:nth-child(2) .welcome-card-icon { background:var(--c-purple-dim);color:var(--c-purple); }
+.welcome-card:nth-child(3) .welcome-card-icon { background:var(--c-cyan-dim);color:var(--c-cyan); }
+.welcome-card-body b   { font-size:.9rem;font-weight:700;color:var(--c-text);display:block;margin-bottom:2px; }
+.welcome-card-body p   { font-size:.83rem;color:var(--c-sub);margin:0;line-height:1.55; }
+.welcome-card-body a   { color:var(--c-red);text-decoration:none;font-weight:600; }
+.welcome-card-body a:hover { text-decoration:underline; }
+
+/* Actions */
+.welcome-actions {
+  display:flex;gap:.8rem;
+  flex-wrap:wrap;
+}
+.welcome-enter {
+  flex:1;
+  padding:.9rem 1.5rem;
+  border-radius:100px;
+  border:none;
+  background:linear-gradient(135deg,var(--c-red),#c0123a);
+  color:#fff;
+  font-family:'Cairo',sans-serif;font-weight:800;font-size:1rem;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all .3s ease;
+  box-shadow:0 8px 24px var(--c-red-glow);
+  min-width:160px;
+}
+.welcome-enter:hover { transform:translateY(-2px);box-shadow:0 14px 32px var(--c-red-glow);filter:brightness(1.08); }
+
+.welcome-links {
+  display:flex;gap:.5rem;
+}
+.welcome-social {
+  width:46px;height:46px;border-radius:50%;
+  background:var(--c-raise);
+  border:1px solid rgba(255,255,255,.06);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--c-sub);text-decoration:none;font-size:1rem;
+  transition:all .25s ease;
+  flex-shrink:0;
+}
+.welcome-social:hover { background:var(--c-red);color:#fff;border-color:var(--c-red);transform:translateY(-3px); }
+
+/* Close X */
+.welcome-x {
+  position:absolute;top:1.2rem;left:1.2rem;
+  width:32px;height:32px;border-radius:50%;
+  background:var(--c-raise);
+  border:1px solid rgba(255,255,255,.06);
+  color:var(--c-muted);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:.9rem;
+  transition:all .2s ease;
+  z-index:2;
+}
+.welcome-x:hover { background:var(--c-red);color:#fff;border-color:var(--c-red); }
+
+/* Dont show again */
+.welcome-skip {
+  text-align:center;
+  margin-top:1rem;
+}
+.welcome-skip label {
+  font-size:.8rem;color:var(--c-muted);
+  display:inline-flex;align-items:center;gap:6px;
+  cursor:pointer;
+  user-select:none;
+}
+.welcome-skip input { accent-color:var(--c-red);cursor:pointer; }
 
 /* ============================================================
    UTILITY
@@ -1036,9 +1186,6 @@ footer {
       <button class="cta cta-ghost" onclick="scrollTo('rest')">
         <i class="fa-solid fa-mug-hot"></i> العاب الاستراحه
       </button>
-      <button class="cta cta-ghost" onclick="scrollTo('premium')">
-        <i class="fa-solid fa-crown"></i> فئة ستريمر
-      </button>
     </div>
 
     <div class="hero-stats">
@@ -1087,20 +1234,26 @@ footer {
       <div class="step fade-up">
         <div class="step-num">01</div>
         <div class="step-icon"><i class="fa-solid fa-gamepad"></i></div>
-        <h3>اختر اللعبة</h3>
-        <p>اختر لعبة من مكتبتنا التفاعلية المتنوعة التي تناسب جمهورك وأسلوب بثك</p>
+        <div class="step-text">
+          <h3>اختر اللعبة</h3>
+          <p>اختر لعبة من مكتبتنا التفاعلية المتنوعة التي تناسب جمهورك وأسلوب بثك</p>
+        </div>
       </div>
       <div class="step fade-up" style="transition-delay:.1s">
         <div class="step-num">02</div>
         <div class="step-icon"><i class="fa-solid fa-link"></i></div>
-        <h3>اربط الشات</h3>
-        <p>سجل الدخول بحسابك في تويتش أو كيك لربط اللعبة مع شات القناة مباشرة</p>
+        <div class="step-text">
+          <h3>اربط الشات</h3>
+          <p>سجل الدخول بحسابك في تويتش أو كيك لربط اللعبة مع شات القناة مباشرة</p>
+        </div>
       </div>
       <div class="step fade-up" style="transition-delay:.2s">
         <div class="step-num">03</div>
         <div class="step-icon"><i class="fa-solid fa-play"></i></div>
-        <h3>ابدأ البث</h3>
-        <p>شارك الرابط مع مشاهديك وابدأ التفاعل المباشر في اللحظة نفسها</p>
+        <div class="step-text">
+          <h3>ابدأ البث</h3>
+          <p>شارك الرابط مع مشاهديك وابدأ التفاعل المباشر في اللحظة نفسها</p>
+        </div>
       </div>
     </div>
   </div>
@@ -1157,41 +1310,6 @@ footer {
   <div class="streamers-grid" id="streamersGrid"></div>
 </div>
 
-<!-- ============================================================
-     PREMIUM
-============================================================ -->
-<div class="premium-section" id="premium">
-  <div class="premium-card fade-up">
-    <div class="premium-toggle" id="premiumToggle">
-      <h3><span class="crown">👑</span> فئة ستريمر خاصة</h3>
-      <i class="fa-solid fa-chevron-down chevron" id="premiumChevron"></i>
-    </div>
-
-    <div class="premium-body" id="premiumBody">
-      <p>احصل على فئة خاصة باسمك تحتوي على 5 ألعاب مخصصة لك فقط، مع تحكم كامل وحماية بكلمة مرور!</p>
-
-      <div class="features-grid">
-        <div class="feature-item"><i class="fa-solid fa-check"></i> فئة خاصة باسمك</div>
-        <div class="feature-item"><i class="fa-solid fa-check"></i> حماية بكلمة مرور</div>
-        <div class="feature-item"><i class="fa-solid fa-check"></i> تخصيص كامل للألعاب</div>
-        <div class="feature-item"><i class="fa-solid fa-check"></i> إضافة شعارك</div>
-        <div class="feature-item"><i class="fa-solid fa-check"></i> 5 ألعاب مخصصة</div>
-      </div>
-
-      <div class="price-tag">10$ <span>فقط</span></div>
-
-      <div class="premium-ctas">
-        <a href="https://twitter.com/medo_dv" class="cta-purple" target="_blank">
-          <i class="fa-brands fa-x-twitter"></i> تواصل عبر تويتر
-        </a>
-        <a href="https://instagram.com/medo_dv" class="cta cta-ghost" target="_blank" style="border-radius:100px;">
-          <i class="fa-brands fa-instagram"></i> تواصل عبر انستجرام
-        </a>
-      </div>
-    </div>
-  </div>
-</div>
-
 </main>
 
 <!-- ============================================================
@@ -1209,6 +1327,66 @@ footer {
     </div>
   </div>
 </footer>
+
+<!-- ============================================================
+     WELCOME MODAL
+============================================================ -->
+<div class="welcome-bg" id="welcomeModal">
+  <div class="welcome-modal">
+    <div class="welcome-bar"></div>
+    <button class="welcome-x" id="welcomeX"><i class="fa-solid fa-times"></i></button>
+    <div class="welcome-inner">
+      <div class="welcome-logo">
+        <div class="welcome-logo-mark"><i class="fa-solid fa-bolt"></i></div>
+        <div>
+          <div class="welcome-logo-text">STREAMER TOP</div>
+          <div class="welcome-logo-sub">المنصة العربية الأولى للألعاب التفاعلية</div>
+        </div>
+      </div>
+      <div class="welcome-title">أهلاً وسهلاً بك! 👋<br>في <em>ستريمر توب</em></div>
+      <p class="welcome-desc">منصة مصممة خصيصاً للستريمرز العرب — اربط شاتك وخلّي مشاهديك يشاركون في اللعب مباشرة من البث!</p>
+      <div class="welcome-cards">
+        <div class="welcome-card">
+          <div class="welcome-card-icon"><i class="fa-solid fa-heart-crack"></i></div>
+          <div class="welcome-card-body">
+            <b>نعتذر مسبقاً عن أي خطأ</b>
+            <p>المنصة في طور التطوير المستمر، قد يحصل أحياناً بعض الأخطاء أو المشاكل التقنية — نعتذر منكم مسبقاً ونعمل دائماً على تحسينها.</p>
+          </div>
+        </div>
+        <div class="welcome-card">
+          <div class="welcome-card-icon"><i class="fa-solid fa-circle-plus"></i></div>
+          <div class="welcome-card-body">
+            <b>عندك اقتراح أو فكرة؟</b>
+            <p>أي اقتراح لإضافة لعبة جديدة أو تحسين الموقع، تواصل معي مباشرة وأنا بكل سرور أسمعك!</p>
+          </div>
+        </div>
+        <div class="welcome-card">
+          <div class="welcome-card-icon"><i class="fa-solid fa-bug"></i></div>
+          <div class="welcome-card-body">
+            <b>واجهت مشكلة؟</b>
+            <p>لو صار أي خطأ أو مشكلة تقنية، تواصل معي عبر <a href="https://twitter.com/medo_dv" target="_blank">تويتر</a> أو <a href="https://instagram.com/medo_dv" target="_blank">انستجرام</a> أو <a href="https://linktr.ee/medo_dv" target="_blank">روابطي</a> وأنا أحلها بأسرع وقت.</p>
+          </div>
+        </div>
+      </div>
+      <div class="welcome-actions">
+        <button class="welcome-enter" id="welcomeEnter">
+          <i class="fa-solid fa-rocket"></i> يلا نلعب!
+        </button>
+        <div class="welcome-links">
+          <a href="https://twitter.com/medo_dv" class="welcome-social" target="_blank" title="تويتر"><i class="fa-brands fa-x-twitter"></i></a>
+          <a href="https://instagram.com/medo_dv" class="welcome-social" target="_blank" title="انستجرام"><i class="fa-brands fa-instagram"></i></a>
+          <a href="https://linktr.ee/medo_dv" class="welcome-social" target="_blank" title="كل الروابط"><i class="fa-solid fa-link"></i></a>
+        </div>
+      </div>
+      <div class="welcome-skip">
+        <label>
+          <input type="checkbox" id="dontShowAgain">
+          لا تظهر مرة ثانية
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ============================================================
      MODAL: SUPPORT
@@ -1255,7 +1433,7 @@ footer {
 const games = [
   { id:1, title:'الكلمات المبعثرة',  desc:'كون الكلمات بأسرع وقت من حروف عشوائية',            img:'https://i.postimg.cc/sDmnYMss/1.png',          twitch:true, kick:true, link:'wordgame.html' },
   { id:2, title:'اكشف الصورة',       desc:'صورة تتكشف تدريجياً — خمّن الكلمة قبل الجميع',    img:'https://i.postimg.cc/VNQD1nRY/5.png',          twitch:true, kick:true, link:'guessimage.html' },
-  { id:3, title:'حرب الدول',         desc:'استولِ على الدول ووسّع نفوذك',                      img:'https://i.postimg.cc/2jwdJgMY/4.png',          twitch:true, kick:true, link:'war-of-nations.html' },
+  { id:3, title:'حرب الدول',         desc:'استولِ على الدول ووسّع نفوذك',                      img:'https://i.postimg.cc/2jwdJgMY/4.png',          twitch:true, kick:true, link:'war-of-nations.html', maintenance:true },
   { id:4, title:'لعبة الحروف',       desc:'انطلق بحرف محدد واكتب كلمات صحيحة',               img:'https://i.postimg.cc/3J81x3mm/2.png',          twitch:true, kick:true, link:'huroof-game.html' },
   { id:5, title:'لعبة المربعات',     desc:'كوّن أكبر عدد من المربعات خلال الوقت',             img:'https://i.postimg.cc/XYGZ0j3s/St.png',         twitch:true, kick:true, link:'squares-game.html' },
   { id:6, title:'تحدي المفردات',     desc:'اختبر قوة مفرداتك مع الشات',                       img:'https://i.postimg.cc/sx7C12Yj/thdy-almfrdat.png',twitch:true, kick:true, link:'tahadi-mofradat.html' }
@@ -1294,31 +1472,38 @@ function renderGames() {
 
   grid.innerHTML = filtered.map(g => {
     const isFav = favs.includes(g.id);
+    const isMaint = !!g.maintenance;
     return `
-    <div class="game-card fade-up" data-id="${g.id}">
+    <div class="game-card fade-up ${isMaint ? 'is-maintenance' : ''}" data-id="${g.id}">
       <div class="game-img" style="background-image:url('${g.img}')"></div>
       <div class="game-scrim"></div>
+
+      ${isMaint ? `
+      <div class="game-maintenance">
+        <span class="maintenance-icon">⚙️</span>
+        <span class="maintenance-label">🔧 تحت الصيانة</span>
+        <span class="maintenance-sub">إلى إشعار آخر</span>
+      </div>` : ''}
 
       <div class="game-badges">
         ${g.twitch ? `<span class="badge badge-twitch"><i class="fa-brands fa-twitch"></i> تويتش</span>` : ''}
         ${g.kick   ? `<span class="badge badge-kick"><i class="fa-solid fa-bolt"></i> كيك</span>` : ''}
       </div>
 
-      <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFav(${g.id},event)">
+      ${!isMaint ? `<button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFav(${g.id},event)">
         <i class="fa-${isFav?'solid':'regular'} fa-heart"></i>
-      </button>
+      </button>` : ''}
 
       <div class="game-info">
         <div class="game-title">${g.title}</div>
         <div class="game-desc">${g.desc}</div>
-        <button class="play-btn" data-link="${g.link}">
+        ${!isMaint ? `<button class="play-btn" data-link="${g.link}">
           <i class="fa-solid fa-play"></i> ابدأ اللعبة
-        </button>
+        </button>` : ''}
       </div>
     </div>`;
   }).join('');
 
-  // Attach click events for play buttons
   grid.querySelectorAll('.play-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const link = btn.getAttribute('data-link');
@@ -1370,7 +1555,6 @@ function renderStreamers() {
       </button>
     </div>`).join('');
 
-  // Event delegation for streamer buttons
   grid.querySelectorAll('.streamer-cta').forEach(btn => {
     btn.addEventListener('click', () => {
       const link = btn.getAttribute('data-link');
@@ -1419,20 +1603,6 @@ document.getElementById('mobileBurger').addEventListener('click', () => {
   document.getElementById('navLinks').classList.toggle('open');
 });
 
-/* ---------- PREMIUM TOGGLE ---------- */
-let premiumOpen = localStorage.getItem('premiumOpen') === 'true';
-const premiumBody = document.getElementById('premiumBody');
-const premiumChevron = document.getElementById('premiumChevron');
-
-function setPremium(open) {
-  premiumOpen = open;
-  premiumBody.style.display = open ? 'block' : 'none';
-  premiumChevron.style.transform = open ? 'rotate(180deg)' : 'rotate(0)';
-  localStorage.setItem('premiumOpen', open);
-}
-setPremium(premiumOpen);
-document.getElementById('premiumToggle').addEventListener('click', () => setPremium(!premiumOpen));
-
 /* ---------- MODALS ---------- */
 function openModal(id)  { document.getElementById(id).style.display = 'flex'; }
 function closeModal(id) { document.getElementById(id).style.display = 'none'; }
@@ -1461,6 +1631,28 @@ function observeFade() {
   }
   document.querySelectorAll('.fade-up:not(.visible)').forEach(el => fadeObserver.observe(el));
 }
+
+/* ---------- WELCOME MODAL ---------- */
+(function() {
+  const modal  = document.getElementById('welcomeModal');
+  const closeX = document.getElementById('welcomeX');
+  const enter  = document.getElementById('welcomeEnter');
+  const skipCb = document.getElementById('dontShowAgain');
+
+  function closeWelcome() {
+    if (skipCb && skipCb.checked) localStorage.setItem('welcomeSeen', '1');
+    modal.classList.add('closing');
+    setTimeout(() => { modal.style.display = 'none'; }, 340);
+  }
+
+  if (localStorage.getItem('welcomeSeen') === '1') {
+    modal.style.display = 'none';
+  }
+
+  closeX.addEventListener('click', closeWelcome);
+  enter.addEventListener('click', closeWelcome);
+  modal.addEventListener('click', e => { if (e.target === modal) closeWelcome(); });
+})();
 
 /* ---------- INIT ---------- */
 document.addEventListener('DOMContentLoaded', () => {
