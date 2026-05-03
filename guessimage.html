@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>🖼️ لعبة اكشف الصورة</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
   <!-- tmi.js لتويتش -->
   <script src="tmi.min.js"></script>
   <style>
@@ -15,6 +15,14 @@
       /* ✅ ألوان خلفية Style2026 */
       --g1:#121629;
       --g2:#0e1322;
+
+      /* ✅ ألوان الأيقونات الجديدة */
+      --icon-conn-1:#00d4ff;
+      --icon-conn-2:#0066ff;
+      --icon-host-1:#ff6b6b;
+      --icon-host-2:#ee0979;
+      --icon-help-1:#ffd93d;
+      --icon-help-2:#ff9500;
     }
     /* (اختياري) وضع فاتح */
     [data-theme="light"]{
@@ -33,6 +41,7 @@
         linear-gradient(-45deg, var(--g1), var(--g2), var(--g1), var(--g2));
       background-size: 400% 400%;
       animation: gradientBG 22s ease infinite;
+      min-height:100vh;
     }
     @keyframes gradientBG{
       0%{background-position:0% 50%}
@@ -40,107 +49,294 @@
       100%{background-position:0% 50%}
     }
 
-    h1{ color:var(--red); margin:6px 0 14px; letter-spacing:.2px; text-align:center }
+    h1{
+      color:#fff; margin:6px 0 18px; letter-spacing:.2px; text-align:center;
+      font-weight:900; font-size:32px;
+      background:linear-gradient(135deg, #ff3333, #ff6b6b, #ffa500);
+      -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+      text-shadow:0 4px 30px rgba(255,71,71,.3);
+    }
 
-    /* زر الشرح أعلى يسار */
-    .help-btn{
-      position:fixed; top:18px; left:18px; z-index:10000;
-      background:linear-gradient(180deg,#3a445a,#2b3448);
+    /* ===== شريط الأيقونات العائم (يسار) ===== */
+    .icon-dock{
+      position:fixed; top:50%; left:18px; transform:translateY(-50%);
+      display:flex; flex-direction:column; gap:14px; z-index:9999;
+    }
+    .dock-icon{
+      position:relative;
+      width:60px; height:60px; border-radius:18px;
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer; user-select:none;
       border:1px solid rgba(255,255,255,.15);
-      color:#fff; padding:8px 12px; border-radius:10px; cursor:pointer;
-      box-shadow:0 10px 24px rgba(0,0,0,.35); font-size:14px
+      backdrop-filter:blur(10px);
+      transition:transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .25s ease;
+      box-shadow:0 10px 30px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.1);
+      overflow:visible;
     }
-    .help-btn:active{ transform:translateY(1px) }
+    .dock-icon::before{
+      content:""; position:absolute; inset:0; border-radius:18px;
+      background:inherit; filter:blur(14px); opacity:.5; z-index:-1;
+      transition:opacity .25s ease;
+    }
+    .dock-icon:hover{ transform:translateY(-3px) scale(1.05) }
+    .dock-icon:hover::before{ opacity:.85 }
+    .dock-icon:active{ transform:translateY(0) scale(.97) }
 
-    /* نافذة الشرح */
+    .dock-icon.conn{ background:linear-gradient(135deg, var(--icon-conn-1), var(--icon-conn-2)) }
+    .dock-icon.host{ background:linear-gradient(135deg, var(--icon-host-1), var(--icon-host-2)) }
+    .dock-icon.help{ background:linear-gradient(135deg, var(--icon-help-1), var(--icon-help-2)) }
+
+    .dock-icon svg{ width:30px; height:30px; stroke:#fff; fill:none; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; filter:drop-shadow(0 2px 4px rgba(0,0,0,.3)) }
+
+    /* تسمية الأيقونة عند المرور */
+    .dock-icon .tip{
+      position:absolute; left:calc(100% + 12px); top:50%; transform:translateY(-50%) translateX(-6px);
+      background:rgba(15,18,30,.95); color:#fff; padding:6px 12px; border-radius:10px;
+      font-size:13px; font-weight:600; white-space:nowrap; pointer-events:none;
+      opacity:0; transition:opacity .2s ease, transform .2s ease;
+      border:1px solid rgba(255,255,255,.1);
+      box-shadow:0 6px 18px rgba(0,0,0,.4);
+    }
+    .dock-icon .tip::before{
+      content:""; position:absolute; right:100%; top:50%; transform:translateY(-50%);
+      border:6px solid transparent; border-right-color:rgba(15,18,30,.95);
+    }
+    .dock-icon:hover .tip{ opacity:1; transform:translateY(-50%) translateX(0) }
+
+    /* مؤشّر حالة الاتصال على أيقونة الاتصال */
+    .conn-status-dots{
+      position:absolute; bottom:-4px; right:-4px;
+      display:flex; gap:3px; padding:3px 5px; border-radius:10px;
+      background:rgba(15,18,30,.95); border:1px solid rgba(255,255,255,.15);
+    }
+    .conn-status-dots .mini-dot{
+      width:7px; height:7px; border-radius:50%;
+      background:#555; transition:background .3s ease, box-shadow .3s ease;
+    }
+    .conn-status-dots .mini-dot.on{ background:#00d86c; box-shadow:0 0 8px #00d86c }
+
+    /* مؤشر "اللعبة قيد التشغيل" على أيقونة الهوست */
+    .live-indicator{
+      position:absolute; top:-4px; right:-4px;
+      width:14px; height:14px; border-radius:50%;
+      background:#ff3333; border:2px solid #0e1322;
+      display:none;
+    }
+    .live-indicator.active{ display:block; animation:pulse 1.4s infinite }
+    @keyframes pulse{
+      0%,100%{ box-shadow:0 0 0 0 rgba(255,51,51,.7) }
+      50%{ box-shadow:0 0 0 8px rgba(255,51,51,0) }
+    }
+
+    /* ===== Modal جديد أنيق ===== */
     .modal-backdrop{
-      position:fixed; inset:0; background:rgba(0,0,0,.6); display:none; z-index:10001;
+      position:fixed; inset:0; background:rgba(5,8,15,.75); backdrop-filter:blur(8px);
+      display:none; z-index:10001; opacity:0; transition:opacity .25s ease;
     }
-    .modal{
-      position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
-      width:min(720px,92vw); max-height:80vh; overflow:auto;
-      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-      border:1px solid rgba(255,255,255,.12); border-radius:16px; padding:16px 18px; display:none; z-index:10002;
-      box-shadow:0 30px 60px rgba(0,0,0,.45);
+    .modal-backdrop.show{ display:block; opacity:1 }
+
+    .modal-panel{
+      position:fixed; top:50%; left:50%;
+      transform:translate(-50%, -48%) scale(.95);
+      width:min(820px, 94vw); max-height:88vh; overflow:auto;
+      background:linear-gradient(180deg, #1a2034 0%, #131829 100%);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:24px;
+      padding:0; display:none; z-index:10002;
+      box-shadow:
+        0 30px 80px rgba(0,0,0,.55),
+        0 0 0 1px rgba(255,255,255,.05) inset,
+        0 1px 0 rgba(255,255,255,.1) inset;
+      opacity:0;
+      transition:opacity .28s ease, transform .28s cubic-bezier(.34,1.4,.64,1);
     }
-    .modal h2{ margin:0 0 8px; color:#fff }
-    .modal .x{ position:absolute; top:10px; inset-inline-start:10px; border:1px solid rgba(255,255,255,.15); background:#2b3347; color:#fff; border-radius:8px; padding:6px 10px; cursor:pointer }
-    .modal p, .modal li{ line-height:1.7; color:#e8eefc }
-    .modal ul{ margin:8px 0 0 0; padding:0 18px }
+    .modal-panel.show{ display:block; opacity:1; transform:translate(-50%, -50%) scale(1) }
+
+    /* رأس النافذة الملوّن */
+    .modal-header{
+      position:relative; padding:24px 28px 22px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      display:flex; align-items:center; gap:16px;
+      border-radius:24px 24px 0 0;
+      overflow:hidden;
+    }
+    .modal-header::before{
+      content:""; position:absolute; inset:0; opacity:.18;
+      background:radial-gradient(circle at 20% 30%, var(--accent,#00d4ff) 0%, transparent 60%),
+                 radial-gradient(circle at 80% 70%, var(--accent2,#0066ff) 0%, transparent 55%);
+      pointer-events:none;
+    }
+    .modal-header-icon{
+      width:54px; height:54px; border-radius:16px;
+      display:flex; align-items:center; justify-content:center;
+      background:linear-gradient(135deg, var(--accent,#00d4ff), var(--accent2,#0066ff));
+      box-shadow:0 10px 24px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.2);
+      flex-shrink:0; position:relative; z-index:1;
+    }
+    .modal-header-icon svg{ width:28px; height:28px; stroke:#fff; fill:none; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round }
+    .modal-header-text{ position:relative; z-index:1; flex:1 }
+    .modal-header-text h2{ margin:0 0 3px; font-size:22px; font-weight:800; letter-spacing:.2px }
+    .modal-header-text p{ margin:0; color:#9fb0d0; font-size:13px; font-weight:500 }
+
+    .modal-close{
+      position:absolute; top:18px; inset-inline-start:18px;
+      width:36px; height:36px; border-radius:10px;
+      background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.1); color:#fff;
+      cursor:pointer; display:flex; align-items:center; justify-content:center;
+      transition:background .2s ease, transform .2s ease; z-index:2;
+    }
+    .modal-close:hover{ background:rgba(255,255,255,.16); transform:rotate(90deg) }
+    .modal-close svg{ width:18px; height:18px; stroke:#fff; fill:none; stroke-width:2.4; stroke-linecap:round }
+
+    .modal-body{ padding:22px 28px 26px }
+
+    /* أقسام داخل النافذة */
+    .modal-section{ margin-bottom:18px }
+    .modal-section:last-child{ margin-bottom:0 }
+    .section-title{
+      display:flex; align-items:center; gap:8px;
+      font-size:13px; font-weight:800; color:#9fb0d0; text-transform:uppercase; letter-spacing:1px;
+      margin:0 0 10px;
+    }
+    .section-title::after{
+      content:""; flex:1; height:1px;
+      background:linear-gradient(90deg, rgba(255,255,255,.12), transparent);
+    }
+
+    /* الحقول داخل المودال */
+    .field-grid{
+      display:grid; gap:12px;
+    }
+    .field-grid.two{ grid-template-columns:1fr 1fr }
+    @media(max-width:560px){ .field-grid.two{ grid-template-columns:1fr } }
+
+    .field{ display:flex; flex-direction:column; gap:6px }
+    .field label{ font-size:13px; color:#9fb0d0; font-weight:600 }
+    .field input, .field select{
+      padding:11px 14px; font-size:15px; border-radius:12px;
+      border:1px solid rgba(255,255,255,.1);
+      background:rgba(0,0,0,.3); color:#fff; font-family:'Cairo',sans-serif;
+      transition:border-color .2s ease, background .2s ease;
+    }
+    .field input:focus, .field select:focus{
+      outline:none; border-color:var(--accent,#00d4ff);
+      background:rgba(0,0,0,.45);
+      box-shadow:0 0 0 3px rgba(0,212,255,.12);
+    }
+
+    .check-row{
+      display:flex; align-items:center; gap:8px; padding:10px 12px;
+      background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.06);
+      border-radius:10px; cursor:pointer; user-select:none;
+      transition:background .2s ease;
+    }
+    .check-row:hover{ background:rgba(255,255,255,.07) }
+    .check-row input{ accent-color:var(--accent,#00d4ff) }
+
+    /* أزرار المودال */
+    .btn-row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:8px }
+    .btn{
+      padding:11px 18px; font-size:15px; font-weight:700; border-radius:12px;
+      border:none; cursor:pointer; font-family:'Cairo',sans-serif; color:#fff;
+      transition:transform .15s ease, filter .2s ease, box-shadow .2s ease;
+      display:inline-flex; align-items:center; gap:7px;
+    }
+    .btn:hover{ filter:brightness(1.1) }
+    .btn:active{ transform:translateY(1px) }
+    .btn.primary{
+      background:linear-gradient(135deg, var(--accent,#00d4ff), var(--accent2,#0066ff));
+      box-shadow:0 8px 22px rgba(0,102,255,.35);
+    }
+    .btn.danger{ background:linear-gradient(135deg, #ff4747, #d73333); box-shadow:0 8px 22px rgba(255,71,71,.3) }
+    .btn.ghost{ background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.1) }
+    .btn.success{ background:linear-gradient(135deg, #00d86c, #00a050); box-shadow:0 8px 22px rgba(0,216,108,.3) }
+
+    /* ===== الشرح: بطاقات الخطوات ===== */
+    .help-intro{
+      padding:14px 16px; border-radius:14px;
+      background:linear-gradient(135deg, rgba(255,217,61,.1), rgba(255,149,0,.05));
+      border:1px solid rgba(255,217,61,.2);
+      margin-bottom:18px;
+      display:flex; gap:12px; align-items:flex-start;
+    }
+    .help-intro .ico{ font-size:22px; line-height:1 }
+    .help-intro p{ margin:0; line-height:1.7; color:#e8eefc; font-size:14.5px }
+
+    .steps{ display:grid; gap:10px }
+    .step{
+      display:grid; grid-template-columns:38px 1fr; gap:12px; align-items:flex-start;
+      padding:12px 14px; border-radius:12px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+      transition:background .2s ease, transform .2s ease;
+    }
+    .step:hover{ background:rgba(255,255,255,.06); transform:translateX(-2px) }
+    .step-num{
+      width:32px; height:32px; border-radius:10px;
+      display:flex; align-items:center; justify-content:center;
+      font-weight:800; font-size:14px;
+      background:linear-gradient(135deg, var(--icon-help-1), var(--icon-help-2));
+      color:#1a1a1a; box-shadow:0 4px 10px rgba(255,149,0,.3);
+    }
+    .step-content{ color:#e8eefc; line-height:1.65; font-size:14px }
+    .step-content b{ color:#fff; font-weight:700 }
+    .step-content code{
+      display:inline-block; padding:1px 8px; margin:0 2px;
+      background:rgba(0,212,255,.15); color:#7eddff; border:1px solid rgba(0,212,255,.25);
+      border-radius:6px; font-family:monospace; font-size:13px;
+    }
 
     /* بطاقات عامة */
     .card{ background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
       border:1px solid rgba(255,255,255,.08); backdrop-filter:blur(8px);
       border-radius:18px; box-shadow:0 10px 30px rgba(0,0,0,.25) }
 
-    /* تخطيط الصفحة العام: فرق يمين/يسار + المسرح بالوسط */
+    /* تخطيط الصفحة العام */
     .layout{
       display:grid; grid-template-columns: 300px 1fr 300px; gap:14px; align-items:start;
       max-width:1400px; margin:0 auto;
     }
 
-    /* لوحات قابلة للطي */
-    .collapsible{ max-width:1400px; margin:0 auto 12px; overflow:hidden; transition:height .28s ease }
-    .collapsible .bar{
-      padding:10px 12px; display:flex; align-items:center; gap:10px;
-      background:linear-gradient(180deg, rgba(20,24,36,.7), rgba(20,24,36,.55));
-      border:1px solid rgba(255,255,255,.12); border-radius:14px;
-    }
-    .chev{
-      width:34px;height:34px;border-radius:10px;border:1px solid rgba(255,255,255,.12);
-      display:flex;align-items:center;justify-content:center;background:#232838; cursor:pointer; user-select:none
-    }
-    .bar-title{ font-weight:700 }
-    .bar-status{ margin-inline-start:auto; display:flex; align-items:center; gap:8px }
-    .dot{width:10px;height:10px;border-radius:50%}
-    .dot.gray{background:#777}
-    .dot.green{background:#00c07a; box-shadow:0 0 10px #00c07a88}
-
-    .content{ padding:12px; display:none }
-    .collapsible.open .content{ display:flex }
-    .content.flex{ display:flex; gap:10px; flex-wrap:wrap; align-items:center }
-
-    select,input,button{
-      padding:8px 10px; font-size:16px; border-radius:10px; border:1px solid rgba(255,255,255,.12);
-      background:#232838; color:#fff; font-family:'Cairo',sans-serif;
-    }
-    .btn{ background:linear-gradient(180deg, #ff4747, #d73333); border:none; box-shadow:0 6px 18px rgba(255,71,71,.25); cursor:pointer }
-    .btn:active{ transform:translateY(1px) }
-
-    /* شريط المعلومات فوق المسرح (سطر واحد) */
+    /* شريط المعلومات فوق المسرح */
     .top-info{
-      max-width:1400px; margin:0 auto 10px; display:flex; gap:10px; align-items:center; justify-content:center; flex-wrap:wrap;
+      max-width:1400px; margin:0 auto 12px; display:flex; gap:10px; align-items:center; justify-content:center; flex-wrap:wrap;
     }
-    .info-chip{ font-size:16px; background:rgba(0,0,0,.35); padding:6px 10px; border-radius:10px; border:1px solid rgba(255,255,255,.06) }
+    .info-chip{
+      font-size:15px; background:rgba(0,0,0,.4); padding:8px 14px; border-radius:12px;
+      border:1px solid rgba(255,255,255,.08); font-weight:600;
+      box-shadow:0 4px 12px rgba(0,0,0,.2);
+    }
 
-    /* فريقين جديد (يسار/يمين المسرح) */
-    .team{ padding:12px }
+    /* فريقين */
+    .team{ padding:14px }
     .team-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px }
-    .team-title{ display:flex; align-items:center; gap:10px; font-weight:700 }
-    .team-count{ font-size:14px; padding:4px 10px; border-radius:20px; background:rgba(0,0,0,.35); border:1px solid rgba(255,255,255,.08) }
+    .team-title{ display:flex; align-items:center; gap:10px; font-weight:800; font-size:16px }
+    .team-count{ font-size:13px; padding:4px 10px; border-radius:20px; background:rgba(0,0,0,.35); border:1px solid rgba(255,255,255,.08); font-weight:600 }
     .players-list{ display:grid; gap:8px; max-height:60vh; overflow:auto; padding-right:4px }
     .player-card{
       display:grid; grid-template-columns:34px 1fr 28px; align-items:center; gap:8px;
       background:rgba(0,0,0,.30); border:1px solid rgba(255,255,255,.06); border-radius:12px; padding:6px 8px
     }
     .slot{ width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center; background:#1f2636; border:1px solid rgba(255,255,255,.06); font-weight:700 }
-    .player-name{ display:flex; align-items:center; gap:8px; font-size:16px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+    .player-name{ display:flex; align-items:center; gap:8px; font-size:15px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
     .badge{ font-size:11px; padding:2px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.15); background:#233049 }
-    .del{ width:24px; height:24px; border-radius:6px; border:1px solid rgba(255,255,255,.12); background:#3a1f26; cursor:pointer }
-    .del:hover{ filter:brightness(1.1) }
+    .del{ width:24px; height:24px; border-radius:6px; border:1px solid rgba(255,255,255,.12); background:#3a1f26; cursor:pointer; color:#fff }
+    .del:hover{ filter:brightness(1.2) }
 
-    /* المسرح (مربع اللعبة) */
-    .stage.card{ padding:12px }
-    .image-container{ position:relative; width:100%; padding-top:66.66%; margin:12px 0; background:#000; border:1px solid rgba(255,255,255,.08); border-radius:12px; overflow:hidden }
+    .dot{width:10px;height:10px;border-radius:50%}
+
+    /* المسرح */
+    .stage.card{ padding:14px }
+    .image-container{ position:relative; width:100%; padding-top:66.66%; margin:12px 0; background:#000; border:1px solid rgba(255,255,255,.08); border-radius:14px; overflow:hidden }
     .image-container::before{ content:""; position:absolute; inset:0; background-image: linear-gradient(#ffffff12 1px, transparent 1px), linear-gradient(90deg, #ffffff12 1px, transparent 1px); background-size:40px 40px; pointer-events:none }
     .image-container img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover }
     .grid{ position:absolute; inset:0; display:grid; grid-template-columns:repeat(12,1fr); grid-template-rows:repeat(6,1fr) }
-    .cell{ background:#1c2130; color:#fff; display:flex; align-items:center; justify-content:center; border:1px solid rgba(255,255,255,.05); cursor:pointer; transition:.3s }
+    .cell{ background:#1c2130; color:#fff; display:flex; align-items:center; justify-content:center; border:1px solid rgba(255,255,255,.05); cursor:pointer; transition:.3s; font-weight:600 }
     .cell.revealed{ color:transparent; background:transparent; border-color:transparent; transform:rotateY(180deg) }
 
-    /* شريط تقدم النقاط تحت كل فريق */
+    /* شريط تقدم */
     .progress{ background:#101420; border:1px solid rgba(255,255,255,.08); border-radius:14px; overflow:hidden; height:12px; box-shadow:inset 0 0 12px rgba(0,0,0,.35); margin-top:6px }
-    .progress > div{ height:100%; width:0% }
+    .progress > div{ height:100%; width:0%; transition:width .4s ease }
     .bluebar{ background:linear-gradient(90deg, rgba(0,168,255,.8), rgba(0,168,255,1)) }
     .redbar{ background:linear-gradient(90deg, rgba(255,71,71,.8), rgba(255,71,71,1)) }
 
@@ -148,88 +344,315 @@
     @media (max-width:1060px){
       .layout{ grid-template-columns:1fr; }
       .players-list{ max-height:unset }
+      .icon-dock{ flex-direction:row; left:50%; top:auto; bottom:10px; transform:translateX(-50%) }
+      .icon-dock .tip{ left:50%; top:auto; bottom:calc(100% + 10px); transform:translateX(-50%) translateY(6px) }
+      .icon-dock .tip::before{ right:auto; left:50%; top:100%; transform:translateX(-50%); border:6px solid transparent; border-top-color:rgba(15,18,30,.95) }
+      .icon-dock .dock-icon:hover .tip{ transform:translateX(-50%) translateY(0) }
+      h1{ margin-top:50px }
     }
 
-    /* إخفاء اسم ملف الصورة في الحقل */
+    /* إخفاء اسم ملف الصورة */
     input[type="file"]{ font-size:0; }
-    input[type="file"]::file-selector-button{ font-size:16px; }
+    input[type="file"]::file-selector-button{
+      font-size:14px; padding:9px 14px; border-radius:10px; border:none; cursor:pointer;
+      background:linear-gradient(135deg, #ff6b6b, #ee0979); color:#fff; font-weight:700; font-family:'Cairo',sans-serif;
+      margin-inline-end:8px;
+    }
+
+    /* فئات أزرار الهوست */
+    .host-btn-grid{
+      display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:10px;
+    }
+    .host-btn-grid .btn{ justify-content:center; width:100% }
+
+    /* ===== شريط التحكم السريع تحت مربع اللعبة ===== */
+    .quick-controls{
+      display:grid;
+      grid-template-columns:repeat(6, 1fr);
+      gap:8px;
+      margin-top:10px;
+      padding:10px;
+      background:rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:14px;
+    }
+    .qc-btn{
+      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
+      padding:10px 6px; border-radius:11px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+      color:#fff; font-family:'Cairo',sans-serif; font-weight:700;
+      cursor:pointer; transition:all .2s ease;
+      box-shadow:0 4px 10px rgba(0,0,0,.15);
+    }
+    .qc-btn:hover{
+      background:rgba(255,255,255,.1);
+      transform:translateY(-2px);
+      box-shadow:0 6px 16px rgba(0,0,0,.25);
+    }
+    .qc-btn:active{ transform:translateY(0) scale(.97) }
+    .qc-btn:disabled{ opacity:.5; cursor:not-allowed; transform:none !important }
+    .qc-btn .qc-ico{ font-size:20px; line-height:1 }
+    .qc-btn .qc-label{ font-size:12.5px; letter-spacing:.2px }
+
+    .qc-btn.primary{
+      background:linear-gradient(135deg, #ff6b6b, #ee0979);
+      border-color:rgba(255,255,255,.18);
+      box-shadow:0 6px 16px rgba(238,9,121,.35);
+    }
+    .qc-btn.primary:hover{ filter:brightness(1.1) }
+    .qc-btn.danger{
+      background:linear-gradient(135deg, rgba(255,71,71,.25), rgba(215,51,51,.15));
+      border-color:rgba(255,71,71,.3);
+    }
+    .qc-btn.danger:hover{
+      background:linear-gradient(135deg, rgba(255,71,71,.35), rgba(215,51,51,.25));
+    }
+
+    @media (max-width:760px){
+      .quick-controls{ grid-template-columns:repeat(3, 1fr) }
+      .qc-btn .qc-label{ font-size:11.5px }
+    }
+    @media (max-width:420px){
+      .quick-controls{ grid-template-columns:repeat(2, 1fr) }
+    }
+
+    /* ===== مفتاح "لا تظهر مرة أخرى" داخل مودال الشرح ===== */
+    .help-footer{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      margin-top:18px; padding-top:16px;
+      border-top:1px solid rgba(255,255,255,.08);
+      flex-wrap:wrap;
+    }
+    .help-footer .check-row{ margin:0; flex:1; min-width:200px }
   </style>
 </head>
 <body>
 
-<button class="help-btn" id="helpBtn">❓ شرح</button>
-<div class="modal-backdrop" id="helpBackdrop"></div>
-<div class="modal" id="helpModal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
-  <button class="x" id="helpClose">إغلاق</button>
-  <h2 id="helpTitle">شرح تفصيلي — لعبة اكشف الصورة</h2>
-  <p>الهدف: فتح المربعات بالتتابع حتى يتعرف الفريق على الصورة. عند كل جولة، يمنح الهوست النقاط للفريق الذي أجاب.</p>
-  <ul>
-    <li><b>تجهيز الاتصال:</b> اضغط السهم في “لوحة الاتصال”، اختر المنصة (Twitch/Kick)، أدخل اسم القناة، ثم “اتصال”. تظهر نقطة خضراء عند نجاح الاتصال.</li>
-    <li><b>الفرق والإنضمام:</b> ينضم اللاعبون من الشات: <code>!ازرق</code> أو <code>!احمر</code>، والمغادرة <code>!خروج</code>. يمكن للهوست حذف أي لاعب من قائمة فريقه.</li>
-    <li><b>بدء الجولة:</b> من “لوحة تحكم الستريمر” ارفع صورة الجولة ثم اضغط “ابدأ اللعبة”. سيتم قفل الانضمام حتى نهاية الجولة.</li>
-    <li><b>فتح المربعات:</b> اللاعب الحالي يختار خلية؛ تستطيع إعطاء “تلميح” (فتح خلية عشوائية) أو “كشف الكل”. العداد يبدأ عند أول فتح.</li>
-    <li><b>الاحتساب:</b> خانة النقاط تُملأ تلقائيًا بعدد المربعات غير المكشوفة (يمكن تعديلها يدويًا). استخدم “للأزرق/للأحمر”. خيار “اكشف الصورة بعد الاحتساب” يفتح الصورة مباشرة.</li>
-    <li><b>التناوب:</b> زر “التالي” يمرر الدور بين الأزرق والأحمر بالترتيب.</li>
-    <li><b>إنهاء الجولة:</b> “جولة جديدة” تعيد الشبكة وتفتح الانضمام. “جولة جديدة (مسح الصورة)” تصفر الصورة أيضًا.</li>
-    <li><b>الشريط العلوي:</b> يوضح اللاعب الحالي، الوقت، وعدد المربعات غير المكشوفة.</li>
-  </ul>
+<!-- ===== شريط الأيقونات العائم (يمين الشاشة في RTL = left:18px لكنه يبدو يمين) ===== -->
+<div class="icon-dock">
+  <!-- أيقونة الاتصال -->
+  <div class="dock-icon conn" id="iconConn" role="button" aria-label="لوحة الاتصال" tabindex="0">
+    <svg viewBox="0 0 24 24">
+      <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
+      <path d="M1.42 9a16 16 0 0 1 21.16 0"/>
+      <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+      <line x1="12" y1="20" x2="12.01" y2="20"/>
+    </svg>
+    <div class="conn-status-dots">
+      <div class="mini-dot" id="dotTw" title="Twitch"></div>
+      <div class="mini-dot" id="dotKk" title="Kick"></div>
+    </div>
+    <span class="tip">لوحة الاتصال</span>
+  </div>
+
+  <!-- أيقونة لوحة الستريمر -->
+  <div class="dock-icon host" id="iconHost" role="button" aria-label="لوحة تحكم الستريمر" tabindex="0">
+    <svg viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </svg>
+    <div class="live-indicator" id="liveIndicator"></div>
+    <span class="tip">لوحة الستريمر</span>
+  </div>
+
+  <!-- أيقونة الشرح -->
+  <div class="dock-icon help" id="iconHelp" role="button" aria-label="شرح اللعبة" tabindex="0">
+    <svg viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10"/>
+      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+      <line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>
+    <span class="tip">شرح اللعبة</span>
+  </div>
+</div>
+
+<!-- ===== خلفية المودال + المودالات ===== -->
+<div class="modal-backdrop" id="modalBackdrop"></div>
+
+<!-- مودال الاتصال -->
+<div class="modal-panel" id="modalConn" style="--accent:#00d4ff; --accent2:#0066ff" role="dialog" aria-modal="true">
+  <button class="modal-close" data-close><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  <div class="modal-header">
+    <div class="modal-header-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
+        <path d="M1.42 9a16 16 0 0 1 21.16 0"/>
+        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+        <line x1="12" y1="20" x2="12.01" y2="20"/>
+      </svg>
+    </div>
+    <div class="modal-header-text">
+      <h2>لوحة الاتصال</h2>
+      <p>اربط الشات من Twitch و Kick لاستقبال أوامر اللاعبين</p>
+    </div>
+  </div>
+  <div class="modal-body">
+    <div class="modal-section">
+      <div class="section-title">⚙️ الإعدادات</div>
+      <div class="field-grid">
+        <div class="field">
+          <label>المنصة</label>
+          <select id="platformSelect">
+            <option value="both">Twitch + Kick</option>
+            <option value="twitch">Twitch فقط</option>
+            <option value="kick">Kick فقط</option>
+          </select>
+        </div>
+        <div class="field-grid two">
+          <div class="field">
+            <label>قناة Twitch</label>
+            <input id="twitchChannel" placeholder="بدون #">
+          </div>
+          <div class="field">
+            <label>قناة Kick</label>
+            <input id="kickChannel" placeholder="اسم القناة">
+          </div>
+        </div>
+        <label class="check-row">
+          <input type="checkbox" id="rememberConn">
+          <span>تذكّر بياناتي للمرات القادمة</span>
+        </label>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="section-title">🔌 الإجراءات</div>
+      <div class="btn-row">
+        <button class="btn primary" id="btnConnect">⚡ اتصال</button>
+        <button class="btn ghost" id="btnDisconnect">🔌 قطع</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- مودال الستريمر -->
+<div class="modal-panel" id="modalHost" style="--accent:#ff6b6b; --accent2:#ee0979" role="dialog" aria-modal="true">
+  <button class="modal-close" data-close><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  <div class="modal-header">
+    <div class="modal-header-icon">
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </div>
+    <div class="modal-header-text">
+      <h2>لوحة تحكم الستريمر</h2>
+      <p>أدر الجولات، النقاط، والصورة من هنا</p>
+    </div>
+  </div>
+  <div class="modal-body">
+    <div class="modal-section">
+      <div class="section-title">🛠️ إعدادات الجولة</div>
+      <div class="field-grid">
+        <div class="field">
+          <label>صورة الجولة</label>
+          <input type="file" id="imageUpload" accept="image/*">
+        </div>
+        <div class="field-grid two">
+          <div class="field">
+            <label>عدد النقاط</label>
+            <input type="number" id="pointsInput" min="1" value="72">
+          </div>
+          <div class="field" style="justify-content:center">
+            <label class="check-row" style="margin-top:22px">
+              <input type="checkbox" id="autoRevealAfterAward">
+              <span>اكشف الصورة بعد الاحتساب</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <div class="section-title">✅ احتساب النقاط</div>
+      <div class="btn-row">
+        <button class="btn" id="awardBlue" style="background:linear-gradient(135deg,#00a8ff,#0066ff); box-shadow:0 8px 22px rgba(0,168,255,.3); flex:1">🔵 للأزرق</button>
+        <button class="btn danger" id="awardRed" style="flex:1">🔴 للأحمر</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- مودال الشرح -->
+<div class="modal-panel" id="modalHelp" style="--accent:#ffd93d; --accent2:#ff9500" role="dialog" aria-modal="true">
+  <button class="modal-close" data-close><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  <div class="modal-header">
+    <div class="modal-header-icon">
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+        <line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+    </div>
+    <div class="modal-header-text">
+      <h2>شرح اللعبة</h2>
+      <p>دليل سريع لاستخدام لعبة اكشف الصورة</p>
+    </div>
+  </div>
+  <div class="modal-body">
+    <div class="help-intro">
+      <span class="ico">🎯</span>
+      <p><b>الهدف:</b> فتح المربعات تدريجيًا حتى يتعرّف أحد الفرق على الصورة. الفريق الذي يخمّن الصورة بعدد مربعات أقل يحصل على نقاط أكثر، وأول فريق يصل إلى <b>150</b> نقطة يفوز.</p>
+    </div>
+
+    <div class="modal-section">
+      <div class="section-title">🚀 خطوات اللعب</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content"><b>تجهيز الاتصال:</b> افتح <b>لوحة الاتصال</b> من الأيقونة الزرقاء، اختر المنصة (Twitch/Kick)، أدخل اسم القناة، ثم اضغط <b>اتصال</b>. ستظهر نقطة خضراء على الأيقونة عند نجاح الاتصال.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content"><b>انضمام اللاعبين:</b> يكتب اللاعبون في الشات <code>!ازرق</code> أو <code>!احمر</code> للانضمام، و <code>!خروج</code> للمغادرة. يمكنك حذف أي لاعب من قائمة فريقه يدويًا.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content"><b>بدء الجولة:</b> من <b>لوحة الستريمر</b> ارفع صورة الجولة ثم اضغط <b>ابدأ اللعبة</b>. سيُقفل الانضمام تلقائيًا حتى نهاية الجولة.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content"><b>فتح المربعات:</b> اللاعب الحالي يختار خانة لكشفها. تستطيع منح <b>تلميح</b> (فتح خلية عشوائية) أو <b>كشف الكل</b>. العداد يبدأ تلقائيًا عند أول فتح.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-content"><b>احتساب النقاط:</b> خانة النقاط تُملأ تلقائيًا بعدد المربعات المتبقية (يمكنك تعديلها يدويًا). اضغط <b>للأزرق</b> أو <b>للأحمر</b>. خيار <b>كشف الصورة بعد الاحتساب</b> يفتح كل المربعات مباشرة.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">6</div>
+          <div class="step-content"><b>التناوب:</b> زر <b>التالي</b> يمرر الدور بين الأزرق والأحمر بالترتيب.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">7</div>
+          <div class="step-content"><b>إنهاء الجولة:</b> <b>جولة جديدة</b> تعيد الشبكة وتفتح الانضمام، و<b>جولة + مسح الصورة</b> تصفّر كل شيء بما فيها الصورة.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <div class="section-title">💡 نصائح سريعة</div>
+      <div class="step">
+        <div class="step-num" style="background:linear-gradient(135deg,#00d4ff,#0066ff); color:#fff">★</div>
+        <div class="step-content">الشريط العلوي يعرض اللاعب الحالي والوقت المتبقي وعدد المربعات غير المكشوفة في كل لحظة.</div>
+      </div>
+    </div>
+
+    <!-- ✅ Footer للشرح: خيار عدم العرض + زر إغلاق -->
+    <div class="help-footer">
+      <label class="check-row">
+        <input type="checkbox" id="dontShowHelp">
+        <span>لا تعرض هذه النافذة عند فتح اللعبة</span>
+      </label>
+      <button class="btn primary" data-close style="background:linear-gradient(135deg, #ffd93d, #ff9500); box-shadow:0 8px 22px rgba(255,149,0,.35); color:#1a1a1a">
+        ✓ فهمت، ابدأ اللعب
+      </button>
+    </div>
+  </div>
 </div>
 
 <h1>🖼️ لعبة اكشف الصورة</h1>
 
-<!-- لوحة الاتصال جديد (مخفية افتراضيًا، تنفتح بالسهم) -->
-<div class="collapsible card" id="connWrap">
-  <div class="bar">
-    <div class="chev" id="connChev">▸</div>
-    <div class="bar-title">لوحة الاتصال</div>
-    <div class="bar-status">
-      <span class="dot gray" id="dotTw"></span><span>TW</span>
-      <span class="dot gray" id="dotKk" style="margin-inline-start:8px"></span><span>KK</span>
-    </div>
-  </div>
-  <div class="content flex" id="connContent">
-    <select id="platformSelect" title="المنصة">
-      <option value="both">Twitch + Kick</option>
-      <option value="twitch">Twitch</option>
-      <option value="kick">Kick</option>
-    </select>
-    <input id="twitchChannel" placeholder="قناة Twitch (بدون #)">
-    <input id="kickChannel" placeholder="قناة Kick">
-    <label style="display:flex;align-items:center;gap:6px">
-      <input type="checkbox" id="rememberConn"> تذكّرني
-    </label>
-    <button class="btn" id="btnConnect">اتصال</button>
-    <button class="btn" id="btnDisconnect" style="background:linear-gradient(180deg,#555,#333)">قطع</button>
-  </div>
-</div>
-
-<!-- لوحة تحكم جديد (مخفية افتراضيًا، تنفتح بالسهم) -->
-<div class="collapsible card" id="hostWrap">
-  <div class="bar">
-    <div class="chev" id="hostChev">▸</div>
-    <div class="bar-title">لوحة تحكم الستريمر</div>
-  </div>
-  <div class="content flex" id="hostContent">
-    <span class="section-title">🛠️ إعدادات الجولة</span>
-    <input type="file" id="imageUpload" accept="image/*" title="اختر صورة الجولة">
-    <input type="number" id="pointsInput" min="1" value="72" style="width:120px" title="النقاط (افتراضيًا = المتبقي)">
-    <label><input type="checkbox" id="autoRevealAfterAward"> اكشف الصورة بعد الاحتساب</label>
-
-    <span class="section-title">⚡ التحكم السريع</span>
-    <button class="btn" id="startButton">🎮 ابدأ اللعبة</button>
-    <button class="btn" id="btnNext">⏭️ التالي</button>
-    <button class="btn" id="btnHint">🟩 تلميح</button>
-    <button class="btn" id="btnRevealAll">🧩 كشف الكل</button>
-    <button class="btn" id="btnReset">🔄 جولة جديدة</button>
-    <button class="btn" id="btnResetClear">🧹 جولة جديدة (مسح الصورة)</button>
-
-    <span class="section-title">✅ احتساب النقاط</span>
-    <button class="btn" id="awardBlue">للأزرق</button>
-    <button class="btn" id="awardRed">للأحمر</button>
-  </div>
-</div>
-
-<!-- شريط المعلومات أعلى المسرح (سطر واحد) -->
+<!-- شريط المعلومات أعلى المسرح -->
 <div class="top-info">
   <div class="info-chip" id="currentPlayer">🎮 اللاعب الحالي: —</div>
   <div class="info-chip" id="timer">⏳ 30s</div>
@@ -246,16 +669,45 @@
     </div>
     <div class="players-list" id="redPlayers"></div>
     <div class="progress"><div id="redBar" class="redbar"></div></div>
-    <div style="margin-top:6px">🔴 النقاط: <span id="redScore">0</span> / 150</div>
+    <div style="margin-top:6px; font-weight:600">🔴 النقاط: <span id="redScore">0</span> / 150</div>
   </div>
 
-  <!-- المسرح (مربع اللعبة) -->
+  <!-- المسرح -->
   <div class="stage card">
     <div class="image-container">
       <img id="gameImage" src="" alt="صورة اللعبة">
       <div class="grid" id="grid"></div>
     </div>
-    <div id="guessResult" class="card" style="padding:10px; border:1px solid rgba(255,255,255,.06); min-height:40px"></div>
+
+    <!-- ✅ شريط التحكم السريع أسفل مربع اللعبة -->
+    <div class="quick-controls">
+      <button class="qc-btn primary" id="startButton" title="ابدأ اللعبة">
+        <span class="qc-ico">🎮</span>
+        <span class="qc-label">ابدأ</span>
+      </button>
+      <button class="qc-btn" id="btnNext" title="اللاعب التالي">
+        <span class="qc-ico">⏭️</span>
+        <span class="qc-label">التالي</span>
+      </button>
+      <button class="qc-btn" id="btnHint" title="فتح خلية عشوائية">
+        <span class="qc-ico">🟩</span>
+        <span class="qc-label">تلميح</span>
+      </button>
+      <button class="qc-btn" id="btnRevealAll" title="كشف كل المربعات">
+        <span class="qc-ico">🧩</span>
+        <span class="qc-label">كشف الكل</span>
+      </button>
+      <button class="qc-btn" id="btnReset" title="بدء جولة جديدة">
+        <span class="qc-ico">🔄</span>
+        <span class="qc-label">جولة جديدة</span>
+      </button>
+      <button class="qc-btn danger" id="btnResetClear" title="جولة جديدة مع مسح الصورة">
+        <span class="qc-ico">🧹</span>
+        <span class="qc-label">مسح الصورة</span>
+      </button>
+    </div>
+
+    <div id="guessResult" class="card" style="padding:10px; border:1px solid rgba(255,255,255,.06); min-height:40px; margin-top:10px"></div>
   </div>
 
   <!-- الأزرق يمين -->
@@ -266,7 +718,7 @@
     </div>
     <div class="players-list" id="bluePlayers"></div>
     <div class="progress"><div id="blueBar" class="bluebar"></div></div>
-    <div style="margin-top:6px">🔵 النقاط: <span id="blueScore">0</span> / 150</div>
+    <div style="margin-top:6px; font-weight:600">🔵 النقاط: <span id="blueScore">0</span> / 150</div>
   </div>
 </div>
 
@@ -286,7 +738,36 @@ let answeringTeam = 'blue';
 let blueScore = 0;
 let redScore = 0;
 let timerInterval = null;
-let gameLocked = false; // قفل الانضمام بعد بدء اللعبة
+let gameLocked = false;
+
+/* ===== نظام المودال الموحّد ===== */
+function openModal(id){
+  closeAllModals(false);
+  $('modalBackdrop').classList.add('show');
+  const m = $(id);
+  if(m){ m.classList.add('show'); }
+  document.body.style.overflow = 'hidden';
+}
+function closeAllModals(restoreScroll=true){
+  $('modalBackdrop').classList.remove('show');
+  document.querySelectorAll('.modal-panel').forEach(m => m.classList.remove('show'));
+  if(restoreScroll) document.body.style.overflow = '';
+}
+
+$('iconConn').addEventListener('click', ()=>openModal('modalConn'));
+$('iconHost').addEventListener('click', ()=>openModal('modalHost'));
+$('iconHelp').addEventListener('click', ()=>openModal('modalHelp'));
+
+$('modalBackdrop').addEventListener('click', ()=>closeAllModals());
+document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', ()=>closeAllModals()));
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeAllModals(); });
+
+// تفعيل الأيقونات بلوحة المفاتيح
+document.querySelectorAll('.dock-icon').forEach(el=>{
+  el.addEventListener('keydown', (e)=>{
+    if(e.key==='Enter' || e.key===' '){ e.preventDefault(); el.click(); }
+  });
+});
 
 /* ===== اتصال الشات ===== */
 let twitchClient = null;
@@ -294,15 +775,13 @@ let kickWS = null;
 let kickPing = null;
 
 function setDots(){
-  // TW
   let twOpen = false;
   try{ twOpen = (twitchClient && typeof twitchClient.readyState==='function' && twitchClient.readyState()==='OPEN'); }catch{}
-  $('dotTw').className = 'dot ' + (twOpen ? 'green' : 'gray');
+  $('dotTw').classList.toggle('on', !!twOpen);
 
-  // KK
   let kkOpen = false;
   try{ kkOpen = (kickWS && kickWS.readyState === WebSocket.OPEN); }catch{}
-  $('dotKk').className = 'dot ' + (kkOpen ? 'green' : 'gray');
+  $('dotKk').classList.toggle('on', !!kkOpen);
 }
 
 function disconnectAll(){
@@ -340,7 +819,6 @@ async function connectTwitch(ch){
 async function connectKick(channel){
   if(!channel) return;
 
-  // إن وُجد connectToKick خارجي
   if (typeof window.connectToKick === 'function') {
     try{ if (kickWS && kickWS.readyState === WebSocket.OPEN) kickWS.close(); }catch{}
     if (kickPing) { try{ clearInterval(kickPing); }catch{} kickPing = null; }
@@ -352,7 +830,6 @@ async function connectKick(channel){
     return;
   }
 
-  // ربط داخلي
   const res = await fetch('https://kick.com/api/v2/channels/' + encodeURIComponent(channel));
   if(!res.ok){ toast('❌ فشل جلب قناة Kick'); return; }
   const data = await res.json();
@@ -389,7 +866,6 @@ async function connectKick(channel){
   kickWS.onerror = setDots;
 }
 
-/* أزرار لوحة الاتصال */
 $('btnConnect').addEventListener('click', async function(){
   const mode = $('platformSelect').value;
   const tw = ($('twitchChannel').value||"").trim();
@@ -402,26 +878,11 @@ $('btnConnect').addEventListener('click', async function(){
     localStorage.setItem('platformSelect', mode);
   }
   setDots();
+  toast('✅ جاري الاتصال...');
 });
 $('btnDisconnect').addEventListener('click', disconnectAll);
 
-/* ===== طي/فتح اللوحات بالسهم ===== */
-function toggleCollapsible(wrap, chev){
-  const el = $(wrap), ch = $(chev);
-  if(!el || !ch) return;
-  const isOpen = el.classList.contains('open');
-  if(isOpen){
-    el.classList.remove('open');
-    ch.textContent = '▸';
-  }else{
-    el.classList.add('open');
-    ch.textContent = '▾';
-  }
-}
-$('connChev').addEventListener('click', ()=>toggleCollapsible('connWrap','connChev'));
-$('hostChev').addEventListener('click', ()=>toggleCollapsible('hostWrap','hostChev'));
-
-/* ===== أوامر الشات (مع قفل الانضمام بعد البدء) ===== */
+/* ===== أوامر الشات ===== */
 function handleChat(payload){
   if(!payload || !payload.text) return;
   let text = String(payload.text||"").trim().toLowerCase();
@@ -434,12 +895,12 @@ function handleChat(payload){
   if(!name) return;
 
   if(isLeave){ removeFromTeams(name); return; }
-  if(gameLocked){ return; } // ممنوع الانضمام/التغيير بعد البدء
+  if(gameLocked){ return; }
   if(isBlue){ moveToTeam('blue', name, payload.platform); return; }
   if(isRed ){ moveToTeam('red',  name, payload.platform); return; }
 }
 
-/* ===== إدارة الفرق + حذف لاعب ===== */
+/* ===== إدارة الفرق ===== */
 function findIndex(arr, name){
   const lower = name.toLowerCase();
   for(let i=0;i<arr.length;i++){
@@ -490,7 +951,7 @@ function renderTeam(team){
   (team==='blue'?$('blueCount'):$('redCount')).innerText = String(arr.length);
 }
 
-/* ===== شبكة المربعات (بدون تعديل المنطق) ===== */
+/* ===== شبكة المربعات ===== */
 function createGrid(){
   const grid = $('grid');
   grid.innerHTML='';
@@ -546,9 +1007,11 @@ function startGame(){
   };
   reader.readAsDataURL(fileInput.files[0]);
 
-  gameLocked = true; // قفل الانضمام/التغيير
+  gameLocked = true;
   const startBtn=$('startButton'); if(startBtn) startBtn.disabled=true;
+  $('liveIndicator').classList.add('active');
   nextTurn();
+  closeAllModals();
   toast('🚫 تم قفل الانضمام أثناء الجولة');
 }
 function nextTurn(){
@@ -581,7 +1044,7 @@ function startTimer(){
   },1000);
 }
 
-/* ===== نقاط + بروجريس ===== */
+/* ===== نقاط ===== */
 function awardPoints(team){
   const auto = $('autoRevealAfterAward').checked;
   const num = $('pointsInput').value;
@@ -620,7 +1083,8 @@ function resetRound(clearImage = false){
     if(img) img.src = ''; if(up)  up.value = '';
   }
   const startBtn = $('startButton'); if(startBtn) startBtn.disabled = false;
-  gameLocked = false; // فتح الانضمام بين الجولات
+  gameLocked = false;
+  $('liveIndicator').classList.remove('active');
   toast(clearImage ? '🧹 تم تجهيز جولة جديدة ومسح الصورة' : '🔄 تم تجهيز جولة جديدة');
 }
 
@@ -628,11 +1092,12 @@ function resetRound(clearImage = false){
 function toast(text){
   const t=document.createElement('div'); t.textContent=text;
   t.style.position='fixed'; t.style.bottom='24px'; t.style.right='24px';
-  t.style.background='rgba(0,0,0,.7)'; t.style.border='1px solid rgba(255,255,255,.15)';
-  t.style.padding='10px 14px'; t.style.borderRadius='10px'; t.style.zIndex='9999'; t.style.boxShadow='0 10px 24px rgba(0,0,0,.35)';
+  t.style.background='rgba(0,0,0,.85)'; t.style.border='1px solid rgba(255,255,255,.15)';
+  t.style.padding='10px 16px'; t.style.borderRadius='12px'; t.style.zIndex='99999';
+  t.style.boxShadow='0 10px 24px rgba(0,0,0,.45)'; t.style.fontWeight='600';
   document.body.appendChild(t);
-  setTimeout(function(){ t.style.transition='opacity .6s'; t.style.opacity='0'; },1200);
-  setTimeout(function(){ try{ t.remove(); }catch{} },1900);
+  setTimeout(function(){ t.style.transition='opacity .6s'; t.style.opacity='0'; },1500);
+  setTimeout(function(){ try{ t.remove(); }catch{} },2200);
 }
 
 /* ===== روابط الأزرار ===== */
@@ -645,29 +1110,38 @@ $('btnResetClear').addEventListener('click', ()=>resetRound(true));
 $('awardBlue').addEventListener('click', ()=>awardPoints('blue'));
 $('awardRed').addEventListener('click',  ()=>awardPoints('red'));
 
-/* ===== زر الشرح ===== */
-function openHelp(open=true){
-  $('helpBackdrop').style.display = open?'block':'none';
-  $('helpModal').style.display = open?'block':'none';
-}
-$('helpBtn').addEventListener('click', ()=>openHelp(true));
-$('helpClose').addEventListener('click', ()=>openHelp(false));
-$('helpBackdrop').addEventListener('click', ()=>openHelp(false));
-
 /* ===== بدء الصفحة ===== */
 window.addEventListener('load', function(){
   createGrid(); updateBars(); setDots();
-  // استرجاع اتصال محفوظ
   const tw=localStorage.getItem('twitchChannel'); const kk=localStorage.getItem('kickChannel'); const md=localStorage.getItem('platformSelect');
   if(tw) $('twitchChannel').value=tw;
   if(kk) $('kickChannel').value=kk;
   if(md) $('platformSelect').value=md;
-  // ابدأ اللوحات مطوية
-  // (تُفتح بالأسهم)
+
+  /* ✅ إظهار نافذة الشرح تلقائياً عند فتح اللعبة (إلا إذا اختار المستخدم عدم إظهارها) */
+  const hideHelp = localStorage.getItem('hideHelpOnStart') === '1';
+  if(!hideHelp){
+    setTimeout(function(){ openModal('modalHelp'); }, 350);
+  }
+
+  /* حفظ تفضيل "لا تظهر مرة أخرى" */
+  const cb = $('dontShowHelp');
+  if(cb){
+    cb.checked = hideHelp;
+    cb.addEventListener('change', function(){
+      if(cb.checked){
+        localStorage.setItem('hideHelpOnStart', '1');
+        toast('✅ لن تظهر نافذة الشرح تلقائياً');
+      }else{
+        localStorage.removeItem('hideHelpOnStart');
+        toast('🔁 سيتم عرض الشرح عند فتح اللعبة');
+      }
+    });
+  }
 });
 </script>
 
-<!-- (اختياري) ملف خارجي يوفر window.connectToKick(channel, onMessage) -->
+<!-- ملف خارجي اختياري -->
 <script src="kick_chat.js"></script>
 </body>
 </html>
