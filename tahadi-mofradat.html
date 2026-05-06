@@ -4,49 +4,67 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>🎯 تحدّي المفردات</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
-      <script src="tmi.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Reem+Kufi:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="tmi.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tmi.js@1.8.5/dist/tmi.min.js"></script>
   
   <style>
     :root {
-      /* نظام ألوان متطور */
-      --bg-primary: #0a0b14;
-      --bg-secondary: #121420;
-      --bg-card: #1a1d2b;
-      --bg-surface: #242837;
-      --bg-dropdown: rgba(26, 29, 43, 0.98);
+      /* لوحة ألوان فخمة - ذهبي على كستنائي عميق */
+      --bg-deep: #0d0604;
+      --bg-primary: #1a0f08;
+      --bg-secondary: #241510;
+      --bg-card: #2d1a13;
+      --bg-surface: #3a2419;
+      --bg-dropdown: rgba(26, 15, 8, 0.98);
       
-      --accent-primary: #ff4757;
-      --accent-secondary: #ff6b81;
-      --accent-success: #2ed573;
-      --accent-warning: #ffa502;
-      --accent-danger: #ff4757;
-      --accent-info: #1e90ff;
+      /* ألوان الطاولة الفاخرة */
+      --felt-dark: #1a3d2e;
+      --felt-medium: #245840;
+      --felt-light: #2d6e52;
+      --felt-glow: #3d8a68;
+      --felt-rim: #5a3a1f;
+      --felt-rim-light: #8b5a2b;
+      --felt-rim-shine: #c89968;
       
-      --text-primary: #f8fafc;
-      --text-secondary: #94a3b8;
-      --text-muted: #64748b;
+      /* الذهبي الفاخر */
+      --gold-deep: #8b6914;
+      --gold-primary: #d4a847;
+      --gold-light: #f4d47a;
+      --gold-shine: #fff3c4;
       
-      --border-light: rgba(148, 163, 184, 0.2);
-      --border-medium: rgba(148, 163, 184, 0.3);
-      --border-dark: rgba(148, 163, 184, 0.4);
+      --accent-red: #c41e3a;
+      --accent-red-light: #e63956;
+      --accent-success: #4ade80;
+      --accent-warning: #fbbf24;
+      --accent-danger: #ef4444;
+      --accent-info: #60a5fa;
       
-      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
-      --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.5);
-      --shadow-glow: 0 0 20px rgba(255, 71, 87, 0.4);
-      --shadow-dropdown: 0 12px 32px rgba(0, 0, 0, 0.5);
+      --text-primary: #fef3e2;
+      --text-secondary: #c9b58c;
+      --text-muted: #8b7355;
+      --text-gold: #d4a847;
       
-      --radius-sm: 8px;
-      --radius-md: 12px;
-      --radius-lg: 16px;
-      --radius-xl: 24px;
+      --border-light: rgba(212, 168, 71, 0.15);
+      --border-medium: rgba(212, 168, 71, 0.3);
+      --border-gold: rgba(212, 168, 71, 0.5);
+      --border-strong: rgba(212, 168, 71, 0.7);
+      
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+      --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.6);
+      --shadow-gold: 0 0 30px rgba(212, 168, 71, 0.4);
+      --shadow-inset: inset 0 2px 8px rgba(0, 0, 0, 0.5);
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
       --radius-full: 999px;
       
-      --transition-fast: 150ms ease;
-      --transition-normal: 250ms ease;
-      --transition-slow: 350ms ease;
+      --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     * {
@@ -55,39 +73,76 @@
       padding: 0;
     }
 
+    html, body {
+      overflow-x: hidden;
+    }
+
     body {
       min-height: 100vh;
-      font-family: 'Cairo', sans-serif;
+      font-family: 'Tajawal', sans-serif;
       background: 
-        radial-gradient(ellipse at 20% 20%, rgba(37, 41, 88, 0.4) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 80%, rgba(87, 41, 88, 0.3) 0%, transparent 50%),
-        linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+        radial-gradient(ellipse at top, rgba(139, 90, 43, 0.15) 0%, transparent 60%),
+        radial-gradient(ellipse at bottom, rgba(36, 88, 64, 0.1) 0%, transparent 60%),
+        linear-gradient(135deg, var(--bg-deep) 0%, var(--bg-primary) 50%, var(--bg-secondary) 100%);
       color: var(--text-primary);
       padding: 16px;
-      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* نسيج خلفي ناعم */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: 
+        repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 2px,
+          rgba(212, 168, 71, 0.015) 2px,
+          rgba(212, 168, 71, 0.015) 4px
+        );
+      pointer-events: none;
+      z-index: 0;
     }
 
     .page {
       max-width: 1400px;
       margin: 0 auto;
       position: relative;
+      z-index: 1;
     }
 
-    /* Header */
+    /* ===== Header ===== */
     header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 20px;
-      margin-bottom: 24px;
-      padding: 16px 24px;
-      background: rgba(26, 29, 43, 0.95);
+      margin-bottom: 30px;
+      padding: 18px 28px;
+      background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
       border-radius: var(--radius-lg);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--border-light);
-      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border-medium);
+      box-shadow: 
+        var(--shadow-md),
+        inset 0 1px 0 rgba(212, 168, 71, 0.1);
       position: relative;
       z-index: 100;
+    }
+
+    /* خط ذهبي زخرفي تحت الهيدر */
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, 
+        transparent 0%, 
+        var(--gold-primary) 50%, 
+        transparent 100%);
     }
 
     .title-area {
@@ -95,80 +150,104 @@
     }
 
     .title-area h1 {
-      font-size: 32px;
-      color: var(--accent-primary);
-      margin-bottom: 6px;
-      font-weight: 800;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      font-family: 'Reem Kufi', sans-serif;
+      font-size: 30px;
+      color: var(--gold-light);
+      margin-bottom: 4px;
+      font-weight: 700;
       letter-spacing: -0.5px;
+      text-shadow: 0 2px 12px rgba(212, 168, 71, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .title-area h1 .crown {
+      font-size: 24px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
     }
 
     .title-area p {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--text-secondary);
       max-width: 600px;
-      line-height: 1.4;
+      line-height: 1.5;
     }
 
-    /* Header Buttons */
     .header-controls {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       align-items: center;
     }
 
-    /* Dropdown Containers */
     .dropdown-container {
       position: relative;
     }
 
-    /* Main Buttons in Header */
     .header-btn {
-      padding: 10px 20px;
-      background: rgba(30, 41, 59, 0.9);
+      padding: 10px 18px;
+      background: linear-gradient(180deg, var(--bg-surface) 0%, var(--bg-card) 100%);
       border: 1px solid var(--border-medium);
       border-radius: var(--radius-md);
       color: var(--text-primary);
-      font-family: 'Cairo', sans-serif;
-      font-size: 14px;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 13px;
       font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 8px;
       transition: var(--transition-normal);
-      min-width: 120px;
+      min-width: 110px;
       justify-content: center;
+      box-shadow: 
+        var(--shadow-sm),
+        inset 0 1px 0 rgba(212, 168, 71, 0.1);
     }
 
     .header-btn:hover {
-      background: rgba(51, 65, 85, 0.9);
-      transform: translateY(-1px);
-      box-shadow: var(--shadow-sm);
+      border-color: var(--border-gold);
+      color: var(--gold-light);
+      box-shadow: 
+        var(--shadow-sm),
+        inset 0 1px 0 rgba(212, 168, 71, 0.2),
+        0 0 12px rgba(212, 168, 71, 0.2);
     }
 
     .header-btn.active {
-      background: rgba(255, 71, 87, 0.15);
-      border-color: var(--accent-primary);
-      box-shadow: 0 0 0 1px rgba(255, 71, 87, 0.3);
+      background: linear-gradient(180deg, var(--gold-deep) 0%, var(--bg-card) 100%);
+      border-color: var(--gold-primary);
+      color: var(--gold-light);
     }
 
     /* Dropdown Panels */
     .dropdown-panel {
       position: absolute;
-      top: calc(100% + 10px);
+      top: calc(100% + 12px);
       left: 0;
-      width: 400px;
+      width: 380px;
       max-width: 90vw;
-      background: var(--bg-dropdown);
+      background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
       border-radius: var(--radius-lg);
-      border: 1px solid var(--border-medium);
-      box-shadow: var(--shadow-dropdown);
-      padding: 20px;
-      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-gold);
+      box-shadow: var(--shadow-lg), 0 0 40px rgba(0, 0, 0, 0.6);
+      padding: 22px;
       display: none;
       z-index: 1000;
-      animation: slideDown 0.3s ease-out;
+      animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .dropdown-panel::before {
+      content: '';
+      position: absolute;
+      top: -6px;
+      right: 30px;
+      width: 12px;
+      height: 12px;
+      background: var(--bg-card);
+      border-top: 1px solid var(--border-gold);
+      border-right: 1px solid var(--border-gold);
+      transform: rotate(-45deg);
     }
 
     @keyframes slideDown {
@@ -187,14 +266,16 @@
     }
 
     .dropdown-panel h3 {
-      font-size: 16px;
-      color: var(--accent-primary);
-      margin-bottom: 16px;
+      font-family: 'Reem Kufi', sans-serif;
+      font-size: 17px;
+      color: var(--gold-light);
+      margin-bottom: 18px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       padding-bottom: 12px;
-      border-bottom: 1px solid var(--border-light);
+      border-bottom: 1px solid var(--border-medium);
+      font-weight: 600;
     }
 
     /* Connection Status */
@@ -203,9 +284,10 @@
       align-items: center;
       gap: 10px;
       padding: 8px 16px;
-      background: rgba(15, 23, 42, 0.9);
+      background: var(--bg-deep);
       border-radius: var(--radius-full);
       border: 1px solid var(--border-medium);
+      box-shadow: var(--shadow-inset);
     }
 
     .connection-indicator {
@@ -215,28 +297,39 @@
       background: var(--accent-danger);
       box-shadow: 0 0 10px var(--accent-danger);
       transition: var(--transition-normal);
+      animation: pulse-red 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-red {
+      0%, 100% { box-shadow: 0 0 10px var(--accent-danger); }
+      50% { box-shadow: 0 0 16px var(--accent-danger), 0 0 24px var(--accent-danger); }
     }
 
     .connection-indicator.connected {
       background: var(--accent-success);
       box-shadow: 0 0 10px var(--accent-success);
+      animation: pulse-green 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-green {
+      0%, 100% { box-shadow: 0 0 10px var(--accent-success); }
+      50% { box-shadow: 0 0 16px var(--accent-success), 0 0 24px var(--accent-success); }
     }
 
     .connection-text {
-      font-size: 13px;
+      font-size: 12px;
       color: var(--text-secondary);
+      font-weight: 500;
     }
 
     /* Help Button */
     .help-btn {
-      position: absolute;
-      top: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 100;
-      padding: 10px 20px;
-      background: rgba(26, 29, 43, 0.95);
-      backdrop-filter: blur(10px);
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1500;
+      padding: 10px 18px;
+      background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
       border: 1px solid var(--border-medium);
       color: var(--text-secondary);
       border-radius: var(--radius-full);
@@ -245,82 +338,85 @@
       align-items: center;
       gap: 8px;
       font-size: 13px;
+      font-weight: 600;
+      font-family: 'Tajawal', sans-serif;
       transition: var(--transition-fast);
+      box-shadow: var(--shadow-sm);
     }
 
     .help-btn:hover {
-      background: rgba(37, 41, 88, 0.8);
-      color: var(--text-primary);
-      transform: translateX(-50%) translateY(-1px);
+      border-color: var(--gold-primary);
+      color: var(--gold-light);
+      transform: translateY(-1px);
     }
 
-    /* Main Layout */
-    main.layout {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    /* Buttons */
+    /* ===== Buttons ===== */
     .btn {
       padding: 10px 20px;
-      border-radius: var(--radius-full);
+      border-radius: var(--radius-md);
       border: none;
-      font-family: 'Cairo', sans-serif;
+      font-family: 'Tajawal', sans-serif;
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 8px;
       transition: var(--transition-normal);
+      position: relative;
+      overflow: hidden;
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-      color: white;
-      box-shadow: var(--shadow-sm);
+      background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold-primary) 50%, var(--gold-deep) 100%);
+      color: var(--bg-deep);
+      box-shadow: 
+        var(--shadow-sm),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      border: 1px solid var(--gold-deep);
     }
 
     .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: var(--shadow-glow);
+      box-shadow: var(--shadow-gold);
     }
 
     .btn-secondary {
-      background: rgba(30, 41, 59, 0.8);
+      background: linear-gradient(180deg, var(--bg-surface) 0%, var(--bg-card) 100%);
       color: var(--text-secondary);
       border: 1px solid var(--border-medium);
     }
 
     .btn-secondary:hover {
-      background: rgba(51, 65, 85, 0.8);
-      color: var(--text-primary);
+      border-color: var(--border-gold);
+      color: var(--gold-light);
     }
 
     .btn-danger {
-      background: rgba(255, 71, 87, 0.1);
-      color: var(--accent-danger);
-      border: 1px solid rgba(255, 71, 87, 0.3);
+      background: linear-gradient(180deg, var(--accent-red-light) 0%, var(--accent-red) 100%);
+      color: white;
+      border: 1px solid var(--accent-red);
     }
 
     .btn-danger:hover {
-      background: rgba(255, 71, 87, 0.2);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(196, 30, 58, 0.4);
     }
 
     .btn-success {
-      background: rgba(46, 213, 115, 0.1);
-      color: var(--accent-success);
-      border: 1px solid rgba(46, 213, 115, 0.3);
+      background: linear-gradient(180deg, #5be88c 0%, var(--accent-success) 100%);
+      color: var(--bg-deep);
+      border: 1px solid #16a34a;
     }
 
     .btn-success:hover {
-      background: rgba(46, 213, 115, 0.2);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(74, 222, 128, 0.4);
     }
 
     .btn-sm {
-      padding: 8px 16px;
-      font-size: 13px;
+      padding: 8px 14px;
+      font-size: 12px;
     }
 
     .btn:disabled {
@@ -331,34 +427,40 @@
 
     /* Forms */
     .field {
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .field label {
       display: block;
-      font-size: 13px;
-      color: var(--text-secondary);
+      font-size: 12px;
+      color: var(--text-gold);
       margin-bottom: 6px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
     }
 
     .field input,
     .field select {
       width: 100%;
       padding: 10px 14px;
-      background: rgba(15, 23, 42, 0.7);
+      background: var(--bg-deep);
       border: 1px solid var(--border-medium);
       border-radius: var(--radius-md);
       color: var(--text-primary);
-      font-family: 'Cairo', sans-serif;
+      font-family: 'Tajawal', sans-serif;
       font-size: 14px;
+      font-weight: 500;
       transition: var(--transition-fast);
+      box-shadow: var(--shadow-inset);
     }
 
     .field input:focus,
     .field select:focus {
       outline: none;
-      border-color: var(--accent-primary);
-      box-shadow: 0 0 0 3px rgba(255, 71, 87, 0.1);
+      border-color: var(--gold-primary);
+      box-shadow: 
+        var(--shadow-inset),
+        0 0 0 3px rgba(212, 168, 71, 0.15);
     }
 
     /* Toggle Switch */
@@ -366,7 +468,7 @@
       position: relative;
       display: inline-block;
       width: 50px;
-      height: 24px;
+      height: 26px;
     }
 
     .toggle-switch input {
@@ -378,43 +480,42 @@
     .toggle-slider {
       position: absolute;
       cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(30, 41, 59, 0.8);
+      inset: 0;
+      background: var(--bg-deep);
       border: 1px solid var(--border-medium);
-      transition: .4s;
+      transition: var(--transition-normal);
       border-radius: 34px;
+      box-shadow: var(--shadow-inset);
     }
 
     .toggle-slider:before {
       position: absolute;
       content: "";
-      height: 16px;
-      width: 16px;
+      height: 18px;
+      width: 18px;
       left: 3px;
       bottom: 3px;
-      background-color: var(--text-secondary);
-      transition: .4s;
+      background: linear-gradient(180deg, #888 0%, #555 100%);
+      transition: var(--transition-normal);
       border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
 
     input:checked + .toggle-slider {
-      background-color: rgba(255, 71, 87, 0.3);
-      border-color: var(--accent-primary);
+      background: linear-gradient(180deg, var(--gold-deep) 0%, #6b4f10 100%);
+      border-color: var(--gold-primary);
     }
 
     input:checked + .toggle-slider:before {
-      transform: translateX(26px);
-      background-color: var(--accent-primary);
+      transform: translateX(24px);
+      background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold-primary) 100%);
     }
 
-    /* Players List in Dropdown */
+    /* Players List */
     .players-dropdown-content {
       max-height: 300px;
       overflow-y: auto;
-      padding: 8px;
+      padding: 4px;
     }
 
     .players-list {
@@ -424,7 +525,7 @@
     }
 
     .player-tag {
-      background: rgba(30, 41, 59, 0.8);
+      background: linear-gradient(180deg, var(--bg-surface) 0%, var(--bg-card) 100%);
       border: 1px solid var(--border-medium);
       border-radius: var(--radius-md);
       padding: 10px 12px;
@@ -437,183 +538,207 @@
     }
 
     .player-tag:hover {
-      background: rgba(51, 65, 85, 0.8);
+      border-color: var(--border-gold);
       transform: translateX(-2px);
     }
 
     .player-tag.platform-twitch {
-      border-color: #9146ff;
+      border-right: 3px solid #9146ff;
     }
 
     .player-tag.platform-kick {
-      border-color: #53fc18;
+      border-right: 3px solid #53fc18;
+    }
+
+    .player-tag.platform-manual {
+      border-right: 3px solid var(--gold-primary);
     }
 
     .player-tag.empty {
       text-align: center;
       justify-content: center;
-      opacity: 0.7;
+      opacity: 0.6;
+      font-style: italic;
     }
 
-    /* Control Panel in Dropdown */
-    .control-dropdown-content {
+    .control-dropdown-content,
+    .connection-dropdown-content {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
 
     .control-group {
-      background: rgba(15, 23, 42, 0.5);
+      background: var(--bg-deep);
       border-radius: var(--radius-md);
-      padding: 16px;
+      padding: 14px;
       border: 1px solid var(--border-light);
     }
 
     .control-group h4 {
-      font-size: 14px;
-      color: var(--text-primary);
-      margin-bottom: 12px;
+      font-size: 13px;
+      color: var(--gold-light);
+      margin-bottom: 10px;
       display: flex;
       align-items: center;
       gap: 8px;
+      font-weight: 600;
     }
 
     .quick-controls {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-top: 12px;
+      margin-top: 10px;
     }
 
-    /* Connection Panel in Dropdown */
-    .connection-dropdown-content {
+    /* ===== Game Center ===== */
+    main.layout {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 20px;
     }
 
-    .connection-form {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    /* Game Center */
     .center-panel {
       position: relative;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 24px;
       align-items: center;
     }
 
     .game-header {
       width: 100%;
-      max-width: 800px;
-      margin: 0 auto 24px;
+      max-width: 900px;
+      margin: 0 auto;
     }
 
     .header-grid {
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       gap: 20px;
-      align-items: start;
+      align-items: stretch;
     }
 
     .word-card {
-      background: rgba(15, 23, 42, 0.9);
+      background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
       border-radius: var(--radius-lg);
-      padding: 16px;
+      padding: 18px;
       border: 1px solid var(--border-medium);
-    }
-
-    .word-card h3 {
-      font-size: 14px;
-      color: var(--text-secondary);
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .word-display {
-      font-size: 24px;
-      font-weight: 800;
-      color: var(--text-primary);
-      text-align: center;
-      padding: 16px;
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: var(--radius-md);
-      margin: 8px 0;
-      min-height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .timer-container {
-      text-align: center;
+      box-shadow: var(--shadow-md);
       position: relative;
     }
 
+    .word-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 20%;
+      right: 20%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
+      border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    }
+
+    .word-card h3 {
+      font-family: 'Reem Kufi', sans-serif;
+      font-size: 14px;
+      color: var(--gold-light);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+    }
+
+    /* ===== Timer ===== */
+    .timer-container {
+      text-align: center;
+      position: relative;
+      padding: 0 10px;
+    }
+
     .timer-circle {
-      width: 140px;
-      height: 140px;
+      width: 150px;
+      height: 150px;
       border-radius: 50%;
-      border: 3px solid var(--border-medium);
       display: flex;
       align-items: center;
       justify-content: center;
       margin: 0 auto;
       position: relative;
       background: conic-gradient(
-        var(--accent-primary) 0deg,
-        transparent 0deg
+        var(--gold-primary) 0deg,
+        var(--gold-light) 0deg,
+        transparent 0deg,
+        transparent 360deg
       );
+      box-shadow: 
+        0 0 30px rgba(212, 168, 71, 0.2),
+        inset 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .timer-circle::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 1px solid var(--border-gold);
+      pointer-events: none;
     }
 
     .timer-inner {
-      width: 120px;
-      height: 120px;
+      width: 130px;
+      height: 130px;
       border-radius: 50%;
-      background: rgba(15, 23, 42, 0.95);
+      background: 
+        radial-gradient(circle at center, var(--bg-card) 0%, var(--bg-deep) 100%);
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
+      box-shadow: 
+        inset 0 4px 12px rgba(0, 0, 0, 0.6),
+        inset 0 -2px 4px rgba(212, 168, 71, 0.1);
     }
 
     .timer-value {
-      font-size: 40px;
-      font-weight: 800;
-      color: var(--text-primary);
+      font-family: 'Reem Kufi', sans-serif;
+      font-size: 44px;
+      font-weight: 700;
+      color: var(--gold-light);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+      line-height: 1;
     }
 
-    /* Play/Pause Button for Timer */
     .timer-control {
       position: absolute;
-      bottom: -20px;
+      bottom: -16px;
       left: 50%;
       transform: translateX(-50%);
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-      border: none;
-      color: white;
-      font-size: 18px;
+      background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold-primary) 50%, var(--gold-deep) 100%);
+      border: 2px solid var(--bg-deep);
+      color: var(--bg-deep);
+      font-size: 16px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: var(--shadow-sm);
+      box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
       transition: var(--transition-normal);
       z-index: 10;
     }
 
     .timer-control:hover {
       transform: translateX(-50%) scale(1.1);
-      box-shadow: var(--shadow-glow);
+      box-shadow: 
+        0 4px 16px rgba(212, 168, 71, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
     }
 
     .timer-control:active {
@@ -621,87 +746,184 @@
     }
 
     .decision-panel {
-      background: rgba(15, 23, 42, 0.9);
+      background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
       border-radius: var(--radius-lg);
-      padding: 16px;
+      padding: 18px;
       border: 1px solid var(--border-medium);
+      box-shadow: var(--shadow-md);
+      position: relative;
+    }
+
+    .decision-panel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 20%;
+      right: 20%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
     }
 
     .decision-buttons {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       margin-top: 12px;
     }
 
     .decision-buttons .btn {
       flex: 1;
+      justify-content: center;
     }
 
-    /* Game Table */
-    .game-table {
+    /* ===== THE TABLE - الطاولة الفاخرة ===== */
+    .table-wrapper {
       position: relative;
       width: 100%;
-      max-width: 800px;
+      max-width: 850px;
       aspect-ratio: 1;
-      margin: 0 auto;
-      background: rgba(15, 23, 42, 0.3);
-      border-radius: 50%;
-      border: 2px solid var(--border-light);
-      box-shadow: 
-        inset 0 0 50px rgba(0, 0, 0, 0.5),
-        0 20px 60px rgba(0, 0, 0, 0.6);
+      margin: 40px auto;
+      padding: 50px;
     }
 
+    .game-table {
+      position: absolute;
+      inset: 50px;
+      border-radius: 50%;
+      
+      /* الإطار الخشبي الفاخر */
+      background: 
+        radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.05) 0%, transparent 40%),
+        conic-gradient(from 0deg at 50% 50%,
+          var(--felt-rim-light) 0deg,
+          var(--felt-rim) 30deg,
+          var(--felt-rim-light) 60deg,
+          var(--felt-rim-shine) 90deg,
+          var(--felt-rim-light) 120deg,
+          var(--felt-rim) 150deg,
+          var(--felt-rim-light) 180deg,
+          var(--felt-rim-shine) 210deg,
+          var(--felt-rim-light) 240deg,
+          var(--felt-rim) 270deg,
+          var(--felt-rim-light) 300deg,
+          var(--felt-rim-shine) 330deg,
+          var(--felt-rim-light) 360deg
+        );
+      
+      box-shadow: 
+        0 30px 80px rgba(0, 0, 0, 0.8),
+        0 0 0 2px rgba(0, 0, 0, 0.5),
+        inset 0 0 30px rgba(0, 0, 0, 0.6);
+    }
+
+    /* الطبقة المتوسطة - حلقة ذهبية */
+    .game-table::before {
+      content: '';
+      position: absolute;
+      inset: 6%;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold-deep), var(--gold-primary), var(--gold-deep));
+      box-shadow: 
+        inset 0 0 20px rgba(0, 0, 0, 0.5),
+        0 0 30px rgba(212, 168, 71, 0.2);
+    }
+
+    /* السطح الأخضر - قماش الطاولة */
+    .game-table::after {
+      content: '';
+      position: absolute;
+      inset: 8%;
+      border-radius: 50%;
+      background: 
+        radial-gradient(ellipse at center, var(--felt-light) 0%, var(--felt-medium) 60%, var(--felt-dark) 100%);
+      box-shadow: 
+        inset 0 0 80px rgba(0, 0, 0, 0.7),
+        inset 0 0 40px rgba(0, 0, 0, 0.4);
+      
+      /* نسيج القماش */
+      background-image:
+        radial-gradient(ellipse at center, var(--felt-light) 0%, var(--felt-medium) 60%, var(--felt-dark) 100%),
+        repeating-linear-gradient(
+          45deg,
+          transparent 0px,
+          transparent 2px,
+          rgba(0, 0, 0, 0.05) 2px,
+          rgba(0, 0, 0, 0.05) 3px
+        );
+    }
+
+    /* محتوى المركز */
     .center-content {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 70%;
+      width: 60%;
+      max-width: 380px;
       text-align: center;
+      z-index: 10;
+      padding: 20px;
+    }
+
+    .word-label {
+      font-family: 'Reem Kufi', sans-serif;
+      font-size: 11px;
+      color: rgba(254, 243, 226, 0.6);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 500;
     }
 
     .current-word-container {
-      margin-bottom: 20px;
+      margin-bottom: 16px;
+      padding: 16px 20px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(212, 168, 71, 0.2);
+      box-shadow: 
+        inset 0 2px 8px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(0, 0, 0, 0.2);
     }
 
     .current-word {
-      font-size: 32px;
-      font-weight: 800;
-      color: var(--accent-primary);
-      margin-bottom: 8px;
-      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      font-family: 'Reem Kufi', sans-serif;
+      font-size: 38px;
+      font-weight: 700;
+      color: var(--gold-light);
+      margin-bottom: 4px;
+      text-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.8),
+        0 0 20px rgba(212, 168, 71, 0.3);
       min-height: 50px;
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-
-    .word-label {
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-bottom: 4px;
+      letter-spacing: 4px;
     }
 
     .proposed-section {
-      margin-top: 20px;
-      padding: 15px;
-      background: rgba(255, 71, 87, 0.1);
+      margin-top: 14px;
+      padding: 14px;
+      background: linear-gradient(180deg, rgba(196, 30, 58, 0.2), rgba(196, 30, 58, 0.1));
       border-radius: var(--radius-md);
-      border: 1px solid rgba(255, 71, 87, 0.3);
+      border: 1px solid rgba(196, 30, 58, 0.4);
       display: none;
       animation: slideDown 0.3s ease-out;
+      box-shadow: 0 0 20px rgba(196, 30, 58, 0.2);
     }
 
     .proposed-word {
-      font-size: 24px;
+      font-family: 'Reem Kufi', sans-serif;
+      font-size: 26px;
       font-weight: 700;
       color: var(--text-primary);
-      margin: 8px 0;
-      min-height: 40px;
+      margin: 6px 0;
+      min-height: 36px;
       display: flex;
       align-items: center;
       justify-content: center;
+      letter-spacing: 3px;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
     }
 
     .proposed-info {
@@ -711,187 +933,370 @@
     }
 
     .proposed-info .player-name {
-      color: var(--accent-primary);
-      font-weight: 600;
+      color: var(--gold-light);
+      font-weight: 700;
     }
 
     .current-turn {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--text-secondary);
-      margin-top: 10px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(212, 168, 71, 0.15);
     }
 
     .current-turn .player {
-      color: var(--accent-primary);
+      color: var(--gold-light);
       font-weight: 700;
+      font-size: 15px;
     }
 
-    /* Players Ring */
-    .player-node {
+    /* ===== الكراسي حول الطاولة ===== */
+    .player-seat {
       position: absolute;
       transform: translate(-50%, -50%);
-      min-width: 140px;
-      padding: 12px;
-      background: rgba(26, 29, 43, 0.95);
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border-medium);
-      box-shadow: var(--shadow-md);
+      z-index: 5;
       transition: var(--transition-normal);
     }
 
-    .player-node.active {
-      border-color: var(--accent-primary);
-      box-shadow: var(--shadow-glow);
-      background: rgba(255, 71, 87, 0.1);
+    /* الكرسي - الخلفية */
+    .chair {
+      position: relative;
+      width: 110px;
+      filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.6));
     }
 
-    .player-node.winner {
+    /* مسند الكرسي */
+    .chair-back {
+      width: 100%;
+      height: 80px;
+      background: linear-gradient(180deg, 
+        #6b4423 0%, 
+        #5a371d 30%, 
+        #4a2d18 60%, 
+        #3a2412 100%);
+      border-radius: 16px 16px 8px 8px;
+      border: 1px solid #8b5a2b;
+      box-shadow: 
+        inset 0 2px 4px rgba(255, 200, 130, 0.15),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.4);
+      position: relative;
+    }
+
+    /* تصميم الكرسي - تفاصيل */
+    .chair-back::before {
+      content: '';
+      position: absolute;
+      top: 6px;
+      left: 8px;
+      right: 8px;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
+      border-radius: 2px;
+      opacity: 0.6;
+    }
+
+    .chair-back::after {
+      content: '';
+      position: absolute;
+      bottom: 6px;
+      left: 8px;
+      right: 8px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold-deep), transparent);
+      border-radius: 2px;
+      opacity: 0.5;
+    }
+
+    /* مقعد الكرسي */
+    .chair-seat {
+      width: 90%;
+      height: 18px;
+      margin: 0 auto;
+      background: linear-gradient(180deg, #4a2d18, #2d1a0d);
+      border-radius: 4px;
+      border: 1px solid #6b4423;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    /* بطاقة معلومات اللاعب على الكرسي */
+    .player-card {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 95%;
+      padding: 8px 10px;
+      background: linear-gradient(180deg, 
+        rgba(45, 26, 19, 0.95) 0%, 
+        rgba(26, 15, 8, 0.95) 100%);
+      border-radius: 10px;
+      border: 1px solid var(--border-medium);
+      backdrop-filter: blur(4px);
+      transition: var(--transition-normal);
+    }
+
+    .player-seat.active .player-card {
+      border-color: var(--gold-primary);
+      background: linear-gradient(180deg, 
+        rgba(139, 105, 20, 0.5) 0%, 
+        rgba(45, 26, 19, 0.95) 100%);
+      box-shadow: 0 0 20px rgba(212, 168, 71, 0.5);
+    }
+
+    .player-seat.winner .player-card {
       border-color: var(--accent-success);
-      box-shadow: 0 0 20px rgba(46, 213, 115, 0.4);
-      background: rgba(46, 213, 115, 0.1);
+      background: linear-gradient(180deg, 
+        rgba(74, 222, 128, 0.3) 0%, 
+        rgba(45, 26, 19, 0.95) 100%);
+      box-shadow: 0 0 20px rgba(74, 222, 128, 0.5);
     }
 
-    .player-info {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-    }
-
-    .player-name {
-      font-weight: 700;
-      color: var(--text-primary);
-      font-size: 13px;
-    }
-
-    .player-cards {
-      background: rgba(0, 0, 0, 0.3);
-      padding: 4px 10px;
-      border-radius: var(--radius-full);
+    .player-card .player-name {
+      font-family: 'Reem Kufi', sans-serif;
       font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 4px;
+    }
+
+    .player-card .player-stats {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
       color: var(--text-secondary);
     }
 
-    .player-cards strong {
-      color: var(--accent-primary);
-    }
-
-    .player-status {
+    .player-card .player-stats .cards-count {
+      background: rgba(0, 0, 0, 0.4);
+      color: var(--gold-light);
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      font-weight: 700;
       font-size: 11px;
-      color: var(--text-muted);
     }
 
-    /* Cards Panel */
-    .cards-panel {
+    .player-card .player-status {
+      font-size: 9px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 4px;
+      font-style: italic;
+    }
+
+    .player-seat.active .player-status {
+      color: var(--gold-light);
+      font-style: normal;
+      font-weight: 600;
+    }
+
+    /* مؤشر الدور النشط - ضوء فوق الكرسي */
+    .player-seat.active::before {
+      content: '';
       position: absolute;
-      right: -180px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 160px;
-      background: rgba(26, 29, 43, 0.95);
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 40px;
+      background: radial-gradient(circle, var(--gold-light) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: spotlight 2s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes spotlight {
+      0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+      50% { opacity: 1; transform: translateX(-50%) scale(1.2); }
+    }
+
+    /* تاج الفائز */
+    .player-seat.winner::after {
+      content: '👑';
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 24px;
+      animation: bounce 1s ease-in-out infinite;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-6px); }
+    }
+
+    /* ===== Cards Panel ===== */
+    .cards-panel {
+      width: 100%;
+      max-width: 850px;
+      background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
       border-radius: var(--radius-lg);
       padding: 20px;
       border: 1px solid var(--border-medium);
-      box-shadow: var(--shadow-lg);
+      box-shadow: var(--shadow-md);
+      position: relative;
+    }
+
+    .cards-panel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 30%;
+      right: 30%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
     }
 
     .cards-panel h3 {
-      font-size: 15px;
-      color: var(--accent-primary);
+      font-family: 'Reem Kufi', sans-serif;
+      font-size: 16px;
+      color: var(--gold-light);
       text-align: center;
       margin-bottom: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 10px;
+      font-weight: 600;
     }
 
     .cards-grid {
       display: flex;
-      flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
     }
 
     .game-card {
-      width: 80px;
-      height: 80px;
+      width: 70px;
+      height: 95px;
       border-radius: var(--radius-md);
-      background: linear-gradient(145deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
-      border: 2px solid var(--border-medium);
+      background: 
+        linear-gradient(180deg, #fef3e2 0%, #f5e1c0 100%);
+      border: 1px solid var(--gold-deep);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 32px;
+      font-family: 'Reem Kufi', sans-serif;
+      font-size: 36px;
       font-weight: 800;
-      color: var(--text-primary);
+      color: var(--bg-deep);
       position: relative;
       transition: var(--transition-normal);
+      cursor: default;
+      box-shadow: 
+        var(--shadow-md),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .game-card::before {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      border-radius: 6px;
+      border: 1px solid rgba(139, 105, 20, 0.3);
+      pointer-events: none;
     }
 
     .game-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-md);
+      transform: translateY(-8px) rotate(-2deg);
+      box-shadow: 
+        0 16px 32px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
     }
 
     .game-card.star {
-      border-color: var(--accent-warning);
-      box-shadow: 0 0 15px rgba(255, 165, 2, 0.4);
+      background: linear-gradient(180deg, var(--gold-shine) 0%, var(--gold-light) 100%);
+      border-color: var(--gold-deep);
+      box-shadow: 
+        var(--shadow-md),
+        0 0 20px rgba(251, 191, 36, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      color: var(--gold-deep);
     }
 
     .card-number {
       position: absolute;
-      top: 6px;
-      right: 6px;
-      font-size: 12px;
-      background: rgba(0, 0, 0, 0.7);
-      color: white;
-      width: 22px;
-      height: 22px;
+      top: 4px;
+      right: 4px;
+      font-size: 11px;
+      background: var(--bg-deep);
+      color: var(--gold-light);
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 700;
+      border: 1px solid var(--gold-primary);
+      font-family: 'Tajawal', sans-serif;
     }
 
-    /* Turn Notification */
+    .cards-empty {
+      color: var(--text-muted);
+      font-style: italic;
+      padding: 30px;
+      text-align: center;
+      width: 100%;
+    }
+
+    /* ===== Notifications ===== */
     .turn-notification {
-      position: absolute;
+      position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-      color: white;
-      padding: 24px 48px;
+      background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold-primary) 50%, var(--gold-deep) 100%);
+      color: var(--bg-deep);
+      padding: 24px 56px;
       border-radius: var(--radius-lg);
-      font-size: 32px;
-      font-weight: 800;
+      font-family: 'Reem Kufi', sans-serif;
+      font-size: 30px;
+      font-weight: 700;
       text-align: center;
-      z-index: 1000;
-      box-shadow: var(--shadow-glow);
+      z-index: 2000;
+      box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.7),
+        0 0 40px rgba(212, 168, 71, 0.5),
+        inset 0 2px 0 rgba(255, 255, 255, 0.4);
       animation: fadeInOut 2s ease-in-out;
       display: none;
+      border: 2px solid var(--bg-deep);
     }
 
     @keyframes fadeInOut {
-      0%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+      0%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
       20%, 80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
     }
 
-    /* Winner Banner */
     .winner-banner {
-      max-width: 800px;
-      margin: 20px auto 0;
-      padding: 20px;
-      background: linear-gradient(135deg, rgba(46, 213, 115, 0.9), rgba(46, 213, 115, 0.6));
+      max-width: 850px;
+      margin: 0 auto;
+      padding: 24px;
+      background: linear-gradient(180deg, var(--accent-success) 0%, #16a34a 100%);
       border-radius: var(--radius-lg);
       color: white;
       text-align: center;
-      font-size: 20px;
+      font-family: 'Reem Kufi', sans-serif;
+      font-size: 22px;
       font-weight: 700;
       display: none;
       animation: slideUp 0.5s ease-out;
+      box-shadow: 
+        0 10px 30px rgba(74, 222, 128, 0.4),
+        inset 0 2px 0 rgba(255, 255, 255, 0.3);
+      border: 2px solid #16a34a;
     }
 
     @keyframes slideUp {
@@ -906,21 +1311,23 @@
     }
 
     .winner-name {
-      font-size: 24px;
+      font-size: 26px;
       color: white;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      display: inline-block;
+      padding: 0 8px;
     }
 
-    /* Help Modal */
+    /* ===== Help Modal ===== */
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.75);
+      background: rgba(0, 0, 0, 0.85);
       display: none;
       align-items: center;
       justify-content: center;
-      z-index: 2000;
-      backdrop-filter: blur(5px);
+      z-index: 3000;
+      backdrop-filter: blur(8px);
     }
 
     .modal-backdrop.active {
@@ -930,113 +1337,171 @@
     .modal {
       width: 90%;
       max-width: 600px;
-      max-height: 80vh;
-      background: rgba(26, 29, 43, 0.98);
+      max-height: 85vh;
+      background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
       border-radius: var(--radius-lg);
-      border: 1px solid var(--border-medium);
-      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border-gold);
+      box-shadow: var(--shadow-lg), 0 0 60px rgba(212, 168, 71, 0.2);
       overflow: hidden;
     }
 
     .modal-header {
-      padding: 20px;
-      background: rgba(15, 23, 42, 0.8);
-      border-bottom: 1px solid var(--border-light);
+      padding: 22px;
+      background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-deep) 100%);
+      border-bottom: 1px solid var(--border-medium);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      position: relative;
+    }
+
+    .modal-header::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
     }
 
     .modal-header h3 {
-      font-size: 20px;
-      color: var(--accent-primary);
+      font-family: 'Reem Kufi', sans-serif;
+      font-size: 22px;
+      color: var(--gold-light);
+      font-weight: 700;
     }
 
     .modal-close {
       background: none;
-      border: none;
+      border: 1px solid var(--border-medium);
       color: var(--text-secondary);
-      font-size: 24px;
+      font-size: 20px;
       cursor: pointer;
-      padding: 4px 12px;
-      border-radius: var(--radius-sm);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       transition: var(--transition-fast);
     }
 
     .modal-close:hover {
-      background: rgba(255, 71, 87, 0.1);
-      color: var(--accent-primary);
+      background: var(--accent-red);
+      border-color: var(--accent-red);
+      color: white;
+      transform: rotate(90deg);
     }
 
     .modal-body {
-      padding: 20px;
+      padding: 24px;
       overflow-y: auto;
-      max-height: calc(80vh - 80px);
+      max-height: calc(85vh - 90px);
     }
 
     .modal-section {
-      margin-bottom: 24px;
+      margin-bottom: 22px;
     }
 
     .modal-section h4 {
+      font-family: 'Reem Kufi', sans-serif;
       font-size: 16px;
-      color: var(--text-primary);
-      margin-bottom: 12px;
+      color: var(--gold-light);
+      margin-bottom: 10px;
       display: flex;
       align-items: center;
       gap: 8px;
+      font-weight: 600;
     }
 
     .modal-section p {
       font-size: 14px;
       color: var(--text-secondary);
-      line-height: 1.6;
-      margin-bottom: 12px;
+      line-height: 1.7;
+      margin-bottom: 10px;
     }
 
     .modal-section ul {
       padding-right: 20px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .modal-section li {
       font-size: 14px;
       color: var(--text-secondary);
-      line-height: 1.6;
+      line-height: 1.7;
       margin-bottom: 6px;
     }
 
     code {
-      background: rgba(0, 0, 0, 0.3);
-      padding: 2px 6px;
+      background: var(--bg-deep);
+      padding: 2px 8px;
       border-radius: var(--radius-sm);
-      font-family: monospace;
+      font-family: 'Courier New', monospace;
       font-size: 13px;
-      color: var(--accent-primary);
+      color: var(--gold-light);
+      border: 1px solid var(--border-light);
     }
 
-    /* Responsive Design */
-    @media (max-width: 1200px) {
-      .cards-panel {
-        position: relative;
-        right: auto;
-        top: auto;
-        transform: none;
-        width: 100%;
-        max-width: 800px;
-        margin: 20px auto;
+    .hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      line-height: 1.5;
+      font-style: italic;
+    }
+
+    .close-dropdown {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: none;
+      border: 1px solid var(--border-medium);
+      color: var(--text-secondary);
+      font-size: 14px;
+      cursor: pointer;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition-fast);
+    }
+
+    .close-dropdown:hover {
+      background: var(--accent-red);
+      border-color: var(--accent-red);
+      color: white;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 1024px) {
+      .header-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
       }
       
-      .cards-grid {
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
+      .table-wrapper {
+        max-width: 700px;
+        padding: 30px;
       }
       
-      .game-card {
-        width: 70px;
-        height: 70px;
-        font-size: 28px;
+      .game-table {
+        inset: 30px;
+      }
+      
+      .chair {
+        width: 95px;
+      }
+      
+      .player-card .player-name {
+        font-size: 11px;
+      }
+      
+      .current-word {
+        font-size: 30px;
       }
     }
 
@@ -1044,7 +1509,7 @@
       header {
         flex-direction: column;
         text-align: center;
-        gap: 16px;
+        gap: 14px;
         padding: 16px;
       }
       
@@ -1057,52 +1522,110 @@
         position: relative;
         top: auto;
         left: auto;
-        transform: none;
-        margin: 10px auto 0;
+        margin: 0 auto 16px;
         width: fit-content;
       }
       
-      .header-grid {
-        grid-template-columns: 1fr;
-        gap: 16px;
+      .table-wrapper {
+        max-width: 100%;
+        padding: 20px;
+        margin: 30px auto;
       }
       
       .game-table {
-        border-radius: var(--radius-lg);
+        inset: 20px;
+      }
+      
+      .chair {
+        width: 85px;
+      }
+      
+      .chair-back {
+        height: 70px;
+      }
+      
+      .player-card {
+        padding: 6px;
+      }
+      
+      .player-card .player-name {
+        font-size: 10px;
+      }
+      
+      .player-card .player-stats {
+        font-size: 9px;
+      }
+      
+      .current-word {
+        font-size: 24px;
+        letter-spacing: 2px;
+      }
+      
+      .game-card {
+        width: 60px;
+        height: 80px;
+        font-size: 28px;
       }
       
       .dropdown-panel {
         width: 90vw;
-        left: 5vw;
+        right: 0;
+        left: auto;
+      }
+      
+      .timer-circle {
+        width: 130px;
+        height: 130px;
+      }
+      
+      .timer-inner {
+        width: 110px;
+        height: 110px;
+      }
+      
+      .timer-value {
+        font-size: 36px;
       }
     }
 
-    /* Hint Text */
-    .hint {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 6px;
-      line-height: 1.4;
+    @media (max-width: 480px) {
+      .chair {
+        width: 70px;
+      }
+      
+      .chair-back {
+        height: 60px;
+      }
+      
+      .player-card .player-name {
+        font-size: 9px;
+      }
+      
+      .center-content {
+        width: 70%;
+      }
+      
+      .current-word {
+        font-size: 20px;
+      }
     }
 
-    /* Close button for dropdowns */
-    .close-dropdown {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: none;
-      border: none;
-      color: var(--text-secondary);
-      font-size: 18px;
-      cursor: pointer;
-      padding: 4px;
-      border-radius: var(--radius-sm);
-      transition: var(--transition-fast);
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
     }
 
-    .close-dropdown:hover {
-      background: rgba(255, 71, 87, 0.1);
-      color: var(--accent-primary);
+    ::-webkit-scrollbar-track {
+      background: var(--bg-deep);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--gold-deep);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--gold-primary);
     }
   </style>
 </head>
@@ -1117,12 +1640,11 @@
     <!-- Header -->
     <header>
       <div class="title-area">
-        <h1>🎯 تحدّي المفردات</h1>
-        <p>لعبة بطاقات لغوية - كل لاعب معه ٨ بطاقات، وأول واحد يخلص بطاقاته يفوز</p>
+        <h1><span class="crown">👑</span> تحدّي المفردات</h1>
+        <p>لعبة بطاقات لغوية فاخرة - كل لاعب معه ٨ بطاقات، وأول واحد يخلص بطاقاته يفوز</p>
       </div>
       
       <div class="header-controls">
-        <!-- Players Dropdown -->
         <div class="dropdown-container">
           <button class="header-btn" id="playersBtn">
             <span>👥</span>
@@ -1139,7 +1661,6 @@
           </div>
         </div>
         
-        <!-- Control Dropdown -->
         <div class="dropdown-container">
           <button class="header-btn" id="controlBtn">
             <span>🎛️</span>
@@ -1172,7 +1693,7 @@
                     <input type="checkbox" id="autoShuffleToggle">
                     <span class="toggle-slider"></span>
                   </label>
-                  <span style="font-size: 13px; color: var(--text-secondary);">
+                  <span style="font-size: 12px; color: var(--text-secondary);">
                     خلط اللاعبين بعد كل جولة كاملة
                   </span>
                 </div>
@@ -1181,7 +1702,7 @@
               
               <div class="control-group">
                 <h4>🚀 بدء اللعبة</h4>
-                <button class="btn btn-primary" id="startGame">
+                <button class="btn btn-primary" id="startGame" style="width: 100%; justify-content: center;">
                   <span>🚀</span>
                   <span>بدء اللعبة وتوزيع البطاقات</span>
                 </button>
@@ -1205,7 +1726,6 @@
           </div>
         </div>
         
-        <!-- Connection Dropdown -->
         <div class="dropdown-container">
           <button class="header-btn" id="connectionBtn">
             <span>🔌</span>
@@ -1246,7 +1766,6 @@
           </div>
         </div>
         
-        <!-- Connection Status -->
         <div class="connection-status">
           <div class="connection-indicator" id="connectionIndicator"></div>
           <div class="connection-text" id="connectionText">غير متصل</div>
@@ -1256,12 +1775,10 @@
 
     <!-- Main Content -->
     <main class="layout">
-      <!-- Game Center -->
-      <section class="panel center-panel">
+      <section class="center-panel">
         <!-- Game Header -->
         <div class="game-header">
           <div class="header-grid">
-            <!-- Word Card -->
             <div class="word-card">
               <h3><span>📝</span> الكلمة الأساسية</h3>
               <div class="field">
@@ -1270,7 +1787,6 @@
               <button class="btn btn-secondary btn-sm" id="setInitialWord">تعيين</button>
             </div>
             
-            <!-- Timer with Play/Pause Button -->
             <div class="timer-container">
               <div class="timer-circle" id="timerCircle">
                 <div class="timer-inner">
@@ -1280,10 +1796,9 @@
               <button class="timer-control" id="timerToggle">
                 <span id="timerToggleIcon">⏸️</span>
               </button>
-              <p class="hint">الوقت المتبقي للدور</p>
+              <p class="hint" style="margin-top: 20px;">الوقت المتبقي للدور</p>
             </div>
             
-            <!-- Decision Panel -->
             <div class="decision-panel">
               <h3><span>✅</span> قرار الكلمة المقترحة</h3>
               <div class="decision-buttons">
@@ -1295,17 +1810,17 @@
           </div>
         </div>
 
-        <!-- Game Table -->
-        <div class="game-table">
+        <!-- The Table -->
+        <div class="table-wrapper">
+          <div class="game-table"></div>
+          
           <!-- Center Content -->
           <div class="center-content">
-            <!-- Current Word -->
             <div class="current-word-container">
               <div class="word-label">الكلمة الحالية</div>
               <div class="current-word" id="currentWord">— — —</div>
             </div>
             
-            <!-- Proposed Word -->
             <div class="proposed-section" id="proposedSection">
               <div class="word-label">كلمة مقترحة</div>
               <div class="proposed-word" id="proposedWord">—</div>
@@ -1314,22 +1829,21 @@
               </div>
             </div>
             
-            <!-- Current Turn -->
             <div class="current-turn">
               <span>الدور الحالي:</span>
               <span class="player" id="currentPlayer">لا يوجد</span>
             </div>
           </div>
           
-          <!-- Players Ring -->
-          <div class="players-ring" id="playersRing"></div>
+          <!-- Players Seats Ring -->
+          <div id="playersRing"></div>
         </div>
 
         <!-- Cards Panel -->
         <div class="cards-panel">
           <h3><span>🎴</span> بطاقات اللاعب الحالي</h3>
           <div class="cards-grid" id="cardsGrid">
-            <!-- Cards will be inserted here -->
+            <div class="cards-empty">ابدأ اللعبة لعرض البطاقات</div>
           </div>
         </div>
 
@@ -1349,7 +1863,7 @@
   <div class="modal-backdrop" id="helpModal">
     <div class="modal">
       <div class="modal-header">
-        <h3>شرح لعبة تحدّي المفردات</h3>
+        <h3>👑 شرح لعبة تحدّي المفردات</h3>
         <button class="modal-close" id="closeHelp">&times;</button>
       </div>
       <div class="modal-body">
@@ -1422,9 +1936,7 @@
               text
             };
           }
-        }catch(err){
-          // silent
-        }
+        }catch(err){}
         return null;
       }
 
@@ -1494,8 +2006,6 @@
     let winnerFound = false;
     let pendingSuggestion = null;
     let timerPaused = false;
-    
-    // New variables for requested features
     let cardsPerPlayer = 8;
     let autoShuffleEnabled = false;
 
@@ -1527,7 +2037,6 @@
     const timerToggle = document.getElementById('timerToggle');
     const timerToggleIcon = document.getElementById('timerToggleIcon');
 
-    // Dropdown Elements
     const playersBtn = document.getElementById('playersBtn');
     const playersPanel = document.getElementById('playersPanel');
     const controlBtn = document.getElementById('controlBtn');
@@ -1536,7 +2045,6 @@
     const connectionPanel = document.getElementById('connectionPanel');
     const closeDropdowns = document.querySelectorAll('.close-dropdown');
 
-    // Control Elements
     const turnSecondsInput = document.getElementById('turnSeconds');
     const updateTurnSecondsBtn = document.getElementById('updateTurnSeconds');
     const cardsPerPlayerInput = document.getElementById('cardsPerPlayer');
@@ -1630,9 +2138,25 @@
 
     function renderCards() {
       cardsGrid.innerHTML = '';
-      if (currentPlayerIndex < 0 || !gameStarted || currentPlayerIndex >= players.length) return;
+      
+      if (currentPlayerIndex < 0 || !gameStarted || currentPlayerIndex >= players.length) {
+        const empty = document.createElement('div');
+        empty.className = 'cards-empty';
+        empty.textContent = 'ابدأ اللعبة لعرض البطاقات';
+        cardsGrid.appendChild(empty);
+        return;
+      }
       
       const player = players[currentPlayerIndex];
+      
+      if (player.cards.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'cards-empty';
+        empty.textContent = 'لا توجد بطاقات';
+        cardsGrid.appendChild(empty);
+        return;
+      }
+      
       player.cards.forEach((card, idx) => {
         const cardEl = document.createElement('div');
         cardEl.className = 'game-card';
@@ -1672,62 +2196,72 @@
             <div style="font-weight: 600; color: var(--text-primary);">${player.name}</div>
             <div style="font-size: 11px; color: var(--text-muted);">${player.cards.length} بطاقة</div>
           </div>
-          ${idx === currentPlayerIndex && gameStarted ? '<span style="color: var(--accent-primary);">🎮</span>' : ''}
+          ${idx === currentPlayerIndex && gameStarted ? '<span style="color: var(--gold-light);">🎮</span>' : ''}
         `;
         
         playersList.appendChild(tag);
       });
     }
 
+    // ===== layoutPlayersRing - الكراسي حول الطاولة =====
     function layoutPlayersRing() {
       playersRing.innerHTML = '';
       if (players.length === 0) return;
       
-      const radius = 40;
+      // مسافة الكراسي من المركز - أبعد من الطاولة
+      const radius = 47;
       const centerX = 50;
       const centerY = 50;
       
       players.forEach((player, idx) => {
-        const angle = (2 * Math.PI * idx / players.length) - Math.PI / 2;
+        // البدء من أسفل الطاولة (90 درجة) والدوران
+        const angle = (2 * Math.PI * idx / players.length) + Math.PI / 2;
         const x = centerX + radius * Math.cos(angle);
         const y = centerY + radius * Math.sin(angle);
         
-        const node = document.createElement('div');
-        node.className = 'player-node';
-        if (idx === currentPlayerIndex && gameStarted) node.classList.add('active');
-        if (player.isWinner) node.classList.add('winner');
+        const seat = document.createElement('div');
+        seat.className = 'player-seat';
+        if (idx === currentPlayerIndex && gameStarted) seat.classList.add('active');
+        if (player.isWinner) seat.classList.add('winner');
         
-        node.style.left = `${x}%`;
-        node.style.top = `${y}%`;
+        seat.style.left = `${x}%`;
+        seat.style.top = `${y}%`;
         
-        node.innerHTML = `
-          <div class="player-info">
-            <div class="player-name">${player.name}</div>
-            <div class="player-cards"><strong>${player.cards.length}</strong> / ${cardsPerPlayer}</div>
-          </div>
-          <div class="player-status">
-            ${player.isWinner ? 'الفائز 🎉' : idx === currentPlayerIndex ? 'دوره الآن' : 'ينتظر'}
+        // الكرسي + بطاقة معلومات اللاعب
+        seat.innerHTML = `
+          <div class="chair">
+            <div class="chair-back">
+              <div class="player-card">
+                <div class="player-name">${player.name}</div>
+                <div class="player-stats">
+                  <span class="cards-count">${player.cards.length}</span>
+                  <span>/</span>
+                  <span>${cardsPerPlayer}</span>
+                </div>
+                <div class="player-status">
+                  ${player.isWinner ? '👑 الفائز' : idx === currentPlayerIndex && gameStarted ? '🎮 دوره' : '⏳ ينتظر'}
+                </div>
+              </div>
+            </div>
+            <div class="chair-seat"></div>
           </div>
         `;
         
-        playersRing.appendChild(node);
+        playersRing.appendChild(seat);
       });
     }
 
-    // ===== Shuffle Players Function =====
+    // ===== Shuffle Players =====
     function shufflePlayers() {
       if (!autoShuffleEnabled || players.length < 2) return;
       
-      // حفظ اللاعب الحالي إن وجد
       const currentPlayerBeforeShuffle = players[currentPlayerIndex];
       
-      // خلط اللاعبين عشوائياً باستخدام Fisher-Yates shuffle
       for (let i = players.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [players[i], players[j]] = [players[j], players[i]];
       }
       
-      // تحديث currentPlayerIndex للاعب الحالي بعد الخلط
       if (currentPlayerBeforeShuffle) {
         const newIndex = players.findIndex(p => p === currentPlayerBeforeShuffle);
         if (newIndex !== -1) {
@@ -1735,7 +2269,6 @@
         }
       }
       
-      // تحديث الواجهة
       layoutPlayersRing();
       updatePlayersList();
       
@@ -1769,11 +2302,25 @@
       timerValue.textContent = remainingSeconds;
       const percentage = (remainingSeconds / turnSeconds) * 100;
       const deg = (percentage / 100) * 360;
+      
+      // تغيير اللون حسب الوقت المتبقي
+      let color1 = 'var(--gold-primary)';
+      let color2 = 'var(--gold-light)';
+      
+      if (percentage < 30) {
+        color1 = '#dc2626';
+        color2 = '#ef4444';
+      } else if (percentage < 60) {
+        color1 = '#ea580c';
+        color2 = '#fb923c';
+      }
+      
       timerCircle.style.background = `conic-gradient(
-        var(--accent-primary) 0deg,
-        var(--accent-primary) ${deg}deg,
-        transparent ${deg}deg,
-        transparent 360deg
+        ${color1} 0deg,
+        ${color2} ${deg/2}deg,
+        ${color1} ${deg}deg,
+        rgba(0, 0, 0, 0.4) ${deg}deg,
+        rgba(0, 0, 0, 0.4) 360deg
       )`;
     }
 
@@ -1825,7 +2372,6 @@
         attempts++;
       }
       
-      // التحقق إذا كانت هذه بداية دورة جديدة (رجوع للاعب الأول)
       const currentPlayerObj = players[currentPlayerIndex];
       const isNewRound = currentPlayerObj && 
         players.findIndex(p => p === currentPlayerObj) === 0;
@@ -1837,9 +2383,8 @@
       showTurnNotification(players[currentPlayerIndex]?.name || '');
       updateTimer();
       
-      // إذا كان الخلط التلقائي مفعلاً وبدأت دورة جديدة
       if (autoShuffleEnabled && isNewRound && gameStarted) {
-        setTimeout(shufflePlayers, 500); // تأخير بسيط قبل الخلط
+        setTimeout(shufflePlayers, 500);
       }
     }
 
@@ -1945,7 +2490,7 @@
       return true;
     }
 
-    // ===== Chat Connection & Commands =====
+    // ===== Chat Connection =====
     function updateConnectionUI(connected = false) {
       if (connected) {
         connectionIndicator.classList.add('connected');
@@ -1964,20 +2509,12 @@
 
     function disconnectAll() {
       if (twitchClient) {
-        try {
-          twitchClient.disconnect();
-        } catch (e) {
-          console.error('Error disconnecting Twitch:', e);
-        }
+        try { twitchClient.disconnect(); } catch (e) {}
         twitchClient = null;
       }
       
       if (kickSocket) {
-        try {
-          kickSocket.disconnect();
-        } catch (e) {
-          console.error('Error disconnecting Kick:', e);
-        }
+        try { kickSocket.disconnect(); } catch (e) {}
         kickSocket = null;
       }
       
@@ -1992,10 +2529,7 @@
       
       twitchClient = new tmi.Client({
         options: { debug: false },
-        connection: {
-          secure: true,
-          reconnect: true
-        },
+        connection: { secure: true, reconnect: true },
         channels: [activeChannel]
       });
       
@@ -2010,10 +2544,8 @@
       
       twitchClient.on('message', (channel, tags, message, self) => {
         if (self) return;
-        
         const username = tags['display-name'] || tags.username;
         const cleanedMessage = message.trim();
-        
         console.log(`[Twitch] ${username}: ${cleanedMessage}`);
         handleChatCommand('twitch', username, cleanedMessage);
       });
@@ -2024,8 +2556,6 @@
       
       activePlatform = 'kick';
       activeChannel = channel.toLowerCase().replace('@', '');
-      
-      console.log(`🚀 محاولة الاتصال بـ Kick: ${activeChannel}`);
       
       try {
         if (!window.KickChat || !window.KickChat.connect) {
@@ -2038,8 +2568,6 @@
         });
         
         updateConnectionUI(true);
-        console.log(`✅ تم بدء اتصال Kick بـ ${activeChannel}`);
-        
       } catch (err) {
         console.error('❌ فشل الاتصال بـ Kick:', err);
         alert(`خطأ في الاتصال بـ Kick: ${err.message}`);
@@ -2052,9 +2580,7 @@
       
       if (cleanMessage === '!دخول' || cleanMessage === '!دخل') {
         const added = addPlayer(username, platform);
-        if (added) {
-          console.log(`✅ ${username} (${platform}) joined the game`);
-        }
+        if (added) console.log(`✅ ${username} (${platform}) joined the game`);
         return;
       }
       
@@ -2068,7 +2594,7 @@
         );
         
         if (playerIndex === -1) {
-          console.log(`🚫 ${username} (${platform}) ليس في اللعبة`);
+          console.log(`🚫 ${username} ليس في اللعبة`);
           return;
         }
         
@@ -2078,21 +2604,12 @@
         }
         
         const currentWordText = currentWord.textContent;
-        if (!currentWordText || currentWordText === '— — —') {
-          console.log(`🚫 لا توجد كلمة حالية`);
-          return;
-        }
+        if (!currentWordText || currentWordText === '— — —') return;
         
-        if (position < 1 || position > currentWordText.length) {
-          console.log(`🚫 رقم الحرف غير صالح (1-${currentWordText.length})`);
-          return;
-        }
+        if (position < 1 || position > currentWordText.length) return;
         
         const player = players[playerIndex];
-        if (cardNumber < 1 || cardNumber > player.cards.length) {
-          console.log(`🚫 رقم البطاقة غير صالح (1-${player.cards.length})`);
-          return;
-        }
+        if (cardNumber < 1 || cardNumber > player.cards.length) return;
         
         const cardChar = player.cards[cardNumber - 1];
         const newWord = currentWordText.substring(0, position - 1) + 
@@ -2142,14 +2659,11 @@
       currentPlayer.textContent = players[currentPlayerIndex].name;
       showTurnNotification(players[currentPlayerIndex].name);
       updateTimer();
+      closeAllDropdowns();
     });
 
     nextPlayerBtn.addEventListener('click', nextPlayer);
-    
-    restartTurnBtn.addEventListener('click', () => {
-      updateTimer();
-    });
-    
+    restartTurnBtn.addEventListener('click', () => updateTimer());
     timerToggle.addEventListener('click', toggleTimer);
     
     updateTurnSecondsBtn.addEventListener('click', () => {
@@ -2164,10 +2678,7 @@
       const val = parseInt(cardsPerPlayerInput.value);
       if (val >= 3 && val <= 15) {
         cardsPerPlayer = val;
-        if (gameStarted) {
-          // إذا كانت اللعبة بدأت، أعد توزيع البطاقات
-          dealCards();
-        }
+        if (gameStarted) dealCards();
         alert(`تم تحديث عدد البطاقات لكل لاعب إلى ${val}`);
       }
     });
@@ -2179,9 +2690,7 @@
     
     setInitialWordBtn.addEventListener('click', () => {
       const word = initialWordInput.value.trim();
-      if (word) {
-        currentWord.textContent = word;
-      }
+      if (word) currentWord.textContent = word;
     });
     
     acceptWordBtn.addEventListener('click', acceptProposal);
@@ -2196,30 +2705,16 @@
         return;
       }
       
-      if (platform === 'twitch') {
-        connectTwitch(channel);
-      } else if (platform === 'kick') {
-        connectKick(channel);
-      }
+      if (platform === 'twitch') connectTwitch(channel);
+      else if (platform === 'kick') connectKick(channel);
     });
     
-    disconnectBtn.addEventListener('click', () => {
-      disconnectAll();
-    });
+    disconnectBtn.addEventListener('click', () => disconnectAll());
 
-    // Help Modal
-    helpBtn.addEventListener('click', () => {
-      helpModal.classList.add('active');
-    });
-    
-    closeHelp.addEventListener('click', () => {
-      helpModal.classList.remove('active');
-    });
-    
+    helpBtn.addEventListener('click', () => helpModal.classList.add('active'));
+    closeHelp.addEventListener('click', () => helpModal.classList.remove('active'));
     helpModal.addEventListener('click', (e) => {
-      if (e.target === helpModal) {
-        helpModal.classList.remove('active');
-      }
+      if (e.target === helpModal) helpModal.classList.remove('active');
     });
 
     // Initialize
@@ -2233,6 +2728,8 @@
       testBtn.className = 'btn btn-secondary btn-sm';
       testBtn.innerHTML = '<span>🧪</span><span>إضافة لاعب تجريبي</span>';
       testBtn.style.marginTop = '10px';
+      testBtn.style.width = '100%';
+      testBtn.style.justifyContent = 'center';
       testBtn.onclick = () => {
         if (!gameStarted) {
           addPlayer(`تجريبي_${Math.floor(Math.random() * 1000)}`, 'manual');
