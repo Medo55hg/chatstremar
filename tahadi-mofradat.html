@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>🎯 تحدّي المفردات</title>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Reem+Kufi:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Almarai:wght@400;700;800&display=swap" rel="stylesheet" />
   <script src="tmi.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tmi.js@1.8.5/dist/tmi.min.js"></script>
   
@@ -79,7 +79,11 @@
 
     body {
       min-height: 100vh;
-      font-family: 'Tajawal', sans-serif;
+      font-family: 'Cairo', sans-serif;
+      font-weight: 500;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
       background: 
         radial-gradient(ellipse at top, rgba(139, 90, 43, 0.15) 0%, transparent 60%),
         radial-gradient(ellipse at bottom, rgba(36, 88, 64, 0.1) 0%, transparent 60%),
@@ -150,7 +154,7 @@
     }
 
     .title-area h1 {
-      font-family: 'Reem Kufi', sans-serif;
+      font-family: 'Almarai', sans-serif;
       font-size: 30px;
       color: var(--gold-light);
       margin-bottom: 4px;
@@ -190,7 +194,7 @@
       border: 1px solid var(--border-medium);
       border-radius: var(--radius-md);
       color: var(--text-primary);
-      font-family: 'Tajawal', sans-serif;
+      font-family: 'Cairo', sans-serif;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
@@ -266,7 +270,7 @@
     }
 
     .dropdown-panel h3 {
-      font-family: 'Reem Kufi', sans-serif;
+      font-family: 'Almarai', sans-serif;
       font-size: 17px;
       color: var(--gold-light);
       margin-bottom: 18px;
@@ -339,7 +343,7 @@
       gap: 8px;
       font-size: 13px;
       font-weight: 600;
-      font-family: 'Tajawal', sans-serif;
+      font-family: 'Cairo', sans-serif;
       transition: var(--transition-fast);
       box-shadow: var(--shadow-sm);
     }
@@ -355,7 +359,7 @@
       padding: 10px 20px;
       border-radius: var(--radius-md);
       border: none;
-      font-family: 'Tajawal', sans-serif;
+      font-family: 'Cairo', sans-serif;
       font-size: 14px;
       font-weight: 700;
       cursor: pointer;
@@ -447,7 +451,7 @@
       border: 1px solid var(--border-medium);
       border-radius: var(--radius-md);
       color: var(--text-primary);
-      font-family: 'Tajawal', sans-serif;
+      font-family: 'Cairo', sans-serif;
       font-size: 14px;
       font-weight: 500;
       transition: var(--transition-fast);
@@ -641,7 +645,7 @@
     }
 
     .word-card h3 {
-      font-family: 'Reem Kufi', sans-serif;
+      font-family: 'Almarai', sans-serif;
       font-size: 14px;
       color: var(--gold-light);
       margin-bottom: 10px;
@@ -703,7 +707,7 @@
     }
 
     .timer-value {
-      font-family: 'Reem Kufi', sans-serif;
+      font-family: 'Almarai', sans-serif;
       font-size: 44px;
       font-weight: 700;
       color: var(--gold-light);
@@ -865,7 +869,7 @@
     }
 
     .word-label {
-      font-family: 'Reem Kufi', sans-serif;
+      font-family: 'Almarai', sans-serif;
       font-size: 11px;
       color: rgba(254, 243, 226, 0.6);
       margin-bottom: 6px;
@@ -886,9 +890,9 @@
     }
 
     .current-word {
-      font-family: 'Reem Kufi', sans-serif;
+      font-family: 'Almarai', sans-serif;
       font-size: 38px;
-      font-weight: 700;
+      font-weight: 800;
       color: var(--gold-light);
       margin-bottom: 4px;
       text-shadow: 
@@ -913,7 +917,7 @@
     }
 
     .proposed-word {
-      font-family: 'Reem Kufi', sans-serif;
+      font-family: 'Almarai', sans-serif;
       font-size: 26px;
       font-weight: 700;
       color: var(--text-primary);
@@ -1053,15 +1057,16 @@
     }
 
     .player-card .player-name {
-      font-family: 'Reem Kufi', sans-serif;
-      font-size: 12px;
-      font-weight: 600;
+      font-family: 'Cairo', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
       color: var(--text-primary);
       text-align: center;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       margin-bottom: 4px;
+      letter-spacing: 0;
     }
 
     .player-card .player-stats {
@@ -1156,8 +1161,8 @@
     }
 
     .cards-panel h3 {
-      font-family: 'Reem Kufi', sans-serif;
-      font-size: 16px;
+      font-family: 'Almarai', sans-serif;
+      font-size: 17px;
       color: var(--gold-light);
       text-align: center;
       margin-bottom: 16px;
@@ -1165,7 +1170,7 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
-      font-weight: 600;
+      font-weight: 700;
     }
 
     .cards-grid {
@@ -1174,6 +1179,273 @@
       align-items: center;
       justify-content: center;
       flex-wrap: wrap;
+    }
+
+    /* ===== وضع ملء الشاشة ===== */
+    .fullscreen-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1500;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold-primary) 50%, var(--gold-deep) 100%);
+      border: 2px solid var(--bg-deep);
+      color: var(--bg-deep);
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      transition: var(--transition-normal);
+    }
+
+    .fullscreen-toggle:hover {
+      transform: scale(1.1);
+      box-shadow: 
+        0 6px 20px rgba(212, 168, 71, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+
+    /* تخطيط اللعبة الأساسي - وضع عادي: العمود الأوسط واليمين */
+    .game-area {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 20px;
+      width: 100%;
+      max-width: 1300px;
+      align-items: start;
+    }
+
+    .game-main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .game-side {
+      position: sticky;
+      top: 20px;
+      width: 100%;
+    }
+
+    /* لوحة بطاقات اللاعب على اليمين */
+    .cards-panel-side {
+      width: 100%;
+      max-width: 320px;
+      background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      border: 1px solid var(--border-medium);
+      box-shadow: var(--shadow-md);
+      position: relative;
+    }
+
+    .cards-panel-side::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 20%;
+      right: 20%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
+    }
+
+    .cards-panel-side h3 {
+      font-family: 'Almarai', sans-serif;
+      font-size: 16px;
+      color: var(--gold-light);
+      text-align: center;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-weight: 700;
+    }
+
+    .cards-panel-side .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      justify-items: center;
+    }
+
+    .cards-panel-side .game-card {
+      width: 100%;
+      max-width: 64px;
+      aspect-ratio: 70/95;
+      height: auto;
+      font-size: 30px;
+    }
+
+    /* ===== وضع ملء الشاشة - Fullscreen Mode ===== */
+    body.fullscreen-mode {
+      padding: 8px;
+    }
+
+    body.fullscreen-mode header {
+      display: none;
+    }
+
+    body.fullscreen-mode .help-btn {
+      display: none;
+    }
+
+    body.fullscreen-mode .game-header {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      width: 280px;
+      max-width: 280px;
+      z-index: 100;
+      margin: 0;
+    }
+
+    body.fullscreen-mode .header-grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    body.fullscreen-mode .word-card,
+    body.fullscreen-mode .decision-panel {
+      padding: 14px;
+    }
+
+    body.fullscreen-mode .timer-circle {
+      width: 130px;
+      height: 130px;
+    }
+
+    body.fullscreen-mode .timer-inner {
+      width: 110px;
+      height: 110px;
+    }
+
+    body.fullscreen-mode .timer-value {
+      font-size: 38px;
+    }
+
+    /* في وضع ملء الشاشة - الطاولة في المنتصف بحجم أكبر */
+    body.fullscreen-mode .game-area {
+      grid-template-columns: 1fr;
+      max-width: 100%;
+      padding-right: 320px;
+      padding-left: 320px;
+    }
+
+    body.fullscreen-mode .game-side {
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      width: 290px;
+      z-index: 100;
+    }
+
+    body.fullscreen-mode .cards-panel-side {
+      max-width: 290px;
+    }
+
+    body.fullscreen-mode .table-wrapper {
+      max-width: min(95vh, 1100px);
+      margin: 0 auto;
+      padding: 60px;
+    }
+
+    body.fullscreen-mode .game-table {
+      inset: 60px;
+    }
+
+    body.fullscreen-mode .current-word {
+      font-size: 56px;
+      letter-spacing: 6px;
+    }
+
+    body.fullscreen-mode .center-content {
+      width: 55%;
+      max-width: 480px;
+    }
+
+    body.fullscreen-mode .proposed-word {
+      font-size: 36px;
+      letter-spacing: 4px;
+    }
+
+    body.fullscreen-mode .word-label {
+      font-size: 13px;
+    }
+
+    body.fullscreen-mode .current-turn {
+      font-size: 16px;
+    }
+
+    body.fullscreen-mode .current-turn .player {
+      font-size: 18px;
+    }
+
+    body.fullscreen-mode .chair {
+      width: 130px;
+    }
+
+    body.fullscreen-mode .chair-back {
+      height: 95px;
+    }
+
+    body.fullscreen-mode .player-card .player-name {
+      font-size: 13px;
+    }
+
+    body.fullscreen-mode .player-card .player-stats {
+      font-size: 11px;
+    }
+
+    body.fullscreen-mode .player-card .player-stats .cards-count {
+      font-size: 13px;
+    }
+
+    body.fullscreen-mode .game-card {
+      width: 60px;
+      max-width: 60px;
+      font-size: 28px;
+    }
+
+    body.fullscreen-mode .winner-banner {
+      max-width: 600px;
+    }
+
+    /* استجابة للشاشات الأصغر في وضع ملء الشاشة */
+    @media (max-width: 1400px) {
+      body.fullscreen-mode .game-area {
+        padding-right: 290px;
+        padding-left: 16px;
+      }
+      
+      body.fullscreen-mode .game-header {
+        width: 240px;
+      }
+    }
+
+    @media (max-width: 1100px) {
+      body.fullscreen-mode .game-header,
+      body.fullscreen-mode .game-side {
+        position: relative;
+        top: auto;
+        left: auto;
+        right: auto;
+        width: 100%;
+        max-width: 100%;
+      }
+      
+      body.fullscreen-mode .game-area {
+        padding: 0;
+      }
     }
 
     .game-card {
@@ -1186,8 +1458,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Reem Kufi', sans-serif;
-      font-size: 36px;
+      font-family: 'Almarai', sans-serif;
+      font-size: 38px;
       font-weight: 800;
       color: var(--bg-deep);
       position: relative;
@@ -1240,15 +1512,17 @@
       justify-content: center;
       font-weight: 700;
       border: 1px solid var(--gold-primary);
-      font-family: 'Tajawal', sans-serif;
+      font-family: 'Cairo', sans-serif;
     }
 
     .cards-empty {
       color: var(--text-muted);
       font-style: italic;
-      padding: 30px;
+      padding: 20px;
       text-align: center;
       width: 100%;
+      grid-column: 1 / -1;
+      font-size: 13px;
     }
 
     /* ===== Notifications ===== */
@@ -1261,7 +1535,7 @@
       color: var(--bg-deep);
       padding: 24px 56px;
       border-radius: var(--radius-lg);
-      font-family: 'Reem Kufi', sans-serif;
+      font-family: 'Almarai', sans-serif;
       font-size: 30px;
       font-weight: 700;
       text-align: center;
@@ -1288,7 +1562,7 @@
       border-radius: var(--radius-lg);
       color: white;
       text-align: center;
-      font-family: 'Reem Kufi', sans-serif;
+      font-family: 'Almarai', sans-serif;
       font-size: 22px;
       font-weight: 700;
       display: none;
@@ -1366,7 +1640,7 @@
     }
 
     .modal-header h3 {
-      font-family: 'Reem Kufi', sans-serif;
+      font-family: 'Almarai', sans-serif;
       font-size: 22px;
       color: var(--gold-light);
       font-weight: 700;
@@ -1405,7 +1679,7 @@
     }
 
     .modal-section h4 {
-      font-family: 'Reem Kufi', sans-serif;
+      font-family: 'Almarai', sans-serif;
       font-size: 16px;
       color: var(--gold-light);
       margin-bottom: 10px;
@@ -1477,6 +1751,26 @@
     }
 
     /* ===== Responsive ===== */
+    @media (max-width: 1100px) {
+      .game-area {
+        grid-template-columns: 1fr;
+      }
+      
+      .game-side {
+        position: relative;
+        top: auto;
+        max-width: 100%;
+      }
+      
+      .cards-panel-side {
+        max-width: 100%;
+      }
+      
+      .cards-panel-side .cards-grid {
+        grid-template-columns: repeat(8, 1fr);
+      }
+    }
+
     @media (max-width: 1024px) {
       .header-grid {
         grid-template-columns: 1fr;
@@ -1565,6 +1859,16 @@
         width: 60px;
         height: 80px;
         font-size: 28px;
+      }
+      
+      .cards-panel-side .cards-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+      }
+      
+      .cards-panel-side .game-card {
+        max-width: 60px;
+        font-size: 26px;
       }
       
       .dropdown-panel {
@@ -1810,54 +2114,66 @@
           </div>
         </div>
 
-        <!-- The Table -->
-        <div class="table-wrapper">
-          <div class="game-table"></div>
-          
-          <!-- Center Content -->
-          <div class="center-content">
-            <div class="current-word-container">
-              <div class="word-label">الكلمة الحالية</div>
-              <div class="current-word" id="currentWord">— — —</div>
+        <!-- Game Area: Table + Side Cards -->
+        <div class="game-area">
+          <!-- Main: The Table -->
+          <div class="game-main">
+            <div class="table-wrapper">
+              <div class="game-table"></div>
+              
+              <!-- Center Content -->
+              <div class="center-content">
+                <div class="current-word-container">
+                  <div class="word-label">الكلمة الحالية</div>
+                  <div class="current-word" id="currentWord">— — —</div>
+                </div>
+                
+                <div class="proposed-section" id="proposedSection">
+                  <div class="word-label">كلمة مقترحة</div>
+                  <div class="proposed-word" id="proposedWord">—</div>
+                  <div class="proposed-info" id="proposerInfo">
+                    من: <span class="player-name">—</span>
+                  </div>
+                </div>
+                
+                <div class="current-turn">
+                  <span>الدور الحالي:</span>
+                  <span class="player" id="currentPlayer">لا يوجد</span>
+                </div>
+              </div>
+              
+              <!-- Players Seats Ring -->
+              <div id="playersRing"></div>
             </div>
-            
-            <div class="proposed-section" id="proposedSection">
-              <div class="word-label">كلمة مقترحة</div>
-              <div class="proposed-word" id="proposedWord">—</div>
-              <div class="proposed-info" id="proposerInfo">
-                من: <span class="player-name">—</span>
+
+            <!-- Winner Banner -->
+            <div class="winner-banner" id="winnerBanner">
+              <span>🎉 الفائز في هذا التحدي هو: </span>
+              <span class="winner-name" id="winnerName">—</span>
+            </div>
+          </div>
+
+          <!-- Side: Cards Panel -->
+          <aside class="game-side">
+            <div class="cards-panel-side">
+              <h3><span>🎴</span> بطاقات اللاعب الحالي</h3>
+              <div class="cards-grid" id="cardsGrid">
+                <div class="cards-empty">ابدأ اللعبة لعرض البطاقات</div>
               </div>
             </div>
-            
-            <div class="current-turn">
-              <span>الدور الحالي:</span>
-              <span class="player" id="currentPlayer">لا يوجد</span>
-            </div>
-          </div>
-          
-          <!-- Players Seats Ring -->
-          <div id="playersRing"></div>
-        </div>
-
-        <!-- Cards Panel -->
-        <div class="cards-panel">
-          <h3><span>🎴</span> بطاقات اللاعب الحالي</h3>
-          <div class="cards-grid" id="cardsGrid">
-            <div class="cards-empty">ابدأ اللعبة لعرض البطاقات</div>
-          </div>
+          </aside>
         </div>
 
         <!-- Turn Notification -->
         <div class="turn-notification" id="turnNotification"></div>
-
-        <!-- Winner Banner -->
-        <div class="winner-banner" id="winnerBanner">
-          <span>🎉 الفائز في هذا التحدي هو: </span>
-          <span class="winner-name" id="winnerName">—</span>
-        </div>
       </section>
     </main>
   </div>
+
+  <!-- زر ملء الشاشة -->
+  <button class="fullscreen-toggle" id="fullscreenToggle" title="وضع ملء الشاشة">
+    <span id="fullscreenIcon">⛶</span>
+  </button>
 
   <!-- Help Modal -->
   <div class="modal-backdrop" id="helpModal">
@@ -2715,6 +3031,46 @@
     closeHelp.addEventListener('click', () => helpModal.classList.remove('active'));
     helpModal.addEventListener('click', (e) => {
       if (e.target === helpModal) helpModal.classList.remove('active');
+    });
+
+    // ===== Fullscreen Mode Toggle =====
+    const fullscreenToggle = document.getElementById('fullscreenToggle');
+    const fullscreenIcon = document.getElementById('fullscreenIcon');
+
+    fullscreenToggle.addEventListener('click', () => {
+      const isFullscreen = document.body.classList.toggle('fullscreen-mode');
+      fullscreenIcon.textContent = isFullscreen ? '✕' : '⛶';
+      fullscreenToggle.title = isFullscreen ? 'الخروج من ملء الشاشة' : 'وضع ملء الشاشة';
+      
+      // محاولة استخدام Fullscreen API الأصلي للمتصفح أيضاً
+      if (isFullscreen) {
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen().catch(err => {
+            console.log('Fullscreen API not supported or denied');
+          });
+        }
+      } else {
+        if (document.fullscreenElement && document.exitFullscreen) {
+          document.exitFullscreen().catch(err => {});
+        }
+      }
+    });
+
+    // مزامنة حالة الزر عند الخروج من ملء الشاشة بـ ESC
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement && document.body.classList.contains('fullscreen-mode')) {
+        // المستخدم خرج من ملء الشاشة بزر ESC
+        // نتركه في الوضع التطبيقي (CSS only) لو حب
+      }
+    });
+
+    // إغلاق ملء الشاشة بزر ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && document.body.classList.contains('fullscreen-mode') && !document.fullscreenElement) {
+        document.body.classList.remove('fullscreen-mode');
+        fullscreenIcon.textContent = '⛶';
+        fullscreenToggle.title = 'وضع ملء الشاشة';
+      }
     });
 
     // Initialize
