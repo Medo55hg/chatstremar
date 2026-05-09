@@ -4,908 +4,1821 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>🏁 سباق الحروف</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
-
-<!-- مكتبات الشات: نحتاج tmi لتويتش فقط -->
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
 <script src="tmi.min.js"></script>
 
 <style>
-  :root{
-    --bg:#0f1115; --panel:#151923; --panel-2:#1b2030; --text:#e9eef7; --muted:#a7b0c0;
-    --primary:#ff3333; --accent:#00d86c; --blue:#3aa7ff; --red:#ff5964; --gold:#f8d35e;
-    --success:#19c37d; --warning:#f7a94d;
+:root {
+  /* Warm desert / sunset palette */
+  --bg-base:     #0d1117;
+  --bg-deep:     #08090d;
+  --bg-card:     #141925;
+  --bg-card2:    #1a2030;
+  --bg-elev:     #1f2638;
+  --bg-hover:    #232b40;
 
-    /* ✅ متغيرات خلفية Style2026 */
-    --bg1:#1a1a3d;
-    --bg2:#004466;
-    --fgText:#fff;
-  }
-  /* وضع فاتح (اختياري) */
-  [data-theme="light"]{
-    --bg1:#f2f6ff;
-    --bg2:#dfe9ff;
-    --fgText:#111;
-  }
+  --border:      rgba(255,255,255,.06);
+  --border-hi:   rgba(255,255,255,.12);
+  --border-hot:  rgba(255,140,80,.25);
 
-  *{box-sizing:border-box}
-  body{
-    margin:0;
-    color:var(--fgText);
-    font-family:"Cairo", system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Color Emoji", sans-serif;
-    min-height:100svh; display:flex; flex-direction:column; gap:16px; padding:20px;
+  --amber:       #ffb547;
+  --amber-deep:  #ff8c42;
+  --crimson:     #ff4d6d;
+  --crimson-dk:  #e63060;
+  --emerald:     #2dd4bf;
+  --emerald-dk:  #14b8a6;
+  --sky:         #60a5fa;
+  --violet:      #c084fc;
+  --lime:        #a3e635;
 
-    /* ✅ الخلفية المتحركة الموحدة */
-    background: linear-gradient(-45deg, var(--bg1), var(--bg2), var(--bg1), var(--bg2));
-    background-size: 400% 400%;
-    animation: gradientBG 20s ease infinite;
-  }
-  /* أنيميشن الخلفية */
-  @keyframes gradientBG {
-    0% { background-position: 0% 50% }
-    50% { background-position: 100% 50% }
-    100% { background-position: 0% 50% }
-  }
+  --text:        #f8f3e8;
+  --text-soft:   #c9bfae;
+  --text-dim:    #8a8170;
+  --text-muted:  #5a5346;
 
-  header{display:flex; gap:16px; align-items:center; justify-content:space-between; flex-wrap:wrap}
-  .brand{display:flex; gap:12px; align-items:center}
-  .logo{width:40px; height:40px; border-radius:12px; background:
-    conic-gradient(from 210deg, var(--primary), #d62222 40%, #111 41%, #111 59%, #00d86c 60%, #008f47 100%);
-    box-shadow:0 6px 16px rgba(0,0,0,.35); position:relative; overflow:hidden;}
-  .logo::after{content:"ST"; position:absolute; inset:0; display:grid; place-items:center; font-weight:800; color:#fff; text-shadow:0 2px 8px rgba(0,0,0,.5)}
-  h1{margin:0; font-size:20px; font-weight:800; letter-spacing:.2px}
+  --shadow-card: 0 12px 40px rgba(0,0,0,.6), 0 2px 8px rgba(0,0,0,.3);
+  --shadow-glow: 0 0 60px rgba(255,140,80,.18);
+}
 
-  /* زر الشرح أعلى يسار */
-  #helpBtn{
-    position:fixed; top:12px; left:12px; z-index:20;
-    background:var(--primary); color:#fff; border:none; padding:8px 14px; border-radius:10px; cursor:pointer; font-weight:800;
-    box-shadow:0 6px 16px rgba(255,51,51,.3);
-  }
-  #helpModal{display:none; position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:30; align-items:center; justify-content:center; padding:16px}
-  #helpBox{background:var(--panel); border:1px solid #2a3142; border-radius:16px; max-width:640px; width:100%; padding:16px;}
-  #helpBox h2{margin:0 0 8px; color:var(--primary)}
-  #closeHelp{margin-top:10px; background:#2a3142; color:#fff; border:none; padding:8px 14px; border-radius:10px; cursor:pointer}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* لوحتان جديدتان (اتصال + ستريمر) */
-  .card{
-    background:var(--panel); border-radius:18px; padding:16px; box-shadow:0 6px 24px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.03);
-  }
-  .panel-collapsible{width:100%; max-width:900px; margin:0 auto}
-  .panel-head{
-    display:flex; align-items:center; justify-content:space-between; gap:12px; cursor:pointer;
-    background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(0,0,0,.05));
-    border:1px solid #2a3142; border-radius:14px; padding:12px 14px;
-  }
-  .panel-head h3{margin:0; font-weight:900; font-size:16px}
-  .chev{transform:rotate(0deg); transition:.2s}
-  .panel-body{display:none; padding:12px 0}
-  .panel-open .panel-body{display:block}
-  .panel-open .chev{transform:rotate(180deg)}
+html { scroll-behavior: smooth; }
 
-  /* لوحة الاتصال جديد */
-  .conn-grid{display:grid; grid-template-columns: repeat(4, minmax(140px,1fr)); gap:12px}
-  label{font-size:12px; color:var(--muted)}
-  input, select{
-    background:var(--panel-2); color:var(--text); border:1px solid #2a3142; border-radius:10px; padding:10px 12px;
-    outline:none; transition:.2s border-color;
-  }
-  input:focus, select:focus{border-color:var(--primary)}
-  .status{
-    font-size:12px; font-weight:800; padding:10px 12px; border-radius:999px; border:1px solid #2a3142; background:#0d1524; text-align:center
-  }
-  .status.ok{color:#b6ffd8; border-color:#1f6a47; background:#0f2d24}
-  .status.bad{color:#ffd2d2; border-color:#6a1f2a; background:#2d0f15}
-  .btn{
-    appearance:none; border:none; border-radius:12px; padding:12px 16px; font-weight:800; cursor:pointer;
-    background:linear-gradient(180deg, var(--primary), #d62222); color:#fff; box-shadow:0 6px 16px rgba(255,51,51,.3);
-    transition:.15s transform,.2s filter;
-  }
-  .btn:active{transform:translateY(1px)}
-  .ghost{background:transparent; border:1px solid #2a3142}
+body {
+  font-family: 'Tajawal', sans-serif;
+  background: var(--bg-deep);
+  color: var(--text);
+  min-height: 100svh;
+  overflow-x: hidden;
+  position: relative;
+  font-weight: 400;
+  letter-spacing: 0;
+}
 
-  /* لوحة ستريمر جديد */
-  .str-grid{display:grid; grid-template-columns: repeat(3, minmax(140px,1fr)); gap:12px}
+/* ─── ATMOSPHERIC BACKGROUND ─── */
+.bg-base {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 50% at 80% 0%, rgba(255,140,80,.10) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 10% 90%, rgba(255,77,109,.08) 0%, transparent 60%),
+    radial-gradient(ellipse 90% 60% at 50% 50%, rgba(192,132,252,.04) 0%, transparent 70%),
+    linear-gradient(180deg, #08090d 0%, #0d1117 50%, #08090d 100%);
+}
 
-  /* تخطيط الصفحة الرئيسي بعد اللوحتين */
-  main{display:grid; grid-template-columns: 1.3fr .7fr; gap:16px; margin-top:10px}
+.bg-noise {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  opacity: .035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
 
-  /* ==== الشريط الجديد (مستطيل كبير + الوقت يسار) ==== */
-  .gamebar{
-    display:flex; align-items:stretch; gap:14px; flex-wrap:nowrap; margin-bottom:12px
-  }
-  .timer{
-    display:flex; align-items:center; gap:12px; padding:14px 16px;
-    background:var(--panel-2); border:1px solid #2a3142; border-radius:16px; min-width:210px
-  }
-  .timer .ring{
-    --p: 0turn;
-    width:54px; height:54px; border-radius:999px; padding:5px;
-    background:
-      conic-gradient(#3aa7ff var(--p), #2b3348 0) content-box,
-      radial-gradient(circle, transparent 60%, #2b3348 61%) border-box;
-    box-sizing:border-box;
-  }
-  .timer .t{
-    font-weight:900; font-size:28px; letter-spacing:.5px; line-height:1
-  }
+.bg-grid {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  opacity: .025;
+  background-image:
+    linear-gradient(rgba(255,180,120,.6) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,180,120,.6) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 30%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 30%, transparent 80%);
+}
 
-  .bigstrip{
-    flex:1; display:grid; grid-template-columns: 1fr 320px; gap:14px;
-  }
-  .big-rect{
-    display:grid; grid-template-columns: auto 1fr; gap:16px; align-items:center;
-    padding:18px 20px; border-radius:18px; border:1px solid #2a3142;
-    background:
-      linear-gradient(180deg, rgba(255,51,51,.14), rgba(16,22,33,.8)),
-      radial-gradient(600px 160px at 0% 0%, rgba(58,167,255,.18), transparent 60%),
-      #121726;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
-    min-height:88px;
-  }
-  .catBox{
-    background:#182032; border:1px solid #2f3951; color:#cfe0ff;
-    padding:10px 14px; border-radius:12px; font-weight:800; font-size:20px; min-width:140px; text-align:center;
-  }
-  .letterBox{
-    display:flex; align-items:center; justify-content:center;
-    background:#1c2335; border:1px solid #2f3951; color:#fff;
-    border-radius:14px; font-weight:900; font-size:48px; letter-spacing:1px;
-    position:relative; min-height:64px;
-  }
-  .letterBox::after{
-    content: attr(data-count);
-    position:absolute; top:-10px; inset-inline-end:-10px;
-    font-size:12px; font-weight:800; padding:3px 7px; border-radius:999px;
-    background:#27314a; border:1px solid #3a4561; color:#dbe7ff;
-  }
+/* Floating decorative orbs */
+.orb {
+  position: fixed; border-radius: 50%; filter: blur(80px);
+  pointer-events: none; z-index: 0;
+}
+.orb-1 { top: -10%; right: -5%; width: 400px; height: 400px; background: rgba(255,140,80,.18); animation: orbFloat 20s ease-in-out infinite; }
+.orb-2 { bottom: -10%; left: -5%; width: 500px; height: 500px; background: rgba(255,77,109,.12); animation: orbFloat 25s ease-in-out infinite reverse; }
 
-  .round-status{margin:8px 0 12px; color:var(--muted); font-size:14px}
-  .cols{display:grid; grid-template-columns:1fr 1fr; gap:12px}
-  .panel-title{font-weight:800; margin:0 0 10px; color:#dce6ff}
-  .list{display:flex; flex-direction:column; gap:8px; max-height:44vh; overflow:auto; padding-right:4px}
-  .row{display:flex; align-items:center; justify-content:space-between; background:var(--panel-2); border:1px solid #2a3142; border-radius:12px; padding:10px 12px}
-  .row .name{font-weight:700}
-  .row .score{font-weight:900; color:#fff; background:#27314a; padding:4px 10px; border-radius:999px; border:1px solid #3a4561}
-  .teams{display:grid; grid-template-columns:1fr 1fr; gap:12px}
-  .team-box{border-radius:14px; padding:12px; border:1px solid #2a3142}
-  .team-blue{background:linear-gradient(180deg, rgba(58,167,255,.15), rgba(17,22,33,.6));}
-  .team-red{background:linear-gradient(180deg, rgba(255,89,100,.15), rgba(17,22,33,.6));}
-  .team-hdr{display:flex; align-items:center; justify-content:space-between; margin-bottom:10px}
-  .team-hdr h3{margin:0; font-weight:900}
-  .score-badge{background:#0d1524; padding:6px 10px; border-radius:999px; border:1px solid #2a3142; font-weight:900}
-  .muted{color:var(--muted); font-size:13px}
-  .inline-kbd{background:#00000033; border:1px solid #2a3142; padding:2px 8px; border-radius:6px; font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-size:12px}
-  .footer{display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:space-between}
-  .chip{font-size:12px}
-  .manual{display:flex; gap:8px; margin-top:10px}
-  .manual input{flex:1}
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(40px, -30px) scale(1.1); }
+}
 
-  .review{
-    margin-top:14px; padding:12px; border-radius:14px; border:1px solid #384155; background:#121826;
-    display:none; flex-direction:column; gap:12px;
-  }
-  .review h4{margin:0; font-weight:900; color:#f2f6ff}
-  .review-list{display:flex; flex-direction:column; gap:8px; max-height:36vh; overflow:auto}
-  .review-row{display:grid; grid-template-columns:auto 1fr auto; gap:10px; align-items:center; background:#0f1524; border:1px solid #2b3348; padding:8px 10px; border-radius:10px}
-  .badge{background:#0d1524; border:1px solid #2a3142; padding:3px 8px; border-radius:999px; font-weight:800; font-size:12px}
-  .players{color:#a8b4ca; font-size:12px}
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,140,80,.2); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,140,80,.4); }
 
-  /* استجابة */
-  @media (max-width: 980px){
-    .bigstrip{grid-template-columns: 1fr; gap:10px}
-    .timer{min-width:unset; width:100%}
-    .letterBox{font-size:42px}
-    .catBox{font-size:18px}
-    .conn-grid{grid-template-columns:1fr 1fr}
-    .str-grid{grid-template-columns:1fr 1fr}
-    main{grid-template-columns:1fr}
-  }
+/* ─── LAYOUT ─── */
+#app {
+  position: relative; z-index: 1;
+  max-width: 1320px; margin: 0 auto;
+  padding: 28px 22px 40px;
+  display: flex; flex-direction: column; gap: 22px;
+}
+
+/* ─── HEADER ─── */
+.header {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 6px 4px;
+}
+
+.brand {
+  display: flex; align-items: center; gap: 18px;
+}
+
+.logo-wrap {
+  position: relative; width: 64px; height: 64px;
+  flex-shrink: 0;
+}
+
+.logo-bg {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--amber-deep) 0%, var(--crimson) 100%);
+  border-radius: 20px;
+  transform: rotate(-8deg);
+  box-shadow: 0 8px 32px rgba(255,140,80,.4);
+}
+
+.logo-bg::before {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: 20px;
+  background: linear-gradient(135deg, transparent 30%, rgba(255,255,255,.15) 50%, transparent 70%);
+}
+
+.logo-icon {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,.4));
+  z-index: 1;
+}
+
+.brand-text h1 {
+  font-family: 'Tajawal', sans-serif;
+  font-size: 30px; font-weight: 900; letter-spacing: -.5px;
+  background: linear-gradient(135deg, #fff 20%, var(--amber) 60%, var(--amber-deep) 90%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  line-height: 1;
+}
+
+.brand-text p {
+  font-size: 12px; color: var(--text-dim); font-weight: 400;
+  margin-top: 6px;
+  letter-spacing: .3px;
+}
+
+/* ─── COMBINED PANEL TRACK ─── */
+.panel-track {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.panel {
+  background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-card2) 100%);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  transition: border-color .25s, transform .25s;
+  position: relative;
+}
+
+.panel::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,180,120,.4), transparent);
+  opacity: 0; transition: opacity .25s;
+}
+
+.panel.open::before, .panel:hover::before { opacity: 1; }
+.panel:hover { border-color: var(--border-hi); }
+.panel.open { border-color: var(--border-hot); }
+
+.panel-toggle {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 22px; cursor: pointer;
+  user-select: none;
+  transition: background .15s;
+  gap: 14px;
+}
+
+.panel-toggle:hover { background: rgba(255,180,120,.03); }
+
+.panel-toggle-left {
+  display: flex; align-items: center; gap: 14px;
+  flex: 1; min-width: 0;
+}
+
+.panel-icon {
+  width: 44px; height: 44px; border-radius: 13px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; flex-shrink: 0;
+  position: relative;
+  transition: transform .25s;
+}
+
+.panel:hover .panel-icon { transform: rotate(-6deg) scale(1.05); }
+
+.icon-conn {
+  background: linear-gradient(135deg, rgba(45,212,191,.18), rgba(20,184,166,.08));
+  border: 1px solid rgba(45,212,191,.25);
+  box-shadow: 0 0 24px rgba(45,212,191,.1);
+}
+.icon-ctrl {
+  background: linear-gradient(135deg, rgba(255,181,71,.2), rgba(255,140,80,.08));
+  border: 1px solid rgba(255,181,71,.25);
+  box-shadow: 0 0 24px rgba(255,181,71,.12);
+}
+
+.panel-title-text {
+  font-family: 'Tajawal', sans-serif;
+  font-weight: 600; font-size: 16px;
+  display: block;
+}
+
+.panel-subtitle {
+  font-size: 11px; color: var(--text-dim);
+  margin-top: 2px;
+  letter-spacing: .3px;
+}
+
+.panel-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+
+.chevron {
+  width: 32px; height: 32px; border-radius: 10px;
+  background: rgba(255,255,255,.04); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; color: var(--text-dim);
+  transition: transform .3s cubic-bezier(.4,0,.2,1), background .15s, color .15s;
+}
+
+.panel.open .chevron {
+  transform: rotate(180deg);
+  background: linear-gradient(135deg, var(--amber-deep), var(--crimson));
+  color: #fff;
+  border-color: transparent;
+}
+
+.panel-body {
+  max-height: 0; overflow: hidden;
+  transition: max-height .4s cubic-bezier(.4,0,.2,1), padding .3s;
+  padding: 0 22px;
+}
+
+.panel.open .panel-body {
+  max-height: 600px;
+  padding: 4px 22px 22px;
+}
+
+/* ─── FORMS ─── */
+.field-grid { display: grid; gap: 12px; }
+.field-grid.two { grid-template-columns: 1fr 1fr; }
+
+.field { display: flex; flex-direction: column; gap: 7px; }
+
+.field label {
+  font-size: 10.5px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--text-dim);
+  font-family: 'Tajawal', sans-serif;
+}
+
+.input, .select {
+  background: rgba(0,0,0,.25);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  padding: 11px 14px;
+  color: var(--text);
+  font-family: inherit; font-size: 14px;
+  outline: none;
+  transition: border-color .2s, background .2s, box-shadow .2s;
+  width: 100%;
+}
+
+.input:focus, .select:focus {
+  border-color: var(--amber);
+  background: rgba(255,140,80,.06);
+  box-shadow: 0 0 0 3px rgba(255,140,80,.12);
+}
+
+.select option { background: #1a2030; }
+
+/* ─── STATUS BADGE ─── */
+.conn-badge {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 14px; border-radius: 999px;
+  font-size: 12px; font-weight: 600;
+  border: 1px solid transparent;
+  transition: all .3s;
+  font-family: 'Tajawal', sans-serif;
+}
+
+.conn-badge::before {
+  content: ''; width: 7px; height: 7px; border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.conn-badge.disconnected {
+  background: rgba(255,77,109,.08);
+  border-color: rgba(255,77,109,.2);
+  color: var(--crimson);
+}
+.conn-badge.disconnected::before { background: var(--crimson); }
+
+.conn-badge.connected {
+  background: rgba(45,212,191,.08);
+  border-color: rgba(45,212,191,.25);
+  color: var(--emerald);
+}
+.conn-badge.connected::before {
+  background: var(--emerald);
+  box-shadow: 0 0 10px var(--emerald);
+  animation: pulse-dot 2s ease infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: .5; transform: scale(1.5); }
+}
+
+/* ─── BUTTONS ─── */
+.btn {
+  appearance: none; border: none; border-radius: 12px;
+  padding: 11px 20px; font-family: 'Tajawal', sans-serif;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 8px; transition: all .2s; white-space: nowrap; position: relative;
+  overflow: hidden;
+}
+
+.btn::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,.18) 0%, transparent 50%);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--amber-deep), var(--crimson));
+  color: #1a0a00;
+  box-shadow: 0 4px 20px rgba(255,140,80,.35), inset 0 1px 0 rgba(255,255,255,.2);
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(255,140,80,.5), inset 0 1px 0 rgba(255,255,255,.25);
+}
+.btn-primary:active { transform: translateY(0); }
+
+.btn-emerald {
+  background: linear-gradient(135deg, var(--emerald), var(--emerald-dk));
+  color: #042a25;
+  box-shadow: 0 4px 20px rgba(45,212,191,.3), inset 0 1px 0 rgba(255,255,255,.2);
+}
+.btn-emerald:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(45,212,191,.45);
+}
+
+.btn-amber {
+  background: linear-gradient(135deg, var(--amber), var(--amber-deep));
+  color: #1a0d00;
+  box-shadow: 0 4px 20px rgba(255,181,71,.3), inset 0 1px 0 rgba(255,255,255,.25);
+}
+.btn-amber:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(255,181,71,.45);
+}
+
+.btn-ghost {
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--border);
+  color: var(--text-soft);
+}
+.btn-ghost:hover {
+  background: rgba(255,255,255,.08);
+  border-color: var(--border-hi);
+  color: var(--text);
+}
+
+.btn-sm { padding: 8px 14px; font-size: 13px; border-radius: 10px; }
+
+.btn:disabled { opacity: .35; pointer-events: none; }
+
+/* ─── MANUAL BOX ─── */
+.manual-box {
+  display: none; gap: 10px; margin-top: 14px; align-items: flex-end;
+  padding-top: 14px;
+  border-top: 1px dashed var(--border);
+}
+
+.manual-box.visible { display: flex; }
+
+/* ─── MAIN CONTENT GRID ─── */
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 20px;
+}
+
+/* ─── GAME ARENA ─── */
+.game-arena {
+  background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-card2) 100%);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  box-shadow: var(--shadow-card);
+  display: flex; flex-direction: column; gap: 18px;
+  padding: 22px;
+  position: relative;
+  overflow: hidden;
+}
+
+.game-arena::before {
+  content: '';
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 60%; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--amber-deep), transparent);
+}
+
+/* ─── HUD BAR ─── */
+.hud-bar {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 16px;
+  align-items: stretch;
+}
+
+/* TIMER */
+.timer-block {
+  background: linear-gradient(160deg, var(--bg-elev) 0%, var(--bg-card2) 100%);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 22px 28px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px; min-width: 170px;
+  position: relative; overflow: hidden;
+}
+
+.timer-block::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(255,181,71,.08), transparent 70%);
+  pointer-events: none;
+}
+
+.timer-label {
+  font-family: 'Tajawal', sans-serif;
+  font-size: 11px; letter-spacing: 2.5px; font-weight: 600;
+  color: var(--text-muted);
+  z-index: 1;
+}
+
+.timer-svg { position: relative; z-index: 1; }
+
+.timer-svg circle { transition: stroke-dashoffset .1s linear; }
+
+.timer-digits {
+  font-family: 'Tajawal', sans-serif;
+  font-size: 38px; font-weight: 900; line-height: 1;
+  font-variant-numeric: tabular-nums;
+  background: linear-gradient(135deg, #fff 30%, var(--amber) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  z-index: 1;
+  letter-spacing: 0;
+}
+
+/* ROUND INFO */
+.round-info {
+  background: linear-gradient(160deg, var(--bg-elev) 0%, var(--bg-card2) 100%);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 22px 28px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 22px;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.round-info::before {
+  content: '';
+  position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+  background: radial-gradient(ellipse 60% 80% at 50% 50%, rgba(255,140,80,.05), transparent 70%);
+  pointer-events: none;
+}
+
+.category-chip {
+  background: linear-gradient(135deg, rgba(192,132,252,.12), rgba(192,132,252,.04));
+  border: 1px solid rgba(192,132,252,.25);
+  border-radius: 14px;
+  padding: 14px 22px;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 22px; font-weight: 800;
+  color: var(--violet);
+  text-align: center;
+  min-width: 140px;
+  position: relative;
+  z-index: 1;
+}
+
+.category-chip::before {
+  content: 'الفئة';
+  position: absolute; top: -10px; right: 50%; transform: translateX(50%);
+  font-family: 'Tajawal', sans-serif;
+  font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--text-muted); font-weight: 700;
+  background: var(--bg-elev); padding: 0 8px;
+}
+
+.letter-display-wrap {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  position: relative; z-index: 1;
+}
+
+.letter-display {
+  font-family: 'Tajawal', sans-serif;
+  font-size: 84px; font-weight: 900; line-height: 1;
+  background: linear-gradient(135deg, var(--amber) 10%, #fff 50%, var(--amber-deep) 90%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  filter: drop-shadow(0 6px 24px rgba(255,140,80,.4));
+  transition: all .3s;
+  animation: letterIdle 3s ease-in-out infinite;
+  position: relative;
+}
+
+@keyframes letterIdle {
+  0%, 100% { filter: drop-shadow(0 6px 24px rgba(255,140,80,.4)); }
+  50%      { filter: drop-shadow(0 6px 48px rgba(255,140,80,.7)); }
+}
+
+@keyframes letterPop {
+  0%   { transform: scale(.5) rotate(-12deg); opacity: 0; }
+  60%  { transform: scale(1.2) rotate(4deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+.letter-pop { animation: letterPop .55s cubic-bezier(.34,1.56,.64,1) forwards !important; }
+
+.submissions-count {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,181,71,.1); border: 1px solid rgba(255,181,71,.2);
+  border-radius: 999px; padding: 5px 14px;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 12px; font-weight: 600; color: var(--amber);
+}
+
+.submissions-count::before { content: '●'; font-size: 7px; }
+
+/* ─── STATUS LINE ─── */
+.status-line {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px;
+  background: rgba(0,0,0,.2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  font-size: 13.5px; color: var(--text-soft);
+}
+
+.status-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--text-muted); flex-shrink: 0;
+  transition: background .3s;
+}
+
+.status-dot.active { background: var(--emerald); box-shadow: 0 0 12px var(--emerald); animation: pulse-dot 2s infinite; }
+.status-dot.review { background: var(--amber); box-shadow: 0 0 12px var(--amber); animation: pulse-dot 2s infinite; }
+
+/* ─── TWO-COL GRID ─── */
+.two-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+/* ─── BLOCK ─── */
+.block { display: flex; flex-direction: column; gap: 12px; }
+
+.block-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.block-title {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 13px; font-weight: 600; letter-spacing: 1.2px;
+  color: var(--text-soft);
+  text-transform: uppercase;
+}
+
+.block-title-icon {
+  width: 28px; height: 28px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center; font-size: 14px;
+}
+
+/* ─── PLAYER LIST ─── */
+.player-scroll { max-height: 40vh; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding-left: 4px; }
+
+.player-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 11px 14px; border-radius: 12px;
+  background: rgba(255,255,255,.03);
+  border: 1px solid transparent;
+  transition: all .2s;
+  animation: rowSlideIn .25s ease;
+}
+
+@keyframes rowSlideIn {
+  from { opacity: 0; transform: translateX(10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.player-row:hover { background: rgba(255,140,80,.05); border-color: var(--border); }
+
+.player-name { font-weight: 500; font-size: 14px; }
+.player-name::before { content: '@'; color: var(--text-muted); font-weight: 400; margin-left: 2px; }
+
+.score-pill {
+  background: rgba(255,255,255,.06); border: 1px solid var(--border);
+  border-radius: 999px; padding: 4px 14px;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 14px; font-weight: 900; min-width: 44px; text-align: center;
+  transition: all .3s;
+}
+
+.score-pill.updated {
+  background: rgba(45,212,191,.15); border-color: var(--emerald); color: var(--emerald);
+  animation: scorePop .5s ease;
+}
+
+@keyframes scorePop {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.25); }
+}
+
+/* Rank indicators */
+.player-row:nth-child(1) .player-name::after { content: ' 🥇'; }
+.player-row:nth-child(2) .player-name::after { content: ' 🥈'; }
+.player-row:nth-child(3) .player-name::after { content: ' 🥉'; }
+
+/* ─── REVIEW PANEL ─── */
+.review-panel {
+  display: none; flex-direction: column; gap: 14px;
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(255,181,71,.06), rgba(255,140,80,.03));
+  border: 1px solid rgba(255,181,71,.2);
+  border-radius: 18px;
+  animation: fadeSlideUp .35s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.review-panel::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--amber), transparent);
+}
+
+.review-panel.visible { display: flex; }
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.review-header-row {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+}
+
+.review-header {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 14.5px; font-weight: 600; color: var(--amber);
+}
+
+/* Select-all toggle */
+.select-all-bar {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  background: rgba(0,0,0,.25);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  user-select: none;
+  transition: all .2s;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 13px; font-weight: 500;
+  color: var(--text-soft);
+}
+
+.select-all-bar:hover {
+  background: rgba(255,181,71,.08);
+  border-color: rgba(255,181,71,.25);
+  color: var(--amber);
+}
+
+.select-all-bar input[type="checkbox"] {
+  width: 18px; height: 18px;
+  accent-color: var(--amber);
+  cursor: pointer;
+}
+
+.select-all-bar .count-badge {
+  margin-right: auto;
+  background: rgba(255,255,255,.06);
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+
+.review-scroll {
+  display: flex; flex-direction: column; gap: 8px;
+  max-height: 36vh; overflow-y: auto;
+  padding-left: 4px;
+}
+
+.review-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 13px 15px; border-radius: 13px;
+  background: rgba(0,0,0,.2); border: 1px solid var(--border);
+  cursor: pointer; transition: all .15s;
+}
+
+.review-item:hover {
+  background: rgba(255,181,71,.06);
+  border-color: rgba(255,181,71,.25);
+}
+
+.review-item.selected {
+  background: rgba(45,212,191,.08);
+  border-color: rgba(45,212,191,.3);
+}
+
+.review-item input[type="checkbox"] {
+  width: 20px; height: 20px; accent-color: var(--emerald);
+  cursor: pointer; flex-shrink: 0;
+}
+
+.review-word {
+  font-family: 'Tajawal', sans-serif;
+  font-weight: 700; font-size: 16px; flex: 1;
+  color: var(--text);
+}
+
+.review-players {
+  font-size: 12px; color: var(--text-dim);
+  font-family: 'Tajawal', sans-serif;
+}
+
+.review-count {
+  background: rgba(255,255,255,.06); border: 1px solid var(--border);
+  border-radius: 999px; padding: 4px 11px;
+  font-size: 11px; font-weight: 600; color: var(--text-soft);
+  font-family: 'Tajawal', sans-serif;
+}
+
+.review-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* ─── FOOTER INFO ─── */
+.game-footer {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  padding: 14px 18px;
+  background: rgba(0,0,0,.2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.cmd-list {
+  display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 12.5px; color: var(--text-muted);
+}
+
+.kbd {
+  background: rgba(255,140,80,.08); border: 1px solid rgba(255,140,80,.18);
+  border-radius: 7px; padding: 3px 9px;
+  font-family: ui-monospace, 'Cascadia Code', monospace;
+  font-size: 12px; color: var(--amber);
+}
+
+.credit {
+  font-family: 'Tajawal', sans-serif;
+  font-size: 11.5px; color: var(--text-muted);
+  letter-spacing: .5px;
+}
+
+/* ─── CHAT SIDEBAR ─── */
+.chat-sidebar {
+  background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-card2) 100%);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  box-shadow: var(--shadow-card);
+  padding: 22px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+
+.chat-log {
+  flex: 1; display: flex; flex-direction: column; gap: 6px;
+  max-height: 70vh; overflow-y: auto; padding-left: 4px;
+}
+
+.chat-row {
+  padding: 11px 13px; border-radius: 12px;
+  background: rgba(0,0,0,.2); border: 1px solid transparent;
+  font-size: 13px; transition: all .2s;
+  animation: rowSlideIn .2s ease;
+}
+
+.chat-row:hover { background: rgba(255,140,80,.04); border-color: var(--border); }
+
+.chat-user {
+  font-family: 'Tajawal', sans-serif;
+  font-weight: 600; color: var(--sky); font-size: 12px;
+}
+
+.chat-msg { color: var(--text); margin-top: 3px; }
+
+.chat-badge {
+  display: inline-block; padding: 2px 9px; border-radius: 999px;
+  font-size: 10.5px; font-weight: 600; margin-top: 5px;
+  font-family: 'Tajawal', sans-serif;
+}
+
+.chat-badge.ok {
+  background: rgba(45,212,191,.12); border: 1px solid rgba(45,212,191,.25);
+  color: var(--emerald);
+}
+
+.chat-badge.dup {
+  background: rgba(255,77,109,.1); border: 1px solid rgba(255,77,109,.2);
+  color: var(--crimson);
+}
+
+/* ─── HELP MODAL ─── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 100;
+  background: rgba(8,9,13,.85); backdrop-filter: blur(10px);
+  align-items: center; justify-content: center; padding: 20px;
+  opacity: 0;
+  transition: opacity .25s;
+}
+
+.modal-overlay.visible {
+  display: flex;
+  opacity: 1;
+}
+
+.modal-box {
+  background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-card2) 100%);
+  border: 1px solid var(--border-hi);
+  border-radius: 24px;
+  max-width: 720px; width: 100%;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,.7), var(--shadow-glow);
+  animation: modalIn .35s cubic-bezier(.34,1.2,.64,1);
+  position: relative;
+  max-height: 92vh;
+  display: flex; flex-direction: column;
+}
+
+.modal-box::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--amber-deep), var(--crimson), var(--violet));
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(.92) translateY(24px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-header {
+  padding: 28px 28px 16px;
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.modal-header-text { flex: 1; }
+
+.modal-title {
+  font-family: 'Tajawal', sans-serif;
+  font-size: 24px; font-weight: 900; letter-spacing: -.3px;
+  background: linear-gradient(135deg, #fff 30%, var(--amber) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  line-height: 1.2;
+}
+
+.modal-subtitle {
+  font-size: 13px; color: var(--text-dim); margin-top: 6px;
+}
+
+.modal-close {
+  width: 38px; height: 38px; border-radius: 11px;
+  background: rgba(255,255,255,.05); border: 1px solid var(--border);
+  color: var(--text-dim); cursor: pointer; font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s;
+  flex-shrink: 0;
+}
+
+.modal-close:hover { background: rgba(255,77,109,.18); color: var(--crimson); border-color: rgba(255,77,109,.3); transform: rotate(90deg); }
+
+.modal-body {
+  padding: 22px 28px 28px;
+  overflow-y: auto;
+}
+
+.help-steps { display: flex; flex-direction: column; gap: 12px; }
+
+.help-step {
+  display: flex; gap: 16px; align-items: flex-start;
+  padding: 16px; border-radius: 14px;
+  background: rgba(0,0,0,.2); border: 1px solid var(--border);
+  transition: all .2s;
+}
+
+.help-step:hover {
+  background: rgba(255,140,80,.04);
+  border-color: rgba(255,140,80,.18);
+  transform: translateX(-2px);
+}
+
+.step-num {
+  width: 36px; height: 36px; border-radius: 11px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--amber-deep), var(--crimson));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 16px; font-weight: 900; color: #1a0a00;
+  box-shadow: 0 4px 12px rgba(255,140,80,.25);
+}
+
+.step-text {
+  font-size: 14px; line-height: 1.8; color: var(--text-soft);
+  padding-top: 4px;
+}
+.step-text strong { color: var(--text); font-weight: 600; }
+
+.modal-footer {
+  padding: 16px 28px 24px;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.dont-show-row {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12.5px;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-family: 'Tajawal', sans-serif;
+}
+
+.dont-show-row input { accent-color: var(--amber); }
+
+/* ─── HELP BTN ─── */
+.help-btn {
+  position: fixed; bottom: 28px; left: 28px; z-index: 50;
+  width: 52px; height: 52px; border-radius: 16px;
+  background: linear-gradient(135deg, var(--amber-deep), var(--crimson));
+  border: 1px solid rgba(255,255,255,.12);
+  color: #fff; font-size: 22px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .25s;
+  box-shadow: 0 8px 24px rgba(255,140,80,.35);
+  font-weight: 700;
+}
+
+.help-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 14px 36px rgba(255,140,80,.5);
+}
+
+/* ─── EMPTY STATE ─── */
+.empty-state {
+  padding: 28px 16px; text-align: center;
+  color: var(--text-muted); font-size: 13px;
+  line-height: 1.7;
+}
+
+.empty-state span { font-size: 32px; display: block; margin-bottom: 8px; opacity: .8; }
+
+/* ─── CHECKBOX TOGGLE ─── */
+.toggle-row {
+  display: flex; align-items: center; gap: 10px; cursor: pointer;
+  font-size: 13px; color: var(--text-dim);
+  font-family: 'Tajawal', sans-serif;
+}
+
+.toggle-row input[type="checkbox"] { accent-color: var(--amber); width: 16px; height: 16px; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 1024px) {
+  .content-grid { grid-template-columns: 1fr; }
+  .chat-sidebar { max-height: 400px; }
+}
+
+@media (max-width: 768px) {
+  #app { padding: 18px 14px 32px; }
+  .panel-track { grid-template-columns: 1fr; }
+  .hud-bar { grid-template-columns: 1fr; }
+  .timer-block { flex-direction: row; min-width: unset; }
+  .field-grid.two { grid-template-columns: 1fr; }
+  .two-cols { grid-template-columns: 1fr; }
+  .letter-display { font-size: 64px; }
+  .brand-text h1 { font-size: 26px; }
+  .modal-title { font-size: 22px; }
+}
 </style>
 </head>
 <body>
 
-  <!-- زر الشرح -->
-  <button id="helpBtn">شرح تفصيلي</button>
-  <div id="helpModal">
-    <div id="helpBox">
-      <h2>شرح لعبة سباق الحروف</h2>
-      <p>
-        • ينضم اللاعبون: سولو <span class="inline-kbd">!دخول</span>، تيمات <span class="inline-kbd">!ازرق</span> / <span class="inline-kbd">!احمر</span>.<br>
-        • اضبط مدة الراوند من لوحة الستريمر، ثم اضغط <b>بدء اللعبة</b>.<br>
-        • أثناء الجولة تُقبل أي كلمة تبدأ بالحرف المطلوب للفئة الظاهرة.<br>
-        • بعد انتهاء الوقت، راجع الكلمات يدويًا ثم اضغط <b>احتساب</b>، وبعدها <b>التالي</b> للجولة التالية.
-      </p>
-      <button id="closeHelp">إغلاق</button>
-    </div>
-  </div>
+<div class="bg-base"></div>
+<div class="bg-grid"></div>
+<div class="bg-noise"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
 
-  <header>
+<div id="app">
+
+  <!-- HEADER -->
+  <header class="header">
     <div class="brand">
-      <div class="logo" aria-hidden="true"></div>
-      <div>
-        <h1>🏁 سباق الحروف</h1>
-        <div class="muted">سولو أو تيمات • مرتبط بالشات (Twitch/Kick) • راوند افتراضي 60 ثانية • مراجعة يدوية</div>
+      <div class="logo-wrap">
+        <div class="logo-bg"></div>
+        <div class="logo-icon">🏁</div>
+      </div>
+      <div class="brand-text">
+        <h1>سباق الحروف</h1>
+        <p>سولو أو تيمات • Twitch / Kick • مراجعة يدوية</p>
       </div>
     </div>
   </header>
 
-  <!-- لوحة الاتصال جديد (قابلة للطي) -->
-  <section class="panel-collapsible card" id="connWrap">
-    <div class="panel-head" id="connHead">
-      <h3>لوحة الاتصال</h3>
-      <div style="display:flex; align-items:center; gap:10px">
-        <span id="connStatus" class="status bad">غير متصل</span>
-        <span class="chev">⌄</span>
-      </div>
-    </div>
-    <div class="panel-body">
-      <div class="conn-grid">
-        <div>
-          <label>منصة الشات</label>
-          <select id="platform">
-            <option value="twitch">Twitch</option>
-            <option value="kick">Kick</option>
-            <option value="offline">Manual (بدون اتصال)</option>
-          </select>
-        </div>
-        <div>
-          <label>اسم القناة</label>
-          <input id="channel" placeholder="اكتب اسم القناة بدون @" />
-        </div>
-        <div style="display:flex; flex-direction:column; gap:6px">
-          <label>&nbsp;</label>
-          <button class="btn" id="connectBtn">اتصال</button>
-        </div>
-        <div style="display:flex; align-items:center; gap:8px">
-          <input type="checkbox" id="rememberChk" checked />
-          <label for="rememberChk">تذكّرني</label>
-        </div>
-      </div>
-      <div id="manualBox" class="manual" style="display:none; margin-top:12px">
-        <input id="manualUser" placeholder="اسم اللاعب" />
-        <input id="manualMsg" placeholder="رسالة الشات (مثلاً: بطيخ / !دخول / !ازرق)" />
-        <button class="btn ghost" id="manualSend">إرسال</button>
-      </div>
-    </div>
-  </section>
+  <!-- COMBINED PANEL TRACK (Connection + Streamer Controls side by side) -->
+  <div class="panel-track">
 
-  <!-- لوحة ستريمر جديد -->
-  <section class="panel-collapsible card" id="strWrap">
-    <div class="panel-head" id="strHead">
-      <h3>لوحة الستريمر</h3>
-      <span class="chev">⌄</span>
-    </div>
-    <div class="panel-body">
-      <div class="str-grid">
-        <div>
-          <label>طول الراوند (ثوانٍ)</label>
-          <input id="roundSeconds" type="number" min="10" value="60" />
-        </div>
-        <div style="display:flex; align-items:end">
-          <button class="btn" id="startBtn" style="width:100%">بدء اللعبة</button>
-        </div>
-        <div style="display:flex; align-items:end">
-          <button class="btn ghost" id="stopBtn" style="width:100%">إيقاف</button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <main>
-    <section class="card">
-      <!-- الشريط الجديد -->
-      <div class="gamebar">
-        <!-- الوقت يسار: أرقام كبيرة + دائرة -->
-        <div class="timer">
-          <div class="ring" id="ring"></div>
-          <div class="t" id="timeLeft">00:00</div>
-        </div>
-
-        <!-- مستطيل كبير للفئة والحرف -->
-        <div class="bigstrip">
-          <div class="big-rect">
-            <div class="catBox" id="categoryPill">—</div>
-            <div class="letterBox" id="letterPill" data-count="0">—</div>
+    <!-- CONNECTION PANEL -->
+    <div class="panel" id="connPanel">
+      <div class="panel-toggle" id="connToggle">
+        <div class="panel-toggle-left">
+          <div class="panel-icon icon-conn">🔌</div>
+          <div>
+            <span class="panel-title-text">لوحة الاتصال</span>
+            <div class="panel-subtitle">المنصة والقناة</div>
           </div>
-          <div style="display:none"></div>
+        </div>
+        <div class="panel-right">
+          <div class="conn-badge disconnected" id="connBadge">غير متصل</div>
+          <div class="chevron">▾</div>
         </div>
       </div>
+      <div class="panel-body">
+        <div class="field-grid two" style="margin-bottom:12px">
+          <div class="field">
+            <label>منصة الشات</label>
+            <select id="platform" class="select">
+              <option value="twitch">🟣 Twitch</option>
+              <option value="kick">🟢 Kick</option>
+              <option value="offline">⚙️ Manual (بدون اتصال)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>اسم القناة</label>
+            <input id="channel" class="input" placeholder="اكتب اسم القناة" />
+          </div>
+        </div>
+        <div class="field-grid two">
+          <div class="field">
+            <button class="btn btn-primary" id="connectBtn">
+              <span>⚡</span> اتصال
+            </button>
+          </div>
+          <div class="field" style="justify-content:center">
+            <label class="toggle-row" style="padding-top:8px">
+              <input type="checkbox" id="rememberChk" checked />
+              تذكّر القناة
+            </label>
+          </div>
+        </div>
+        <div id="manualBox" class="manual-box">
+          <div class="field" style="flex:0 0 140px">
+            <label>اسم اللاعب</label>
+            <input id="manualUser" class="input" placeholder="Guest" />
+          </div>
+          <div class="field" style="flex:1">
+            <label>رسالة الشات</label>
+            <input id="manualMsg" class="input" placeholder="مثلاً: بطيخ" />
+          </div>
+          <button class="btn btn-ghost btn-sm" id="manualSend">إرسال</button>
+        </div>
+      </div>
+    </div>
 
-      <div class="round-status" id="roundStatus">اختر المنصة واكتب اسم القناة ثم اضغط “اتصال”.</div>
+    <!-- STREAMER CONTROLS PANEL -->
+    <div class="panel" id="ctrlPanel">
+      <div class="panel-toggle" id="ctrlToggle">
+        <div class="panel-toggle-left">
+          <div class="panel-icon icon-ctrl">🎮</div>
+          <div>
+            <span class="panel-title-text">لوحة الستريمر</span>
+            <div class="panel-subtitle">إعدادات الجولة</div>
+          </div>
+        </div>
+        <div class="panel-right">
+          <div class="chevron">▾</div>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="field" style="margin-bottom:12px">
+          <label>⏱ مدة الراوند (ثانية)</label>
+          <input id="roundSeconds" type="number" min="10" value="60" class="input" />
+        </div>
+        <div class="field-grid two">
+          <button class="btn btn-emerald" id="startBtn">
+            <span>▶</span> بدء اللعبة
+          </button>
+          <button class="btn btn-ghost" id="stopBtn">
+            <span>⏹</span> إيقاف
+          </button>
+        </div>
+      </div>
+    </div>
 
-      <div class="cols">
-        <div>
-          <h3 class="panel-title">اللاعبون</h3>
-          <div class="list" id="playersList"></div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="content-grid">
+
+    <!-- LEFT: GAME ARENA -->
+    <div class="game-arena">
+
+      <!-- HUD BAR -->
+      <div class="hud-bar">
+
+        <!-- Timer -->
+        <div class="timer-block">
+          <div class="timer-label">الوقت</div>
+          <svg class="timer-svg" width="76" height="76" viewBox="0 0 76 76">
+            <circle cx="38" cy="38" r="32" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="5"/>
+            <circle id="timerArc" cx="38" cy="38" r="32" fill="none"
+              stroke="url(#timerGrad)" stroke-width="5"
+              stroke-linecap="round"
+              stroke-dasharray="201" stroke-dashoffset="201"
+              transform="rotate(-90 38 38)" />
+            <defs>
+              <linearGradient id="timerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ff8c42"/>
+                <stop offset="100%" stop-color="#ff4d6d"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="timer-digits" id="timeLeft">00:00</div>
         </div>
 
-        <div>
-          <h3 class="panel-title">النتائج</h3>
-          <div id="scoresBox">
-            <div id="soloScores" class="list"></div>
+        <!-- Round Info -->
+        <div class="round-info">
+          <div class="category-chip" id="categoryPill">—</div>
+          <div class="letter-display-wrap">
+            <div class="letter-display" id="letterPill">—</div>
+            <div class="submissions-count" id="submissionsCount">0 كلمة</div>
+          </div>
+        </div>
 
-            <div id="teamsScores" class="teams" style="display:none">
-              <div class="team-box team-blue">
-                <div class="team-hdr">
-                  <h3>فريق الأزرق</h3>
-                  <div class="score-badge" id="blueScore">0</div>
-                </div>
-                <div class="muted">الانضمام: <span class="inline-kbd">!ازرق</span></div>
-                <div class="list" id="blueMembers"></div>
-              </div>
-              <div class="team-box team-red">
-                <div class="team-hdr">
-                  <h3>فريق الأحمر</h3>
-                  <div class="score-badge" id="redScore">0</div>
-                </div>
-                <div class="muted">الانضمام: <span class="inline-kbd">!احمر</span></div>
-                <div class="list" id="redMembers"></div>
-              </div>
+      </div>
+
+      <!-- Status Line -->
+      <div class="status-line">
+        <div class="status-dot" id="statusDot"></div>
+        <span id="roundStatus">اختر المنصة واكتب اسم القناة ثم اضغط "اتصال".</span>
+      </div>
+
+      <!-- Players + Scores -->
+      <div class="two-cols">
+        <div class="block">
+          <div class="block-header">
+            <div class="block-title">
+              <div class="block-title-icon" style="background:rgba(96,165,250,.15)">👥</div>
+              اللاعبون
+            </div>
+            <span class="kbd" id="playerCount">0</span>
+          </div>
+          <div class="player-scroll" id="playersList">
+            <div class="empty-state"><span>👋</span>لا يوجد لاعبون بعد<br>أرسل <code class="kbd">!دخول</code> في الشات</div>
+          </div>
+        </div>
+
+        <div class="block">
+          <div class="block-header">
+            <div class="block-title">
+              <div class="block-title-icon" style="background:rgba(255,181,71,.15)">🏆</div>
+              النتائج
             </div>
           </div>
+          <div class="player-scroll" id="soloScores">
+            <div class="empty-state"><span>🎯</span>النقاط ستظهر هنا</div>
+          </div>
         </div>
       </div>
 
-      <div class="review" id="reviewPanel">
-        <h4>مراجعة الكلمات — اختر الصحيح ثم اضغط “احتساب”</h4>
-        <div class="review-list" id="reviewList"></div>
+      <!-- Review Panel -->
+      <div class="review-panel" id="reviewPanel">
+        <div class="review-header-row">
+          <div class="review-header">
+            <span style="font-size:22px">📋</span>
+            مراجعة الكلمات
+          </div>
+        </div>
+
+        <!-- Select All Bar -->
+        <label class="select-all-bar" id="selectAllBar">
+          <input type="checkbox" id="selectAllChk" />
+          <span>تحديد الكل</span>
+          <span class="count-badge" id="selectAllCount">0 / 0</span>
+        </label>
+
+        <div class="review-scroll" id="reviewList"></div>
+
         <div class="review-actions">
-          <button class="btn" id="scoreBtn">احتساب ✅</button>
-          <button class="btn ghost" id="nextRoundBtn" disabled>التالي ⏭️</button>
+          <button class="btn btn-amber" id="scoreBtn">
+            <span>✅</span> احتساب النقاط
+          </button>
+          <button class="btn btn-emerald" id="nextRoundBtn" disabled>
+            <span>⏭</span> الجولة التالية
+          </button>
         </div>
-        <div class="muted">ملاحظة: تُمنح نقطة لكل كلمة معتمَدة يكتبها اللاعب (يمكن احتساب عدة كلمات لنفس اللاعب).</div>
+        <div style="font-size:12px;color:var(--text-muted);font-family:'Tajawal',sans-serif">تُمنح نقطة لكل كلمة معتمَدة، ويمكن احتساب عدة كلمات لنفس اللاعب.</div>
       </div>
 
-      <div style="margin-top:12px" class="footer">
-        <div class="muted">سولو: <span class="inline-kbd">!دخول</span> • تيمات: <span class="inline-kbd">!ازرق</span> / <span class="inline-kbd">!احمر</span> • خلال الجولة: تُقبل أي كلمة تبدأ بالحرف المطلوب</div>
-        <div class="chip pill">من تصميم: Medo_DV — StreamerTop</div>
+      <!-- Footer -->
+      <div class="game-footer">
+        <div class="cmd-list">
+          <span>الأوامر:</span>
+          <span class="kbd">!دخول</span>
+          <span style="color:var(--text-muted)">للانضمام</span>
+          <span class="kbd">!ازرق</span>
+          <span class="kbd">!احمر</span>
+          <span style="color:var(--text-muted)">للفرق</span>
+        </div>
+        <div class="credit">من تصميم: Medo_DV — StreamerTop</div>
       </div>
-    </section>
 
-    <aside class="card">
-      <h3 class="panel-title">سِجل الشات</h3>
-      <div class="list" id="chatLog" style="max-height:64vh"></div>
-    </aside>
-  </main>
+    </div>
 
-  <!-- ثيم افتراضي داكن للخلفية المتحركة -->
-  <script>document.documentElement.setAttribute('data-theme','dark');</script>
+    <!-- RIGHT: CHAT SIDEBAR -->
+    <div class="chat-sidebar">
+      <div class="block-header">
+        <div class="block-title">
+          <div class="block-title-icon" style="background:rgba(192,132,252,.15)">💬</div>
+          سجل الشات
+        </div>
+      </div>
+      <div class="chat-log" id="chatLog">
+        <div class="empty-state"><span>📡</span>الرسائل ستظهر هنا عند الاتصال</div>
+      </div>
+    </div>
 
-  <!-- ChatBridge v1 — دمج Twitch/Kick مع حفظ القناة -->
-  <script>
-  (function(global){
-    const LS_TWITCH='cb_twitch_channel';
-    const LS_KICK  ='cb_kick_channel';
+  </div>
+</div>
 
-    const state = {
-      twitchClient:null,
-      kickSocket:null,
-      kickRoomId:null,
-      connected:{twitch:false, kick:false},
-      handlers:{
-        status: (txt)=>console.log('[Status]',txt),
-        message:(username, text, platform)=>console.log('[Msg]', platform, username+':', text),
-        badge:  (platform, status)=>{}, // ok | wait | err
-      }
-    };
+<!-- HELP BUTTON -->
+<button class="help-btn" id="helpBtn" title="شرح اللعبة">?</button>
 
-    function setStatus(s){ state.handlers.status(s); }
-    function setBadge(p, st){ state.handlers.badge(p, st); }
-    function saveChannel(platform, channel){
-      try{ localStorage.setItem(platform==='twitch'?LS_TWITCH:LS_KICK, channel); }catch{}
-    }
-    function loadSaved(platform){
-      try{ return localStorage.getItem(platform==='twitch'?LS_TWITCH:LS_KICK)||''; }catch{ return ''; }
-    }
+<!-- HELP MODAL -->
+<div class="modal-overlay" id="helpModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-header-text">
+        <div class="modal-title">🏁 مرحباً بك في سباق الحروف</div>
+        <div class="modal-subtitle">دليل سريع للستريمر — اقرأه مرة واحدة وانطلق</div>
+      </div>
+      <button class="modal-close" id="closeHelp">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="help-steps">
+        <div class="help-step">
+          <div class="step-num">1</div>
+          <div class="step-text"><strong>الاتصال</strong> — افتح <strong>لوحة الاتصال</strong> واختر المنصة (Twitch أو Kick)، أدخل اسم القناة، واضغط <strong>اتصال</strong>. أو اختر <strong>Manual</strong> للتجربة المحلية بدون شات.</div>
+        </div>
+        <div class="help-step">
+          <div class="step-num">2</div>
+          <div class="step-text"><strong>انضمام اللاعبين</strong> — يرسل المشاهدون <span class="kbd">!دخول</span> للسولو، أو <span class="kbd">!ازرق</span> / <span class="kbd">!احمر</span> للانضمام لفريق.</div>
+        </div>
+        <div class="help-step">
+          <div class="step-num">3</div>
+          <div class="step-text"><strong>بدء الجولة</strong> — افتح <strong>لوحة الستريمر</strong>، اضبط مدة الراوند، ثم اضغط <strong>بدء اللعبة</strong>. ستظهر فئة وحرف عشوائيان.</div>
+        </div>
+        <div class="help-step">
+          <div class="step-num">4</div>
+          <div class="step-text"><strong>أثناء الجولة</strong> — يرسل اللاعبون كلمة تبدأ بالحرف المطلوب وتنتمي للفئة. أي كلمة تبدأ بالحرف الصحيح ستُسجَّل تلقائياً.</div>
+        </div>
+        <div class="help-step">
+          <div class="step-num">5</div>
+          <div class="step-text"><strong>المراجعة</strong> — بعد انتهاء الوقت، استخدم <strong>تحديد الكل</strong> أو اختر يدوياً الكلمات الصحيحة، ثم اضغط <strong>احتساب النقاط</strong> ثم <strong>الجولة التالية</strong>.</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <label class="dont-show-row">
+        <input type="checkbox" id="dontShowAgain" />
+        لا تُظهر الشرح تلقائياً في المرة القادمة
+      </label>
+      <button class="btn btn-primary btn-sm" id="gotItBtn">
+        <span>✓</span> فهمت، لنبدأ
+      </button>
+    </div>
+  </div>
+</div>
 
-    async function connectTwitch(channel){
-      if (!window.tmi){ setStatus('❌ tmi.js غير مُحمَّل'); return; }
-      try{
-        setBadge('twitch','wait');
-        const client = new tmi.Client({ channels:[channel], connection:{ secure:true, reconnect:true } });
-        state.twitchClient = client;
-
-        client.on('connected',()=>{
-          state.connected.twitch = true;
-          saveChannel('twitch', channel);
-          setStatus(`✅ تم الاتصال بـ Twitch: #${channel}`);
-          setBadge('twitch','ok');
-        });
-
-        client.on('disconnected', (r)=>{ 
-          state.connected.twitch = false; 
-          setStatus(`⚠️ انفصل Twitch: ${r||'-'}`);
-          setBadge('twitch','err');
-        });
-
-        client.on('message',(ch, tags, message, self)=>{
-          if(self) return;
-          const user = tags['display-name'] || tags.username || 'مشارك';
-          const text = (message||'').trim();
-          state.handlers.message(user, text, 'twitch');
-        });
-
-        await client.connect();
-      }catch(e){
-        setStatus('❌ فشل اتصال Twitch: '+e.message);
-        setBadge('twitch','err');
-      }
-    }
-
-    async function connectKick(channel){
-      try{
-        setBadge('kick','wait');
-        const res = await fetch(`https://kick.com/api/v2/channels/${channel}`);
-        const data = await res.json().catch(()=>null);
-        const roomId = data?.chatroom?.id;
-        if (!roomId){ setStatus('❌ فشل جلب غرفة كيك'); setBadge('kick','err'); return; }
-
-        const ws = new WebSocket("wss://ws-us2.pusher.com/app/32cbd69e4b950bf97679?protocol=7&client=js&version=8.4.0-rc2&flash=false");
-        state.kickSocket = ws;
-
-        ws.onopen = ()=>{
-          ws.send(JSON.stringify({event:"pusher:subscribe",data:{auth:"",channel:`chatrooms.${roomId}.v2`}}));
-          setInterval(()=>{ if(ws.readyState===WebSocket.OPEN){ ws.send(JSON.stringify({event:"pusher:ping",data:{}})); } },12000);
-          state.connected.kick = true;
-          saveChannel('kick', channel);
-          setStatus(`✅ تم الاتصال بـ Kick: ${channel}`);
-          setBadge('kick','ok');
-        };
-
-        ws.onmessage = (event)=>{
-          const pkt = JSON.parse(event.data);
-          if (pkt.event === "App\\Events\\ChatMessageEvent"){
-            const d = JSON.parse(pkt.data);
-            const user = d?.sender?.username || 'مشارك';
-            const text = (d?.content || '').trim();
-            state.handlers.message(user, text, 'kick');
-          }
-        };
-
-        ws.onerror = ()=>{ state.connected.kick = false; setStatus('❌ مشكلة في اتصال Kick'); setBadge('kick','err'); };
-        ws.onclose  = ()=>{ state.connected.kick = false; setStatus('⚠️ تم إغلاق اتصال Kick'); setBadge('kick','err'); };
-      }catch(e){
-        setStatus('❌ فشل الاتصال بـ Kick: '+e.message);
-        setBadge('kick','err');
-      }
-    }
-
-    const ChatBridge = {
-      on({status, message, badge}={}){
-        if (status)  state.handlers.status = status;
-        if (message) state.handlers.message= message;
-        if (badge)   state.handlers.badge  = badge;
-        return this;
-      },
-      connect(platform, channel, {remember=true}={}){
-        if (!channel || !platform) return;
-        if (remember) saveChannel(platform, channel);
-        if (platform==='twitch') connectTwitch(channel);
-        else if (platform==='kick') connectKick(channel);
-      },
-      getSaved(platform){ return loadSaved(platform); },
-      isConnected(){ return {...state.connected}; },
-      disconnect(platform){
-        if (platform==='twitch' && state.twitchClient){
-          try{ state.twitchClient.disconnect(); }catch{}
-          state.connected.twitch=false;
-          setBadge('twitch','err');
-        }
-        if (platform==='kick' && state.kickSocket){
-          try{ state.kickSocket.close(); }catch{}
-          state.connected.kick=false;
-          setBadge('kick','err');
-        }
-      }
-    };
-
-    global.ChatBridge = ChatBridge;
-  })(window);
-  </script>
-
-  <script>
-  const CATEGORIES = ["اسم", "حيوان", "نبات", "جماد", "مدينة"];
-  const LETTERS = ["ا","ب","ت","ث","ج","ح","خ","د","ذ","ر","ز","س","ش","ص","ض","ط","ظ","ع","غ","ف","ق","ك","ل","م","ن","ه","و","ي"];
-
-  const UI = {
-    mode: null,
-    platform: document.getElementById('platform'),
-    channel: document.getElementById('channel'),
-    roundSeconds: document.getElementById('roundSeconds'),
-    startBtn: document.getElementById('startBtn'),
-    stopBtn: document.getElementById('stopBtn'),
-    connectBtn: document.getElementById('connectBtn'),
-    connStatus: document.getElementById('connStatus'),
-    categoryPill: document.getElementById('categoryPill'),
-    letterPill: document.getElementById('letterPill'),
-    timeLeft: document.getElementById('timeLeft'),
-    ring: document.getElementById('ring'),
-    roundStatus: document.getElementById('roundStatus'),
-    playersList: document.getElementById('playersList'),
-    soloScores: document.getElementById('soloScores'),
-    teamsScores: document.getElementById('teamsScores'),
-    blueScore: document.getElementById('blueScore'),
-    redScore: document.getElementById('redScore'),
-    blueMembers: document.getElementById('blueMembers'),
-    redMembers: document.getElementById('redMembers'),
-    chatLog: document.getElementById('chatLog'),
-    manualBox: document.getElementById('manualBox'),
-    manualUser: document.getElementById('manualUser'),
-    manualMsg: document.getElementById('manualMsg'),
-    manualSend: document.getElementById('manualSend'),
-    reviewPanel: document.getElementById('reviewPanel'),
-    reviewList: document.getElementById('reviewList'),
-    scoreBtn: document.getElementById('scoreBtn'),
-    nextRoundBtn: document.getElementById('nextRoundBtn'),
-    rememberChk: document.getElementById('rememberChk')
-  };
-
+<script>
+(function(global){
+  const LS_TWITCH='cb_twitch_channel';
+  const LS_KICK  ='cb_kick_channel';
   const state = {
-    running: false,
-    phase: "idle",
-    currentCategory: null,
-    currentLetter: null,
-    roundEndsAt: 0,
-    timerHandle: null,
-
-    soloPlayers: new Map(), // name -> {score}
-    teamBlue: new Map(),
-    teamRed: new Map(),
-    teamScores: {blue:0, red:0},
-
-    submissionsByWord: new Map(),   // word -> Set(playerName)
-    submissionsByPlayer: new Map(), // player -> Set(word)
-
-    isConnected: false,
-    connectedPlatform: null,
-    connFlags: { twitch:false, kick:false }
-  };
-
-  const normalizeArabic = (s="") => s
-    .replace(/[إأآا]/g,"ا").replace(/ى/g,"ي").replace(/ؤ/g,"و").replace(/ئ/g,"ي").replace(/ة/g,"ه")
-    .replace(/[^\u0600-\u06FF\s]/g,"").trim();
-
-  const startsWithLetter = (word, letter) => {
-    const w = normalizeArabic(word); const l = normalizeArabic(letter);
-    return w && l && w[0] === l[0];
-  };
-  const rand = arr => arr[Math.floor(Math.random()*arr.length)];
-  const fmtTime = (ms) => {
-    ms = Math.max(0, ms); const s = Math.ceil(ms/1000);
-    const mm = String(Math.floor(s/60)).padStart(2,"0");
-    const ss = String(s % 60).padStart(2,"0");
-    return `${mm}:${ss}`;
-  };
-
-  const setConnStatus = (ok, platformName=null) => {
-    state.isConnected = !!ok; state.connectedPlatform = ok ? platformName : null;
-    UI.connStatus.textContent = ok ? `متصل بـ ${platformName}` : `غير متصل`;
-    UI.connStatus.className = `status ${ok ? 'ok' : 'bad'}`;
-    if(ok) UI.roundStatus.textContent = `تم الاتصال بـ ${platformName}. يمكنك الآن بدء اللعبة.`;
-    else UI.roundStatus.textContent = `اختر المنصة واكتب اسم القناة ثم اضغط “اتصال”.`;
-    UI.manualBox.style.display = (UI.platform.value==='offline') ? 'flex' : 'none';
-  };
-
-  const logChat = (user, msg, badge=null) => {
-    const row = document.createElement('div'); row.className = 'row';
-
-    const left = document.createElement('div');
-    const nameSpan = document.createElement('span');
-    nameSpan.className = 'name';
-    nameSpan.textContent = `@${user}`;
-    const dash = document.createTextNode(' — ');
-    const msgSpan = document.createElement('span');
-    msgSpan.textContent = msg;
-
-    left.append(nameSpan, dash, msgSpan);
-
-    const right = document.createElement('div');
-    if(badge==='ok'){
-      right.innerHTML = `<span class="score" style="background:#144a2f;border-color:#1c6a46">سُجلت</span>`;
-    } else if(badge==='dup'){
-      right.innerHTML = `<span class="score" style="background:#4a1420;border-color:#6a1c2c">مكررة</span>`;
-    }
-
-    row.append(left, right);
-    UI.chatLog.prepend(row);
-
-    while(UI.chatLog.children.length > 200){ UI.chatLog.lastChild?.remove(); }
-  };
-
-  const renderPlayers = () => {
-    UI.playersList.innerHTML = "";
-
-    const makePlayerRow = (name, score=null) => {
-      const row = document.createElement('div'); row.className='row';
-      const nameDiv = document.createElement('div'); nameDiv.className = 'name'; nameDiv.textContent = name;
-      row.appendChild(nameDiv);
-      if(score !== null){
-        const scoreDiv = document.createElement('div'); scoreDiv.className = 'score'; scoreDiv.textContent = String(score ?? 0);
-        row.appendChild(scoreDiv);
-      }
-      return row;
-    };
-
-    for(const [name, p] of state.soloPlayers){
-      UI.playersList.appendChild(makePlayerRow(name, p.score ?? 0));
-    }
-    UI.teamsScores.style.display = "none";
-    UI.soloScores.style.display = "flex";
-    UI.soloScores.innerHTML = "";
-    for(const [name, p] of [...state.soloPlayers].sort((a,b)=> (b[1].score||0)-(a[1].score||0))){
-      UI.soloScores.appendChild(makePlayerRow(name, p.score ?? 0));
+    twitchClient:null, kickSocket:null, kickRoomId:null,
+    connected:{twitch:false, kick:false},
+    handlers:{
+      status:(txt)=>console.log('[Status]',txt),
+      message:(username,text,platform)=>console.log('[Msg]',platform,username+':',text),
+      badge:(platform,status)=>{},
     }
   };
+  function setStatus(s){ state.handlers.status(s); }
+  function setBadge(p,st){ state.handlers.badge(p,st); }
+  function saveChannel(platform,channel){ try{ localStorage.setItem(platform==='twitch'?LS_TWITCH:LS_KICK,channel); }catch{} }
+  function loadSaved(platform){ try{ return localStorage.getItem(platform==='twitch'?LS_TWITCH:LS_KICK)||''; }catch{ return ''; } }
 
-  const ensurePlayer = (name) => state.soloPlayers.has(name);
-  const joinSolo = (name) => { if(!state.soloPlayers.has(name)){ state.soloPlayers.set(name, {score:0}); renderPlayers(); } };
-  const awardPoint = (name) => { const p = state.soloPlayers.get(name); if(!p) return; p.score = (p.score||0) + 1; };
-  const clearSubmissions = () => {
-    state.submissionsByWord.clear();
-    state.submissionsByPlayer.clear();
-    UI.letterPill.setAttribute('data-count', '0');
-  };
-
-  const toReviewMode = () => {
-    state.phase = "review";
-    UI.roundStatus.textContent = "انتهى الوقت — راجع الكلمات أدناه ثم اضغط احتساب.";
-    UI.reviewPanel.style.display = "flex";
-    UI.scoreBtn.disabled = false;
-    UI.nextRoundBtn.disabled = true;
-
-    UI.reviewList.innerHTML = "";
-    const entries = [...state.submissionsByWord.entries()]
-      .sort((a,b)=> a[0].localeCompare(b[0], 'ar'));
-
-    if(entries.length === 0){
-      const empty = document.createElement('div');
-      empty.className = 'muted';
-      empty.textContent = "لا توجد كلمات مسجّلة لهذا الراوند.";
-      UI.reviewList.appendChild(empty);
-      return;
-    }
-
-    for(const [word, playersSet] of entries){
-      const row = document.createElement('div'); row.className = 'review-row';
-
-      const checkbox = document.createElement('input'); checkbox.type = 'checkbox';
-      checkbox.dataset.word = word;
-
-      const label = document.createElement('div');
-      const strong = document.createElement('strong'); strong.textContent = word;
-      const playersDiv = document.createElement('div'); playersDiv.className = 'players';
-      playersDiv.textContent = `اللاعبون: ${[...playersSet].join(", ")}`;
-      label.append(strong, playersDiv);
-
-      const count = document.createElement('div');
-      count.className = 'badge';
-      count.textContent = `${playersSet.size} لاعب`;
-
-      row.append(checkbox, label, count);
-      UI.reviewList.appendChild(row);
-    }
-  };
-
-  const startRound = () => {
-    state.phase = "play";
-    state.currentCategory = ["اسم","حيوان","نبات","جماد","مدينة"][Math.floor(Math.random()*5)];
-    state.currentLetter = ["ا","ب","ت","ث","ج","ح","خ","د","ذ","ر","ز","س","ش","ص","ض","ط","ظ","ع","غ","ف","ق","ك","ل","م","ن","ه","و","ي"][Math.floor(Math.random()*28)];
-    clearSubmissions();
-
-    UI.categoryPill.textContent = state.currentCategory;
-    UI.letterPill.textContent = state.currentLetter;
-    UI.roundStatus.textContent = "أرسلوا كلماتكم في الشات… (الاحتساب بعد انتهاء الوقت)";
-
-    UI.reviewPanel.style.display = "none";
-    UI.scoreBtn.disabled = true;
-    UI.nextRoundBtn.disabled = true;
-
-    const dur = Math.max(10, Number(UI.roundSeconds.value||60)) * 1000;
-    state.roundEndsAt = Date.now() + dur;
-    if(state.timerHandle) cancelAnimationFrame(state.timerHandle);
-    const tick = () => {
-      const left = state.roundEndsAt - Date.now();
-      UI.timeLeft.textContent = fmtTime(left);
-
-      const progress = 1 - Math.max(0, Math.min(1, left/dur));
-      UI.ring.style.setProperty('--p', `${progress}turn`);
-
-      if(left > 0 && state.running){
-        state.timerHandle = requestAnimationFrame(tick);
-      } else {
-        UI.timeLeft.textContent = "00:00";
-        toReviewMode();
-      }
-    };
-    tick();
-  };
-
-  function onChatMessage(user, text){
-    const msg = text.trim();
-
-    if(/^!دخول$/i.test(msg)){ joinSolo(user); logChat(user, msg); return; }
-
-    if(!state.running || state.phase !== "play" || !state.currentLetter) {
-      logChat(user, msg, null);
-      return;
-    }
-
-    if(!ensurePlayer(user)) return;
-
-    const word = msg.split(/\s+/)[0];
-    if(!startsWithLetter(word, state.currentLetter)) {
-      logChat(user, msg, null);
-      return;
-    }
-
-    const keyWord = normalizeArabic(word);
-
-    if (state.submissionsByWord.has(keyWord)) {
-      logChat(user, word, 'dup'); 
-      return;
-    }
-
-    if(!state.submissionsByPlayer.has(user)) state.submissionsByPlayer.set(user, new Set());
-    const userSet = state.submissionsByPlayer.get(user);
-    if(userSet.has(keyWord)){
-      logChat(user, word, 'dup'); 
-      return;
-    }
-    userSet.add(keyWord);
-
-    if(!state.submissionsByWord.has(keyWord)) state.submissionsByWord.set(keyWord, new Set());
-    state.submissionsByWord.get(keyWord).add(user);
-
-    UI.letterPill.setAttribute('data-count', String(state.submissionsByWord.size));
-    logChat(user, word, 'ok');
+  async function connectTwitch(channel){
+    if(!window.tmi){ setStatus('❌ tmi.js غير مُحمَّل'); return; }
+    try{
+      setBadge('twitch','wait');
+      const client = new tmi.Client({ channels:[channel], connection:{ secure:true, reconnect:true } });
+      state.twitchClient = client;
+      client.on('connected',()=>{ state.connected.twitch=true; saveChannel('twitch',channel); setStatus(`✅ تم الاتصال بـ Twitch: #${channel}`); setBadge('twitch','ok'); });
+      client.on('disconnected',(r)=>{ state.connected.twitch=false; setStatus(`⚠️ انفصل Twitch: ${r||'-'}`); setBadge('twitch','err'); });
+      client.on('message',(ch,tags,message,self)=>{ if(self) return; const user=tags['display-name']||tags.username||'مشارك'; state.handlers.message(user,(message||'').trim(),'twitch'); });
+      await client.connect();
+    }catch(e){ setStatus('❌ فشل اتصال Twitch: '+e.message); setBadge('twitch','err'); }
   }
-  window.onChatMessage = onChatMessage;
 
-  // ====== ربط ChatBridge مع الواجهة ======
-  ChatBridge.on({
-    status: (txt)=> { UI.roundStatus.textContent = txt; },
-    badge:  (platform, st)=>{
-      if (platform==='twitch') state.connFlags.twitch = (st==='ok');
-      if (platform==='kick')   state.connFlags.kick   = (st==='ok');
+  async function connectKick(channel){
+    try{
+      setBadge('kick','wait');
+      const res = await fetch(`https://kick.com/api/v2/channels/${channel}`);
+      const data = await res.json().catch(()=>null);
+      const roomId = data?.chatroom?.id;
+      if(!roomId){ setStatus('❌ فشل جلب غرفة كيك'); setBadge('kick','err'); return; }
+      const ws = new WebSocket("wss://ws-us2.pusher.com/app/32cbd69e4b950bf97679?protocol=7&client=js&version=8.4.0-rc2&flash=false");
+      state.kickSocket = ws;
+      ws.onopen=()=>{ ws.send(JSON.stringify({event:"pusher:subscribe",data:{auth:"",channel:`chatrooms.${roomId}.v2`}})); setInterval(()=>{ if(ws.readyState===WebSocket.OPEN) ws.send(JSON.stringify({event:"pusher:ping",data:{}})); },12000); state.connected.kick=true; saveChannel('kick',channel); setStatus(`✅ تم الاتصال بـ Kick: ${channel}`); setBadge('kick','ok'); };
+      ws.onmessage=(event)=>{ const pkt=JSON.parse(event.data); if(pkt.event==="App\\Events\\ChatMessageEvent"){ const d=JSON.parse(pkt.data); const user=d?.sender?.username||'مشارك'; state.handlers.message(user,(d?.content||'').trim(),'kick'); } };
+      ws.onerror=()=>{ state.connected.kick=false; setStatus('❌ مشكلة في اتصال Kick'); setBadge('kick','err'); };
+      ws.onclose=()=>{ state.connected.kick=false; setStatus('⚠️ تم إغلاق اتصال Kick'); setBadge('kick','err'); };
+    }catch(e){ setStatus('❌ فشل الاتصال بـ Kick: '+e.message); setBadge('kick','err'); }
+  }
 
-      const cur = UI.platform.value;
-      if (cur==='twitch'){
-        setConnStatus(state.connFlags.twitch, state.connFlags.twitch ? 'Twitch' : null);
-      } else if (cur==='kick'){
-        setConnStatus(state.connFlags.kick, state.connFlags.kick ? 'Kick' : null);
-      }
-    },
-    message: (user, text, platform)=>{ onChatMessage(user, text); }
-  });
+  const ChatBridge = {
+    on({status,message,badge}={}){ if(status) state.handlers.status=status; if(message) state.handlers.message=message; if(badge) state.handlers.badge=badge; return this; },
+    connect(platform,channel,{remember=true}={}){ if(!channel||!platform) return; if(remember) saveChannel(platform,channel); if(platform==='twitch') connectTwitch(channel); else if(platform==='kick') connectKick(channel); },
+    getSaved(platform){ return loadSaved(platform); },
+    isConnected(){ return {...state.connected}; },
+    disconnect(platform){ if(platform==='twitch'&&state.twitchClient){ try{ state.twitchClient.disconnect(); }catch{} state.connected.twitch=false; setBadge('twitch','err'); } if(platform==='kick'&&state.kickSocket){ try{ state.kickSocket.close(); }catch{} state.connected.kick=false; setBadge('kick','err'); } }
+  };
+  global.ChatBridge = ChatBridge;
+})(window);
+</script>
 
-  // اتصال
-  document.getElementById('connectBtn').addEventListener('click', ()=>{
-    const platform = UI.platform.value;
-    const channel = (UI.channel.value||"").trim();
-    const remember = UI.rememberChk?.checked ?? true;
+<script>
+const CATEGORIES = ["اسم","حيوان","نبات","جماد","مدينة"];
+const LETTERS    = ["ا","ب","ت","ث","ج","ح","خ","د","ذ","ر","ز","س","ش","ص","ض","ط","ظ","ع","غ","ف","ق","ك","ل","م","ن","ه","و","ي"];
 
-    ChatBridge.disconnect('twitch');
-    ChatBridge.disconnect('kick');
-    state.connFlags = {twitch:false, kick:false};
-    setConnStatus(false, null);
+const $ = id => document.getElementById(id);
 
-    if(platform==='twitch'){
-      if(!channel){ alert("اكتب اسم قناة Twitch"); return; }
-      ChatBridge.connect('twitch', channel, {remember});
-    } else if(platform==='kick'){
-      if(!channel){ alert("اكتب اسم قناة Kick"); return; }
-      ChatBridge.connect('kick', channel, {remember});
-    } else {
-      setConnStatus(true, "Manual");
-      UI.roundStatus.textContent = "وضع Manual: استخدم المدخل بالأسفل لمحاكاة رسائل الشات.";
-      UI.manualBox.style.display = 'flex';
-    }
-  });
+const UI = {
+  platform:        $('platform'),
+  channel:         $('channel'),
+  roundSeconds:    $('roundSeconds'),
+  startBtn:        $('startBtn'),
+  stopBtn:         $('stopBtn'),
+  connectBtn:      $('connectBtn'),
+  connBadge:       $('connBadge'),
+  categoryPill:    $('categoryPill'),
+  letterPill:      $('letterPill'),
+  timeLeft:        $('timeLeft'),
+  timerArc:        $('timerArc'),
+  statusDot:       $('statusDot'),
+  roundStatus:     $('roundStatus'),
+  playersList:     $('playersList'),
+  soloScores:      $('soloScores'),
+  playerCount:     $('playerCount'),
+  chatLog:         $('chatLog'),
+  manualBox:       $('manualBox'),
+  manualUser:      $('manualUser'),
+  manualMsg:       $('manualMsg'),
+  manualSend:      $('manualSend'),
+  reviewPanel:     $('reviewPanel'),
+  reviewList:      $('reviewList'),
+  scoreBtn:        $('scoreBtn'),
+  nextRoundBtn:    $('nextRoundBtn'),
+  rememberChk:     $('rememberChk'),
+  submissionsCount:$('submissionsCount'),
+  selectAllChk:    $('selectAllChk'),
+  selectAllCount:  $('selectAllCount'),
+  selectAllBar:    $('selectAllBar'),
+};
 
-  // المنصة
-  UI.platform.addEventListener('change', ()=>{
-    if (UI.platform.value==='twitch'){
-      UI.channel.value = ChatBridge.getSaved('twitch') || "";
-      setConnStatus(false, null);
-      UI.manualBox.style.display = 'none';
-    } else if (UI.platform.value==='kick'){
-      UI.channel.value = ChatBridge.getSaved('kick') || "";
-      setConnStatus(false, null);
-      UI.manualBox.style.display = 'none';
-    } else {
-      UI.channel.value = "";
-      setConnStatus(true, "Manual");
-      UI.manualBox.style.display = 'flex';
-    }
-  });
+const state = {
+  running:false, phase:"idle",
+  currentCategory:null, currentLetter:null,
+  roundEndsAt:0, roundDur:0, timerHandle:null,
+  soloPlayers: new Map(),
+  submissionsByWord: new Map(),
+  submissionsByPlayer: new Map(),
+  connFlags: {twitch:false, kick:false}
+};
 
-  // تعبئة مبدئية
-  window.addEventListener('DOMContentLoaded', ()=>{
-    const initial = UI.platform.value || 'twitch';
-    UI.channel.value = ChatBridge.getSaved(initial) || "";
-  });
+const normalizeArabic = (s="") => s
+  .replace(/[إأآا]/g,"ا").replace(/ى/g,"ي").replace(/ؤ/g,"و").replace(/ئ/g,"ي").replace(/ة/g,"ه")
+  .replace(/[^\u0600-\u06FF\s]/g,"").trim();
 
-  const startGame = () => {
-    const platform = UI.platform.value;
-    if(platform!=='offline'){
-      const ok = (platform==='twitch') ? state.connFlags.twitch : state.connFlags.kick;
-      if(!ok){ alert("اتصل أولًا بالمنصة عبر زر 'اتصال'. أو اختر Manual."); return; }
-    }
-    state.running = true;
+const startsWithLetter = (word, letter) => {
+  const w = normalizeArabic(word); const l = normalizeArabic(letter);
+  return w && l && w[0] === l[0];
+};
 
-    // تصفير نقاط السولو فقط
-    for (const [name, p] of state.soloPlayers) { p.score = 0; }
-    renderPlayers();
+const fmtTime = (ms) => {
+  ms = Math.max(0,ms); const s = Math.ceil(ms/1000);
+  return `${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;
+};
 
-    UI.soloScores.style.display = "flex";
-    UI.teamsScores.style.display = "none";
-    UI.manualBox.style.display = (platform==='offline') ? 'flex' : 'none';
-    startRound();
+const setConnStatus = (ok, platformName=null) => {
+  UI.connBadge.textContent = ok ? `متصل بـ ${platformName}` : `غير متصل`;
+  UI.connBadge.className   = `conn-badge ${ok ? 'connected' : 'disconnected'}`;
+  if(ok) setStatus(`✅ تم الاتصال بـ ${platformName}. يمكنك الآن بدء اللعبة.`,'active');
+  else   setStatus(`اختر المنصة واكتب اسم القناة ثم اضغط "اتصال".`,'');
+  UI.manualBox.className = UI.platform.value==='offline' ? 'manual-box visible' : 'manual-box';
+};
+
+const setStatus = (txt, dotClass='') => {
+  UI.roundStatus.textContent = txt;
+  UI.statusDot.className = `status-dot${dotClass ? ' '+dotClass : ''}`;
+};
+
+const updateTimerArc = (fraction) => {
+  const circumference = 201;
+  const offset = circumference - (fraction * circumference);
+  UI.timerArc.style.strokeDashoffset = offset;
+};
+
+const logChat = (user, msg, badge=null) => {
+  if(UI.chatLog.querySelector('.empty-state')) UI.chatLog.innerHTML = '';
+  const row = document.createElement('div'); row.className = 'chat-row';
+  row.innerHTML = `<div class="chat-user">@${user}</div><div class="chat-msg">${msg}</div>${badge ? `<div class="chat-badge ${badge}">${badge==='ok'?'✓ سُجّلت':'✕ مكررة'}</div>` : ''}`;
+  UI.chatLog.prepend(row);
+  while(UI.chatLog.children.length > 200) UI.chatLog.lastChild?.remove();
+};
+
+const renderPlayers = () => {
+  const all = [...state.soloPlayers].sort((a,b)=>(b[1].score||0)-(a[1].score||0));
+  UI.playerCount.textContent = all.length;
+
+  if(all.length === 0){
+    UI.playersList.innerHTML = '<div class="empty-state"><span>👋</span>لا يوجد لاعبون بعد<br>أرسل <code class="kbd">!دخول</code> في الشات</div>';
+    UI.soloScores.innerHTML  = '<div class="empty-state"><span>🎯</span>النقاط ستظهر هنا</div>';
+    return;
+  }
+
+  const makeRow = (name, score) => {
+    const row = document.createElement('div'); row.className = 'player-row';
+    row.innerHTML = `<div class="player-name">${name}</div><div class="score-pill">${score}</div>`;
+    return row;
   };
 
-  const stopGame = () => {
-    state.running = false;
-    state.phase = "idle";
-    if(state.timerHandle) cancelAnimationFrame(state.timerHandle);
-    UI.timeLeft.textContent = "00:00";
-    UI.roundStatus.textContent = "اللعبة متوقفة.";
-    UI.reviewPanel.style.display = "none";
-  };
+  UI.playersList.innerHTML = '';
+  for(const [name, p] of all) UI.playersList.appendChild(makeRow(name, p.score||0));
 
-  UI.scoreBtn.addEventListener('click', ()=>{
-    if(state.phase !== "review") return;
+  UI.soloScores.innerHTML = '';
+  for(const [name, p] of all) UI.soloScores.appendChild(makeRow(name, p.score||0));
+};
 
-    const checks = [...UI.reviewList.querySelectorAll('input[type="checkbox"]')];
-    const approved = checks.filter(c=>c.checked).map(c=>c.dataset.word);
+const ensurePlayer = (name) => state.soloPlayers.has(name);
+const joinSolo = (name) => { if(!state.soloPlayers.has(name)){ state.soloPlayers.set(name,{score:0}); renderPlayers(); } };
+const awardPoint = (name) => { const p = state.soloPlayers.get(name); if(!p) return; p.score=(p.score||0)+1; };
+const clearSubmissions = () => {
+  state.submissionsByWord.clear();
+  state.submissionsByPlayer.clear();
+  UI.submissionsCount.textContent = '0 كلمة';
+};
 
-    for (const w of approved){
-      const players = state.submissionsByWord.get(w);
-      if (!players) continue;
-      for (const name of players){
-        if (ensurePlayer(name)) awardPoint(name);
-      }
+// ─── Update select-all UI based on current checkbox state ───
+const updateSelectAllState = () => {
+  const checkboxes = UI.reviewList.querySelectorAll('input[type="checkbox"]');
+  const total = checkboxes.length;
+  const checked = [...checkboxes].filter(c=>c.checked).length;
+  UI.selectAllCount.textContent = `${checked} / ${total}`;
+
+  if(total === 0){
+    UI.selectAllChk.checked = false;
+    UI.selectAllChk.indeterminate = false;
+  } else if(checked === total){
+    UI.selectAllChk.checked = true;
+    UI.selectAllChk.indeterminate = false;
+  } else if(checked === 0){
+    UI.selectAllChk.checked = false;
+    UI.selectAllChk.indeterminate = false;
+  } else {
+    UI.selectAllChk.checked = false;
+    UI.selectAllChk.indeterminate = true;
+  }
+};
+
+// Visual update on each row (selected highlight)
+const refreshRowSelection = (item) => {
+  const cb = item.querySelector('input[type="checkbox"]');
+  if(cb && cb.checked) item.classList.add('selected');
+  else item.classList.remove('selected');
+};
+
+const toReviewMode = () => {
+  state.phase = "review";
+  setStatus("انتهى الوقت — راجع الكلمات أدناه ثم اضغط احتساب.",'review');
+  UI.reviewPanel.classList.add('visible');
+  UI.scoreBtn.disabled = false;
+  UI.nextRoundBtn.disabled = true;
+  UI.reviewList.innerHTML = '';
+
+  const entries = [...state.submissionsByWord.entries()].sort((a,b)=>a[0].localeCompare(b[0],'ar'));
+
+  if(entries.length === 0){
+    UI.reviewList.innerHTML = '<div class="empty-state"><span>🤷</span>لا توجد كلمات مسجّلة لهذا الراوند.</div>';
+    UI.selectAllBar.style.display = 'none';
+    UI.selectAllChk.checked = false;
+    UI.selectAllChk.indeterminate = false;
+    UI.selectAllCount.textContent = '0 / 0';
+    return;
+  }
+
+  UI.selectAllBar.style.display = 'flex';
+
+  for(const [word, playersSet] of entries){
+    const item = document.createElement('div'); item.className='review-item';
+    const cb = document.createElement('input'); cb.type='checkbox'; cb.dataset.word=word;
+    item.innerHTML = `<div class="review-word">${word}</div><div class="review-players">${[...playersSet].join('، ')}</div><div class="review-count">${playersSet.size} 👤</div>`;
+    item.prepend(cb);
+
+    item.addEventListener('click', e => {
+      if(e.target !== cb) cb.checked = !cb.checked;
+      refreshRowSelection(item);
+      updateSelectAllState();
+    });
+
+    cb.addEventListener('change', () => {
+      refreshRowSelection(item);
+      updateSelectAllState();
+    });
+
+    UI.reviewList.appendChild(item);
+  }
+
+  updateSelectAllState();
+};
+
+const startRound = () => {
+  state.phase = "play";
+  state.currentCategory = CATEGORIES[Math.floor(Math.random()*CATEGORIES.length)];
+  state.currentLetter   = LETTERS[Math.floor(Math.random()*LETTERS.length)];
+  clearSubmissions();
+
+  UI.categoryPill.textContent = state.currentCategory;
+  UI.letterPill.textContent   = state.currentLetter;
+
+  // Letter pop animation
+  UI.letterPill.classList.remove('letter-pop');
+  void UI.letterPill.offsetWidth;
+  UI.letterPill.classList.add('letter-pop');
+  setTimeout(()=> UI.letterPill.classList.remove('letter-pop'), 600);
+
+  setStatus("الجولة جارية — أرسلوا كلماتكم في الشات!", 'active');
+  UI.reviewPanel.classList.remove('visible');
+  UI.scoreBtn.disabled = true;
+  UI.nextRoundBtn.disabled = true;
+
+  const dur = Math.max(10, Number(UI.roundSeconds.value||60)) * 1000;
+  state.roundDur = dur;
+  state.roundEndsAt = Date.now() + dur;
+
+  if(state.timerHandle) cancelAnimationFrame(state.timerHandle);
+
+  const tick = () => {
+    const left = state.roundEndsAt - Date.now();
+    UI.timeLeft.textContent = fmtTime(left);
+    const fraction = Math.max(0, Math.min(1, left/dur));
+    updateTimerArc(1 - fraction);
+
+    if(left > 0 && state.running){
+      state.timerHandle = requestAnimationFrame(tick);
+    } else {
+      UI.timeLeft.textContent = "00:00";
+      updateTimerArc(1);
+      if(state.running) toReviewMode();
     }
+  };
+  tick();
+};
 
-    renderPlayers();
-    UI.scoreBtn.disabled = true;
-    UI.nextRoundBtn.disabled = false;
-    UI.roundStatus.textContent = "تم الاحتساب — اضغط “التالي” لبدء الجولة التالية.";
+function onChatMessage(user, text){
+  const msg = text.trim();
+
+  if(/^!دخول$/i.test(msg)){ joinSolo(user); logChat(user,msg); return; }
+
+  if(!state.running || state.phase!=="play" || !state.currentLetter){
+    logChat(user,msg,null); return;
+  }
+
+  if(!ensurePlayer(user)) return;
+
+  const word = msg.split(/\s+/)[0];
+  if(!startsWithLetter(word, state.currentLetter)){ logChat(user,msg,null); return; }
+
+  const keyWord = normalizeArabic(word);
+
+  if(state.submissionsByWord.has(keyWord)){ logChat(user,word,'dup'); return; }
+
+  if(!state.submissionsByPlayer.has(user)) state.submissionsByPlayer.set(user, new Set());
+  const userSet = state.submissionsByPlayer.get(user);
+  if(userSet.has(keyWord)){ logChat(user,word,'dup'); return; }
+  userSet.add(keyWord);
+
+  if(!state.submissionsByWord.has(keyWord)) state.submissionsByWord.set(keyWord, new Set());
+  state.submissionsByWord.get(keyWord).add(user);
+
+  UI.submissionsCount.textContent = `${state.submissionsByWord.size} كلمة`;
+  logChat(user, word, 'ok');
+}
+window.onChatMessage = onChatMessage;
+
+// ChatBridge wiring
+ChatBridge.on({
+  status: (txt)=>{ UI.roundStatus.textContent=txt; },
+  badge: (platform,st)=>{
+    if(platform==='twitch') state.connFlags.twitch=(st==='ok');
+    if(platform==='kick')   state.connFlags.kick=(st==='ok');
+    const cur = UI.platform.value;
+    if(cur==='twitch') setConnStatus(state.connFlags.twitch, state.connFlags.twitch?'Twitch':null);
+    else if(cur==='kick') setConnStatus(state.connFlags.kick, state.connFlags.kick?'Kick':null);
+  },
+  message: (user,text)=>{ onChatMessage(user,text); }
+});
+
+// Connect btn
+$('connectBtn').addEventListener('click', ()=>{
+  const platform = UI.platform.value;
+  const channel  = (UI.channel.value||"").trim();
+  const remember = UI.rememberChk?.checked ?? true;
+
+  ChatBridge.disconnect('twitch');
+  ChatBridge.disconnect('kick');
+  state.connFlags = {twitch:false, kick:false};
+  setConnStatus(false);
+
+  if(platform==='twitch'){
+    if(!channel){ alert("اكتب اسم قناة Twitch"); return; }
+    ChatBridge.connect('twitch', channel, {remember});
+  } else if(platform==='kick'){
+    if(!channel){ alert("اكتب اسم قناة Kick"); return; }
+    ChatBridge.connect('kick', channel, {remember});
+  } else {
+    setConnStatus(true,"Manual");
+    setStatus("وضع Manual: استخدم المدخل بالأسفل لمحاكاة رسائل الشات.");
+  }
+});
+
+UI.platform.addEventListener('change', ()=>{
+  const p = UI.platform.value;
+  if(p==='twitch'){ UI.channel.value=ChatBridge.getSaved('twitch')||""; setConnStatus(false); UI.manualBox.className='manual-box'; }
+  else if(p==='kick'){ UI.channel.value=ChatBridge.getSaved('kick')||""; setConnStatus(false); UI.manualBox.className='manual-box'; }
+  else { UI.channel.value=""; setConnStatus(true,"Manual"); UI.manualBox.className='manual-box visible'; }
+});
+
+const startGame = () => {
+  const platform = UI.platform.value;
+  if(platform!=='offline'){
+    const ok = platform==='twitch' ? state.connFlags.twitch : state.connFlags.kick;
+    if(!ok){ alert("اتصل أولًا بالمنصة عبر زر 'اتصال'. أو اختر Manual."); return; }
+  }
+  state.running = true;
+  for(const [,p] of state.soloPlayers) p.score=0;
+  renderPlayers();
+  UI.manualBox.className = platform==='offline' ? 'manual-box visible' : 'manual-box';
+  startRound();
+};
+
+const stopGame = () => {
+  state.running = false; state.phase = "idle";
+  if(state.timerHandle) cancelAnimationFrame(state.timerHandle);
+  UI.timeLeft.textContent = "00:00";
+  updateTimerArc(0);
+  setStatus("اللعبة متوقفة.",'');
+  UI.reviewPanel.classList.remove('visible');
+};
+
+$('scoreBtn').addEventListener('click', ()=>{
+  if(state.phase!=="review") return;
+  const approved = [...UI.reviewList.querySelectorAll('input[type="checkbox"]:checked')].map(c=>c.dataset.word);
+  for(const w of approved){
+    const players = state.submissionsByWord.get(w);
+    if(!players) continue;
+    for(const name of players) if(ensurePlayer(name)) awardPoint(name);
+  }
+  renderPlayers();
+  UI.scoreBtn.disabled = true;
+  UI.nextRoundBtn.disabled = false;
+  setStatus("تم الاحتساب — اضغط 'الجولة التالية' للمتابعة.",'review');
+});
+
+$('nextRoundBtn').addEventListener('click', ()=>{ if(!state.running) return; startRound(); });
+$('startBtn').addEventListener('click', startGame);
+$('stopBtn').addEventListener('click', stopGame);
+
+// ─── Select All checkbox handler ───
+UI.selectAllChk.addEventListener('change', (e) => {
+  const checked = e.target.checked;
+  const items = UI.reviewList.querySelectorAll('.review-item');
+  items.forEach(item => {
+    const cb = item.querySelector('input[type="checkbox"]');
+    if(cb){
+      cb.checked = checked;
+      refreshRowSelection(item);
+    }
   });
+  updateSelectAllState();
+});
 
-  UI.nextRoundBtn.addEventListener('click', ()=>{ if(!state.running) return; startRound(); });
-  UI.startBtn.addEventListener('click', startGame);
-  UI.stopBtn.addEventListener('click', stopGame);
+// Manual send
+$('manualSend').addEventListener('click', ()=>{
+  const u = UI.manualUser.value.trim()||"Guest";
+  const m = UI.manualMsg.value.trim();
+  if(!m) return;
+  onChatMessage(u,m);
+  UI.manualMsg.value="";
+  UI.manualMsg.focus();
+});
+UI.manualMsg.addEventListener('keydown', e=>{ if(e.key==='Enter') $('manualSend').click(); });
+UI.manualUser.addEventListener('keydown', e=>{ if(e.key==='Enter') UI.manualMsg.focus(); });
 
-  // Manual
-  UI.manualSend.addEventListener('click', ()=>{
-    const u = UI.manualUser.value.trim() || "Guest";
-    const m = UI.manualMsg.value.trim();
-    if(!m) return;
-    onChatMessage(u, m);
-    UI.manualMsg.value = "";
-    UI.manualMsg.focus();
-  });
-  UI.manualMsg.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ UI.manualSend.click(); }});
-  UI.manualUser.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ UI.manualMsg.focus(); }});
+// ─── Collapsible panels — start CLOSED by default ───
+const initPanel = (panelId, toggleId) => {
+  const panel  = $(panelId);
+  const toggle = $(toggleId);
+  toggle.addEventListener('click', ()=> panel.classList.toggle('open'));
+  // NO panel.classList.add('open') — they start closed
+};
 
-  // طي الألواح
-  const connWrap = document.getElementById('connWrap');
-  const strWrap  = document.getElementById('strWrap');
-  document.getElementById('connHead').addEventListener('click', ()=> connWrap.classList.toggle('panel-open'));
-  document.getElementById('strHead').addEventListener('click', ()=> strWrap.classList.toggle('panel-open'));
-  // افتحهم افتراضيًا
-  connWrap.classList.add('panel-open');
-  strWrap.classList.add('panel-open');
+initPanel('connPanel','connToggle');
+initPanel('ctrlPanel','ctrlToggle');
 
-  // نافذة الشرح
-  const helpBtn = document.getElementById('helpBtn');
-  const helpModal = document.getElementById('helpModal');
-  const closeHelp = document.getElementById('closeHelp');
-  helpBtn.addEventListener('click', ()=> helpModal.style.display='flex');
-  closeHelp.addEventListener('click', ()=> helpModal.style.display='none');
-  helpModal.addEventListener('click', (e)=>{ if(e.target===helpModal) helpModal.style.display='none'; });
+// ─── Help modal ───
+const LS_HIDE_HELP = 'cb_hide_help';
 
-  // تنظيف
-  UI.channel.value = "";
-  </script>
+const openHelp = () => {
+  $('helpModal').classList.add('visible');
+};
+
+const closeHelp = () => {
+  $('helpModal').classList.remove('visible');
+  // Persist "don't show again" if checked
+  if($('dontShowAgain').checked){
+    try { localStorage.setItem(LS_HIDE_HELP, '1'); } catch {}
+  }
+};
+
+$('helpBtn').addEventListener('click',  openHelp);
+$('closeHelp').addEventListener('click', closeHelp);
+$('gotItBtn').addEventListener('click', closeHelp);
+$('helpModal').addEventListener('click', e=>{ if(e.target===$('helpModal')) closeHelp(); });
+
+// ESC key closes the modal
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape' && $('helpModal').classList.contains('visible')) closeHelp();
+});
+
+// ─── On page load: show help unless user opted out ───
+window.addEventListener('DOMContentLoaded', ()=>{
+  const initial = UI.platform.value||'twitch';
+  UI.channel.value = ChatBridge.getSaved(initial)||"";
+
+  let shouldHide = false;
+  try { shouldHide = localStorage.getItem(LS_HIDE_HELP) === '1'; } catch {}
+
+  if(!shouldHide){
+    // Restore the "don't show again" checkbox state
+    $('dontShowAgain').checked = false;
+    // Small delay so the page renders first, feels intentional
+    setTimeout(openHelp, 300);
+  }
+});
+
+UI.channel.value = "";
+</script>
 </body>
 </html>
