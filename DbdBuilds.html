@@ -89,6 +89,7 @@ body::before{
   font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;
 }
 .btn:hover{border-color:var(--gold-deep);color:var(--gold-bright);background:rgba(201,169,97,0.05)}
+.btn:disabled{opacity:0.5;cursor:not-allowed}
 .btn-blood{border-color:var(--blood);color:var(--ink-primary);background:rgba(139,10,10,0.2)}
 .btn-blood:hover{background:var(--blood);border-color:var(--blood-bright);color:#fff}
 .btn-gold{border-color:var(--gold-deep);color:var(--gold-bright);background:rgba(201,169,97,0.08)}
@@ -96,6 +97,20 @@ body::before{
 .btn-ghost{border-color:transparent;color:var(--ink-muted);padding:6px 14px}
 .btn-ghost:hover{color:var(--ink-primary);background:rgba(255,255,255,0.03)}
 .btn-sm{padding:6px 14px;font-size:12px}
+
+.connection-status{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:4px 10px;font-size:11px;font-weight:600;
+  border:1px solid var(--line);
+}
+.connection-status .status-dot{width:6px;height:6px;border-radius:50%;animation:pulse 2s infinite}
+.connection-status.online{color:var(--gold-bright);border-color:var(--gold-deep)}
+.connection-status.online .status-dot{background:var(--gold-bright)}
+.connection-status.offline{color:var(--blood-bright);border-color:var(--blood)}
+.connection-status.offline .status-dot{background:var(--blood-bright)}
+.connection-status.loading{color:var(--ink-muted)}
+.connection-status.loading .status-dot{background:var(--ink-muted)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 
 .hero{
   position:relative;padding:100px 32px 60px;text-align:center;
@@ -133,6 +148,14 @@ body::before{
 .container{max-width:1300px;margin:0 auto;padding:48px 32px;position:relative;z-index:2}
 .section-title{font-size:38px;color:var(--ink-primary);text-align:center;margin-bottom:8px;font-weight:800}
 .section-sub{text-align:center;color:var(--ink-muted);font-size:18px;margin-bottom:40px;font-weight:400}
+
+.setup-warning{
+  margin:24px auto 0;max-width:900px;padding:24px 28px;
+  border:1px dashed var(--blood);background:rgba(139,10,10,0.1);
+}
+.setup-warning h3{color:var(--blood-bright);font-size:18px;margin-bottom:10px;font-weight:800}
+.setup-warning p{color:var(--ink-secondary);font-size:15px;line-height:1.8;margin-bottom:8px}
+.setup-warning code{background:var(--bg-darker);padding:2px 8px;font-family:monospace;color:var(--gold-bright);font-size:13px}
 
 .filter-bar{
   display:flex;align-items:center;justify-content:space-between;gap:16px;
@@ -366,6 +389,19 @@ body::before{
 .toast.error{border-color:var(--blood);color:var(--blood-bright)}
 .toast.success{border-color:var(--gold)}
 
+.loading-overlay{
+  position:fixed;inset:0;background:rgba(10,7,6,0.95);z-index:3000;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;
+}
+.loading-overlay.hidden{display:none}
+.loading-spinner{
+  width:50px;height:50px;border:3px solid var(--line);
+  border-top-color:var(--gold);border-radius:50%;
+  animation:spin 0.8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{color:var(--gold);font-size:16px;font-weight:600}
+
 .empty-state{padding:60px 32px;text-align:center;border:1px dashed var(--line-bright);background:rgba(0,0,0,0.2)}
 .empty-state .icon{font-size:56px;color:var(--gold-deep);margin-bottom:16px;font-weight:900}
 .empty-state h3{color:var(--ink-secondary);font-size:22px;margin-bottom:10px;font-weight:700}
@@ -430,6 +466,11 @@ footer .mark{color:var(--gold-deep);font-size:14px;margin-top:18px;font-weight:7
 </head>
 <body>
 
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text" id="loadingText">جاري الاتصال بقاعدة البيانات...</div>
+</div>
+
 <header class="topbar">
   <div class="topbar-inner">
     <a class="brand" onclick="showView('home');return false">
@@ -448,6 +489,7 @@ footer .mark{color:var(--gold-deep);font-size:14px;margin-top:18px;font-weight:7
       </ul>
     </nav>
     <div class="user-zone" id="userZone">
+      <div class="connection-status loading" id="connStatus"><span class="status-dot"></span><span>جاري الاتصال...</span></div>
       <button class="btn btn-sm" onclick="openAuth()">تسجيل الدخول</button>
     </div>
   </div>
@@ -468,6 +510,12 @@ footer .mark{color:var(--gold-deep);font-size:14px;margin-top:18px;font-weight:7
     <div class="hero-stat"><div class="num" id="statSurvivors">0</div><div class="lbl">بيلدات سيرفايفر</div></div>
     <div class="hero-stat"><div class="num" id="statUsers">0</div><div class="lbl">المسجّلون</div></div>
     <div class="hero-stat"><div class="num" id="statRatings">0</div><div class="lbl">التقييمات</div></div>
+  </div>
+
+  <div class="setup-warning hidden" id="setupWarning">
+    <h3>⚠ Firebase غير مُعدّ بعد</h3>
+    <p>لتفعيل المشاركة بين كل المستخدمين، يلزم إعداد مشروع Firebase وتحديث ملف <code>firebase-config.js</code>.</p>
+    <p>الموقع يعمل حالياً في وضع محلي (البيانات تُحفظ في متصفحك فقط). راجع التعليمات في الملف للإعداد.</p>
   </div>
 </section>
 
@@ -548,7 +596,7 @@ footer .mark{color:var(--gold-deep);font-size:14px;margin-top:18px;font-weight:7
         </div>
         <div class="form-actions">
           <button type="button" class="btn btn-ghost" onclick="closeModal('authModal')">إلغاء</button>
-          <button type="submit" class="btn btn-gold">دخول</button>
+          <button type="submit" class="btn btn-gold" id="loginSubmitBtn">دخول</button>
         </div>
       </form>
 
@@ -572,7 +620,7 @@ footer .mark{color:var(--gold-deep);font-size:14px;margin-top:18px;font-weight:7
         </div>
         <div class="form-actions">
           <button type="button" class="btn btn-ghost" onclick="closeModal('authModal')">إلغاء</button>
-          <button type="submit" class="btn btn-gold">إنشاء حساب</button>
+          <button type="submit" class="btn btn-gold" id="regSubmitBtn">إنشاء حساب</button>
         </div>
       </form>
     </div>
@@ -688,15 +736,61 @@ footer .mark{color:var(--gold-deep);font-size:14px;margin-top:18px;font-weight:7
 
 <div class="toast" id="toast"></div>
 
-<script>
-const STORE = {
-  users: 'dbdcommunity_users_v3',
-  builds: 'dbdcommunity_builds_v3',
-  session: 'dbdcommunity_session_v3'
+<script type="module">
+// ═══════════════════════════════════════════════════════════════
+// ⚙️ إعدادات Firebase — استبدل القيم التالية بقيم مشروعك
+// ═══════════════════════════════════════════════════════════════
+const firebaseConfig = {
+  apiKey: "AIzaSyCswcQO4Uslunsay9ZwwKlAv_p-IsCjSig",
+  authDomain: "dbdb-fa3e0.firebaseapp.com",
+  databaseURL: "https://dbdb-fa3e0-default-rtdb.firebaseio.com",
+  projectId: "dbdb-fa3e0",
+  storageBucket: "dbdb-fa3e0.firebasestorage.app",
+  messagingSenderId: "187278497552",
+  appId: "1:187278497552:web:e125c9e12332a5e9fa3795",
+  measurementId: "G-P21J1TPPBP"
 };
 
 const ADMIN_USERNAME = 'admin';
 const ADMIN_PASSWORD = 'admin123';
+// ═══════════════════════════════════════════════════════════════
+
+const isFirebaseConfigured = !firebaseConfig.apiKey.startsWith('PUT_YOUR_');
+
+let db = null;
+let firebaseAvailable = false;
+let usersListener = null;
+let buildsListener = null;
+
+if (isFirebaseConfigured) {
+  try {
+    const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+    const { getDatabase, ref, set, get, onValue, remove, update, push } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js");
+    const app = initializeApp(firebaseConfig);
+    db = getDatabase(app);
+    window._fb = { ref, set, get, onValue, remove, update, push };
+    firebaseAvailable = true;
+    console.log('✓ Firebase connected');
+  } catch (e) {
+    console.error('Firebase initialization failed:', e);
+    firebaseAvailable = false;
+  }
+}
+
+window.firebaseAvailable = firebaseAvailable;
+window.db = db;
+window.ADMIN_USERNAME = ADMIN_USERNAME;
+window.ADMIN_PASSWORD = ADMIN_PASSWORD;
+
+window.dispatchEvent(new CustomEvent('firebase-ready'));
+</script>
+
+<script>
+const STORE = {
+  users: 'dbdcommunity_users_v4',
+  builds: 'dbdcommunity_builds_v4',
+  session: 'dbdcommunity_session_v4'
+};
 
 let state = {
   users: [],
@@ -709,13 +803,9 @@ let state = {
   editingAddon: null,
   editingBuildId: null,
   perksDraft: [null, null, null, null],
-  addonsDraft: [null, null]
+  addonsDraft: [null, null],
+  initialized: false
 };
-
-function canEditBuild(b) {
-  if (!state.session || !b) return false;
-  return isAdmin();
-}
 
 function $(id) { return document.getElementById(id); }
 function uid() { return 'b' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36); }
@@ -726,13 +816,100 @@ function safeParse(key, fallback) {
     if (!raw) return fallback;
     const parsed = JSON.parse(raw);
     return parsed === null ? fallback : parsed;
-  } catch (e) {
-    console.error('Failed to parse', key, e);
-    return fallback;
+  } catch (e) { return fallback; }
+}
+
+function persistSession() {
+  try { localStorage.setItem(STORE.session, JSON.stringify(state.session)); } catch (e) {}
+}
+
+function persistLocal() {
+  try {
+    localStorage.setItem(STORE.users, JSON.stringify(state.users));
+    localStorage.setItem(STORE.builds, JSON.stringify(state.builds));
+    localStorage.setItem(STORE.session, JSON.stringify(state.session));
+  } catch (e) { console.error(e); }
+}
+
+function updateConnStatus(status) {
+  const el = $('connStatus');
+  if (!el) return;
+  el.className = 'connection-status ' + status;
+  if (status === 'online') {
+    el.innerHTML = '<span class="status-dot"></span><span>متصل ✦</span>';
+  } else if (status === 'offline') {
+    el.innerHTML = '<span class="status-dot"></span><span>وضع محلي</span>';
+  } else {
+    el.innerHTML = '<span class="status-dot"></span><span>جاري الاتصال...</span>';
   }
 }
 
-function load() {
+function objectToArray(obj) {
+  if (!obj) return [];
+  return Object.keys(obj).map(k => {
+    const item = obj[k];
+    return typeof item === 'object' ? Object.assign({}, item, { _key: k }) : item;
+  });
+}
+
+async function loadFromFirebase() {
+  const { ref, get, onValue } = window._fb;
+
+  $('loadingText').textContent = 'جلب البيانات...';
+
+  try {
+    const usersSnap = await get(ref(window.db, 'users'));
+    const buildsSnap = await get(ref(window.db, 'builds'));
+
+    let users = objectToArray(usersSnap.val());
+    let builds = objectToArray(buildsSnap.val());
+
+    if (!users.find(u => u.username === window.ADMIN_USERNAME)) {
+      const { set } = window._fb;
+      const adminData = {
+        username: window.ADMIN_USERNAME,
+        password: window.ADMIN_PASSWORD,
+        role: 'admin',
+        joined: Date.now()
+      };
+      await set(ref(window.db, 'users/' + window.ADMIN_USERNAME), adminData);
+      users.push(adminData);
+    }
+
+    state.users = users;
+    state.builds = builds;
+
+    if (usersListener) usersListener();
+    if (buildsListener) buildsListener();
+
+    usersListener = onValue(ref(window.db, 'users'), (snap) => {
+      state.users = objectToArray(snap.val());
+      if (state.session) {
+        const u = state.users.find(x => x && x.username === state.session.username);
+        if (!u) { state.session = null; persistSession(); renderSession(); }
+        else state.session.role = u.role;
+      }
+      renderSession();
+      renderStats();
+      if (state.currentView === 'admin') renderAdmin();
+    });
+
+    buildsListener = onValue(ref(window.db, 'builds'), (snap) => {
+      state.builds = objectToArray(snap.val());
+      renderBuilds();
+      renderStats();
+      if (state.currentView === 'admin') renderAdmin();
+    });
+
+    updateConnStatus('online');
+    console.log('✓ Loaded from Firebase. Users:', state.users.length, 'Builds:', state.builds.length);
+  } catch (e) {
+    console.error('Firebase load failed:', e);
+    throw e;
+  }
+}
+
+function loadFromLocal() {
   state.users = safeParse(STORE.users, []);
   state.builds = safeParse(STORE.builds, []);
   state.session = safeParse(STORE.session, null);
@@ -740,93 +917,96 @@ function load() {
   if (!Array.isArray(state.users)) state.users = [];
   if (!Array.isArray(state.builds)) state.builds = [];
 
-  let adminUser = state.users.find(u => u && u.username === ADMIN_USERNAME);
+  let adminUser = state.users.find(u => u && u.username === window.ADMIN_USERNAME);
   if (!adminUser) {
     state.users.push({
-      username: ADMIN_USERNAME,
-      password: ADMIN_PASSWORD,
+      username: window.ADMIN_USERNAME,
+      password: window.ADMIN_PASSWORD,
       role: 'admin',
       joined: Date.now()
     });
   } else {
     adminUser.role = 'admin';
-    if (!adminUser.password) adminUser.password = ADMIN_PASSWORD;
+    if (!adminUser.password) adminUser.password = window.ADMIN_PASSWORD;
   }
-
-  if (state.builds.length === 0) seedBuilds();
 
   if (state.session && state.session.username) {
     const u = state.users.find(x => x && x.username === state.session.username);
-    if (!u) {
-      state.session = null;
-    } else {
-      state.session = {
-        username: u.username,
-        role: u.role,
-        loginAt: state.session.loginAt || Date.now()
-      };
-    }
+    if (!u) state.session = null;
+    else state.session = { username: u.username, role: u.role, loginAt: state.session.loginAt || Date.now() };
   } else {
     state.session = null;
   }
 
-  persist();
-  console.log('Loaded. Users:', state.users.length, 'Session:', state.session);
+  persistLocal();
+  updateConnStatus('offline');
+  $('setupWarning').classList.remove('hidden');
 }
 
-function persist() {
-  try {
-    localStorage.setItem(STORE.users, JSON.stringify(state.users));
-    localStorage.setItem(STORE.builds, JSON.stringify(state.builds));
-    localStorage.setItem(STORE.session, JSON.stringify(state.session));
-  } catch (e) {
-    console.error('Failed to persist:', e);
-    toast('فشل حفظ البيانات', 'error');
-  }
-}
+async function init() {
+  state.session = safeParse(STORE.session, null);
 
-function seedBuilds() {
-  state.builds = [
-    {
-      id: 'b1', role: 'killer', character: 'The Nurse', name: 'بيلد المطاردة الشبحية',
-      portrait: '', author: 'admin', status: 'approved', created: Date.now() - 86400000 * 5,
-      perks: [
-        { name: "A Nurse's Calling", img: '' },
-        { name: 'Hex: Ruin', img: '' },
-        { name: 'Lethal Pursuer', img: '' },
-        { name: 'Sloppy Butcher', img: '' }
-      ],
-      addons: [{ name: 'Plaid Flannel', img: '' }, { name: 'Matchbox', img: '' }],
-      desc: 'بيلد عدواني يعتمد على التيليبورت. استخدم Lethal Pursuer لاكتشاف أماكن السيرفايفرز فور بدء المباراة، ثم تتبّع المصابين بـ A Nurse\'s Calling. بيرك Hex: Ruin يضغط على الجنريترز أثناء المطاردة، و Sloppy Butcher يبطّئ الشفاء.',
-      ratings: []
-    },
-    {
-      id: 'b2', role: 'survivor', character: 'Meg Thomas', name: 'بيلد الهروب السريع',
-      portrait: '', author: 'admin', status: 'approved', created: Date.now() - 86400000 * 3,
-      perks: [
-        { name: 'Sprint Burst', img: '' },
-        { name: 'Adrenaline', img: '' },
-        { name: 'Resilience', img: '' },
-        { name: 'Dead Hard', img: '' }
-      ],
-      addons: [],
-      desc: 'بيلد يركّز على المطاردة والنهاية. Sprint Burst يعطيك سرعة فور رؤية الكيلر. Adrenaline ينطلق مع آخر جنريتر — يشفيك ويعطيك سرعة. Dead Hard للهروب اللحظي، و Resilience يعزّز كل شيء وأنت مصاب.',
-      ratings: []
-    },
-    {
-      id: 'b3', role: 'killer', character: 'The Trapper', name: 'بيلد الإبطاء المستمر',
-      portrait: '', author: 'admin', status: 'approved', created: Date.now() - 86400000 * 2,
-      perks: [
-        { name: 'Pop Goes the Weasel', img: '' },
-        { name: 'Corrupt Intervention', img: '' },
-        { name: 'Pain Resonance', img: '' },
-        { name: 'Deadlock', img: '' }
-      ],
-      addons: [{ name: 'Trapper Bag', img: '' }, { name: 'Bloody Coil', img: '' }],
-      desc: 'بيلد إبطاء يطيل المباراة. Corrupt يقفل 3 جنريترز في البداية بينما تنصب الفخاخ. بعد كل هوك، Pain Resonance و Pop يدمّران الجنريترز. Deadlock يعاقب السيرفايفرز عند إكمال جنريتر.',
-      ratings: []
+  if (window.firebaseAvailable && window.db) {
+    try {
+      await loadFromFirebase();
+
+      if (state.session && state.session.username) {
+        const u = state.users.find(x => x && x.username === state.session.username);
+        if (!u) state.session = null;
+        else state.session = { username: u.username, role: u.role, loginAt: state.session.loginAt || Date.now() };
+        persistSession();
+      }
+    } catch (e) {
+      console.warn('Falling back to local mode');
+      loadFromLocal();
     }
-  ];
+  } else {
+    loadFromLocal();
+  }
+
+  state.initialized = true;
+  $('loadingOverlay').classList.add('hidden');
+  renderSession();
+  renderBuilds();
+  renderStats();
+}
+
+window.addEventListener('firebase-ready', init);
+
+setTimeout(() => {
+  if (!state.initialized) {
+    console.warn('Firebase ready event did not fire, starting in local mode');
+    loadFromLocal();
+    state.initialized = true;
+    $('loadingOverlay').classList.add('hidden');
+    renderSession();
+    renderBuilds();
+    renderStats();
+  }
+}, 5000);
+
+async function saveUserToFirebase(user) {
+  if (!window.firebaseAvailable) { persistLocal(); return; }
+  const { ref, set } = window._fb;
+  await set(ref(window.db, 'users/' + user.username), user);
+}
+
+async function deleteUserFromFirebase(username) {
+  if (!window.firebaseAvailable) { persistLocal(); return; }
+  const { ref, remove } = window._fb;
+  await remove(ref(window.db, 'users/' + username));
+}
+
+async function saveBuildToFirebase(build) {
+  if (!window.firebaseAvailable) { persistLocal(); return; }
+  const { ref, set } = window._fb;
+  await set(ref(window.db, 'builds/' + build.id), build);
+}
+
+async function deleteBuildFromFirebase(buildId) {
+  if (!window.firebaseAvailable) { persistLocal(); return; }
+  const { ref, remove } = window._fb;
+  await remove(ref(window.db, 'builds/' + buildId));
 }
 
 function toast(msg, type) {
@@ -865,6 +1045,11 @@ function isAdmin() {
   if (state.session.role !== 'admin') return false;
   const user = state.users.find(u => u && u.username === state.session.username);
   return user && user.role === 'admin';
+}
+
+function canEditBuild(b) {
+  if (!state.session || !b) return false;
+  return isAdmin();
 }
 
 function showView(view) {
@@ -922,58 +1107,45 @@ function switchAuthTab(tab) {
 
 function closeModal(id) { $(id).classList.remove('active'); }
 
-function handleLogin(e) {
+async function handleLogin(e) {
   e.preventDefault();
   clearErrors();
 
   const username = $('loginUser').value.trim();
   const password = $('loginPass').value;
 
-  if (!username) {
-    showError('loginUserErr', 'اسم المستخدم مطلوب');
-    return false;
+  if (!username) { showError('loginUserErr', 'اسم المستخدم مطلوب'); return false; }
+  if (!password) { showError('loginPassErr', 'كلمة المرور مطلوبة'); return false; }
+
+  const btn = $('loginSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = 'جاري التحقق...';
+
+  try {
+    const user = state.users.find(u =>
+      u && u.username && u.username.toLowerCase() === username.toLowerCase()
+    );
+
+    if (!user) { showError('loginUserErr', 'اسم المستخدم غير موجود'); return false; }
+    if (user.password !== password) { showError('loginPassErr', 'كلمة المرور غير صحيحة'); return false; }
+
+    state.session = { username: user.username, role: user.role, loginAt: Date.now() };
+    persistSession();
+    renderSession();
+    closeModal('authModal');
+    toast('أهلاً، ' + user.username);
+
+    if (user.role === 'admin') showView('admin');
+    else renderBuilds();
+    renderStats();
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'دخول';
   }
-  if (!password) {
-    showError('loginPassErr', 'كلمة المرور مطلوبة');
-    return false;
-  }
-
-  const user = state.users.find(u =>
-    u && u.username && u.username.toLowerCase() === username.toLowerCase()
-  );
-
-  if (!user) {
-    showError('loginUserErr', 'اسم المستخدم غير موجود');
-    return false;
-  }
-  if (user.password !== password) {
-    showError('loginPassErr', 'كلمة المرور غير صحيحة');
-    return false;
-  }
-
-  state.session = {
-    username: user.username,
-    role: user.role,
-    loginAt: Date.now()
-  };
-  persist();
-
-  console.log('Login successful:', state.session);
-
-  renderSession();
-  closeModal('authModal');
-  toast('أهلاً، ' + user.username);
-
-  if (user.role === 'admin') {
-    showView('admin');
-  } else {
-    renderBuilds();
-  }
-  renderStats();
   return false;
 }
 
-function handleRegister(e) {
+async function handleRegister(e) {
   e.preventDefault();
   clearErrors();
 
@@ -981,58 +1153,58 @@ function handleRegister(e) {
   const password = $('regPass').value;
   const password2 = $('regPass2').value;
 
-  if (!username) {
-    showError('regUserErr', 'اسم المستخدم مطلوب');
-    return false;
-  }
+  if (!username) { showError('regUserErr', 'اسم المستخدم مطلوب'); return false; }
   if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
     showError('regUserErr', 'الاسم: 3-20 حرفاً، حروف لاتينية أو أرقام أو شرطة سفلية فقط');
     return false;
   }
-  if (username.toLowerCase() === ADMIN_USERNAME.toLowerCase()) {
-    showError('regUserErr', 'هذا الاسم محجوز');
-    return false;
+  if (username.toLowerCase() === window.ADMIN_USERNAME.toLowerCase()) {
+    showError('regUserErr', 'هذا الاسم محجوز'); return false;
   }
   if (state.users.find(u => u && u.username && u.username.toLowerCase() === username.toLowerCase())) {
-    showError('regUserErr', 'هذا الاسم محجوز، اختر اسماً آخر');
-    return false;
+    showError('regUserErr', 'هذا الاسم محجوز، اختر اسماً آخر'); return false;
   }
   if (!password || password.length < 4) {
-    showError('regPassErr', 'كلمة المرور قصيرة جداً (4 أحرف على الأقل)');
-    return false;
+    showError('regPassErr', 'كلمة المرور قصيرة جداً (4 أحرف على الأقل)'); return false;
   }
   if (password !== password2) {
-    showError('regPass2Err', 'كلمتا المرور غير متطابقتين');
-    return false;
+    showError('regPass2Err', 'كلمتا المرور غير متطابقتين'); return false;
   }
 
-  const newUser = {
-    username: username,
-    password: password,
-    role: 'user',
-    joined: Date.now()
-  };
-  state.users.push(newUser);
-  state.session = {
-    username: username,
-    role: 'user',
-    loginAt: Date.now()
-  };
-  persist();
+  const btn = $('regSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = 'جاري الإنشاء...';
 
-  console.log('Registration successful:', state.session);
+  try {
+    const newUser = { username, password, role: 'user', joined: Date.now() };
 
-  renderSession();
-  closeModal('authModal');
-  toast('مرحباً بك، ' + username);
-  renderBuilds();
-  renderStats();
+    if (window.firebaseAvailable) {
+      await saveUserToFirebase(newUser);
+    } else {
+      state.users.push(newUser);
+      persistLocal();
+    }
+
+    state.session = { username, role: 'user', loginAt: Date.now() };
+    persistSession();
+    renderSession();
+    closeModal('authModal');
+    toast('مرحباً بك، ' + username);
+    renderBuilds();
+    renderStats();
+  } catch (err) {
+    console.error(err);
+    toast('فشل إنشاء الحساب', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'إنشاء حساب';
+  }
   return false;
 }
 
 function logout() {
   state.session = null;
-  persist();
+  persistSession();
   renderSession();
   if (state.currentView === 'admin') showView('home');
   toast('تم تسجيل الخروج');
@@ -1040,13 +1212,14 @@ function logout() {
 
 function renderSession() {
   const z = $('userZone');
+  const connHTML = z.querySelector('.connection-status')?.outerHTML || '';
   if (!state.session) {
-    z.innerHTML = '<button class="btn btn-sm" onclick="openAuth()">تسجيل الدخول</button>';
+    z.innerHTML = connHTML + '<button class="btn btn-sm" onclick="openAuth()">تسجيل الدخول</button>';
     $('adminTabBtn').classList.add('hidden');
     return;
   }
   const admin = isAdmin();
-  z.innerHTML =
+  z.innerHTML = connHTML +
     '<div class="user-pill ' + (admin ? 'admin' : '') + '">' +
       '<span class="dot"></span>' +
       '<span>' + escapeHTML(state.session.username) + '</span>' +
@@ -1057,17 +1230,14 @@ function renderSession() {
 }
 
 function openCreateBuild() {
-  if (!state.session) {
-    toast('سجّل الدخول أولاً', 'error');
-    openAuth();
-    return;
-  }
+  if (!state.session) { toast('سجّل الدخول أولاً', 'error'); openAuth(); return; }
   state.editingBuildId = null;
   state.perksDraft = [null, null, null, null];
   state.addonsDraft = [null, null];
   $('buildForm').reset();
   $('bfPortraitPrev').innerHTML = '';
   $('buildModalTitle').textContent = isAdmin() ? 'أضف بيلد (يُنشر مباشرة)' : 'اقترح بيلد جديد';
+  $('buildSubmitBtn').textContent = isAdmin() ? 'نشر البيلد' : 'إرسال للمراجعة';
   renderPerkSlots();
   updateRoleHint();
   $('buildModal').classList.add('active');
@@ -1202,19 +1372,17 @@ function clearPerkPicker() {
 function savePerkPicker() {
   const name = $('perkPickerName').value.trim();
   const img = $('perkPickerImg').value.trim();
-  const data = (!name && !img) ? null : { name: name, img: img };
+  const data = (!name && !img) ? null : { name, img };
   if (state.editingPerk !== null) state.perksDraft[state.editingPerk] = data;
   if (state.editingAddon !== null) state.addonsDraft[state.editingAddon] = data;
   renderPerkSlots();
   closeModal('perkModal');
 }
 
-function handleBuildSubmit(e) {
+async function handleBuildSubmit(e) {
   e.preventDefault();
-  if (!state.session) {
-    toast('سجّل الدخول أولاً', 'error');
-    return;
-  }
+  if (!state.session) { toast('سجّل الدخول أولاً', 'error'); return; }
+
   const role = $('bfRole').value;
   const character = $('bfCharacter').value.trim();
   const name = $('bfName').value.trim();
@@ -1231,53 +1399,69 @@ function handleBuildSubmit(e) {
 
   const addons = state.addonsDraft.map(a => a || { name: '', img: '' }).filter(a => a.name || a.img);
 
-  if (state.editingBuildId) {
-    const existing = state.builds.find(b => b.id === state.editingBuildId);
-    if (!existing) { toast('البيلد غير موجود', 'error'); return; }
-    if (!canEditBuild(existing)) { toast('لا تملك صلاحية التعديل', 'error'); return; }
+  const btn = $('buildSubmitBtn');
+  btn.disabled = true;
+  const origText = btn.textContent;
+  btn.textContent = 'جاري الحفظ...';
 
-    existing.role = role;
-    existing.character = character;
-    existing.name = name;
-    existing.portrait = $('bfPortrait').value.trim();
-    existing.perks = perks;
-    existing.addons = addons;
-    existing.desc = desc;
-    existing.editedAt = Date.now();
-    existing.editedBy = state.session.username;
+  try {
+    if (state.editingBuildId) {
+      const existing = state.builds.find(b => b.id === state.editingBuildId);
+      if (!existing) { toast('البيلد غير موجود', 'error'); return; }
+      if (!canEditBuild(existing)) { toast('لا تملك صلاحية التعديل', 'error'); return; }
 
-    persist();
+      const updated = Object.assign({}, existing, {
+        role, character, name,
+        portrait: $('bfPortrait').value.trim(),
+        perks, addons, desc,
+        editedAt: Date.now(),
+        editedBy: state.session.username
+      });
+      delete updated._key;
+
+      if (window.firebaseAvailable) {
+        await saveBuildToFirebase(updated);
+      } else {
+        Object.assign(existing, updated);
+        persistLocal();
+        renderBuilds();
+      }
+      toast('تم حفظ التعديل');
+      closeModal('buildModal');
+      state.editingBuildId = null;
+      return;
+    }
+
+    const build = {
+      id: uid(),
+      role, character, name,
+      portrait: $('bfPortrait').value.trim(),
+      perks, addons, desc,
+      author: state.session.username,
+      status: isAdmin() ? 'approved' : 'pending',
+      created: Date.now(),
+      ratings: []
+    };
+
+    if (window.firebaseAvailable) {
+      await saveBuildToFirebase(build);
+    } else {
+      state.builds.unshift(build);
+      persistLocal();
+      renderBuilds();
+      renderStats();
+    }
+
+    toast(isAdmin() ? 'تم نشر البيلد' : 'تم الإرسال — بانتظار موافقة الحارس');
     closeModal('buildModal');
     state.editingBuildId = null;
-    toast('تم حفظ التعديل');
-    renderBuilds();
-    renderStats();
-    if (state.currentView === 'admin') renderAdmin();
-    return;
+  } catch (err) {
+    console.error(err);
+    toast('فشل الحفظ', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = origText;
   }
-
-  const build = {
-    id: uid(),
-    role: role,
-    character: character,
-    name: name,
-    portrait: $('bfPortrait').value.trim(),
-    perks: perks,
-    addons: addons,
-    desc: desc,
-    author: state.session.username,
-    status: isAdmin() ? 'approved' : 'pending',
-    created: Date.now(),
-    ratings: []
-  };
-  state.builds.unshift(build);
-  persist();
-  closeModal('buildModal');
-  state.editingBuildId = null;
-  toast(isAdmin() ? 'تم نشر البيلد' : 'تم الإرسال — بانتظار موافقة الحارس');
-  renderBuilds();
-  renderStats();
-  if (state.currentView === 'admin') renderAdmin();
 }
 
 function visibleBuilds() {
@@ -1285,13 +1469,13 @@ function visibleBuilds() {
   if (state.roleFilter !== 'all') arr = arr.filter(b => b.role === state.roleFilter);
   const q = ($('searchInput') && $('searchInput').value.trim().toLowerCase()) || '';
   if (q) arr = arr.filter(b =>
-    (b.name + ' ' + b.character + ' ' + b.desc + ' ' + b.perks.map(p => p.name).join(' '))
+    (b.name + ' ' + b.character + ' ' + b.desc + ' ' + (b.perks||[]).map(p => p.name).join(' '))
       .toLowerCase().includes(q)
   );
   const sort = ($('sortSelect') && $('sortSelect').value) || 'rating';
   if (sort === 'rating') arr.sort((a, b) => avgRating(b) - avgRating(a));
   else if (sort === 'recent') arr.sort((a, b) => b.created - a.created);
-  else if (sort === 'popular') arr.sort((a, b) => b.ratings.length - a.ratings.length);
+  else if (sort === 'popular') arr.sort((a, b) => (b.ratings||[]).length - (a.ratings||[]).length);
   return arr;
 }
 
@@ -1307,8 +1491,7 @@ function renderBuilds() {
   if (arr.length === 0) {
     grid.innerHTML =
       '<div class="empty-state" style="grid-column:1/-1">' +
-        '<div class="icon">✦</div>' +
-        '<h3>لا توجد بيلدات</h3>' +
+        '<div class="icon">✦</div><h3>لا توجد بيلدات</h3>' +
         '<p>لا يوجد ما يطابق بحثك. كن أول من يقترح بيلداً</p>' +
       '</div>';
     return;
@@ -1321,7 +1504,8 @@ function buildCardHTML(b) {
   const stars = avg > 0
     ? '★'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg))
     : '☆☆☆☆☆';
-  const perksHTML = b.perks.map(p =>
+  const perks = b.perks || [];
+  const perksHTML = perks.map(p =>
     '<div class="perk">' +
       (p.img
         ? '<img src="' + escapeAttr(p.img) + '" onerror="this.style.display=\'none\'">'
@@ -1341,9 +1525,10 @@ function buildCardHTML(b) {
       '</div>'
     : '';
 
-  const suggestedBy = (b.author && b.author !== ADMIN_USERNAME)
+  const suggestedBy = (b.author && b.author !== window.ADMIN_USERNAME)
     ? '<div class="suggested-by"><span class="icon">✦</span><span>مقترح من <span class="author-name">' + escapeHTML(b.author) + '</span></span></div>'
     : '';
+  const ratings = b.ratings || [];
 
   return '<article class="build-card ' + (b.status === 'pending' ? 'pending' : '') + '" onclick="openDetail(\'' + b.id + '\')">' +
     '<div class="build-header">' +
@@ -1360,7 +1545,7 @@ function buildCardHTML(b) {
     '<div class="build-footer">' +
       '<div class="rating-display">' +
         '<span class="rating-stars">' + stars + '</span>' +
-        '<span>' + avg.toFixed(1) + ' <span class="text-muted">(' + b.ratings.length + ')</span></span>' +
+        '<span>' + avg.toFixed(1) + ' <span class="text-muted">(' + ratings.length + ')</span></span>' +
       '</div>' +
       adminBar +
     '</div>' +
@@ -1370,16 +1555,18 @@ function buildCardHTML(b) {
 function openDetail(id) {
   const b = state.builds.find(x => x.id === id);
   if (!b) return;
+  const ratings = b.ratings || [];
   const myRating = state.session
-    ? ((b.ratings.find(r => r.user === state.session.username) || {}).value || 0)
+    ? ((ratings.find(r => r.user === state.session.username) || {}).value || 0)
     : 0;
   const avg = avgRating(b);
   const stars = avg > 0
     ? '★'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg))
     : '☆☆☆☆☆';
   const roleLabel = b.role === 'killer' ? 'كيلر' : 'سيرفايفر';
+  const perks = b.perks || [];
 
-  const perksHTML = b.perks.map((p, i) => {
+  const perksHTML = perks.map((p, i) => {
     const num = ['١', '٢', '٣', '٤'][i];
     return '<div class="detail-perk">' +
       '<div class="detail-perk-img">' +
@@ -1405,8 +1592,7 @@ function openDetail(id) {
 
   const canRate = state.session && state.session.username !== b.author;
   const ratingHTML = state.session
-    ? '<div class="detail-section">' +
-        '<h3>تقييمك</h3>' +
+    ? '<div class="detail-section"><h3>تقييمك</h3>' +
         (canRate
           ? '<div class="rating-input" data-build="' + b.id + '">' +
               [5, 4, 3, 2, 1].map(n =>
@@ -1415,19 +1601,18 @@ function openDetail(id) {
             '</div>' +
             '<div class="rating-summary">' +
               '<span class="avg">' + avg.toFixed(1) + ' / 5</span>' +
-              '<span>' + b.ratings.length + ' تقييم • <span class="gold">' + stars + '</span></span>' +
+              '<span>' + ratings.length + ' تقييم • <span class="gold">' + stars + '</span></span>' +
             '</div>'
           : '<div class="rating-summary">' +
               '<span class="avg">' + avg.toFixed(1) + ' / 5</span>' +
-              '<span>' + b.ratings.length + ' تقييم • <span class="gold">' + stars + '</span></span>' +
+              '<span>' + ratings.length + ' تقييم • <span class="gold">' + stars + '</span></span>' +
               '<div style="margin-top:8px;font-size:14px">لا يمكنك تقييم بيلداً من تأليفك</div>' +
             '</div>') +
       '</div>'
-    : '<div class="detail-section">' +
-        '<h3>تقييم المسجّلين</h3>' +
+    : '<div class="detail-section"><h3>تقييم المسجّلين</h3>' +
         '<div class="rating-summary">' +
           '<span class="avg">' + avg.toFixed(1) + ' / 5</span>' +
-          '<span>' + b.ratings.length + ' تقييم • <span class="gold">' + stars + '</span></span>' +
+          '<span>' + ratings.length + ' تقييم • <span class="gold">' + stars + '</span></span>' +
           '<div style="margin-top:8px;font-size:14px">سجّل الدخول لتقيّم البيلد</div>' +
         '</div>' +
       '</div>';
@@ -1443,7 +1628,7 @@ function openDetail(id) {
       '</div>'
     : '';
 
-  const suggestedByDetail = (b.author && b.author !== ADMIN_USERNAME)
+  const suggestedByDetail = (b.author && b.author !== window.ADMIN_USERNAME)
     ? '<div class="detail-suggested-by"><span style="color:var(--gold-bright)">✦</span> مقترح من <span class="name">' + escapeHTML(b.author) + '</span></div>'
     : '';
 
@@ -1489,41 +1674,67 @@ function highlightStars(container, n) {
   });
 }
 
-function submitRating(buildId, value) {
+async function submitRating(buildId, value) {
   if (!state.session) { toast('سجّل الدخول أولاً', 'error'); return; }
   const b = state.builds.find(x => x.id === buildId);
   if (!b) return;
   if (b.author === state.session.username) { toast('لا يمكنك تقييم بيلدك الخاص', 'error'); return; }
-  b.ratings = b.ratings.filter(r => r.user !== state.session.username);
-  b.ratings.push({ user: state.session.username, value: value, at: Date.now() });
-  persist();
-  toast('تم حفظ تقييمك');
-  openDetail(buildId);
-  renderBuilds();
-  renderStats();
+
+  const ratings = (b.ratings || []).filter(r => r.user !== state.session.username);
+  ratings.push({ user: state.session.username, value, at: Date.now() });
+  const updated = Object.assign({}, b, { ratings });
+  delete updated._key;
+
+  try {
+    if (window.firebaseAvailable) {
+      await saveBuildToFirebase(updated);
+    } else {
+      b.ratings = ratings;
+      persistLocal();
+      renderBuilds();
+      renderStats();
+    }
+    toast('تم حفظ تقييمك');
+    openDetail(buildId);
+  } catch (err) {
+    console.error(err);
+    toast('فشل حفظ التقييم', 'error');
+  }
 }
 
-function approveBuild(id) {
+async function approveBuild(id) {
   if (!isAdmin()) return;
   const b = state.builds.find(x => x.id === id);
   if (!b) return;
-  b.status = 'approved';
-  persist();
-  toast('تمت الموافقة');
-  renderBuilds();
-  renderStats();
-  if (state.currentView === 'admin') renderAdmin();
+  const updated = Object.assign({}, b, { status: 'approved' });
+  delete updated._key;
+  try {
+    if (window.firebaseAvailable) {
+      await saveBuildToFirebase(updated);
+    } else {
+      b.status = 'approved';
+      persistLocal();
+      renderBuilds();
+      renderStats();
+    }
+    toast('تمت الموافقة');
+  } catch (e) { console.error(e); toast('فشل الحفظ', 'error'); }
 }
 
-function deleteBuild(id) {
+async function deleteBuild(id) {
   if (!isAdmin()) return;
   if (!confirm('هل تريد حذف هذا البيلد نهائياً؟')) return;
-  state.builds = state.builds.filter(x => x.id !== id);
-  persist();
-  toast('تم الحذف');
-  renderBuilds();
-  renderStats();
-  if (state.currentView === 'admin') renderAdmin();
+  try {
+    if (window.firebaseAvailable) {
+      await deleteBuildFromFirebase(id);
+    } else {
+      state.builds = state.builds.filter(x => x.id !== id);
+      persistLocal();
+      renderBuilds();
+      renderStats();
+    }
+    toast('تم الحذف');
+  } catch (e) { console.error(e); toast('فشل الحذف', 'error'); }
 }
 
 function setAdminTab(tab) {
@@ -1543,7 +1754,6 @@ function renderAdmin() {
   const totalBuilds = state.builds.length;
   const pendingBuilds = state.builds.filter(b => b.status === 'pending').length;
   const approvedBuilds = state.builds.filter(b => b.status === 'approved').length;
-  const totalUsers = state.users.length;
   const regularUsers = state.users.filter(u => u.role !== 'admin').length;
   const totalRatings = state.builds.reduce((s, b) => s + ((b.ratings && b.ratings.length) || 0), 0);
   const killerBuilds = state.builds.filter(b => b.role === 'killer' && b.status === 'approved').length;
@@ -1593,7 +1803,7 @@ function renderAdmin() {
               '<td>' + dateStr + '</td>' +
               '<td>' + userBuilds + '</td>' +
               '<td>' + userRatings + '</td>' +
-              '<td>' + (u.username !== ADMIN_USERNAME
+              '<td>' + (u.username !== window.ADMIN_USERNAME
                 ? '<button class="btn btn-sm btn-blood" onclick="deleteUser(\'' + escapeAttr(u.username) + '\')">حذف</button>'
                 : '<span class="text-muted">—</span>') +
               '</td>' +
@@ -1604,15 +1814,21 @@ function renderAdmin() {
   }
 }
 
-function deleteUser(username) {
+async function deleteUser(username) {
   if (!isAdmin()) return;
-  if (username === ADMIN_USERNAME) { toast('لا يمكن حذف حساب الأدمن', 'error'); return; }
+  if (username === window.ADMIN_USERNAME) { toast('لا يمكن حذف حساب الأدمن', 'error'); return; }
   if (!confirm('حذف الحساب "' + username + '"؟ بيلداته ستبقى منسوبة إليه')) return;
-  state.users = state.users.filter(u => u.username !== username);
-  persist();
-  renderAdmin();
-  renderStats();
-  toast('تم حذف الحساب');
+  try {
+    if (window.firebaseAvailable) {
+      await deleteUserFromFirebase(username);
+    } else {
+      state.users = state.users.filter(u => u.username !== username);
+      persistLocal();
+      renderAdmin();
+      renderStats();
+    }
+    toast('تم حذف الحساب');
+  } catch (e) { console.error(e); toast('فشل الحذف', 'error'); }
 }
 
 function renderStats() {
@@ -1626,6 +1842,28 @@ function renderStats() {
   $('statRatings').textContent = totalRatings;
 }
 
+window.showView = showView;
+window.setRoleFilter = setRoleFilter;
+window.openAuth = openAuth;
+window.switchAuthTab = switchAuthTab;
+window.closeModal = closeModal;
+window.handleLogin = handleLogin;
+window.handleRegister = handleRegister;
+window.logout = logout;
+window.openCreateBuild = openCreateBuild;
+window.openEditBuild = openEditBuild;
+window.updateRoleHint = updateRoleHint;
+window.previewImage = previewImage;
+window.clearPerkPicker = clearPerkPicker;
+window.savePerkPicker = savePerkPicker;
+window.handleBuildSubmit = handleBuildSubmit;
+window.renderBuilds = renderBuilds;
+window.openDetail = openDetail;
+window.approveBuild = approveBuild;
+window.deleteBuild = deleteBuild;
+window.setAdminTab = setAdminTab;
+window.deleteUser = deleteUser;
+
 document.addEventListener('click', e => {
   if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('active');
 });
@@ -1637,10 +1875,6 @@ document.addEventListener('keydown', e => {
 });
 
 $('footerYear').textContent = new Date().getFullYear();
-load();
-renderSession();
-renderBuilds();
-renderStats();
 </script>
 </body>
 </html>
