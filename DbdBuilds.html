@@ -879,8 +879,19 @@ async function loadFromFirebase() {
     state.users = users;
     state.builds = builds;
 
-    if (usersListener) usersListener();
-    if (buildsListener) buildsListener();
+    usersListener = onValue(ref(window.db, 'users'), (snap) => {
+  state.users = objectToArray(snap.val());
+  renderSession();
+  renderStats();
+  if (state.currentView === 'admin') renderAdmin();
+});
+
+buildsListener = onValue(ref(window.db, 'builds'), (snap) => {
+  state.builds = objectToArray(snap.val());
+  renderBuilds();
+  renderStats();
+  if (state.currentView === 'admin') renderAdmin();
+});
 
     usersListener = onValue(ref(window.db, 'users'), (snap) => {
       state.users = objectToArray(snap.val());
