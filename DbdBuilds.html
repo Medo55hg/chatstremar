@@ -234,7 +234,7 @@ body::before{
 .suggested-by{
   font-size:11px;color:var(--ink-secondary);
   padding:4px 10px;border:1px dashed var(--gold-deep);background:rgba(201,169,97,0.05);
-  display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-weight:500;
+  display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-weight:500;flex-wrap:wrap;
 }
 .suggested-by .icon{color:var(--gold-bright);font-size:12px}
 .suggested-by .author-name{color:var(--gold-bright);font-weight:700}
@@ -329,7 +329,7 @@ body::before{
 .detail-name{font-size:32px;color:var(--ink-primary);font-weight:800}
 .detail-character{color:var(--gold);font-size:20px;margin-top:6px;font-weight:500}
 .detail-suggested-by{
-  display:inline-flex;align-items:center;gap:8px;
+  display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;
   padding:6px 16px;margin-top:14px;
   border:1px dashed var(--gold-deep);background:rgba(201,169,97,0.05);
   font-size:13px;color:var(--ink-secondary);font-weight:600;
@@ -424,7 +424,7 @@ body::before{
 .admin-stat .lbl{font-size:12px;color:var(--ink-muted);font-weight:600;margin-top:8px}
 
 .users-table-wrap{overflow-x:auto;border:1px solid var(--line)}
-.users-table{width:100%;border-collapse:collapse;min-width:700px}
+.users-table{width:100%;border-collapse:collapse;min-width:850px}
 .users-table th,.users-table td{padding:14px 16px;text-align:right;border-bottom:1px solid var(--line)}
 .users-table th{font-size:13px;color:var(--ink-muted);font-weight:700;background:var(--bg-darker)}
 .users-table td{color:var(--ink-primary);font-size:15px;font-weight:500}
@@ -433,6 +433,51 @@ body::before{
 .role-tag{font-size:11px;padding:4px 12px;font-weight:700;display:inline-block}
 .role-admin{background:rgba(139,10,10,0.3);color:var(--blood-bright);border:1px solid var(--blood)}
 .role-user{background:rgba(201,169,97,0.1);color:var(--gold);border:1px solid var(--gold-deep)}
+
+.user-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:11px;font-weight:800;padding:3px 10px;
+  margin-right:6px;letter-spacing:0.5px;
+  border:1px solid;text-shadow:0 1px 2px rgba(0,0,0,0.5);
+  vertical-align:middle;
+}
+.user-badge.bronze{
+  background:linear-gradient(135deg,#3d2817,#6b4423);
+  color:#e8a673;border-color:#8b5a2b;
+  box-shadow:0 0 8px rgba(205,127,50,0.3);
+}
+.user-badge.silver{
+  background:linear-gradient(135deg,#2a2a2a,#4a4a4a);
+  color:#e5e5e5;border-color:#9a9a9a;
+  box-shadow:0 0 8px rgba(192,192,192,0.4);
+}
+.user-badge.gold{
+  background:linear-gradient(135deg,#3d2f0a,#7a5e1a);
+  color:#ffd700;border-color:#c9a961;
+  box-shadow:0 0 10px rgba(255,215,0,0.5);
+}
+.user-badge.diamond{
+  background:linear-gradient(135deg,#0a3d4a,#1e6a85);
+  color:#b9f2ff;border-color:#5fc9e8;
+  box-shadow:0 0 12px rgba(185,242,255,0.6);
+}
+.user-badge.legendary{
+  background:linear-gradient(135deg,#4a0a3d,#85075c,#b81414);
+  color:#fff8dc;border-color:#ffd700;
+  box-shadow:0 0 15px rgba(255,215,0,0.7),0 0 25px rgba(184,20,20,0.5);
+  animation:legendary-glow 2s ease-in-out infinite alternate;
+}
+@keyframes legendary-glow{
+  from{box-shadow:0 0 10px rgba(255,215,0,0.5),0 0 20px rgba(184,20,20,0.3)}
+  to{box-shadow:0 0 20px rgba(255,215,0,0.9),0 0 30px rgba(184,20,20,0.7)}
+}
+.badge-select{
+  background:var(--bg-darker);border:1px solid var(--line);
+  padding:6px 10px;color:var(--ink-primary);font-size:13px;
+  font-family:'Cairo',sans-serif;cursor:pointer;
+  min-width:130px;
+}
+.badge-select:focus{outline:none;border-color:var(--gold-deep)}
 
 footer{
   margin-top:80px;padding:48px 32px;border-top:1px solid var(--line);
@@ -792,6 +837,14 @@ const STORE = {
   session: 'dbdcommunity_session_v4'
 };
 
+const BADGES = {
+  bronze:    { label: 'برونزي',  icon: '🥉' },
+  silver:    { label: 'فضي',     icon: '🥈' },
+  gold:      { label: 'ذهبي',    icon: '🥇' },
+  diamond:   { label: 'ماسي',    icon: '💎' },
+  legendary: { label: 'أسطوري',  icon: '👑' }
+};
+
 let state = {
   users: [],
   builds: [],
@@ -1051,6 +1104,41 @@ function escapeAttr(s) {
   return String(s == null ? '' : s).replace(/"/g, '&quot;').replace(/</g, '&lt;');
 }
 
+function getUserBadge(username) {
+  if (!username) return null;
+  const user = state.users.find(u => u && u.username === username);
+  if (!user || !user.badge || !BADGES[user.badge]) return null;
+  return user.badge;
+}
+
+function renderBadgeHTML(username) {
+  const badge = getUserBadge(username);
+  if (!badge) return '';
+  const b = BADGES[badge];
+  return '<span class="user-badge ' + badge + '">' + b.icon + ' ' + b.label + '</span>';
+}
+
+async function setUserBadge(username, badge) {
+  if (!isAdmin()) return;
+  if (username === window.ADMIN_USERNAME) { toast('لا يمكن تعديل وسم الأدمن', 'error'); return; }
+  const user = state.users.find(u => u && u.username === username);
+  if (!user) return;
+  const updated = Object.assign({}, user, { badge: badge || null });
+  delete updated._key;
+  try {
+    if (window.firebaseAvailable) {
+      await saveUserToFirebase(updated);
+    } else {
+      user.badge = badge || null;
+      persistLocal();
+      renderAdmin();
+      renderBuilds();
+      renderSession();
+    }
+    toast(badge ? 'تم منح وسم ' + BADGES[badge].label : 'تم إزالة الوسم');
+  } catch (e) { console.error(e); toast('فشل الحفظ', 'error'); }
+}
+
 function isAdmin() {
   if (!state.session) return false;
   if (state.session.role !== 'admin') return false;
@@ -1236,6 +1324,7 @@ function renderSession() {
       '<span>' + escapeHTML(state.session.username) + '</span>' +
       (admin ? '<span style="color:var(--blood-bright);margin-right:4px">⚜</span>' : '') +
     '</div>' +
+    renderBadgeHTML(state.session.username) +
     '<button class="btn btn-sm" onclick="logout()">خروج</button>';
   $('adminTabBtn').classList.toggle('hidden', !admin);
 }
@@ -1537,7 +1626,7 @@ function buildCardHTML(b) {
     : '';
 
   const suggestedBy = (b.author && b.author !== window.ADMIN_USERNAME)
-    ? '<div class="suggested-by"><span class="icon">✦</span><span>مقترح من <span class="author-name">' + escapeHTML(b.author) + '</span></span></div>'
+    ? '<div class="suggested-by"><span class="icon">✦</span><span>مقترح من <span class="author-name">' + escapeHTML(b.author) + '</span></span>' + renderBadgeHTML(b.author) + '</div>'
     : '';
   const ratings = b.ratings || [];
 
@@ -1640,7 +1729,7 @@ function openDetail(id) {
     : '';
 
   const suggestedByDetail = (b.author && b.author !== window.ADMIN_USERNAME)
-    ? '<div class="detail-suggested-by"><span style="color:var(--gold-bright)">✦</span> مقترح من <span class="name">' + escapeHTML(b.author) + '</span></div>'
+    ? '<div class="detail-suggested-by"><span style="color:var(--gold-bright)">✦</span> مقترح من <span class="name">' + escapeHTML(b.author) + '</span>' + renderBadgeHTML(b.author) + '</div>'
     : '';
 
   $('detailContent').innerHTML =
@@ -1797,7 +1886,7 @@ function renderAdmin() {
     const sorted = state.users.slice().sort((a, b) => (b.joined || 0) - (a.joined || 0));
     content.innerHTML =
       '<div class="users-table-wrap"><table class="users-table">' +
-        '<thead><tr><th>#</th><th>اسم المستخدم</th><th>الدور</th><th>تاريخ التسجيل</th><th>عدد البيلدات</th><th>عدد التقييمات</th><th>إجراءات</th></tr></thead>' +
+        '<thead><tr><th>#</th><th>اسم المستخدم</th><th>الدور</th><th>الوسام</th><th>تاريخ التسجيل</th><th>عدد البيلدات</th><th>عدد التقييمات</th><th>إجراءات</th></tr></thead>' +
         '<tbody>' +
           sorted.map((u, i) => {
             const userBuilds = state.builds.filter(b => b.author === u.username).length;
@@ -1807,10 +1896,23 @@ function renderAdmin() {
             const dateStr = u.joined
               ? new Date(u.joined).toLocaleDateString('ar-EG', { day: 'numeric', month: 'short', year: 'numeric' })
               : '—';
+            const currentBadge = u.badge || '';
+            const badgeCell = (u.username === window.ADMIN_USERNAME)
+              ? '<span class="text-muted">—</span>'
+              : '<select class="badge-select" onchange="setUserBadge(\'' + escapeAttr(u.username) + '\', this.value)">' +
+                  '<option value="">— بدون —</option>' +
+                  Object.keys(BADGES).map(k =>
+                    '<option value="' + k + '"' + (currentBadge === k ? ' selected' : '') + '>' +
+                      BADGES[k].icon + ' ' + BADGES[k].label +
+                    '</option>'
+                  ).join('') +
+                '</select>' +
+                (currentBadge ? '<div style="margin-top:6px">' + renderBadgeHTML(u.username) + '</div>' : '');
             return '<tr>' +
               '<td>' + (i + 1) + '</td>' +
-              '<td><span class="gold">' + escapeHTML(u.username) + '</span></td>' +
+              '<td><span class="gold">' + escapeHTML(u.username) + '</span>' + renderBadgeHTML(u.username) + '</td>' +
               '<td><span class="role-tag role-' + u.role + '">' + (u.role === 'admin' ? 'أدمن' : 'مستخدم') + '</span></td>' +
+              '<td>' + badgeCell + '</td>' +
               '<td>' + dateStr + '</td>' +
               '<td>' + userBuilds + '</td>' +
               '<td>' + userRatings + '</td>' +
@@ -1874,6 +1976,7 @@ window.approveBuild = approveBuild;
 window.deleteBuild = deleteBuild;
 window.setAdminTab = setAdminTab;
 window.deleteUser = deleteUser;
+window.setUserBadge = setUserBadge;
 
 document.addEventListener('click', e => {
   if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('active');
