@@ -576,6 +576,67 @@ body::before{
 }
 .badge-select:focus{outline:none;border-color:var(--gold-deep)}
 
+/* === Autocomplete (Perks & Addons suggestions) === */
+.autocomplete-wrap{position:relative;width:100%}
+.autocomplete-input{
+  width:100%;background:var(--bg-darker);border:1px solid var(--line);
+  padding:12px 14px;color:var(--ink-primary);font-size:15px;
+  font-family:'Cairo',sans-serif;transition:border 0.2s;
+}
+.autocomplete-input:focus{outline:none;border-color:var(--gold-deep);box-shadow:0 0 0 1px rgba(201,169,97,0.2)}
+.autocomplete-list{
+  position:absolute;top:100%;left:0;right:0;z-index:50;
+  max-height:280px;overflow-y:auto;
+  background:var(--bg-card);border:1px solid var(--gold-deep);
+  border-top:none;box-shadow:0 8px 24px rgba(0,0,0,0.6);
+  display:none;
+}
+.autocomplete-list.active{display:block}
+.autocomplete-item{
+  display:flex;align-items:center;gap:12px;padding:8px 12px;
+  cursor:pointer;border-bottom:1px solid var(--line);
+  transition:background 0.15s;
+}
+.autocomplete-item:hover,.autocomplete-item.highlight{background:rgba(201,169,97,0.12)}
+.autocomplete-item.custom{background:rgba(201,169,97,0.04);border-right:3px solid var(--gold-deep)}
+.autocomplete-item.custom:hover{background:rgba(201,169,97,0.15)}
+.autocomplete-item:last-child{border-bottom:none}
+.autocomplete-item img{
+  width:36px;height:36px;object-fit:cover;flex-shrink:0;
+  background:var(--bg-darker);border:1px solid var(--line);
+}
+.autocomplete-item .ai-info{flex:1;min-width:0}
+.autocomplete-item .ai-name{font-size:14px;color:var(--ink-primary);font-weight:700;line-height:1.2}
+.autocomplete-item .ai-meta{font-size:11px;color:var(--ink-muted);margin-top:3px;font-weight:500}
+.autocomplete-item .ai-role{
+  font-size:10px;font-weight:700;padding:2px 8px;
+  margin-right:6px;display:inline-block;
+}
+.autocomplete-item .ai-role.killer{background:rgba(139,10,10,0.25);color:var(--blood-bright)}
+.autocomplete-item .ai-role.survivor{background:rgba(201,169,97,0.15);color:var(--gold-bright)}
+.autocomplete-empty{padding:14px;text-align:center;color:var(--ink-muted);font-size:13px;font-style:italic}
+.autocomplete-loading{
+  padding:12px;text-align:center;color:var(--gold-bright);
+  font-size:13px;display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.autocomplete-loading::before{
+  content:"";width:14px;height:14px;border:2px solid var(--line);
+  border-top-color:var(--gold);border-radius:50%;
+  animation:spin 0.8s linear infinite;
+}
+.perk-data-status{
+  display:flex;align-items:center;gap:8px;
+  font-size:12px;padding:8px 12px;margin-bottom:14px;
+  border:1px solid var(--line);color:var(--ink-secondary);font-weight:600;
+  flex-wrap:wrap;
+}
+.perk-data-status.ok{color:var(--gold-bright);border-color:var(--gold-deep);background:rgba(201,169,97,0.05)}
+.perk-data-status.fail{color:var(--blood-bright);border-color:var(--blood);background:rgba(139,10,10,0.1)}
+.perk-data-status.loading{color:var(--ink-secondary)}
+.perk-data-status .pds-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
+.perk-data-status.loading .pds-dot{animation:pulse 1.2s infinite}
+.perk-data-status > span:not(.pds-dot){flex:1;min-width:0;line-height:1.5}
+
 footer{
   margin-top:80px;padding:48px 32px;border-top:1px solid var(--line);
   text-align:center;color:var(--ink-muted);
@@ -666,7 +727,7 @@ footer .mark{color:var(--gold-deep);font-size:14px;margin-top:18px;font-weight:7
 
   <section id="view-home" class="view">
     <h2 class="section-title">جميع البيلدات</h2>
-    <p class="section-sub">     </p>
+    <p class="section-sub">كل بيلد معتمد من حارس الموقع</p>
 
     <div class="badges-info-section">
       <div class="badges-info-header">
@@ -852,7 +913,7 @@ footer .mark{color:var(--gold-deep);font-size:14px;margin-top:18px;font-weight:7
             <div class="perk-slot" data-slot="2"><span class="slot-num">٣</span><span class="slot-label">اضغط لإضافة</span></div>
             <div class="perk-slot" data-slot="3"><span class="slot-num">٤</span><span class="slot-label">اضغط لإضافة</span></div>
           </div>
-          <div class="field-hint">اضغط كل خانة لإدخال اسم البيرك ورابط الأيقونة</div>
+          <div class="field-hint">اضغط أي خانة، اكتب اسم البيرك بالإنجليزي، وستظهر الصورة تلقائياً من dbd-randomizer.com</div>
         </div>
 
         <div class="field" id="addonsField">
@@ -881,18 +942,25 @@ footer .mark{color:var(--gold-deep);font-size:14px;margin-top:18px;font-weight:7
   <div class="modal">
     <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
     <div class="modal-header">
-      <h2 class="modal-title">تفاصيل البيرك</h2>
+      <h2 class="modal-title" id="perkPickerTitle">تفاصيل البيرك</h2>
       <button class="modal-close" onclick="closeModal('perkModal')">×</button>
     </div>
     <div class="modal-body">
-      <div class="field">
-        <label>اسم البيرك</label>
-        <input type="text" id="perkPickerName" placeholder="مثال: Hex: Ruin، Dead Hard">
+      <div class="perk-data-status loading" id="perkDataStatus">
+        <span class="pds-dot"></span><span>جاري تحميل قاعدة البيركات...</span>
       </div>
       <div class="field">
-        <label>رابط الأيقونة</label>
+        <label>اسم البيرك</label>
+        <div class="autocomplete-wrap">
+          <input type="text" id="perkPickerName" class="autocomplete-input" placeholder="ابدأ بالكتابة للحصول على اقتراحات تلقائية..." autocomplete="off">
+          <div class="autocomplete-list" id="perkPickerSuggestions"></div>
+        </div>
+        <div class="field-hint">اكتب اسم البيرك بالعربي أو الإنجليزي. الاقتراحات تشمل الصورة تلقائياً</div>
+      </div>
+      <div class="field">
+        <label>رابط الأيقونة <span class="text-muted">(يُملأ تلقائياً عند الاختيار من القائمة)</span></label>
         <input type="url" id="perkPickerImg" placeholder="https://..." onchange="previewImage('perkPickerImg','perkPickerPrev')">
-        <div class="field-hint">الصق رابطاً مباشراً لصورة البيرك</div>
+        <div class="field-hint">إذا اخترت من القائمة، الرابط ينحط تلقائياً. للبيركات الجديدة، الصق رابطاً يدوياً</div>
         <div id="perkPickerPrev" style="margin-top:10px"></div>
       </div>
       <div class="form-actions">
@@ -970,8 +1038,414 @@ window.dispatchEvent(new CustomEvent('firebase-ready'));
 const STORE = {
   users: 'dbdcommunity_users_v4',
   builds: 'dbdcommunity_builds_v4',
-  session: 'dbdcommunity_session_v4'
+  session: 'dbdcommunity_session_v4',
+  perksCache: 'dbdcommunity_perks_cache_v1',
+  addonsCache: 'dbdcommunity_addons_cache_v1'
 };
+
+// ═══════════════════════════════════════════════════════════════
+// 🎮 نظام صور بيركات وأدونز DBD من dbd-randomizer.com
+// النظام يولّد الروابط تلقائياً من اسم البيرك (PascalCase)
+// لا يحتاج API، لا CORS، سرعة فورية
+// ═══════════════════════════════════════════════════════════════
+
+// تحويل اسم البيرك إلى PascalCase لتوليد رابط الصورة
+// مثال: "For the People" → "ForThePeople"
+//       "Hex: Ruin" → "HexRuin"
+//       "Self-Care" → "SelfCare"
+function toPascalCase(name) {
+  if (!name) return '';
+  // إزالة الكلمات الصغيرة من القاموس الخاص (اختياري)
+  return String(name)
+    // إزالة علامات الترقيم والرموز الخاصة
+    .replace(/[':\-—–·.,!?&()\[\]"]/g, ' ')
+    // تحويل é → e، à → a، إلخ
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    // تقسيم على المسافات
+    .split(/\s+/)
+    .filter(w => w.length > 0)
+    // كل كلمة بحرف كبير أول
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+    .join('');
+}
+
+// توليد رابط الصورة من dbd-randomizer.com
+function dbdRandomizerImg(role, type, name) {
+  // role: 'survivor' | 'killer'
+  // type: 'Perks' | 'AddOns'
+  // name: اسم البيرك العادي ("For the People")
+  const roleFolder = role === 'killer' ? 'Killer' : 'Survivor';
+  const size = type === 'Perks' ? '90' : '50';
+  const filename = toPascalCase(name);
+  if (!filename) return '';
+  return 'https://dbd-randomizer.com/Images/S0/' + roleFolder + '/' + type + '/' + size + '/' + filename + '.webp';
+}
+
+// ───── قائمة البيركات الأساسية (الأشهر) ─────
+// نستخدمها للاقتراحات أثناء الكتابة فقط
+// كل بيرك: [name, role, character]
+const KNOWN_PERKS = [
+  // ===== Survivor Perks =====
+  ['Adrenaline','survivor','Meg Thomas'],
+  ['Aftercare','survivor','Quentin Smith'],
+  ['Alert','survivor','The Pig'],
+  ['Any Means Necessary','survivor','Yui Kimura'],
+  ['Appraisal','survivor','Jane Romero'],
+  ['Autodidact','survivor','Adam Francis'],
+  ['Babysitter','survivor','Steve Harrington'],
+  ['Background Player','survivor','Renato Lyra'],
+  ['Balanced Landing','survivor','Nea Karlsson'],
+  ['Better Together','survivor','Jane Romero'],
+  ['Better Than New','survivor','Jane Romero'],
+  ['Bite the Bullet','survivor','Leon Kennedy'],
+  ['Blast Mine','survivor','Jill Valentine'],
+  ['Blood Pact','survivor','Cheryl Mason'],
+  ['Blood Rush','survivor','Aestri Yazar'],
+  ['Boil Over','survivor','Kate Denson'],
+  ['Bond','survivor','Dwight Fairfield'],
+  ['Boon: Circle of Healing','survivor','Mikaela Reid'],
+  ['Boon: Dark Theory','survivor','Sable Ward'],
+  ['Boon: Exponential','survivor','Vittorio Toscano'],
+  ['Boon: Illumination','survivor','Sable Ward'],
+  ['Boon: Shadow Step','survivor','Mikaela Reid'],
+  ['Borrowed Time','survivor','Bill Overbeck'],
+  ['Botany Knowledge','survivor','Claudette Morel'],
+  ['Breakdown','survivor','Jeff Johansen'],
+  ['Breakout','survivor','Yui Kimura'],
+  ['Buckle Up','survivor','Ash Williams'],
+  ['Built to Last','survivor','Felix Richter'],
+  ['Calm Spirit','survivor','Jake Park'],
+  ['Camaraderie','survivor','Steve Harrington'],
+  ['Chemical Trap','survivor','Ada Wong'],
+  ['Clairvoyance','survivor','Mikaela Reid'],
+  ['Counterforce','survivor','Yun-Jin Lee'],
+  ['Dance With Me','survivor','Kate Denson'],
+  ['Dark Sense','survivor','Generic'],
+  ['Dead Hard','survivor','David King'],
+  ['Deception','survivor','Élodie Rakoto'],
+  ['Decisive Strike','survivor','Laurie Strode'],
+  ['Deja Vu','survivor','Generic'],
+  ['Deliverance','survivor','Adam Francis'],
+  ['Desperate Measures','survivor','Felix Richter'],
+  ["Detective's Hunch",'survivor','David Tapp'],
+  ['Diversion','survivor','Generic'],
+  ['Distortion','survivor','Jeff Johansen'],
+  ['Dramaturgy','survivor','Nicolas Cage'],
+  ['Empathic Connection','survivor','Claudette Morel'],
+  ['Empathy','survivor','Claudette Morel'],
+  ['Fast Track','survivor','Yun-Jin Lee'],
+  ['Fixated','survivor','Nancy Wheeler'],
+  ['Flashbang','survivor','Leon Kennedy'],
+  ['Flip-Flop','survivor','Ash Williams'],
+  ['Fogwise','survivor','Haddie Kaur'],
+  ['For the People','survivor','Zarina Kassir'],
+  ['Head On','survivor','Nancy Wheeler'],
+  ['Hope','survivor','Generic'],
+  ['Houdini','survivor','Sable Ward'],
+  ['Hyperfocus','survivor','Vittorio Toscano'],
+  ['Inner Healing','survivor','Nancy Wheeler'],
+  ['Invocation: Weaving Spiders','survivor','Sable Ward'],
+  ['Iron Will','survivor','Jake Park'],
+  ['Kindred','survivor','Generic'],
+  ['Leader','survivor','Dwight Fairfield'],
+  ['Left Behind','survivor','Bill Overbeck'],
+  ['Lightweight','survivor','Meg Thomas'],
+  ['Lithe','survivor','Feng Min'],
+  ['Lucky Break','survivor','Yui Kimura'],
+  ['Mettle of Man','survivor','Ash Williams'],
+  ['No Mither','survivor','Generic'],
+  ['No One Left Behind','survivor','Generic'],
+  ['Object of Obsession','survivor','Laurie Strode'],
+  ['Off the Record','survivor','Zarina Kassir'],
+  ['Open-Handed','survivor','Ace Visconti'],
+  ['Overcome','survivor','Jonah Vasquez'],
+  ['Overzealous','survivor','Haddie Kaur'],
+  ['Parental Guidance','survivor','Haddie Kaur'],
+  ["Plunderer's Instinct",'survivor','Generic'],
+  ['Poised','survivor','Jane Romero'],
+  ['Potential Energy','survivor','Vittorio Toscano'],
+  ['Power Struggle','survivor','Élodie Rakoto'],
+  ['Premonition','survivor','Generic'],
+  ['Prove Thyself','survivor','Dwight Fairfield'],
+  ['Quick & Quiet','survivor','Meg Thomas'],
+  ['Quick Gambit','survivor','Cheryl Mason'],
+  ['Reactive Healing','survivor','Ada Wong'],
+  ['Reassurance','survivor','Rebecca Chambers'],
+  ['Red Herring','survivor','Zarina Kassir'],
+  ['Renewal','survivor','Mikaela Reid'],
+  ['Resilience','survivor','Generic'],
+  ['Resurgence','survivor','Jill Valentine'],
+  ['Saboteur','survivor','Jake Park'],
+  ['Scavenger','survivor','Renato Lyra'],
+  ['Second Wind','survivor','Cheryl Mason'],
+  ['Self-Aware','survivor','Élodie Rakoto'],
+  ['Self-Care','survivor','Claudette Morel'],
+  ['Self-Preservation','survivor','Yun-Jin Lee'],
+  ['Slippery Meat','survivor','Generic'],
+  ['Smash Hit','survivor','Yun-Jin Lee'],
+  ['Sole Survivor','survivor','Laurie Strode'],
+  ['Solidarity','survivor','Jane Romero'],
+  ['Soul Guard','survivor','Cheryl Mason'],
+  ['Spine Chill','survivor','Generic'],
+  ['Sprint Burst','survivor','Meg Thomas'],
+  ['Stake Out','survivor','David Tapp'],
+  ['Streetwise','survivor','Nea Karlsson'],
+  ['Tenacity','survivor','David Tapp'],
+  ['This Is Not Happening','survivor','Yui Kimura'],
+  ['Unbreakable','survivor','Bill Overbeck'],
+  ['Up the Ante','survivor','Ace Visconti'],
+  ['Urban Evasion','survivor','Nea Karlsson'],
+  ['Vigil','survivor','Quentin Smith'],
+  ['Visionary','survivor','Felix Richter'],
+  ['Wake Up!','survivor','Quentin Smith'],
+  ["We'll Make It",'survivor','Claudette Morel'],
+  ["We're Gonna Live Forever",'survivor','David King'],
+  ['Wiretap','survivor','Ada Wong'],
+  ['Windows of Opportunity','survivor','Kate Denson'],
+  ['Made for This','survivor','Thalita Lyra'],
+  ['Teamwork: Power of Two','survivor','Thalita Lyra'],
+  ['Teamwork: Collective Stealth','survivor','Renato Lyra'],
+  ['Troubleshooter','survivor','Jonah Vasquez'],
+  ['Boon: Dark Theory','survivor','Sable Ward'],
+  ['Diversion','survivor','Generic'],
+  ['Champion of Light','survivor','Renato Lyra'],
+  ['Specialist','survivor','Thalita Lyra'],
+
+  // ===== Killer Perks =====
+  ["A Nurse's Calling",'killer','The Nurse'],
+  ['Agitation','killer','The Trapper'],
+  ['Alien Instinct','killer','The Xenomorph'],
+  ['All-Shaking Thunder','killer','The Onryō'],
+  ['Awakened Awareness','killer','The Mastermind'],
+  ['Bamboozle','killer','The Clown'],
+  ['Barbecue & Chilli','killer','The Cannibal'],
+  ['Batteries Included','killer','The Singularity'],
+  ['Beast of Prey','killer','The Huntress'],
+  ['Bitter Murmur','killer','Generic'],
+  ['Blood Echo','killer','The Oni'],
+  ['Blood Warden','killer','The Nightmare'],
+  ['Bloodhound','killer','The Wraith'],
+  ['Brutal Strength','killer','The Trapper'],
+  ['Call of Brine','killer','The Onryō'],
+  ['Claustrophobia','killer','The Hag'],
+  ['Coulrophobia','killer','The Clown'],
+  ['Corrupt Intervention','killer','The Plague'],
+  ['Coup de Grâce','killer','The Twins'],
+  ['Cruel Limits','killer','The Demogorgon'],
+  ['Darkness Revealed','killer','The Dredge'],
+  ['Dark Devotion','killer','The Plague'],
+  ['Deadlock','killer','The Cenobite'],
+  ['Deathbound','killer','The Executioner'],
+  ['Deerstalker','killer','Generic'],
+  ['Devour Hope','killer','The Hag'],
+  ['Discordance','killer','The Legion'],
+  ['Distressing','killer','Generic'],
+  ['Dominance','killer','The Mastermind'],
+  ['Dragon\'s Grip','killer','The Blight'],
+  ['Dying Light','killer','The Shape'],
+  ['Enduring','killer','The Hillbilly'],
+  ['Eruption','killer','The Nemesis'],
+  ['Fearmonger','killer','The Plague'],
+  ['Fire Up','killer','The Nightmare'],
+  ['Forced Hesitation','killer','The Skull Merchant'],
+  ['Forced Penance','killer','The Executioner'],
+  ['Franklin\'s Demise','killer','The Cannibal'],
+  ['Friends \'till the End','killer','Chucky'],
+  ['Furtive Chase','killer','The Ghost Face'],
+  ['Game Afoot','killer','The Mastermind'],
+  ['Gearhead','killer','The Twins'],
+  ['Genetic Limits','killer','The Singularity'],
+  ['Grim Embrace','killer','The Artist'],
+  ['Hangman\'s Trick','killer','The Pig'],
+  ['Hex: Blood Favour','killer','The Blight'],
+  ['Hex: Crowd Control','killer','The Twins'],
+  ['Hex: Devour Hope','killer','The Hag'],
+  ['Hex: Face the Darkness','killer','The Dredge'],
+  ['Hex: Haunted Ground','killer','The Spirit'],
+  ['Hex: Huntress Lullaby','killer','The Huntress'],
+  ['Hex: No One Escapes Death','killer','Generic'],
+  ['Hex: Pentimento','killer','The Artist'],
+  ['Hex: Plaything','killer','The Cenobite'],
+  ['Hex: Retribution','killer','The Deathslinger'],
+  ['Hex: Ruin','killer','The Hag'],
+  ['Hex: The Third Seal','killer','The Hag'],
+  ['Hex: Thrill of the Hunt','killer','The Hag'],
+  ['Hex: Two Can Play','killer','The Mastermind'],
+  ['Hex: Undying','killer','The Blight'],
+  ['Hex: Wretched Fate','killer','The Onryō'],
+  ['Hoarder','killer','The Twins'],
+  ['Houndmaster\'s Hunt','killer','The Houndmaster'],
+  ['Hubris','killer','The Knight'],
+  ['Hysteria','killer','The Mastermind'],
+  ['I\'m All Ears','killer','The Ghost Face'],
+  ['Infectious Fright','killer','The Plague'],
+  ['Insidious','killer','The Trapper'],
+  ['Iron Grasp','killer','The Trapper'],
+  ['Iron Maiden','killer','The Legion'],
+  ['Jolt','killer','Generic'],
+  ['Knock Out','killer','The Cannibal'],
+  ['Languid Touch','killer','The Krasue'],
+  ['Lethal Pursuer','killer','The Nemesis'],
+  ['Leverage','killer','The Singularity'],
+  ['Lightborn','killer','The Hillbilly'],
+  ['Machine Learning','killer','The Singularity'],
+  ['Mad Grit','killer','The Cannibal'],
+  ['Make Your Choice','killer','The Pig'],
+  ['Merciless Storm','killer','The Onryō'],
+  ['Mindbreaker','killer','The Demogorgon'],
+  ['Monitor & Abuse','killer','The Doctor'],
+  ['Monstrous Shrine','killer','Generic'],
+  ['Nemesis','killer','The Executioner'],
+  ['No Quarter','killer','The Lich'],
+  ['No Way Out','killer','The Cenobite'],
+  ['Nowhere to Hide','killer','The Knight'],
+  ['Oppression','killer','The Twins'],
+  ['Overcharge','killer','The Doctor'],
+  ['Overwhelming Presence','killer','The Doctor'],
+  ['Pain Resonance','killer','The Artist'],
+  ['Play With Your Food','killer','The Shape'],
+  ['Pop Goes the Weasel','killer','The Clown'],
+  ['Predator','killer','The Wraith'],
+  ['Rampage','killer','The Animatronic'],
+  ['Rancor','killer','The Spirit'],
+  ['Remember Me','killer','The Nightmare'],
+  ['Save the Best for Last','killer','The Shape'],
+  ['Scourge Hook: Floods of Rage','killer','The Onryō'],
+  ['Scourge Hook: Gift of Pain','killer','The Plague'],
+  ['Scourge Hook: Hangman\'s Trick','killer','The Pig'],
+  ['Scourge Hook: Monstrous Shrine','killer','Generic'],
+  ['Scourge Hook: Pain Resonance','killer','The Artist'],
+  ['Septic Touch','killer','The Plague'],
+  ['Shadowborn','killer','The Wraith'],
+  ['Sloppy Butcher','killer','Generic'],
+  ['Smash Hit','killer','The Skull Merchant'],
+  ['Spies from the Shadows','killer','Generic'],
+  ['Spirit Fury','killer','The Spirit'],
+  ['Starstruck','killer','The Trickster'],
+  ['Stridor','killer','The Nurse'],
+  ['Superior Anatomy','killer','The Unknown'],
+  ['Surge','killer','The Demogorgon'],
+  ['Surveillance','killer','The Pig'],
+  ['Terminus','killer','The Mastermind'],
+  ['Territorial Imperative','killer','The Hag'],
+  ['Thanatophobia','killer','The Nurse'],
+  ['Thrilling Tremors','killer','The Ghost Face'],
+  ['Tinkerer','killer','The Hillbilly'],
+  ['Trail of Torment','killer','The Executioner'],
+  ['Ultimate Weapon','killer','The Singularity'],
+  ['Undone','killer','The Knight'],
+  ['Unforeseen','killer','The Singularity'],
+  ['Unnerving Presence','killer','The Trapper'],
+  ['Unrelenting','killer','Generic'],
+  ['Whispers','killer','Generic'],
+  ['Zanshin Tactics','killer','The Oni']
+];
+
+// بناء قاعدة البيانات مع الصور المولّدة
+function buildPerksDatabase() {
+  const seen = {};
+  const out = [];
+  for (let i = 0; i < KNOWN_PERKS.length; i++) {
+    const p = KNOWN_PERKS[i];
+    const name = p[0], role = p[1], character = p[2] || '';
+    const key = role + ':' + name.toLowerCase();
+    if (seen[key]) continue;
+    seen[key] = 1;
+    out.push({
+      name: name,
+      role: role,
+      character: character,
+      image: dbdRandomizerImg(role, 'Perks', name)
+    });
+  }
+  return out;
+}
+
+const perksDatabase = buildPerksDatabase();
+const addonsDatabase = []; // الأدونز تُولّد ديناميكياً من اسم الكيلر والأدون
+const perksDbStatus = 'ok';
+
+function updatePerkDataStatusUI() {
+  const el = document.getElementById('perkDataStatus');
+  if (!el) return;
+  el.className = 'perk-data-status ok';
+  el.innerHTML = '<span class="pds-dot"></span>' +
+    '<span>✓ ' + perksDatabase.length + ' بيرك • الصور من dbd-randomizer.com</span>';
+}
+
+function retryLoadPerks() {
+  updatePerkDataStatusUI();
+}
+
+// إزالة التشكيل والمسافات لبحث مرن
+function normalizeText(s) {
+  return String(s || '').toLowerCase()
+    .replace(/[':\-—–·.,&!?()\[\]"]/g, '')
+    .replace(/\s+/g, '')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[أإآا]/g, 'ا')
+    .replace(/[ى]/g, 'ي')
+    .replace(/[ة]/g, 'ه');
+}
+
+function searchPerks(query, role) {
+  const q = normalizeText(query);
+  if (!q) return [];
+  const matches = [];
+  for (let i = 0; i < perksDatabase.length; i++) {
+    const p = perksDatabase[i];
+    if (role && role !== 'all' && p.role !== role) continue;
+    const nName = normalizeText(p.name);
+    const nChar = normalizeText(p.character);
+    let score = 0;
+    if (nName === q) score = 100;
+    else if (nName.startsWith(q)) score = 80;
+    else if (nName.includes(q)) score = 50;
+    else if (nChar.includes(q)) score = 20;
+    if (score > 0) matches.push({ perk: p, score });
+  }
+  matches.sort((a, b) => b.score - a.score);
+
+  // إضافة خيار "كتابة حرة" إذا الاستعلام أطول من حرفين
+  const results = matches.slice(0, 12).map(m => m.perk);
+
+  // اقتراح ذكي: إذا لم نجد نتيجة مطابقة تماماً، نضيف خيار توليد رابط من الاسم المكتوب
+  if (query.trim().length >= 3 && !matches.some(m => m.score === 100)) {
+    const customRole = (role === 'killer') ? 'killer' : 'survivor';
+    results.push({
+      name: query.trim(),
+      role: customRole,
+      character: '',
+      image: dbdRandomizerImg(customRole, 'Perks', query.trim()),
+      isCustom: true
+    });
+  }
+
+  return results;
+}
+
+function searchAddons(query, killer) {
+  // الأدونز تُولَّد ديناميكياً — لا قائمة جاهزة
+  // فقط نقترح "كتابة الاسم وتوليد الصورة"
+  const q = String(query || '').trim();
+  if (q.length < 2) return [];
+
+  // نولّد الاقتراح للأدون من النص المكتوب
+  return [{
+    name: q,
+    killer: killer || '',
+    image: dbdRandomizerImg('killer', 'AddOns', q),
+    isCustom: true
+  }, {
+    name: q,
+    killer: '',
+    image: dbdRandomizerImg('survivor', 'AddOns', q),
+    isCustom: true,
+    isSurvivorAddon: true
+  }];
+}
+
+
 
 const BADGES = {
   bronze:    { label: 'برونزي',  icon: '🥉' },
@@ -1584,12 +2058,26 @@ function openPerkPicker(type, idx) {
   state.editingPerk = type === 'perk' ? idx : null;
   state.editingAddon = type === 'addon' ? idx : null;
   const data = type === 'perk' ? state.perksDraft[idx] : state.addonsDraft[idx];
+
+  // عنوان النافذة حسب النوع
+  const titleEl = $('perkPickerTitle');
+  if (titleEl) titleEl.textContent = type === 'perk' ? 'اختر البيرك' : 'اختر الأدون';
+
   $('perkPickerName').value = (data && data.name) || '';
   $('perkPickerImg').value = (data && data.img) || '';
   $('perkPickerPrev').innerHTML = (data && data.img)
     ? '<img src="' + escapeAttr(data.img) + '" style="max-width:80px;height:auto;border:1px solid var(--line)" onerror="this.remove()">'
     : '';
+
+  // إعادة تحديث حالة قاعدة البيانات
+  updatePerkDataStatusUI();
+
+  // إخفاء قائمة الاقتراحات
+  const sugg = $('perkPickerSuggestions');
+  if (sugg) { sugg.innerHTML = ''; sugg.classList.remove('active'); }
+
   $('perkModal').classList.add('active');
+  setTimeout(() => $('perkPickerName').focus(), 80);
 }
 
 function previewImage(srcId, targetId) {
@@ -1603,6 +2091,8 @@ function clearPerkPicker() {
   $('perkPickerName').value = '';
   $('perkPickerImg').value = '';
   $('perkPickerPrev').innerHTML = '';
+  const sugg = $('perkPickerSuggestions');
+  if (sugg) { sugg.innerHTML = ''; sugg.classList.remove('active'); }
 }
 
 function savePerkPicker() {
@@ -1613,6 +2103,72 @@ function savePerkPicker() {
   if (state.editingAddon !== null) state.addonsDraft[state.editingAddon] = data;
   renderPerkSlots();
   closeModal('perkModal');
+}
+
+// عرض اقتراحات أثناء الكتابة
+function renderPerkSuggestions() {
+  const sugg = $('perkPickerSuggestions');
+  if (!sugg) return;
+  const query = $('perkPickerName').value.trim();
+  const isAddon = state.editingAddon !== null;
+
+  if (!query || query.length < 1) {
+    sugg.classList.remove('active');
+    sugg.innerHTML = '';
+    return;
+  }
+
+  let results = [];
+  if (isAddon) {
+    // الأدونز: نأخذ كيلر البيلد لتفضيل أدوناته
+    const builderKiller = ($('bfCharacter') && $('bfCharacter').value.trim()) || '';
+    results = searchAddons(query, builderKiller);
+  } else {
+    // البيركات: نفلتر حسب التصنيف المختار
+    const builderRole = ($('bfRole') && $('bfRole').value) || 'all';
+    results = searchPerks(query, builderRole);
+  }
+
+  if (results.length === 0) {
+    sugg.innerHTML = '<div class="autocomplete-empty">اكتب الاسم بالإنجليزي للحصول على الصورة تلقائياً، أو الصق رابطاً يدوياً</div>';
+    sugg.classList.add('active');
+    return;
+  }
+
+  sugg.innerHTML = results.map((item, i) => {
+    const safeName = escapeAttr(item.name).replace(/'/g, '&#39;');
+    const safeImg = escapeAttr(item.image || '');
+    let metaHTML = '';
+    if (isAddon) {
+      const label = item.isSurvivorAddon ? 'أدون سيرفايفر' : 'أدون كيلر';
+      const roleClass = item.isSurvivorAddon ? 'survivor' : 'killer';
+      metaHTML = '<span class="ai-role ' + roleClass + '">' + label + '</span>';
+      if (item.killer) metaHTML += '<span class="ai-meta">' + escapeHTML(item.killer) + '</span>';
+      if (item.isCustom) metaHTML += '<span class="ai-meta">مخصص</span>';
+    } else {
+      metaHTML = '<span class="ai-role ' + item.role + '">' + (item.role === 'killer' ? 'كيلر' : 'سيرفايفر') + '</span>';
+      if (item.character) metaHTML += '<span class="ai-meta">' + escapeHTML(item.character) + '</span>';
+      if (item.isCustom) metaHTML += '<span class="ai-meta" style="color:var(--gold-bright)">⚡ مخصص</span>';
+    }
+    return '<div class="autocomplete-item' + (item.isCustom ? ' custom' : '') + '" data-idx="' + i + '" onclick="pickSuggestion(\'' + safeName + '\',\'' + safeImg + '\')">' +
+      (item.image ? '<img src="' + safeImg + '" onerror="this.style.visibility=\'hidden\'">' : '<div style="width:36px;height:36px;background:var(--bg-darker);border:1px solid var(--line)"></div>') +
+      '<div class="ai-info">' +
+        '<div class="ai-name">' + escapeHTML(item.name) + '</div>' +
+        '<div>' + metaHTML + '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+  sugg.classList.add('active');
+}
+
+function pickSuggestion(name, img) {
+  $('perkPickerName').value = name;
+  $('perkPickerImg').value = img;
+  $('perkPickerPrev').innerHTML = img
+    ? '<img src="' + escapeAttr(img) + '" style="max-width:80px;height:auto;border:1px solid var(--line)" onerror="this.remove()">'
+    : '';
+  const sugg = $('perkPickerSuggestions');
+  if (sugg) { sugg.classList.remove('active'); sugg.innerHTML = ''; }
 }
 
 async function handleBuildSubmit(e) {
@@ -2113,6 +2669,31 @@ window.deleteBuild = deleteBuild;
 window.setAdminTab = setAdminTab;
 window.deleteUser = deleteUser;
 window.setUserBadge = setUserBadge;
+window.pickSuggestion = pickSuggestion;
+window.renderPerkSuggestions = renderPerkSuggestions;
+window.retryLoadPerks = retryLoadPerks;
+
+// ربط حدث الكتابة لإظهار الاقتراحات
+(function wirePerkAutocomplete(){
+  const input = document.getElementById('perkPickerName');
+  if (!input) return;
+  let debounceTimer = null;
+  input.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(renderPerkSuggestions, 120);
+  });
+  input.addEventListener('focus', () => {
+    if (input.value.trim().length > 0) renderPerkSuggestions();
+  });
+  // إخفاء الاقتراحات عند الضغط خارجها
+  document.addEventListener('click', (e) => {
+    const sugg = document.getElementById('perkPickerSuggestions');
+    if (!sugg) return;
+    if (e.target === input) return;
+    if (sugg.contains(e.target)) return;
+    sugg.classList.remove('active');
+  });
+})();
 
 document.addEventListener('click', e => {
   if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('active');
