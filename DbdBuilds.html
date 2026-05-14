@@ -649,6 +649,140 @@ footer .mark{color:var(--gold-deep);font-size:14px;margin-top:18px;font-weight:7
 .gold{color:var(--gold-bright)}
 .center{text-align:center}
 
+/* ═══════════════════════════════════════════════════════════════ */
+/* شاشة الترحيب */
+.welcome-overlay{
+  position:fixed;inset:0;background:rgba(10,7,6,0.92);z-index:5000;
+  display:flex;align-items:center;justify-content:center;padding:24px;
+  backdrop-filter:blur(8px);overflow-y:auto;
+}
+.welcome-overlay.hidden{display:none}
+.welcome-modal{
+  background:linear-gradient(180deg, var(--bg-card) 0%, var(--bg-darker) 100%);
+  border:1px solid var(--gold-deep);max-width:780px;width:100%;
+  position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.9);
+  margin:auto;
+}
+.welcome-modal::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg, transparent, var(--blood-bright) 30%, var(--gold) 50%, var(--blood-bright) 70%, transparent);
+}
+.welcome-header{
+  padding:32px 32px 16px;text-align:center;border-bottom:1px solid var(--line);
+}
+.welcome-title{
+  font-size:32px;color:var(--gold-bright);font-weight:900;letter-spacing:1px;
+  text-shadow:0 0 20px rgba(201,169,97,0.3);
+}
+.welcome-sub{font-size:15px;color:var(--ink-secondary);margin-top:8px}
+.welcome-body{padding:24px 32px}
+.welcome-step{
+  display:flex;gap:16px;padding:16px;margin-bottom:14px;
+  background:var(--bg-darker);border:1px solid var(--line);
+  position:relative;transition:all 0.2s;
+}
+.welcome-step:hover{border-color:var(--gold-deep);background:rgba(201,169,97,0.03)}
+.welcome-step-num{
+  flex-shrink:0;width:42px;height:42px;
+  background:linear-gradient(135deg,var(--blood),var(--blood-bright));
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:18px;font-weight:900;border:1px solid var(--blood-bright);
+  box-shadow:0 0 12px rgba(184,20,20,0.4);
+}
+.welcome-step-content{flex:1;min-width:0}
+.welcome-step-title{
+  font-size:16px;color:var(--gold-bright);font-weight:800;margin-bottom:4px;
+}
+.welcome-step-desc{
+  font-size:14px;color:var(--ink-secondary);line-height:1.7;font-weight:500;
+}
+.welcome-step-desc strong{color:var(--ink-primary)}
+.welcome-step-desc code{
+  background:var(--bg-deep);padding:1px 6px;font-family:monospace;
+  color:var(--gold-bright);font-size:12px;border:1px solid var(--line);
+}
+.welcome-footer{
+  padding:20px 32px;border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;align-items:center;gap:16px;
+  background:rgba(0,0,0,0.2);flex-wrap:wrap;
+}
+.welcome-dontshow{
+  display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-secondary);
+  cursor:pointer;user-select:none;font-weight:500;
+}
+.welcome-dontshow input{
+  width:16px;height:16px;cursor:pointer;accent-color:var(--gold);
+}
+
+/* ═══════════════════════════════════════════════════════════════ */
+/* الثيمات حسب الوسام */
+body.theme-bronze{
+  --bg-deep:#1a1209;--bg-darker:#241809;--bg-card:#2a1d0d;
+  --gold:#cd7f32;--gold-bright:#e8a673;--gold-deep:#8b5a2b;
+  --line:#4a341c;--line-bright:#6b4423;
+}
+body.theme-silver{
+  --bg-deep:#0d0f12;--bg-darker:#15181c;--bg-card:#1d2126;
+  --gold:#c0c0c0;--gold-bright:#e5e5e5;--gold-deep:#8a8a8a;
+  --line:#33383f;--line-bright:#4e545c;
+}
+body.theme-gold{
+  --bg-deep:#0f0c05;--bg-darker:#18130a;--bg-card:#211a0e;
+  --gold:#ffd700;--gold-bright:#fff5b3;--gold-deep:#c9a961;
+  --line:#3d301a;--line-bright:#5a4828;
+}
+body.theme-diamond{
+  --bg-deep:#06121a;--bg-darker:#091c2a;--bg-card:#0e2738;
+  --gold:#b9f2ff;--gold-bright:#e8faff;--gold-deep:#5fc9e8;
+  --line:#1a3d52;--line-bright:#26597a;
+  --blood:#8b1a4a;--blood-bright:#b81c5f;
+}
+body.theme-legendary{
+  --bg-deep:#0a0510;--bg-darker:#10081d;--bg-card:#180b2a;
+  --gold:#ffd700;--gold-bright:#fff8dc;--gold-deep:#c9a961;
+  --line:#2d1f4a;--line-bright:#3f2a6b;
+  --blood:#b81414;--blood-bright:#e63838;
+}
+body.theme-legendary .topbar{
+  background:linear-gradient(90deg, rgba(184,20,20,0.15), rgba(74,10,61,0.3), rgba(184,20,20,0.15));
+}
+
+.theme-selector{
+  display:flex;align-items:center;gap:8px;font-size:12px;
+  padding:4px 10px;border:1px solid var(--line);background:var(--bg-darker);
+  color:var(--ink-secondary);font-weight:600;cursor:pointer;
+}
+.theme-selector:hover{border-color:var(--gold-deep);color:var(--gold-bright)}
+.theme-options{
+  position:absolute;top:calc(100% + 8px);left:0;z-index:200;
+  background:var(--bg-card);border:1px solid var(--gold-deep);
+  min-width:200px;box-shadow:0 8px 24px rgba(0,0,0,0.6);
+  display:none;
+}
+.theme-options.active{display:block}
+.theme-option{
+  display:flex;align-items:center;gap:10px;padding:10px 14px;
+  cursor:pointer;border-bottom:1px solid var(--line);
+  color:var(--ink-secondary);font-size:13px;font-weight:600;
+  transition:background 0.15s;
+}
+.theme-option:last-child{border-bottom:none}
+.theme-option:hover{background:rgba(201,169,97,0.1);color:var(--ink-primary)}
+.theme-option.selected{background:rgba(201,169,97,0.15);color:var(--gold-bright)}
+.theme-option .theme-swatch{
+  width:16px;height:16px;border:1px solid var(--ink-faded);flex-shrink:0;
+}
+.theme-option .theme-swatch.default{background:linear-gradient(135deg,#1a1512,#8b0a0a)}
+.theme-option .theme-swatch.bronze{background:linear-gradient(135deg,#4a2e16,#cd7f32)}
+.theme-option .theme-swatch.silver{background:linear-gradient(135deg,#2a2a2a,#c0c0c0)}
+.theme-option .theme-swatch.gold{background:linear-gradient(135deg,#4a3a0d,#ffd700)}
+.theme-option .theme-swatch.diamond{background:linear-gradient(135deg,#0a3d4a,#b9f2ff)}
+.theme-option .theme-swatch.legendary{background:linear-gradient(135deg,#4a0a3d,#ffd700,#b81414)}
+.theme-option .lock-icon{margin-right:auto;color:var(--ink-faded);font-size:14px}
+.theme-option.locked{opacity:0.5;cursor:not-allowed}
+.theme-option.locked:hover{background:transparent;color:var(--ink-secondary)}
+.theme-wrap{position:relative}
+
 @media (max-width:768px){
   .topbar-inner{padding:0 16px}
   .container{padding:32px 16px}
@@ -693,6 +827,40 @@ footer .mark{color:var(--gold-deep);font-size:14px;margin-top:18px;font-weight:7
     </nav>
     <div class="user-zone" id="userZone">
       <div class="connection-status loading" id="connStatus"><span class="status-dot"></span><span>جاري الاتصال...</span></div>
+      <div class="theme-wrap">
+        <button class="theme-selector" onclick="toggleThemeMenu(event)" id="themeBtn">🎨 الثيم</button>
+        <div class="theme-options" id="themeOptions">
+          <div class="theme-option" data-theme="" onclick="selectTheme('')">
+            <div class="theme-swatch default"></div>
+            <span>افتراضي</span>
+          </div>
+          <div class="theme-option" data-theme="bronze" data-requires="bronze" onclick="selectTheme('bronze')">
+            <div class="theme-swatch bronze"></div>
+            <span>برونزي 🥉</span>
+            <span class="lock-icon">🔒</span>
+          </div>
+          <div class="theme-option" data-theme="silver" data-requires="silver" onclick="selectTheme('silver')">
+            <div class="theme-swatch silver"></div>
+            <span>فضي 🥈</span>
+            <span class="lock-icon">🔒</span>
+          </div>
+          <div class="theme-option" data-theme="gold" data-requires="gold" onclick="selectTheme('gold')">
+            <div class="theme-swatch gold"></div>
+            <span>ذهبي 🥇</span>
+            <span class="lock-icon">🔒</span>
+          </div>
+          <div class="theme-option" data-theme="diamond" data-requires="diamond" onclick="selectTheme('diamond')">
+            <div class="theme-swatch diamond"></div>
+            <span>ماسي 💎</span>
+            <span class="lock-icon">🔒</span>
+          </div>
+          <div class="theme-option" data-theme="legendary" data-requires="legendary" onclick="selectTheme('legendary')">
+            <div class="theme-swatch legendary"></div>
+            <span>أسطوري 👑</span>
+            <span class="lock-icon">🔒</span>
+          </div>
+        </div>
+      </div>
       <button class="btn btn-sm" onclick="openAuth()">تسجيل الدخول</button>
     </div>
   </div>
@@ -889,7 +1057,11 @@ footer .mark{color:var(--gold-deep);font-size:14px;margin-top:18px;font-weight:7
           </div>
           <div class="field">
             <label>اسم الشخصية</label>
-            <input type="text" id="bfCharacter" placeholder="مثال: The Trapper، Meg Thomas">
+            <div class="autocomplete-wrap">
+              <input type="text" id="bfCharacter" class="autocomplete-input" placeholder="مثال: The Trapper، Meg Thomas" autocomplete="off">
+              <div class="autocomplete-list" id="charSuggestions"></div>
+            </div>
+            <div class="field-hint">اكتب اسم الشخصية وستظهر الصورة تلقائياً</div>
           </div>
         </div>
 
@@ -899,9 +1071,9 @@ footer .mark{color:var(--gold-deep);font-size:14px;margin-top:18px;font-weight:7
         </div>
 
         <div class="field">
-          <label>رابط صورة الشخصية (اختياري)</label>
-          <input type="url" id="bfPortrait" placeholder="https://..." onchange="previewImage('bfPortrait','bfPortraitPrev')">
-          <div class="field-hint">الصق رابطاً مباشراً لصورة الشخصية</div>
+          <label>صورة الشخصية <span class="text-muted">(تُملأ تلقائياً)</span></label>
+          <input type="url" id="bfPortrait" placeholder="https://... (اختياري — يُملأ تلقائياً)" onchange="previewImage('bfPortrait','bfPortraitPrev')">
+          <div class="field-hint">إذا اخترت شخصية من القائمة، الصورة تظهر تلقائياً من dbd-randomizer</div>
           <div id="bfPortraitPrev" style="margin-top:10px"></div>
         </div>
 
@@ -983,6 +1155,69 @@ footer .mark{color:var(--gold-deep);font-size:14px;margin-top:18px;font-weight:7
   </div>
 </div>
 
+<!-- ═══ شاشة الترحيب للمستخدم الجديد ═══ -->
+<div class="welcome-overlay hidden" id="welcomeOverlay">
+  <div class="welcome-modal">
+    <div class="welcome-header">
+      <div class="hero-ornament" style="font-size:20px;margin-bottom:8px;color:var(--gold-deep)">✦ ✦ ✦</div>
+      <h2 class="welcome-title">أهلاً بك في مجتمع بيلدات DBD</h2>
+      <p class="welcome-sub">دليلك السريع للبدء — اقرأ الخطوات الأربع التالية لتعرف كيف يعمل الموقع</p>
+    </div>
+    <div class="welcome-body">
+      <div class="welcome-step">
+        <div class="welcome-step-num">1</div>
+        <div class="welcome-step-content">
+          <div class="welcome-step-title">سجّل حساباً</div>
+          <div class="welcome-step-desc">
+            اضغط على <strong>"تسجيل الدخول"</strong> في أعلى الصفحة، ثم اختر <strong>"حساب جديد"</strong>.
+            اختر اسماً (حروف إنجليزية، أرقام، أو شرطة سفلية) وكلمة مرور.
+            تسجيلك يسمح لك بإضافة بيلدات وتقييم بيلدات الآخرين.
+          </div>
+        </div>
+      </div>
+      <div class="welcome-step">
+        <div class="welcome-step-num">2</div>
+        <div class="welcome-step-content">
+          <div class="welcome-step-title">تصفّح البيلدات</div>
+          <div class="welcome-step-desc">
+            في الصفحة الرئيسية، تشاهد كل البيلدات المعتمدة. استخدم الفلاتر (كيلر/سيرفايفر) أو ابحث باسم بيرك أو شخصية.
+            اضغط على أي بيلد لرؤية تفاصيله الكاملة والتقييمات.
+          </div>
+        </div>
+      </div>
+      <div class="welcome-step">
+        <div class="welcome-step-num">3</div>
+        <div class="welcome-step-content">
+          <div class="welcome-step-title">اقترح بيلداً جديداً</div>
+          <div class="welcome-step-desc">
+            اضغط <strong>"+ اقترح بيلد جديد"</strong>. اختر التصنيف (كيلر/سيرفايفر)،
+            اكتب اسم الشخصية (مثل <code>The Trapper</code> أو <code>Meg Thomas</code>) — وستظهر الصورة تلقائياً.
+            اكتب وصف البيلد، واختر 4 بيركات (سيظهر اقتراحات بصورها أثناء الكتابة).
+            بيلدك يُرسل لمراجعة حارس الموقع قبل النشر.
+          </div>
+        </div>
+      </div>
+      <div class="welcome-step">
+        <div class="welcome-step-num">4</div>
+        <div class="welcome-step-content">
+          <div class="welcome-step-title">اكسب أوسمة وافتح ثيمات</div>
+          <div class="welcome-step-desc">
+            كلما زاد عدد بيلداتك المعتمدة، ارتفعت رتبتك (برونزي → فضي → ذهبي → ماسي → أسطوري).
+            كل وسام يفتح لك <strong>ثيماً جديداً</strong> للموقع — تغيّره من زر <strong>"🎨 الثيم"</strong> في أعلى الصفحة.
+            الأوسمة تُمنح من حارس الموقع بناءً على نشاطك.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="welcome-footer">
+      <label class="welcome-dontshow">
+        <input type="checkbox" id="welcomeDontShow"> لا تظهر هذه الرسالة مرة أخرى
+      </label>
+      <button class="btn btn-gold" onclick="closeWelcome()">فهمت، لنبدأ ✦</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script type="module">
@@ -1044,340 +1279,582 @@ const STORE = {
 };
 
 // ═══════════════════════════════════════════════════════════════
-// 🎮 نظام صور بيركات وأدونز DBD من dbd-randomizer.com
-// النظام يولّد الروابط تلقائياً من اسم البيرك (PascalCase)
-// لا يحتاج API، لا CORS، سرعة فورية
+// ═══════════════════════════════════════════════════════════════
+// 🎮 قاعدة بيانات DBD الكاملة — صور من dbd-randomizer.com
+// 42 كيلر • 51 سيرفايفر • ~150 بيرك
+// محدث حسب DBD 9.5.2 (17/04/2026)
 // ═══════════════════════════════════════════════════════════════
 
-// تحويل اسم البيرك إلى PascalCase لتوليد رابط الصورة
-// مثال: "For the People" → "ForThePeople"
-//       "Hex: Ruin" → "HexRuin"
-//       "Self-Care" → "SelfCare"
-function toPascalCase(name) {
+function autoPascal(name) {
   if (!name) return '';
-  // إزالة الكلمات الصغيرة من القاموس الخاص (اختياري)
   return String(name)
-    // إزالة علامات الترقيم والرموز الخاصة
     .replace(/[':\-—–·.,!?&()\[\]"]/g, ' ')
-    // تحويل é → e، à → a، إلخ
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    // تقسيم على المسافات
-    .split(/\s+/)
-    .filter(w => w.length > 0)
-    // كل كلمة بحرف كبير أول
+    .split(/\s+/).filter(w => w.length > 0)
     .map(w => w.charAt(0).toUpperCase() + w.slice(1))
     .join('');
 }
 
-// توليد رابط الصورة من dbd-randomizer.com
-function dbdRandomizerImg(role, type, name) {
-  // role: 'survivor' | 'killer'
-  // type: 'Perks' | 'AddOns'
-  // name: اسم البيرك العادي ("For the People")
-  const roleFolder = role === 'killer' ? 'Killer' : 'Survivor';
-  const size = type === 'Perks' ? '90' : '50';
-  const filename = toPascalCase(name);
+const DBD_BASE = 'https://dbd-randomizer.com/Images/S0';
+function dbdImg(folder, filename) {
   if (!filename) return '';
-  return 'https://dbd-randomizer.com/Images/S0/' + roleFolder + '/' + type + '/' + size + '/' + filename + '.webp';
+  return DBD_BASE + '/' + folder + '/' + filename + '.webp';
 }
 
-// ───── قائمة البيركات الأساسية (الأشهر) ─────
-// نستخدمها للاقتراحات أثناء الكتابة فقط
-// كل بيرك: [name, role, character]
-const KNOWN_PERKS = [
-  // ===== Survivor Perks =====
-  ['Adrenaline','survivor','Meg Thomas'],
-  ['Aftercare','survivor','Quentin Smith'],
-  ['Alert','survivor','The Pig'],
-  ['Any Means Necessary','survivor','Yui Kimura'],
-  ['Appraisal','survivor','Jane Romero'],
-  ['Autodidact','survivor','Adam Francis'],
-  ['Babysitter','survivor','Steve Harrington'],
-  ['Background Player','survivor','Renato Lyra'],
-  ['Balanced Landing','survivor','Nea Karlsson'],
-  ['Better Together','survivor','Jane Romero'],
-  ['Better Than New','survivor','Jane Romero'],
-  ['Bite the Bullet','survivor','Leon Kennedy'],
-  ['Blast Mine','survivor','Jill Valentine'],
-  ['Blood Pact','survivor','Cheryl Mason'],
-  ['Blood Rush','survivor','Aestri Yazar'],
-  ['Boil Over','survivor','Kate Denson'],
-  ['Bond','survivor','Dwight Fairfield'],
-  ['Boon: Circle of Healing','survivor','Mikaela Reid'],
-  ['Boon: Dark Theory','survivor','Sable Ward'],
-  ['Boon: Exponential','survivor','Vittorio Toscano'],
-  ['Boon: Illumination','survivor','Sable Ward'],
-  ['Boon: Shadow Step','survivor','Mikaela Reid'],
-  ['Borrowed Time','survivor','Bill Overbeck'],
-  ['Botany Knowledge','survivor','Claudette Morel'],
-  ['Breakdown','survivor','Jeff Johansen'],
-  ['Breakout','survivor','Yui Kimura'],
-  ['Buckle Up','survivor','Ash Williams'],
-  ['Built to Last','survivor','Felix Richter'],
-  ['Calm Spirit','survivor','Jake Park'],
-  ['Camaraderie','survivor','Steve Harrington'],
-  ['Chemical Trap','survivor','Ada Wong'],
-  ['Clairvoyance','survivor','Mikaela Reid'],
-  ['Counterforce','survivor','Yun-Jin Lee'],
-  ['Dance With Me','survivor','Kate Denson'],
-  ['Dark Sense','survivor','Generic'],
-  ['Dead Hard','survivor','David King'],
-  ['Deception','survivor','Élodie Rakoto'],
-  ['Decisive Strike','survivor','Laurie Strode'],
-  ['Deja Vu','survivor','Generic'],
-  ['Deliverance','survivor','Adam Francis'],
-  ['Desperate Measures','survivor','Felix Richter'],
-  ["Detective's Hunch",'survivor','David Tapp'],
-  ['Diversion','survivor','Generic'],
-  ['Distortion','survivor','Jeff Johansen'],
-  ['Dramaturgy','survivor','Nicolas Cage'],
-  ['Empathic Connection','survivor','Claudette Morel'],
-  ['Empathy','survivor','Claudette Morel'],
-  ['Fast Track','survivor','Yun-Jin Lee'],
-  ['Fixated','survivor','Nancy Wheeler'],
-  ['Flashbang','survivor','Leon Kennedy'],
-  ['Flip-Flop','survivor','Ash Williams'],
-  ['Fogwise','survivor','Haddie Kaur'],
-  ['For the People','survivor','Zarina Kassir'],
-  ['Head On','survivor','Nancy Wheeler'],
-  ['Hope','survivor','Generic'],
-  ['Houdini','survivor','Sable Ward'],
-  ['Hyperfocus','survivor','Vittorio Toscano'],
-  ['Inner Healing','survivor','Nancy Wheeler'],
-  ['Invocation: Weaving Spiders','survivor','Sable Ward'],
-  ['Iron Will','survivor','Jake Park'],
-  ['Kindred','survivor','Generic'],
-  ['Leader','survivor','Dwight Fairfield'],
-  ['Left Behind','survivor','Bill Overbeck'],
-  ['Lightweight','survivor','Meg Thomas'],
-  ['Lithe','survivor','Feng Min'],
-  ['Lucky Break','survivor','Yui Kimura'],
-  ['Mettle of Man','survivor','Ash Williams'],
-  ['No Mither','survivor','Generic'],
-  ['No One Left Behind','survivor','Generic'],
-  ['Object of Obsession','survivor','Laurie Strode'],
-  ['Off the Record','survivor','Zarina Kassir'],
-  ['Open-Handed','survivor','Ace Visconti'],
-  ['Overcome','survivor','Jonah Vasquez'],
-  ['Overzealous','survivor','Haddie Kaur'],
-  ['Parental Guidance','survivor','Haddie Kaur'],
-  ["Plunderer's Instinct",'survivor','Generic'],
-  ['Poised','survivor','Jane Romero'],
-  ['Potential Energy','survivor','Vittorio Toscano'],
-  ['Power Struggle','survivor','Élodie Rakoto'],
-  ['Premonition','survivor','Generic'],
-  ['Prove Thyself','survivor','Dwight Fairfield'],
-  ['Quick & Quiet','survivor','Meg Thomas'],
-  ['Quick Gambit','survivor','Cheryl Mason'],
-  ['Reactive Healing','survivor','Ada Wong'],
-  ['Reassurance','survivor','Rebecca Chambers'],
-  ['Red Herring','survivor','Zarina Kassir'],
-  ['Renewal','survivor','Mikaela Reid'],
-  ['Resilience','survivor','Generic'],
-  ['Resurgence','survivor','Jill Valentine'],
-  ['Saboteur','survivor','Jake Park'],
-  ['Scavenger','survivor','Renato Lyra'],
-  ['Second Wind','survivor','Cheryl Mason'],
-  ['Self-Aware','survivor','Élodie Rakoto'],
-  ['Self-Care','survivor','Claudette Morel'],
-  ['Self-Preservation','survivor','Yun-Jin Lee'],
-  ['Slippery Meat','survivor','Generic'],
-  ['Smash Hit','survivor','Yun-Jin Lee'],
-  ['Sole Survivor','survivor','Laurie Strode'],
-  ['Solidarity','survivor','Jane Romero'],
-  ['Soul Guard','survivor','Cheryl Mason'],
-  ['Spine Chill','survivor','Generic'],
-  ['Sprint Burst','survivor','Meg Thomas'],
-  ['Stake Out','survivor','David Tapp'],
-  ['Streetwise','survivor','Nea Karlsson'],
-  ['Tenacity','survivor','David Tapp'],
-  ['This Is Not Happening','survivor','Yui Kimura'],
-  ['Unbreakable','survivor','Bill Overbeck'],
-  ['Up the Ante','survivor','Ace Visconti'],
-  ['Urban Evasion','survivor','Nea Karlsson'],
-  ['Vigil','survivor','Quentin Smith'],
-  ['Visionary','survivor','Felix Richter'],
-  ['Wake Up!','survivor','Quentin Smith'],
-  ["We'll Make It",'survivor','Claudette Morel'],
-  ["We're Gonna Live Forever",'survivor','David King'],
-  ['Wiretap','survivor','Ada Wong'],
-  ['Windows of Opportunity','survivor','Kate Denson'],
-  ['Made for This','survivor','Thalita Lyra'],
-  ['Teamwork: Power of Two','survivor','Thalita Lyra'],
-  ['Teamwork: Collective Stealth','survivor','Renato Lyra'],
-  ['Troubleshooter','survivor','Jonah Vasquez'],
-  ['Boon: Dark Theory','survivor','Sable Ward'],
-  ['Diversion','survivor','Generic'],
-  ['Champion of Light','survivor','Renato Lyra'],
-  ['Specialist','survivor','Thalita Lyra'],
-
-  // ===== Killer Perks =====
-  ["A Nurse's Calling",'killer','The Nurse'],
-  ['Agitation','killer','The Trapper'],
-  ['Alien Instinct','killer','The Xenomorph'],
-  ['All-Shaking Thunder','killer','The Onryō'],
-  ['Awakened Awareness','killer','The Mastermind'],
-  ['Bamboozle','killer','The Clown'],
-  ['Barbecue & Chilli','killer','The Cannibal'],
-  ['Batteries Included','killer','The Singularity'],
-  ['Beast of Prey','killer','The Huntress'],
-  ['Bitter Murmur','killer','Generic'],
-  ['Blood Echo','killer','The Oni'],
-  ['Blood Warden','killer','The Nightmare'],
-  ['Bloodhound','killer','The Wraith'],
-  ['Brutal Strength','killer','The Trapper'],
-  ['Call of Brine','killer','The Onryō'],
-  ['Claustrophobia','killer','The Hag'],
-  ['Coulrophobia','killer','The Clown'],
-  ['Corrupt Intervention','killer','The Plague'],
-  ['Coup de Grâce','killer','The Twins'],
-  ['Cruel Limits','killer','The Demogorgon'],
-  ['Darkness Revealed','killer','The Dredge'],
-  ['Dark Devotion','killer','The Plague'],
-  ['Deadlock','killer','The Cenobite'],
-  ['Deathbound','killer','The Executioner'],
-  ['Deerstalker','killer','Generic'],
-  ['Devour Hope','killer','The Hag'],
-  ['Discordance','killer','The Legion'],
-  ['Distressing','killer','Generic'],
-  ['Dominance','killer','The Mastermind'],
-  ['Dragon\'s Grip','killer','The Blight'],
-  ['Dying Light','killer','The Shape'],
-  ['Enduring','killer','The Hillbilly'],
-  ['Eruption','killer','The Nemesis'],
-  ['Fearmonger','killer','The Plague'],
-  ['Fire Up','killer','The Nightmare'],
-  ['Forced Hesitation','killer','The Skull Merchant'],
-  ['Forced Penance','killer','The Executioner'],
-  ['Franklin\'s Demise','killer','The Cannibal'],
-  ['Friends \'till the End','killer','Chucky'],
-  ['Furtive Chase','killer','The Ghost Face'],
-  ['Game Afoot','killer','The Mastermind'],
-  ['Gearhead','killer','The Twins'],
-  ['Genetic Limits','killer','The Singularity'],
-  ['Grim Embrace','killer','The Artist'],
-  ['Hangman\'s Trick','killer','The Pig'],
-  ['Hex: Blood Favour','killer','The Blight'],
-  ['Hex: Crowd Control','killer','The Twins'],
-  ['Hex: Devour Hope','killer','The Hag'],
-  ['Hex: Face the Darkness','killer','The Dredge'],
-  ['Hex: Haunted Ground','killer','The Spirit'],
-  ['Hex: Huntress Lullaby','killer','The Huntress'],
-  ['Hex: No One Escapes Death','killer','Generic'],
-  ['Hex: Pentimento','killer','The Artist'],
-  ['Hex: Plaything','killer','The Cenobite'],
-  ['Hex: Retribution','killer','The Deathslinger'],
-  ['Hex: Ruin','killer','The Hag'],
-  ['Hex: The Third Seal','killer','The Hag'],
-  ['Hex: Thrill of the Hunt','killer','The Hag'],
-  ['Hex: Two Can Play','killer','The Mastermind'],
-  ['Hex: Undying','killer','The Blight'],
-  ['Hex: Wretched Fate','killer','The Onryō'],
-  ['Hoarder','killer','The Twins'],
-  ['Houndmaster\'s Hunt','killer','The Houndmaster'],
-  ['Hubris','killer','The Knight'],
-  ['Hysteria','killer','The Mastermind'],
-  ['I\'m All Ears','killer','The Ghost Face'],
-  ['Infectious Fright','killer','The Plague'],
-  ['Insidious','killer','The Trapper'],
-  ['Iron Grasp','killer','The Trapper'],
-  ['Iron Maiden','killer','The Legion'],
-  ['Jolt','killer','Generic'],
-  ['Knock Out','killer','The Cannibal'],
-  ['Languid Touch','killer','The Krasue'],
-  ['Lethal Pursuer','killer','The Nemesis'],
-  ['Leverage','killer','The Singularity'],
-  ['Lightborn','killer','The Hillbilly'],
-  ['Machine Learning','killer','The Singularity'],
-  ['Mad Grit','killer','The Cannibal'],
-  ['Make Your Choice','killer','The Pig'],
-  ['Merciless Storm','killer','The Onryō'],
-  ['Mindbreaker','killer','The Demogorgon'],
-  ['Monitor & Abuse','killer','The Doctor'],
-  ['Monstrous Shrine','killer','Generic'],
-  ['Nemesis','killer','The Executioner'],
-  ['No Quarter','killer','The Lich'],
-  ['No Way Out','killer','The Cenobite'],
-  ['Nowhere to Hide','killer','The Knight'],
-  ['Oppression','killer','The Twins'],
-  ['Overcharge','killer','The Doctor'],
-  ['Overwhelming Presence','killer','The Doctor'],
-  ['Pain Resonance','killer','The Artist'],
-  ['Play With Your Food','killer','The Shape'],
-  ['Pop Goes the Weasel','killer','The Clown'],
-  ['Predator','killer','The Wraith'],
-  ['Rampage','killer','The Animatronic'],
-  ['Rancor','killer','The Spirit'],
-  ['Remember Me','killer','The Nightmare'],
-  ['Save the Best for Last','killer','The Shape'],
-  ['Scourge Hook: Floods of Rage','killer','The Onryō'],
-  ['Scourge Hook: Gift of Pain','killer','The Plague'],
-  ['Scourge Hook: Hangman\'s Trick','killer','The Pig'],
-  ['Scourge Hook: Monstrous Shrine','killer','Generic'],
-  ['Scourge Hook: Pain Resonance','killer','The Artist'],
-  ['Septic Touch','killer','The Plague'],
-  ['Shadowborn','killer','The Wraith'],
-  ['Sloppy Butcher','killer','Generic'],
-  ['Smash Hit','killer','The Skull Merchant'],
-  ['Spies from the Shadows','killer','Generic'],
-  ['Spirit Fury','killer','The Spirit'],
-  ['Starstruck','killer','The Trickster'],
-  ['Stridor','killer','The Nurse'],
-  ['Superior Anatomy','killer','The Unknown'],
-  ['Surge','killer','The Demogorgon'],
-  ['Surveillance','killer','The Pig'],
-  ['Terminus','killer','The Mastermind'],
-  ['Territorial Imperative','killer','The Hag'],
-  ['Thanatophobia','killer','The Nurse'],
-  ['Thrilling Tremors','killer','The Ghost Face'],
-  ['Tinkerer','killer','The Hillbilly'],
-  ['Trail of Torment','killer','The Executioner'],
-  ['Ultimate Weapon','killer','The Singularity'],
-  ['Undone','killer','The Knight'],
-  ['Unforeseen','killer','The Singularity'],
-  ['Unnerving Presence','killer','The Trapper'],
-  ['Unrelenting','killer','Generic'],
-  ['Whispers','killer','Generic'],
-  ['Zanshin Tactics','killer','The Oni']
+// ───── الكيلرز الـ42 (مستخرجة فعلياً من الموقع) ─────
+// [filename, displayName, addonsCategoryFolder]
+const KILLERS_LIST = [
+  ['TheTrapper','The Trapper','Trapper'],
+  ['TheWraith','The Wraith','Wraith'],
+  ['TheHillbilly','The Hillbilly','Hillbilly'],
+  ['TheNurse','The Nurse','Nurse'],
+  ['TheHag','The Hag','Hag'],
+  ['TheShape','The Shape','Shape'],
+  ['TheHuntress','The Huntress','Huntress'],
+  ['TheDoctor','The Doctor','Doctor'],
+  ['TheCannibal','The Cannibal','Cannibal'],
+  ['TheNightmare','The Nightmare','Nightmare'],
+  ['ThePig','The Pig','Pig'],
+  ['TheClown','The Clown','Clown'],
+  ['TheSpirit','The Spirit','Spirit'],
+  ['TheLegion','The Legion','Legion'],
+  ['ThePlague','The Plague','Plague'],
+  ['TheGhostFace','The Ghost Face','GhostFace'],
+  ['TheDemogorgon','The Demogorgon','Demogorgon'],
+  ['TheOni','The Oni','Oni'],
+  ['TheDeathslinger','The Deathslinger','Deathslinger'],
+  ['TheExecutioner','The Executioner','Executioner'],
+  ['TheBlight','The Blight','Blight'],
+  ['TheTwins','The Twins','Twins'],
+  ['TheTrickster','The Trickster','Trickster'],
+  ['TheNemesis','The Nemesis','Nemesis'],
+  ['TheCenobite','The Cenobite','Cenobite'],
+  ['TheArtist','The Artist','Artist'],
+  ['TheOnryo','The Onryo','Onryo'],
+  ['TheDredge','The Dredge','Dredge'],
+  ['TheMastermind','The Mastermind','Mastermind'],
+  ['TheKnight','The Knight','Knight'],
+  ['TheSkullMerchant','The Skull Merchant','SkullMerchant'],
+  ['TheSingularity','The Singularity','Singularity'],
+  ['TheXenomorph','The Xenomorph','Xenomorph'],
+  ['TheGoodGuy','The Good Guy','GoodGuy'],
+  ['TheUnknown','The Unknown','Unknown'],
+  ['TheLich','The Lich','Lich'],
+  ['TheDarkLord','The Dark Lord','DarkLord'],
+  ['TheHoundmaster','The Houndmaster','Houndmaster'],
+  ['TheGhoul','The Ghoul','Ghoul'],
+  ['TheAnimatronic','The Animatronic','Animatronic'],
+  ['TheKrasue','The Krasue','Krasue'],
+  ['TheFirst','The First','First']
 ];
 
-// بناء قاعدة البيانات مع الصور المولّدة
+// ───── السيرفايفرز الـ51 ─────
+// [filename, displayName]
+const SURVIVORS_LIST = [
+  ['DwightFairfield','Dwight Fairfield'],
+  ['MegThomas','Meg Thomas'],
+  ['ClaudetteMorel','Claudette Morel'],
+  ['JakePark','Jake Park'],
+  ['NeaKarlsson','Nea Karlsson'],
+  ['LaurieStrode','Laurie Strode'],
+  ['AceVisconti','Ace Visconti'],
+  ['BillOverbeck','Bill Overbeck'],
+  ['FengMin','Feng Min'],
+  ['DavidKing','David King'],
+  ['QuentinSmith','Quentin Smith'],
+  ['DavidTapp','David Tapp'],
+  ['KateDenson','Kate Denson'],
+  ['AdamFrancis','Adam Francis'],
+  ['JeffJohansen','Jeff Johansen'],
+  ['JaneRomero','Jane Romero'],
+  ['AshWilliams','Ash Williams'],
+  ['NancyWheeler','Nancy Wheeler'],
+  ['SteveHarrington','Steve Harrington'],
+  ['YuiKimura','Yui Kimura'],
+  ['ZarinaKassir','Zarina Kassir'],
+  ['CherylMason','Cheryl Mason'],
+  ['FelixRichter','Felix Richter'],
+  ['ElodieRakoto','Elodie Rakoto'],
+  ['YunJinLee','Yun-Jin Lee'],
+  ['JillValentine','Jill Valentine'],
+  ['LeonKennedy','Leon Kennedy'],
+  ['MikaelaReid','Mikaela Reid'],
+  ['JonahVasquez','Jonah Vasquez'],
+  ['YoichiAsakawa','Yoichi Asakawa'],
+  ['HaddieKaur','Haddie Kaur'],
+  ['AdaWong','Ada Wong'],
+  ['RebeccaChambers','Rebecca Chambers'],
+  ['VittorioToscano','Vittorio Toscano'],
+  ['ThalitaLyra','Thalita Lyra'],
+  ['RenatoLyra','Renato Lyra'],
+  ['GabrielSoma','Gabriel Soma'],
+  ['NicolasCage','Nicolas Cage'],
+  ['EllenRipley','Ellen Ripley'],
+  ['AestriYazar','Aestri Yazar'],
+  ['BaermarUraz','Baermar Uraz'],
+  ['SableWard','Sable Ward'],
+  ['AlanWake','Alan Wake'],
+  ['LaraCroft','Lara Croft'],
+  ['TrevorBelmont','Trevor Belmont'],
+  ['TaurieCain','Taurie Cain'],
+  ['OrelaRose','Orela Rose'],
+  ['RickGrimes','Rick Grimes'],
+  ['MichonneGrimes','Michonne Grimes'],
+  ['CarlGrimes','Carl Grimes'],
+  ['NegRotten','Neg Rotten']
+];
+
+// ───── البيركات (مرتّبة بحسب الشخصية) ─────
+// [filename, displayName, role, character]
+const KNOWN_PERKS = [
+  // === SURVIVOR PERKS ===
+  // Dwight Fairfield
+  ['Bond','Bond','survivor','Dwight Fairfield'],
+  ['ProveThyself','Prove Thyself','survivor','Dwight Fairfield'],
+  ['Leader','Leader','survivor','Dwight Fairfield'],
+  // Meg Thomas
+  ['Adrenaline','Adrenaline','survivor','Meg Thomas'],
+  ['SprintBurst','Sprint Burst','survivor','Meg Thomas'],
+  ['QuickAndQuiet','Quick & Quiet','survivor','Meg Thomas'],
+  // Claudette Morel
+  ['SelfCare','Self-Care','survivor','Claudette Morel'],
+  ['BotanyKnowledge','Botany Knowledge','survivor','Claudette Morel'],
+  ['Empathy','Empathy','survivor','Claudette Morel'],
+  // Jake Park
+  ['Saboteur','Saboteur','survivor','Jake Park'],
+  ['CalmSpirit','Calm Spirit','survivor','Jake Park'],
+  ['IronWill','Iron Will','survivor','Jake Park'],
+  // Nea Karlsson
+  ['BalancedLanding','Balanced Landing','survivor','Nea Karlsson'],
+  ['UrbanEvasion','Urban Evasion','survivor','Nea Karlsson'],
+  ['Streetwise','Streetwise','survivor','Nea Karlsson'],
+  // Laurie Strode
+  ['DecisiveStrike','Decisive Strike','survivor','Laurie Strode'],
+  ['SoleSurvivor','Sole Survivor','survivor','Laurie Strode'],
+  ['ObjectOfObsession','Object of Obsession','survivor','Laurie Strode'],
+  // Ace Visconti
+  ['OpenHanded','Open-Handed','survivor','Ace Visconti'],
+  ['UpTheAnte','Up the Ante','survivor','Ace Visconti'],
+  ['AceInTheHole','Ace In The Hole','survivor','Ace Visconti'],
+  // Bill Overbeck
+  ['BorrowedTime','Borrowed Time','survivor','Bill Overbeck'],
+  ['LeftBehind','Left Behind','survivor','Bill Overbeck'],
+  ['Unbreakable','Unbreakable','survivor','Bill Overbeck'],
+  // Feng Min
+  ['Technician','Technician','survivor','Feng Min'],
+  ['Alert','Alert','survivor','Feng Min'],
+  ['Lithe','Lithe','survivor','Feng Min'],
+  // David King
+  ['WereGonnaLiveForever','We\'re Gonna Live Forever','survivor','David King'],
+  ['NoMither','No Mither','survivor','David King'],
+  ['DeadHard','Dead Hard','survivor','David King'],
+  // Quentin Smith
+  ['WakeUp','Wake Up!','survivor','Quentin Smith'],
+  ['Vigil','Vigil','survivor','Quentin Smith'],
+  ['Pharmacy','Pharmacy','survivor','Quentin Smith'],
+  // David Tapp
+  ['Tenacity','Tenacity','survivor','David Tapp'],
+  ['DetectivesHunch','Detective\'s Hunch','survivor','David Tapp'],
+  ['StakeOut','Stake Out','survivor','David Tapp'],
+  // Kate Denson
+  ['DanceWithMe','Dance With Me','survivor','Kate Denson'],
+  ['WindowsOfOpportunity','Windows of Opportunity','survivor','Kate Denson'],
+  ['BoilOver','Boil Over','survivor','Kate Denson'],
+  // Adam Francis
+  ['DiversionPerk','Diversion','survivor','Adam Francis'],
+  ['Deliverance','Deliverance','survivor','Adam Francis'],
+  ['Autodidact','Autodidact','survivor','Adam Francis'],
+  // Jeff Johansen
+  ['Breakdown','Breakdown','survivor','Jeff Johansen'],
+  ['Aftercare','Aftercare','survivor','Jeff Johansen'],
+  ['Distortion','Distortion','survivor','Jeff Johansen'],
+  // Jane Romero
+  ['Poised','Poised','survivor','Jane Romero'],
+  ['Solidarity','Solidarity','survivor','Jane Romero'],
+  ['HeadOn','Head On','survivor','Jane Romero'],
+  // Ash Williams
+  ['BuckleUp','Buckle Up','survivor','Ash Williams'],
+  ['FlipFlop','Flip-Flop','survivor','Ash Williams'],
+  ['MettleOfMan','Mettle of Man','survivor','Ash Williams'],
+  // Nancy Wheeler
+  ['Fixated','Fixated','survivor','Nancy Wheeler'],
+  ['InnerHealing','Inner Healing','survivor','Nancy Wheeler'],
+  ['BetterTogether','Better Together','survivor','Nancy Wheeler'],
+  // Steve Harrington
+  ['SecondWind','Second Wind','survivor','Steve Harrington'],
+  ['Camaraderie','Camaraderie','survivor','Steve Harrington'],
+  ['Babysitter','Babysitter','survivor','Steve Harrington'],
+  // Yui Kimura
+  ['LuckyBreak','Lucky Break','survivor','Yui Kimura'],
+  ['AnyMeansNecessary','Any Means Necessary','survivor','Yui Kimura'],
+  ['Breakout','Breakout','survivor','Yui Kimura'],
+  // Zarina Kassir
+  ['ForThePeople','For the People','survivor','Zarina Kassir'],
+  ['OffTheRecord','Off the Record','survivor','Zarina Kassir'],
+  ['RedHerring','Red Herring','survivor','Zarina Kassir'],
+  // Cheryl Mason
+  ['SoulGuard','Soul Guard','survivor','Cheryl Mason'],
+  ['BloodPact','Blood Pact','survivor','Cheryl Mason'],
+  ['Repressed','Repressed Alliance','survivor','Cheryl Mason'],
+  // Felix Richter
+  ['Desperate','Desperate Measures','survivor','Felix Richter'],
+  ['BuiltToLast','Built to Last','survivor','Felix Richter'],
+  ['Visionary','Visionary','survivor','Felix Richter'],
+  // Elodie Rakoto
+  ['PowerStruggle','Power Struggle','survivor','Elodie Rakoto'],
+  ['Deception','Deception','survivor','Elodie Rakoto'],
+  ['Appraisal','Appraisal','survivor','Elodie Rakoto'],
+  // Yun-Jin Lee
+  ['FastTrack','Fast Track','survivor','Yun-Jin Lee'],
+  ['SmashHit','Smash Hit','survivor','Yun-Jin Lee'],
+  ['SelfPreservation','Self-Preservation','survivor','Yun-Jin Lee'],
+  // Jill Valentine
+  ['Counterforce','Counterforce','survivor','Jill Valentine'],
+  ['BlastMine','Blast Mine','survivor','Jill Valentine'],
+  ['Resurgence','Resurgence','survivor','Jill Valentine'],
+  // Leon Kennedy
+  ['Flashbang','Flashbang','survivor','Leon Kennedy'],
+  ['BiteTheBullet','Bite the Bullet','survivor','Leon Kennedy'],
+  ['RookieSpirit','Rookie Spirit','survivor','Leon Kennedy'],
+  // Mikaela Reid
+  ['BoonCircleOfHealing','Boon: Circle of Healing','survivor','Mikaela Reid'],
+  ['BoonShadowStep','Boon: Shadow Step','survivor','Mikaela Reid'],
+  ['Clairvoyance','Clairvoyance','survivor','Mikaela Reid'],
+  // Jonah Vasquez
+  ['Overcome','Overcome','survivor','Jonah Vasquez'],
+  ['Corrective','Corrective Action','survivor','Jonah Vasquez'],
+  ['Troubleshooter','Troubleshooter','survivor','Jonah Vasquez'],
+  // Yoichi Asakawa
+  ['Empathic','Empathic Connection','survivor','Yoichi Asakawa'],
+  ['ParentalGuidance','Parental Guidance','survivor','Yoichi Asakawa'],
+  ['BoonDarkTheory','Boon: Dark Theory','survivor','Yoichi Asakawa'],
+  // Haddie Kaur
+  ['Overzealous','Overzealous','survivor','Haddie Kaur'],
+  ['Inner','Inner Focus','survivor','Haddie Kaur'],
+  ['Residual','Residual Manifest','survivor','Haddie Kaur'],
+  // Ada Wong
+  ['WireTap','Wiretap','survivor','Ada Wong'],
+  ['ReactiveHealing','Reactive Healing','survivor','Ada Wong'],
+  ['LowProfile','Low Profile','survivor','Ada Wong'],
+  // Rebecca Chambers
+  ['Hyperfocus','Hyperfocus','survivor','Rebecca Chambers'],
+  ['Reassurance','Reassurance','survivor','Rebecca Chambers'],
+  ['BetterThanNew','Better Than New','survivor','Rebecca Chambers'],
+  // Vittorio Toscano
+  ['PotentialEnergy','Potential Energy','survivor','Vittorio Toscano'],
+  ['BoonExponential','Boon: Exponential','survivor','Vittorio Toscano'],
+  ['Quickening','Quick Gambit','survivor','Vittorio Toscano'],
+  // Thalita Lyra
+  ['MadeForThis','Made for This','survivor','Thalita Lyra'],
+  ['TeamworkPowerOfTwo','Teamwork: Power of Two','survivor','Thalita Lyra'],
+  ['ChemicalTrap','Chemical Trap','survivor','Thalita Lyra'],
+  // Renato Lyra
+  ['BackgroundPlayer','Background Player','survivor','Renato Lyra'],
+  ['TeamworkCollectiveStealth','Teamwork: Collective Stealth','survivor','Renato Lyra'],
+  ['Scavenger','Scavenger','survivor','Renato Lyra'],
+  // Gabriel Soma
+  ['TroubleShooter','Troubleshooter','survivor','Gabriel Soma'],
+  ['Plot','Plot Twist','survivor','Gabriel Soma'],
+  ['SelfAware','Self-Aware','survivor','Gabriel Soma'],
+  // Nicolas Cage
+  ['Dramaturgy','Dramaturgy','survivor','Nicolas Cage'],
+  ['Scene','Scene Partner','survivor','Nicolas Cage'],
+  ['Stage','Stage Production','survivor','Nicolas Cage'],
+  // Ellen Ripley
+  ['ChemicalTrap','Chemical Trap','survivor','Ellen Ripley'],
+  ['Lucky','Lucky Star','survivor','Ellen Ripley'],
+  ['LightFooted','Light-Footed','survivor','Ellen Ripley'],
+  // Aestri Yazar
+  ['BloodRush','Blood Rush','survivor','Aestri Yazar'],
+  ['StridentEchoes','Strident Echoes','survivor','Aestri Yazar'],
+  ['Mirrored','Mirrored Illusion','survivor','Aestri Yazar'],
+  // Sable Ward
+  ['InvocationWeavingSpiders','Invocation: Weaving Spiders','survivor','Sable Ward'],
+  ['StrengthInShadows','Strength in Shadows','survivor','Sable Ward'],
+  ['Wicked','Wicked','survivor','Sable Ward'],
+  // Alan Wake
+  ['ChampionOfLight','Champion of Light','survivor','Alan Wake'],
+  ['BoonIllumination','Boon: Illumination','survivor','Alan Wake'],
+  ['Deadlines','Deadline','survivor','Alan Wake'],
+  // Lara Croft
+  ['Specialist','Specialist','survivor','Lara Croft'],
+  ['HardenedHeart','Hardened','survivor','Lara Croft'],
+  ['Finesse','Finesse','survivor','Lara Croft'],
+  // Trevor Belmont
+  ['BardicInspiration','Bardic Inspiration','survivor','Trevor Belmont'],
+  ['Mirror','Mirror Illusion','survivor','Trevor Belmont'],
+  ['Vanity','Vanity Mirror','survivor','Trevor Belmont'],
+  // Taurie Cain
+  ['BoonHymnOfThorns','Hymn of Thorns','survivor','Taurie Cain'],
+  ['Faerie','Friendly Bond','survivor','Taurie Cain'],
+  ['Empath','Empathy Within','survivor','Taurie Cain'],
+  // Orela Rose
+  ['ShoulderTheBurden','Shoulder the Burden','survivor','Orela Rose'],
+  ['StillSight','Still Sight','survivor','Orela Rose'],
+  ['Friendly','Friendly Competition','survivor','Orela Rose'],
+  // Rick Grimes
+  ['DontYouGiveUp','Don\'t You Give Up','survivor','Rick Grimes'],
+  ['CommitedToWhatComes','Committed','survivor','Rick Grimes'],
+  ['LeapOfFaith','Leap of Faith','survivor','Rick Grimes'],
+  // Michonne Grimes
+  ['FightOrFlight','Fight or Flight','survivor','Michonne Grimes'],
+  ['SwiftAdvance','Swift Advance','survivor','Michonne Grimes'],
+  ['SilentResolve','Silent Resolve','survivor','Michonne Grimes'],
+  // Generic
+  ['DejaVu','Deja Vu','survivor','Generic'],
+  ['DarkSense','Dark Sense','survivor','Generic'],
+  ['Hope','Hope','survivor','Generic'],
+  ['Kindred','Kindred','survivor','Generic'],
+  ['Lightweight','Lightweight','survivor','Generic'],
+  ['NoOneLeftBehind','No One Left Behind','survivor','Generic'],
+  ['PlunderersInstinct','Plunderer\'s Instinct','survivor','Generic'],
+  ['Premonition','Premonition','survivor','Generic'],
+  ['Resilience','Resilience','survivor','Generic'],
+  ['SlipperyMeat','Slippery Meat','survivor','Generic'],
+  ['SpineChill','Spine Chill','survivor','Generic'],
+  ['ThisIsNotHappening','This Is Not Happening','survivor','Generic'],
+  ['WellMakeIt','We\'ll Make It','survivor','Generic'],
+  ['SmallGame','Small Game','survivor','Generic'],
+
+  // === KILLER PERKS ===
+  // Trapper
+  ['UnnervingPresence','Unnerving Presence','killer','The Trapper'],
+  ['BrutalStrength','Brutal Strength','killer','The Trapper'],
+  ['Agitation','Agitation','killer','The Trapper'],
+  // Wraith
+  ['PredatorOriginal','Predator','killer','The Wraith'],
+  ['Bloodhound','Bloodhound','killer','The Wraith'],
+  ['Shadowborn','Shadowborn','killer','The Wraith'],
+  // Hillbilly
+  ['Enduring','Enduring','killer','The Hillbilly'],
+  ['Lightborn','Lightborn','killer','The Hillbilly'],
+  ['Tinkerer','Tinkerer','killer','The Hillbilly'],
+  // Nurse
+  ['Stridor','Stridor','killer','The Nurse'],
+  ['Thanatophobia','Thanatophobia','killer','The Nurse'],
+  ['ANursesCalling','A Nurse\'s Calling','killer','The Nurse'],
+  // Hag
+  ['HexThirdSeal','Hex: The Third Seal','killer','The Hag'],
+  ['HexRuin','Hex: Ruin','killer','The Hag'],
+  ['HexDevourHope','Hex: Devour Hope','killer','The Hag'],
+  // Michael Myers (Shape)
+  ['SaveTheBestForLast','Save the Best for Last','killer','The Shape'],
+  ['PlayWithYourFood','Play With Your Food','killer','The Shape'],
+  ['DyingLight','Dying Light','killer','The Shape'],
+  // Huntress
+  ['BeastOfPrey','Beast of Prey','killer','The Huntress'],
+  ['Territorial','Territorial Imperative','killer','The Huntress'],
+  ['HexHuntressLullaby','Hex: Huntress Lullaby','killer','The Huntress'],
+  // Doctor
+  ['Overcharge','Overcharge','killer','The Doctor'],
+  ['MonitorAndAbuse','Monitor & Abuse','killer','The Doctor'],
+  ['OverwhelmingPresence','Overwhelming Presence','killer','The Doctor'],
+  // Cannibal
+  ['KnockOut','Knock Out','killer','The Cannibal'],
+  ['BarbecueAndChili','Barbecue & Chilli','killer','The Cannibal'],
+  ['FranklinsDemise','Franklin\'s Demise','killer','The Cannibal'],
+  // Nightmare
+  ['FireUp','Fire Up','killer','The Nightmare'],
+  ['RememberMe','Remember Me','killer','The Nightmare'],
+  ['BloodWarden','Blood Warden','killer','The Nightmare'],
+  // Pig
+  ['HangmansTrick','Hangman\'s Trick','killer','The Pig'],
+  ['Surveillance','Surveillance','killer','The Pig'],
+  ['MakeYourChoice','Make Your Choice','killer','The Pig'],
+  // Clown
+  ['Bamboozle','Bamboozle','killer','The Clown'],
+  ['Coulrophobia','Coulrophobia','killer','The Clown'],
+  ['PopGoesTheWeasel','Pop Goes the Weasel','killer','The Clown'],
+  // Spirit
+  ['SpiritFury','Spirit Fury','killer','The Spirit'],
+  ['HexHauntedGround','Hex: Haunted Ground','killer','The Spirit'],
+  ['Rancor','Rancor','killer','The Spirit'],
+  // Legion
+  ['Discordance','Discordance','killer','The Legion'],
+  ['MadGrit','Mad Grit','killer','The Legion'],
+  ['IronMaiden','Iron Maiden','killer','The Legion'],
+  // Plague
+  ['CorruptIntervention','Corrupt Intervention','killer','The Plague'],
+  ['Infectious','Infectious Fright','killer','The Plague'],
+  ['DarkDevotion','Dark Devotion','killer','The Plague'],
+  // Ghost Face
+  ['ImAllEars','I\'m All Ears','killer','The Ghost Face'],
+  ['ThrillingTremors','Thrilling Tremors','killer','The Ghost Face'],
+  ['FurtiveChase','Furtive Chase','killer','The Ghost Face'],
+  // Demogorgon
+  ['SurgePerk','Surge','killer','The Demogorgon'],
+  ['Mindbreaker','Mindbreaker','killer','The Demogorgon'],
+  ['CruelLimits','Cruel Limits','killer','The Demogorgon'],
+  // Oni
+  ['ZanshinTactics','Zanshin Tactics','killer','The Oni'],
+  ['BloodEcho','Blood Echo','killer','The Oni'],
+  ['NemesisPerk','Nemesis','killer','The Oni'],
+  // Deathslinger
+  ['Gearhead','Gearhead','killer','The Deathslinger'],
+  ['Dead Mans Switch','Dead Man\'s Switch','killer','The Deathslinger'],
+  ['HexRetribution','Hex: Retribution','killer','The Deathslinger'],
+  // Pyramid Head (Executioner)
+  ['ForcedPenance','Forced Penance','killer','The Executioner'],
+  ['TrailOfTorment','Trail of Torment','killer','The Executioner'],
+  ['Deathbound','Deathbound','killer','The Executioner'],
+  // Blight
+  ['DragonsGrip','Dragon\'s Grip','killer','The Blight'],
+  ['HexBloodFavour','Hex: Blood Favour','killer','The Blight'],
+  ['HexUndying','Hex: Undying','killer','The Blight'],
+  // Twins
+  ['CoupDeGrace','Coup de Grace','killer','The Twins'],
+  ['Hoarder','Hoarder','killer','The Twins'],
+  ['Oppression','Oppression','killer','The Twins'],
+  // Trickster
+  ['Starstruck','Starstruck','killer','The Trickster'],
+  ['HexCrowdControl','Hex: Crowd Control','killer','The Trickster'],
+  ['NoWayOut','No Way Out','killer','The Trickster'],
+  // Nemesis
+  ['LethalPursuer','Lethal Pursuer','killer','The Nemesis'],
+  ['Eruption','Eruption','killer','The Nemesis'],
+  ['HysteriaPerk','Hysteria','killer','The Nemesis'],
+  // Cenobite
+  ['Deadlock','Deadlock','killer','The Cenobite'],
+  ['HexPlaything','Hex: Plaything','killer','The Cenobite'],
+  ['Scourge Hook Gift of Pain','Scourge Hook: Gift of Pain','killer','The Cenobite'],
+  // Artist
+  ['ScourgeHookPainResonance','Scourge Hook: Pain Resonance','killer','The Artist'],
+  ['GrimEmbrace','Grim Embrace','killer','The Artist'],
+  ['HexPentimento','Hex: Pentimento','killer','The Artist'],
+  // Onryo
+  ['CallOfBrine','Call of Brine','killer','The Onryo'],
+  ['MercilessStorm','Merciless Storm','killer','The Onryo'],
+  ['ScourgeHookFloodsOfRage','Scourge Hook: Floods of Rage','killer','The Onryo'],
+  // Dredge
+  ['DarknessRevealed','Darkness Revealed','killer','The Dredge'],
+  ['DissolutionPerk','Dissolution','killer','The Dredge'],
+  ['SeptemberKiller','Septic Touch','killer','The Dredge'],
+  // Mastermind (Wesker)
+  ['AwakenedAwareness','Awakened Awareness','killer','The Mastermind'],
+  ['Superior','Superior Anatomy','killer','The Mastermind'],
+  ['Terminus','Terminus','killer','The Mastermind'],
+  // Knight
+  ['Hubris','Hubris','killer','The Knight'],
+  ['NowhereToHide','Nowhere to Hide','killer','The Knight'],
+  ['Undone','Undone','killer','The Knight'],
+  // Skull Merchant
+  ['Game Afoot','Game Afoot','killer','The Skull Merchant'],
+  ['ThwackPerk','Thwack!','killer','The Skull Merchant'],
+  ['LeverAge','Leverage','killer','The Skull Merchant'],
+  // Singularity
+  ['MachineLearning','Machine Learning','killer','The Singularity'],
+  ['Forced Hesitation','Forced Hesitation','killer','The Singularity'],
+  ['GeneticLimits','Genetic Limits','killer','The Singularity'],
+  // Xenomorph
+  ['UltimateWeapon','Ultimate Weapon','killer','The Xenomorph'],
+  ['AlienInstinct','Alien Instinct','killer','The Xenomorph'],
+  ['Rapid Brutality','Rapid Brutality','killer','The Xenomorph'],
+  // Good Guy (Chucky)
+  ['FriendsTillTheEnd','Friends \'til the End','killer','The Good Guy'],
+  ['HexTwoCanPlay','Hex: Two Can Play','killer','The Good Guy'],
+  ['Batteries Included','Batteries Included','killer','The Good Guy'],
+  // Unknown
+  ['UnforeseenPerk','Unforeseen','killer','The Unknown'],
+  ['UndoneTwo','Undone','killer','The Unknown'],
+  ['WeavingSpidersKiller','Weave Attunement','killer','The Unknown'],
+  // Lich (Vecna)
+  ['Languid Touch','Languid Touch','killer','The Lich'],
+  ['NoQuarter','Weave Attunement','killer','The Lich'],
+  ['DarknessOfNeg','Dark Arrogance','killer','The Lich'],
+  // Dark Lord (Dracula)
+  ['HumanGreed','Human Greed','killer','The Dark Lord'],
+  ['HexWretchedFate','Hex: Wretched Fate','killer','The Dark Lord'],
+  ['DominancePerk','Dominance','killer','The Dark Lord'],
+  // Houndmaster
+  ['ScourgeHookJaggedCompass','Scourge Hook: Jagged Compass','killer','The Houndmaster'],
+  ['NoQuarter','No Quarter','killer','The Houndmaster'],
+  ['AllShakingThunder','All-Shaking Thunder','killer','The Houndmaster'],
+  // Ghoul (Kaneki)
+  ['HelpInTheShadows','Help in the Shadows','killer','The Ghoul'],
+  ['Endless','Endless Hunger','killer','The Ghoul'],
+  ['Unforgiven','The Unforgiven','killer','The Ghoul'],
+  // Animatronic (FNAF)
+  ['Rampage','Rampage','killer','The Animatronic'],
+  ['Springlock','Springlock Failure','killer','The Animatronic'],
+  ['FazbearsFury','Fazbear\'s Fury','killer','The Animatronic'],
+  // Krasue
+  ['LanguidTouchKrasue','Languid Touch','killer','The Krasue'],
+  ['HungerForFlesh','Hunger for Flesh','killer','The Krasue'],
+  ['NightTerror','Night Terror','killer','The Krasue'],
+  // First
+  ['HexCalmDown','Hex: Calm Down','killer','The First'],
+  ['HexLastStand','Hex: Last Stand','killer','The First'],
+  ['CompoundFive','Compound Five','killer','The First'],
+  // Generic Killer
+  ['BitterMurmur','Bitter Murmur','killer','Generic'],
+  ['Deerstalker','Deerstalker','killer','Generic'],
+  ['DistressingPerk','Distressing','killer','Generic'],
+  ['HexNoOneEscapesDeath','Hex: No One Escapes Death','killer','Generic'],
+  ['Insidious','Insidious','killer','Generic'],
+  ['IronGrasp','Iron Grasp','killer','Generic'],
+  ['Jolt','Jolt','killer','Generic'],
+  ['MonstrousShrine','Monstrous Shrine','killer','Generic'],
+  ['Predator','Predator','killer','Generic'],
+  ['SloppyButcher','Sloppy Butcher','killer','Generic'],
+  ['SpiesFromTheShadows','Spies from the Shadows','killer','Generic'],
+  ['Unrelenting','Unrelenting','killer','Generic'],
+  ['Whispers','Whispers','killer','Generic']
+];
+
+// ───── بناء قواعد البيانات ─────
 function buildPerksDatabase() {
   const seen = {};
   const out = [];
   for (let i = 0; i < KNOWN_PERKS.length; i++) {
     const p = KNOWN_PERKS[i];
-    const name = p[0], role = p[1], character = p[2] || '';
+    const filename = p[0], name = p[1], role = p[2], character = p[3] || '';
     const key = role + ':' + name.toLowerCase();
     if (seen[key]) continue;
     seen[key] = 1;
+    const folder = (role === 'killer' ? 'Killer' : 'Survivor') + '/Perks/90';
     out.push({
       name: name,
       role: role,
       character: character,
-      image: dbdRandomizerImg(role, 'Perks', name)
+      image: dbdImg(folder, filename)
     });
   }
   return out;
 }
 
+function buildCharsDatabase() {
+  const out = [];
+  KILLERS_LIST.forEach(k => {
+    out.push({
+      filename: k[0], name: k[1], role: 'killer',
+      addonsFolder: k[2],
+      image: dbdImg('Killer/Killers/210', k[0])
+    });
+  });
+  SURVIVORS_LIST.forEach(s => {
+    out.push({
+      filename: s[0], name: s[1], role: 'survivor',
+      image: dbdImg('Survivor/Survivors/210', s[0])
+    });
+  });
+  return out;
+}
+
 const perksDatabase = buildPerksDatabase();
-const addonsDatabase = []; // الأدونز تُولّد ديناميكياً من اسم الكيلر والأدون
+const charsDatabase = buildCharsDatabase();
 const perksDbStatus = 'ok';
 
 function updatePerkDataStatusUI() {
   const el = document.getElementById('perkDataStatus');
   if (!el) return;
+  const killersCount = charsDatabase.filter(c => c.role === 'killer').length;
+  const survivorsCount = charsDatabase.filter(c => c.role === 'survivor').length;
   el.className = 'perk-data-status ok';
   el.innerHTML = '<span class="pds-dot"></span>' +
-    '<span>✓ ' + perksDatabase.length + ' بيرك • الصور من dbd-randomizer.com</span>';
+    '<span>✓ ' + perksDatabase.length + ' بيرك • ' + killersCount + ' كيلر • ' + survivorsCount + ' سيرفايفر</span>';
 }
+function retryLoadPerks() { updatePerkDataStatusUI(); }
 
-function retryLoadPerks() {
-  updatePerkDataStatusUI();
-}
-
-// إزالة التشكيل والمسافات لبحث مرن
 function normalizeText(s) {
   return String(s || '').toLowerCase()
     .replace(/[':\-—–·.,&!?()\[\]"]/g, '')
@@ -1405,46 +1882,72 @@ function searchPerks(query, role) {
     if (score > 0) matches.push({ perk: p, score });
   }
   matches.sort((a, b) => b.score - a.score);
+  const results = matches.slice(0, 15).map(m => m.perk);
 
-  // إضافة خيار "كتابة حرة" إذا الاستعلام أطول من حرفين
-  const results = matches.slice(0, 12).map(m => m.perk);
-
-  // اقتراح ذكي: إذا لم نجد نتيجة مطابقة تماماً، نضيف خيار توليد رابط من الاسم المكتوب
   if (query.trim().length >= 3 && !matches.some(m => m.score === 100)) {
     const customRole = (role === 'killer') ? 'killer' : 'survivor';
+    const folder = (customRole === 'killer' ? 'Killer' : 'Survivor') + '/Perks/90';
     results.push({
-      name: query.trim(),
-      role: customRole,
-      character: '',
-      image: dbdRandomizerImg(customRole, 'Perks', query.trim()),
+      name: query.trim(), role: customRole, character: '',
+      image: dbdImg(folder, autoPascal(query.trim())),
       isCustom: true
     });
   }
-
   return results;
 }
 
+function searchCharacters(query, role) {
+  const q = normalizeText(query);
+  if (!q) return [];
+  const matches = [];
+  for (let i = 0; i < charsDatabase.length; i++) {
+    const c = charsDatabase[i];
+    if (role && role !== 'all' && c.role !== role) continue;
+    const nName = normalizeText(c.name);
+    let score = 0;
+    if (nName === q) score = 100;
+    else if (nName.startsWith(q)) score = 80;
+    else if (nName.includes(q)) score = 50;
+    if (score > 0) matches.push({ char: c, score });
+  }
+  matches.sort((a, b) => b.score - a.score);
+  return matches.slice(0, 10).map(m => m.char);
+}
+
+function getCharacterImage(name, role) {
+  if (!name) return '';
+  const q = normalizeText(name);
+  for (let i = 0; i < charsDatabase.length; i++) {
+    const c = charsDatabase[i];
+    if (role && c.role !== role) continue;
+    if (normalizeText(c.name) === q) return c.image;
+  }
+  const folder = (role === 'killer' ? 'Killer/Killers' : 'Survivor/Survivors') + '/210';
+  return dbdImg(folder, autoPascal(name));
+}
+
+// البحث في الأدونز — للكيلر فقط (نولّد رابط من النص المكتوب)
 function searchAddons(query, killer) {
-  // الأدونز تُولَّد ديناميكياً — لا قائمة جاهزة
-  // فقط نقترح "كتابة الاسم وتوليد الصورة"
   const q = String(query || '').trim();
   if (q.length < 2) return [];
-
-  // نولّد الاقتراح للأدون من النص المكتوب
+  // نولّد اقتراح الكتابة الحرة (لأن الموقع يخزّن الأدونز بتسميات داخلية معقدة)
   return [{
     name: q,
     killer: killer || '',
-    image: dbdRandomizerImg('killer', 'AddOns', q),
+    image: dbdImg('Killer/AddOns/50', autoPascal(q)),
     isCustom: true
-  }, {
-    name: q,
-    killer: '',
-    image: dbdRandomizerImg('survivor', 'AddOns', q),
-    isCustom: true,
-    isSurvivorAddon: true
   }];
 }
 
+// كل بيركات كيلر معيّن
+function getKillerPerks(killerName) {
+  const q = normalizeText(killerName);
+  return perksDatabase.filter(p => p.role === 'killer' && normalizeText(p.character) === q);
+}
+function getSurvivorPerks(survName) {
+  const q = normalizeText(survName);
+  return perksDatabase.filter(p => p.role === 'survivor' && normalizeText(p.character) === q);
+}
 
 
 const BADGES = {
@@ -1643,6 +2146,8 @@ async function init() {
   renderSession();
   renderBuilds();
   renderStats();
+  restoreTheme();
+  showWelcomeIfNeeded();
 }
 
 window.addEventListener('firebase-ready', init);
@@ -1656,6 +2161,8 @@ setTimeout(() => {
     renderSession();
     renderBuilds();
     renderStats();
+    restoreTheme();
+    showWelcomeIfNeeded();
   }
 }, 5000);
 
@@ -1922,13 +2429,18 @@ function logout() {
 function renderSession() {
   const z = $('userZone');
   const connHTML = z.querySelector('.connection-status')?.outerHTML || '';
+  // الحفاظ على زر الثيم
+  const themeWrap = z.querySelector('.theme-wrap');
+  const themeHTML = themeWrap ? themeWrap.outerHTML : '';
+
   if (!state.session) {
-    z.innerHTML = connHTML + '<button class="btn btn-sm" onclick="openAuth()">تسجيل الدخول</button>';
+    z.innerHTML = connHTML + themeHTML + '<button class="btn btn-sm" onclick="openAuth()">تسجيل الدخول</button>';
     $('adminTabBtn').classList.add('hidden');
+    if (typeof updateThemeMenuUI === 'function') updateThemeMenuUI();
     return;
   }
   const admin = isAdmin();
-  z.innerHTML = connHTML +
+  z.innerHTML = connHTML + themeHTML +
     '<div class="user-pill ' + (admin ? 'admin' : '') + '">' +
       '<span class="dot"></span>' +
       '<span>' + escapeHTML(state.session.username) + '</span>' +
@@ -1937,6 +2449,9 @@ function renderSession() {
     renderBadgeHTML(state.session.username) +
     '<button class="btn btn-sm" onclick="logout()">خروج</button>';
   $('adminTabBtn').classList.toggle('hidden', !admin);
+  // تحديث قائمة الثيم ومحاولة استعادة الثيم المحفوظ
+  if (typeof updateThemeMenuUI === 'function') updateThemeMenuUI();
+  if (typeof restoreTheme === 'function') restoreTheme();
 }
 
 function openCreateBuild() {
@@ -2120,11 +2635,9 @@ function renderPerkSuggestions() {
 
   let results = [];
   if (isAddon) {
-    // الأدونز: نأخذ كيلر البيلد لتفضيل أدوناته
     const builderKiller = ($('bfCharacter') && $('bfCharacter').value.trim()) || '';
     results = searchAddons(query, builderKiller);
   } else {
-    // البيركات: نفلتر حسب التصنيف المختار
     const builderRole = ($('bfRole') && $('bfRole').value) || 'all';
     results = searchPerks(query, builderRole);
   }
@@ -2135,14 +2648,13 @@ function renderPerkSuggestions() {
     return;
   }
 
+  // نخزن البيانات في window عشان نتجاوز مشكلة الـ quotes في onclick
+  window._perkSuggestionsData = results;
+
   sugg.innerHTML = results.map((item, i) => {
-    const safeName = escapeAttr(item.name).replace(/'/g, '&#39;');
-    const safeImg = escapeAttr(item.image || '');
     let metaHTML = '';
     if (isAddon) {
-      const label = item.isSurvivorAddon ? 'أدون سيرفايفر' : 'أدون كيلر';
-      const roleClass = item.isSurvivorAddon ? 'survivor' : 'killer';
-      metaHTML = '<span class="ai-role ' + roleClass + '">' + label + '</span>';
+      metaHTML = '<span class="ai-role killer">أدون كيلر</span>';
       if (item.killer) metaHTML += '<span class="ai-meta">' + escapeHTML(item.killer) + '</span>';
       if (item.isCustom) metaHTML += '<span class="ai-meta">مخصص</span>';
     } else {
@@ -2150,8 +2662,8 @@ function renderPerkSuggestions() {
       if (item.character) metaHTML += '<span class="ai-meta">' + escapeHTML(item.character) + '</span>';
       if (item.isCustom) metaHTML += '<span class="ai-meta" style="color:var(--gold-bright)">⚡ مخصص</span>';
     }
-    return '<div class="autocomplete-item' + (item.isCustom ? ' custom' : '') + '" data-idx="' + i + '" onclick="pickSuggestion(\'' + safeName + '\',\'' + safeImg + '\')">' +
-      (item.image ? '<img src="' + safeImg + '" onerror="this.style.visibility=\'hidden\'">' : '<div style="width:36px;height:36px;background:var(--bg-darker);border:1px solid var(--line)"></div>') +
+    return '<div class="autocomplete-item' + (item.isCustom ? ' custom' : '') + '" data-perk-idx="' + i + '">' +
+      (item.image ? '<img src="' + escapeAttr(item.image) + '" onerror="this.style.visibility=\'hidden\'">' : '<div style="width:36px;height:36px;background:var(--bg-darker);border:1px solid var(--line)"></div>') +
       '<div class="ai-info">' +
         '<div class="ai-name">' + escapeHTML(item.name) + '</div>' +
         '<div>' + metaHTML + '</div>' +
@@ -2159,6 +2671,15 @@ function renderPerkSuggestions() {
     '</div>';
   }).join('');
   sugg.classList.add('active');
+
+  // ربط النقر بـ delegation (آمن مع كل أنواع الرموز)
+  sugg.querySelectorAll('[data-perk-idx]').forEach(el => {
+    el.addEventListener('click', () => {
+      const idx = parseInt(el.dataset.perkIdx);
+      const data = window._perkSuggestionsData && window._perkSuggestionsData[idx];
+      if (data) pickSuggestion(data.name, data.image || '');
+    });
+  });
 }
 
 function pickSuggestion(name, img) {
@@ -2672,31 +3193,248 @@ window.setUserBadge = setUserBadge;
 window.pickSuggestion = pickSuggestion;
 window.renderPerkSuggestions = renderPerkSuggestions;
 window.retryLoadPerks = retryLoadPerks;
+window.pickCharacter = pickCharacter;
+
+// ═══ شاشة الترحيب ═══
+const WELCOME_KEY = 'dbdcommunity_welcome_seen_v1';
+function showWelcomeIfNeeded() {
+  try {
+    const seen = localStorage.getItem(WELCOME_KEY);
+    if (seen === '1') return;
+  } catch (e) {}
+  const overlay = document.getElementById('welcomeOverlay');
+  if (overlay) overlay.classList.remove('hidden');
+}
+function closeWelcome() {
+  const cb = document.getElementById('welcomeDontShow');
+  if (cb && cb.checked) {
+    try { localStorage.setItem(WELCOME_KEY, '1'); } catch (e) {}
+  }
+  const overlay = document.getElementById('welcomeOverlay');
+  if (overlay) overlay.classList.add('hidden');
+}
+window.closeWelcome = closeWelcome;
+
+// ═══ نظام الثيمات ═══
+const THEME_KEY = 'dbdcommunity_theme_v1';
+// كل ثيم يحتاج الوسام المطابق له أو أعلى (ترتيب الأوسمة: bronze<silver<gold<diamond<legendary)
+const THEME_ORDER = { bronze: 1, silver: 2, gold: 3, diamond: 4, legendary: 5 };
+
+function getUserBadgeLevel(username) {
+  if (!username) return 0;
+  const user = state.users.find(u => u && u.username === username);
+  if (!user || !user.badge) return 0;
+  // الأدمن يفتح كل الثيمات
+  if (user.role === 'admin') return 999;
+  return THEME_ORDER[user.badge] || 0;
+}
+
+function canUseTheme(themeName) {
+  if (!themeName) return true; // افتراضي متاح للجميع
+  const required = THEME_ORDER[themeName] || 0;
+  if (!state.session) return false;
+  // الأدمن يفتح كل شي
+  if (isAdmin()) return true;
+  const userLevel = getUserBadgeLevel(state.session.username);
+  return userLevel >= required;
+}
+
+function applyTheme(themeName) {
+  const body = document.body;
+  ['theme-bronze','theme-silver','theme-gold','theme-diamond','theme-legendary'].forEach(c => body.classList.remove(c));
+  if (themeName) body.classList.add('theme-' + themeName);
+}
+
+function selectTheme(themeName) {
+  if (!canUseTheme(themeName)) {
+    if (!state.session) toast('سجّل الدخول واكسب الوسام لفتح هذا الثيم', 'error');
+    else toast('تحتاج وسام ' + (themeName === 'bronze' ? 'برونزي' : themeName === 'silver' ? 'فضي' : themeName === 'gold' ? 'ذهبي' : themeName === 'diamond' ? 'ماسي' : 'أسطوري') + ' لفتح هذا الثيم', 'error');
+    return;
+  }
+  applyTheme(themeName);
+  try { localStorage.setItem(THEME_KEY, themeName); } catch (e) {}
+  updateThemeMenuUI();
+  const menu = document.getElementById('themeOptions');
+  if (menu) menu.classList.remove('active');
+}
+
+function toggleThemeMenu(e) {
+  if (e) e.stopPropagation();
+  const menu = document.getElementById('themeOptions');
+  if (!menu) return;
+  menu.classList.toggle('active');
+  updateThemeMenuUI();
+}
+
+function updateThemeMenuUI() {
+  const menu = document.getElementById('themeOptions');
+  if (!menu) return;
+  const currentTheme = (() => {
+    try { return localStorage.getItem(THEME_KEY) || ''; } catch (e) { return ''; }
+  })();
+  menu.querySelectorAll('.theme-option').forEach(opt => {
+    const themeName = opt.dataset.theme || '';
+    const lockIcon = opt.querySelector('.lock-icon');
+    opt.classList.toggle('selected', themeName === currentTheme);
+    if (themeName === '') {
+      // الافتراضي دائماً مفتوح
+      if (lockIcon) lockIcon.style.display = 'none';
+      opt.classList.remove('locked');
+    } else if (canUseTheme(themeName)) {
+      if (lockIcon) lockIcon.style.display = 'none';
+      opt.classList.remove('locked');
+    } else {
+      if (lockIcon) lockIcon.style.display = 'inline';
+      opt.classList.add('locked');
+    }
+  });
+}
+
+function restoreTheme() {
+  try {
+    const saved = localStorage.getItem(THEME_KEY);
+    if (saved && canUseTheme(saved)) {
+      applyTheme(saved);
+    } else if (saved && !canUseTheme(saved)) {
+      // المستخدم فقد الوصول (مثلاً تم سحب الوسام)، نرجع للافتراضي
+      applyTheme('');
+    }
+  } catch (e) {}
+  updateThemeMenuUI();
+}
+
+window.selectTheme = selectTheme;
+window.toggleThemeMenu = toggleThemeMenu;
+
+// ───── اقتراحات الشخصيات في حقل اسم الشخصية ─────
+function renderCharacterSuggestions() {
+  const sugg = document.getElementById('charSuggestions');
+  const input = document.getElementById('bfCharacter');
+  if (!sugg || !input) return;
+  const query = input.value.trim();
+  if (!query || query.length < 1) {
+    sugg.classList.remove('active'); sugg.innerHTML = '';
+    return;
+  }
+  const builderRole = (document.getElementById('bfRole') && document.getElementById('bfRole').value) || 'all';
+  const results = searchCharacters(query, builderRole);
+  if (results.length === 0) {
+    sugg.innerHTML = '<div class="autocomplete-empty">اكتمل الاسم لإظهار الصورة تلقائياً</div>';
+    sugg.classList.add('active');
+    return;
+  }
+  window._charSuggestionsData = results;
+  sugg.innerHTML = results.map((c, i) => {
+    return '<div class="autocomplete-item" data-char-idx="' + i + '">' +
+      '<img src="' + escapeAttr(c.image) + '" onerror="this.style.visibility=\'hidden\'">' +
+      '<div class="ai-info">' +
+        '<div class="ai-name">' + escapeHTML(c.name) + '</div>' +
+        '<div><span class="ai-role ' + c.role + '">' + (c.role === 'killer' ? 'كيلر' : 'سيرفايفر') + '</span></div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+  sugg.classList.add('active');
+  // ربط آمن للنقر
+  sugg.querySelectorAll('[data-char-idx]').forEach(el => {
+    el.addEventListener('click', () => {
+      const idx = parseInt(el.dataset.charIdx);
+      const data = window._charSuggestionsData && window._charSuggestionsData[idx];
+      if (data) pickCharacter(data.name, data.image || '');
+    });
+  });
+}
+
+function pickCharacter(name, img) {
+  const charInput = document.getElementById('bfCharacter');
+  const portraitInput = document.getElementById('bfPortrait');
+  const portraitPrev = document.getElementById('bfPortraitPrev');
+  if (charInput) charInput.value = name;
+  if (portraitInput && img) {
+    portraitInput.value = img;
+    if (portraitPrev) {
+      portraitPrev.innerHTML = '<img src="' + img.replace(/"/g, '&quot;') + '" style="max-width:120px;height:auto;border:1px solid var(--line)" onerror="this.remove()">';
+    }
+  }
+  const sugg = document.getElementById('charSuggestions');
+  if (sugg) { sugg.classList.remove('active'); sugg.innerHTML = ''; }
+}
+
+// محاولة ملء صورة الشخصية تلقائياً عند تركيز الحقل أو تغيير الاسم
+function tryAutoFillPortrait() {
+  const charInput = document.getElementById('bfCharacter');
+  const portraitInput = document.getElementById('bfPortrait');
+  const portraitPrev = document.getElementById('bfPortraitPrev');
+  if (!charInput || !portraitInput) return;
+  if (portraitInput.value.trim()) return; // المستخدم وضع رابط، لا نستبدله
+  const name = charInput.value.trim();
+  if (!name) return;
+  const role = (document.getElementById('bfRole') && document.getElementById('bfRole').value) || '';
+  if (!role) return;
+  const img = getCharacterImage(name, role);
+  if (img) {
+    portraitInput.value = img;
+    if (portraitPrev) {
+      portraitPrev.innerHTML = '<img src="' + img.replace(/"/g, '&quot;') + '" style="max-width:120px;height:auto;border:1px solid var(--line)" onerror="this.remove()">';
+    }
+  }
+}
 
 // ربط حدث الكتابة لإظهار الاقتراحات
 (function wirePerkAutocomplete(){
   const input = document.getElementById('perkPickerName');
-  if (!input) return;
-  let debounceTimer = null;
-  input.addEventListener('input', () => {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(renderPerkSuggestions, 120);
-  });
-  input.addEventListener('focus', () => {
-    if (input.value.trim().length > 0) renderPerkSuggestions();
-  });
-  // إخفاء الاقتراحات عند الضغط خارجها
-  document.addEventListener('click', (e) => {
-    const sugg = document.getElementById('perkPickerSuggestions');
-    if (!sugg) return;
-    if (e.target === input) return;
-    if (sugg.contains(e.target)) return;
-    sugg.classList.remove('active');
-  });
+  if (input) {
+    let debounceTimer = null;
+    input.addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(renderPerkSuggestions, 120);
+    });
+    input.addEventListener('focus', () => {
+      if (input.value.trim().length > 0) renderPerkSuggestions();
+    });
+    document.addEventListener('click', (e) => {
+      const sugg = document.getElementById('perkPickerSuggestions');
+      if (!sugg) return;
+      if (e.target === input) return;
+      if (sugg.contains(e.target)) return;
+      sugg.classList.remove('active');
+    });
+  }
+
+  // ربط حقل الشخصية
+  const charInput = document.getElementById('bfCharacter');
+  if (charInput) {
+    let charDebounce = null;
+    charInput.addEventListener('input', () => {
+      clearTimeout(charDebounce);
+      charDebounce = setTimeout(renderCharacterSuggestions, 120);
+    });
+    charInput.addEventListener('focus', () => {
+      if (charInput.value.trim().length > 0) renderCharacterSuggestions();
+    });
+    charInput.addEventListener('blur', () => {
+      // عند مغادرة الحقل، نحاول ملء الصورة تلقائياً
+      setTimeout(tryAutoFillPortrait, 300);
+    });
+    document.addEventListener('click', (e) => {
+      const sugg = document.getElementById('charSuggestions');
+      if (!sugg) return;
+      if (e.target === charInput) return;
+      if (sugg.contains(e.target)) return;
+      sugg.classList.remove('active');
+    });
+  }
 })();
 
 document.addEventListener('click', e => {
   if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('active');
+  // إغلاق قائمة الثيم
+  const themeBtn = document.getElementById('themeBtn');
+  const themeMenu = document.getElementById('themeOptions');
+  if (themeMenu && themeMenu.classList.contains('active')) {
+    if (e.target !== themeBtn && !themeMenu.contains(e.target)) {
+      themeMenu.classList.remove('active');
+    }
+  }
 });
 
 document.addEventListener('keydown', e => {
