@@ -783,6 +783,63 @@ body.theme-legendary .topbar{
 .theme-option.locked:hover{background:transparent;color:var(--ink-secondary)}
 .theme-wrap{position:relative}
 
+/* ═══ زر التواصل العائم ═══ */
+.contact-float{
+  position:fixed;bottom:24px;left:24px;z-index:500;
+  width:56px;height:56px;border-radius:50%;
+  background:linear-gradient(135deg, var(--blood) 0%, var(--blood-bright) 100%);
+  border:2px solid var(--gold);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:24px;text-decoration:none;cursor:pointer;
+  box-shadow:0 6px 20px rgba(139,10,10,0.5), 0 0 0 0 rgba(201,169,97,0.5);
+  transition:all 0.3s ease;
+  animation:contact-pulse 2.5s ease-in-out infinite;
+}
+.contact-float:hover{
+  transform:scale(1.1) rotate(8deg);
+  box-shadow:0 8px 28px rgba(184,20,20,0.7), 0 0 20px rgba(201,169,97,0.5);
+  animation:none;
+}
+.contact-float .contact-tooltip{
+  position:absolute;left:calc(100% + 12px);top:50%;transform:translateY(-50%);
+  background:var(--bg-card);border:1px solid var(--gold-deep);
+  padding:8px 14px;font-size:13px;color:var(--ink-primary);
+  white-space:nowrap;font-weight:600;
+  opacity:0;pointer-events:none;transition:opacity 0.2s;
+}
+.contact-float:hover .contact-tooltip{opacity:1}
+@keyframes contact-pulse{
+  0%,100%{box-shadow:0 6px 20px rgba(139,10,10,0.5), 0 0 0 0 rgba(201,169,97,0.4)}
+  50%{box-shadow:0 6px 20px rgba(139,10,10,0.5), 0 0 0 12px rgba(201,169,97,0)}
+}
+
+/* ═══ زر بيلداتي ═══ */
+.my-builds-btn{
+  background:var(--bg-darker);border:1px solid var(--gold-deep);
+  color:var(--gold-bright);padding:6px 12px;font-size:12px;font-weight:700;
+  cursor:pointer;display:inline-flex;align-items:center;gap:6px;
+  font-family:'Cairo',sans-serif;transition:all 0.2s;
+}
+.my-builds-btn:hover{background:var(--gold);color:var(--bg-deep);border-color:var(--gold-bright)}
+
+/* ═══ شارة الستريمر ═══ */
+.streamer-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:11px;font-weight:800;padding:3px 10px;
+  margin-right:6px;letter-spacing:0.5px;
+  background:linear-gradient(135deg,#1a0033 0%,#6441a4 50%,#9146ff 100%);
+  background-size:200% 200%;
+  color:#fff;border:1px solid #9146ff;
+  text-shadow:0 1px 2px rgba(0,0,0,0.6);
+  vertical-align:middle;
+  box-shadow:0 0 12px rgba(145,70,255,0.6), inset 0 1px 0 rgba(255,255,255,0.2);
+  animation:streamer-shimmer 3s ease-in-out infinite;
+}
+@keyframes streamer-shimmer{
+  0%,100%{background-position:0% 50%;box-shadow:0 0 12px rgba(145,70,255,0.5), inset 0 1px 0 rgba(255,255,255,0.2)}
+  50%{background-position:100% 50%;box-shadow:0 0 18px rgba(145,70,255,0.9), inset 0 1px 0 rgba(255,255,255,0.3)}
+}
+
 @media (max-width:768px){
   .topbar-inner{padding:0 16px}
   .container{padding:32px 16px}
@@ -900,7 +957,7 @@ body.theme-legendary .topbar{
     <div class="badges-info-section">
       <div class="badges-info-header">
         <h3>نظام الأوسمة والمراتب</h3>
-        <div class="badges-info-sub">كلما زاد تفاعلك واقتراحاتك للبيلدات، ارتفعت رتبتك — الأوسمة تُمنح حسب عدد البيلدات المعتمدة</div>
+        <div class="badges-info-sub">كلما زاد تفاعلك واقتراحاتك للبيلدات، ارتفعت رتبتك — الأوسمة تُمنح حسب عدد البيلدات المعتمدة، + اذا انت ستريمر تواصل معي عشان تحصل ع البادج </div>
       </div>
       <div class="badges-grid">
         <div class="badge-tier tier-bronze">
@@ -943,7 +1000,7 @@ body.theme-legendary .topbar{
         <button class="chip" data-filter-role="killer" onclick="setRoleFilter('killer')">كيلر</button>
         <button class="chip" data-filter-role="survivor" onclick="setRoleFilter('survivor')">سيرفايفر</button>
       </div>
-      <input type="text" class="search-box" placeholder="ابحث عن بيلد، شخصية، بيرك..." id="searchInput" oninput="renderBuilds()">
+      <input type="text" class="search-box" placeholder="ابحث عن بيلد، شخصية، بيرك، أو اسم العضو..." id="searchInput" oninput="renderBuilds()">
       <div class="filter-group">
         <label>الترتيب:</label>
         <select class="search-box" id="sortSelect" onchange="renderBuilds()" style="min-width:150px">
@@ -1217,6 +1274,12 @@ body.theme-legendary .topbar{
     </div>
   </div>
 </div>
+
+<!-- ═══ زر التواصل العائم ═══ -->
+<a href="https://linktr.ee/medo_dv" target="_blank" rel="noopener" class="contact-float" title="تواصل معنا">
+  <span>✉</span>
+  <span class="contact-tooltip">تواصل معي ✦</span>
+</a>
 
 <div class="toast" id="toast"></div>
 
@@ -2235,6 +2298,40 @@ function renderBadgeHTML(username) {
   return '<span class="user-badge ' + badge + '"><span class="badge-icon">' + b.icon + '</span>' + b.label + '</span>';
 }
 
+// ═══ نظام الستريمرز ═══
+function isUserStreamer(username) {
+  if (!username) return false;
+  const user = state.users.find(u => u && u.username === username);
+  return !!(user && user.isStreamer);
+}
+
+function renderStreamerBadgeHTML(username) {
+  if (!isUserStreamer(username)) return '';
+  return '<span class="streamer-badge" title="ستريمر معتمد"><span>📺</span>ستريمر</span>';
+}
+
+async function toggleStreamerStatus(username, isStreamer) {
+  if (!isAdmin()) return;
+  const user = state.users.find(u => u && u.username === username);
+  if (!user) return;
+  const updated = Object.assign({}, user, { isStreamer: !!isStreamer });
+  delete updated._key;
+  try {
+    if (window.firebaseAvailable) {
+      await saveUserToFirebase(updated);
+    } else {
+      user.isStreamer = !!isStreamer;
+      persistLocal();
+      renderAdmin();
+      renderBuilds();
+      renderSession();
+    }
+    toast(isStreamer ? 'تم تعيين الحساب كستريمر' : 'تم إلغاء صفة الستريمر');
+  } catch (e) { console.error(e); toast('فشل الحفظ', 'error'); }
+}
+
+window.toggleStreamerStatus = toggleStreamerStatus;
+
 async function setUserBadge(username, badge) {
   if (!isAdmin()) return;
   if (username === window.ADMIN_USERNAME) { toast('لا يمكن تعديل وسم الأدمن', 'error'); return; }
@@ -2446,13 +2543,30 @@ function renderSession() {
       '<span>' + escapeHTML(state.session.username) + '</span>' +
       (admin ? '<span style="color:var(--blood-bright);margin-right:4px">⚜</span>' : '') +
     '</div>' +
+    renderStreamerBadgeHTML(state.session.username) +
     renderBadgeHTML(state.session.username) +
+    '<button class="my-builds-btn" onclick="openMyBuilds()" title="بيلداتي">📋 بيلداتي</button>' +
     '<button class="btn btn-sm" onclick="logout()">خروج</button>';
   $('adminTabBtn').classList.toggle('hidden', !admin);
   // تحديث قائمة الثيم ومحاولة استعادة الثيم المحفوظ
   if (typeof updateThemeMenuUI === 'function') updateThemeMenuUI();
   if (typeof restoreTheme === 'function') restoreTheme();
 }
+
+// ═══ بيلداتي: عرض بيلدات المستخدم الحالي ═══
+function openMyBuilds() {
+  if (!state.session) { toast('سجّل الدخول أولاً', 'error'); return; }
+  state.currentView = 'mybuilds';
+  document.querySelectorAll('.view').forEach(el => el.classList.add('hidden'));
+  $('view-home').classList.remove('hidden');
+  $('heroSection').style.display = 'none';
+  state.roleFilter = 'mine';
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  renderBuilds();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  toast('عرض بيلداتك');
+}
+window.openMyBuilds = openMyBuilds;
 
 function openCreateBuild() {
   if (!state.session) { toast('سجّل الدخول أولاً', 'error'); openAuth(); return; }
@@ -2778,11 +2892,19 @@ async function handleBuildSubmit(e) {
 }
 
 function visibleBuilds() {
-  let arr = state.builds.filter(b => b.status === 'approved');
-  if (state.roleFilter !== 'all') arr = arr.filter(b => b.role === state.roleFilter);
+  let arr;
+  // فلتر "بيلداتي"
+  if (state.roleFilter === 'mine') {
+    if (!state.session) return [];
+    arr = state.builds.filter(b => b.author === state.session.username);
+  } else {
+    arr = state.builds.filter(b => b.status === 'approved');
+    if (state.roleFilter !== 'all') arr = arr.filter(b => b.role === state.roleFilter);
+  }
   const q = ($('searchInput') && $('searchInput').value.trim().toLowerCase()) || '';
   if (q) arr = arr.filter(b =>
-    (b.name + ' ' + b.character + ' ' + b.desc + ' ' + (b.perks||[]).map(p => p.name).join(' '))
+    // البحث الآن يشمل اسم المؤلف (author) أيضاً
+    (b.name + ' ' + b.character + ' ' + b.desc + ' ' + (b.author || '') + ' ' + (b.perks||[]).map(p => p.name).join(' '))
       .toLowerCase().includes(q)
   );
   const sort = ($('sortSelect') && $('sortSelect').value) || 'rating';
@@ -2800,12 +2922,32 @@ function avgRating(b) {
 function renderBuilds() {
   const grid = $('buildsGrid');
   if (!grid) return;
+
+  // إضافة بانر "أنت في صفحة بيلداتي" إن لزم
+  const anchor = $('view-home');
+  let myBuildsBanner = document.getElementById('myBuildsBanner');
+  if (state.roleFilter === 'mine' && state.session) {
+    if (!myBuildsBanner) {
+      myBuildsBanner = document.createElement('div');
+      myBuildsBanner.id = 'myBuildsBanner';
+      myBuildsBanner.style.cssText = 'margin-bottom:20px;padding:16px 20px;border:1px dashed var(--gold-deep);background:rgba(201,169,97,0.06);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap';
+      const filterBar = anchor.querySelector('.filter-bar');
+      if (filterBar) filterBar.parentNode.insertBefore(myBuildsBanner, filterBar);
+    }
+    myBuildsBanner.innerHTML = '<div><strong style="color:var(--gold-bright);font-size:16px">📋 بيلداتي</strong> <span style="color:var(--ink-secondary);font-size:14px">— كل البيلدات اللي اقترحتها (معتمدة، قيد المراجعة، الكل)</span></div>' +
+      '<button class="btn btn-sm" onclick="setRoleFilter(\'all\');document.getElementById(\'heroSection\').style.display=\'block\'">← عرض جميع البيلدات</button>';
+  } else if (myBuildsBanner) {
+    myBuildsBanner.remove();
+  }
+
   const arr = visibleBuilds();
   if (arr.length === 0) {
+    const emptyMsg = state.roleFilter === 'mine'
+      ? '<h3>لم تنشر بيلداً بعد</h3><p>اضغط "+ اقترح بيلد جديد" لإضافة أول بيلد لك</p>'
+      : '<h3>لا توجد بيلدات</h3><p>لا يوجد ما يطابق بحثك. كن أول من يقترح بيلداً</p>';
     grid.innerHTML =
       '<div class="empty-state" style="grid-column:1/-1">' +
-        '<div class="icon">✦</div><h3>لا توجد بيلدات</h3>' +
-        '<p>لا يوجد ما يطابق بحثك. كن أول من يقترح بيلداً</p>' +
+        '<div class="icon">✦</div>' + emptyMsg +
       '</div>';
     return;
   }
@@ -2839,7 +2981,7 @@ function buildCardHTML(b) {
     : '';
 
   const suggestedBy = (b.author && b.author !== window.ADMIN_USERNAME)
-    ? '<div class="suggested-by"><span class="icon">✦</span><span>مقترح من <span class="author-name">' + escapeHTML(b.author) + '</span></span>' + renderBadgeHTML(b.author) + '</div>'
+    ? '<div class="suggested-by"><span class="icon">✦</span><span>مقترح من <span class="author-name">' + escapeHTML(b.author) + '</span></span>' + renderStreamerBadgeHTML(b.author) + renderBadgeHTML(b.author) + '</div>'
     : '';
   const ratings = b.ratings || [];
 
@@ -2942,7 +3084,7 @@ function openDetail(id) {
     : '';
 
   const suggestedByDetail = (b.author && b.author !== window.ADMIN_USERNAME)
-    ? '<div class="detail-suggested-by"><span style="color:var(--gold-bright)">✦</span> مقترح من <span class="name">' + escapeHTML(b.author) + '</span>' + renderBadgeHTML(b.author) + '</div>'
+    ? '<div class="detail-suggested-by"><span style="color:var(--gold-bright)">✦</span> مقترح من <span class="name">' + escapeHTML(b.author) + '</span>' + renderStreamerBadgeHTML(b.author) + renderBadgeHTML(b.author) + '</div>'
     : '';
 
   $('detailContent').innerHTML =
@@ -3099,7 +3241,7 @@ function renderAdmin() {
     const sorted = state.users.slice().sort((a, b) => (b.joined || 0) - (a.joined || 0));
     content.innerHTML =
       '<div class="users-table-wrap"><table class="users-table">' +
-        '<thead><tr><th>#</th><th>اسم المستخدم</th><th>الدور</th><th>الوسام</th><th>تاريخ التسجيل</th><th>عدد البيلدات</th><th>عدد التقييمات</th><th>إجراءات</th></tr></thead>' +
+        '<thead><tr><th>#</th><th>اسم المستخدم</th><th>الدور</th><th>الوسام</th><th>ستريمر</th><th>تاريخ التسجيل</th><th>عدد البيلدات</th><th>عدد التقييمات</th><th>إجراءات</th></tr></thead>' +
         '<tbody>' +
           sorted.map((u, i) => {
             const userBuilds = state.builds.filter(b => b.author === u.username).length;
@@ -3121,11 +3263,18 @@ function renderAdmin() {
                   ).join('') +
                 '</select>' +
                 (currentBadge ? '<div style="margin-top:6px">' + renderBadgeHTML(u.username) + '</div>' : '');
+            const streamerCell = (u.username === window.ADMIN_USERNAME)
+              ? '<span class="text-muted">—</span>'
+              : '<label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;color:var(--ink-secondary)">' +
+                  '<input type="checkbox" ' + (u.isStreamer ? 'checked' : '') + ' onchange="toggleStreamerStatus(\'' + escapeAttr(u.username) + '\', this.checked)" style="cursor:pointer;accent-color:#9146ff">' +
+                  '<span>ستريمر</span>' +
+                '</label>';
             return '<tr>' +
               '<td>' + (i + 1) + '</td>' +
-              '<td><span class="gold">' + escapeHTML(u.username) + '</span>' + renderBadgeHTML(u.username) + '</td>' +
+              '<td><span class="gold">' + escapeHTML(u.username) + '</span>' + renderStreamerBadgeHTML(u.username) + renderBadgeHTML(u.username) + '</td>' +
               '<td><span class="role-tag role-' + u.role + '">' + (u.role === 'admin' ? 'أدمن' : 'مستخدم') + '</span></td>' +
               '<td>' + badgeCell + '</td>' +
+              '<td>' + streamerCell + '</td>' +
               '<td>' + dateStr + '</td>' +
               '<td>' + userBuilds + '</td>' +
               '<td>' + userRatings + '</td>' +
