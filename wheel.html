@@ -64,8 +64,8 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);dis
 .sp-dot.gold{background:var(--c3);box-shadow:0 0 8px rgba(245,166,35,.7)}
 .sp-txt{font-size:15px;font-weight:700;color:var(--text)}
 
-/* FLOAT PANEL — EVENT LOG */
-.float-panel{position:absolute;left:24px;top:64px;width:230px;max-height:calc(100vh - 120px);display:flex;flex-direction:column;z-index:10}
+/* FLOAT PANEL — EVENT LOG (RIGHT SIDE NOW) */
+.float-panel{position:absolute;right:24px;top:64px;width:230px;max-height:calc(100vh - 120px);display:flex;flex-direction:column;z-index:10}
 .fp-head{background:rgba(0,245,255,.04);border:1px solid rgba(0,245,255,.12);border-bottom:none;border-radius:12px 12px 0 0;padding:10px 14px;display:flex;align-items:center;justify-content:space-between}
 .fp-title{font-size:11px;font-weight:800;color:var(--c1);letter-spacing:2px;text-transform:uppercase}
 .fp-clr{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted);padding:2px 9px;font-size:10px;cursor:pointer;transition:all .15s;font-family:'Tajawal',sans-serif;font-weight:700}
@@ -98,11 +98,10 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);dis
 .ev-time{font-size:10px;color:var(--muted);margin-top:2px;font-family:'Orbitron',monospace}
 .fp-empty{padding:28px 12px;text-align:center;color:var(--muted);font-size:12px;line-height:1.8}
 
-/* FEED — hidden, we use float panel now */
 .feed{display:none}
 
 /* ══════════════════════════════════════════════
-   ACTION LIST OVERLAYS — each has unique design
+   ACTION LIST OVERLAYS (only for rev/prot now)
 ══════════════════════════════════════════════ */
 #action-panel{
   position:fixed;inset:0;z-index:600;
@@ -110,7 +109,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);dis
 }
 #action-panel.show{display:block}
 
-/* ── KICK LIST — RED DANGER STYLE ── */
+/* ── KICK LIST — PINK DANGER STYLE ── */
 .al-kick{
   position:absolute;
   top:50%;left:50%;
@@ -119,14 +118,12 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);dis
   pointer-events:all;
   animation:al-in .35s cubic-bezier(.34,1.4,.64,1);
 }
-@keyframes al-in{from{opacity:0;transform:translate(-50%,-48%) scale(.92)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
-
 .al-kick .al-bg{
-  background:#0d0006;
+  background:#1a0010;
   border:1px solid rgba(255,60,172,.25);
   border-radius:20px;
   overflow:hidden;
-  box-shadow:0 0 80px rgba(255,60,172,.15),inset 0 0 60px rgba(255,0,60,.04);
+  box-shadow:0 0 80px rgba(255,60,172,.15),inset 0 0 60px rgba(255,0,80,.04);
   position:relative;
 }
 .al-kick .al-bg::before{
@@ -140,13 +137,12 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);dis
 }
 .al-kick-icon{
   width:48px;height:48px;border-radius:12px;
-  background:rgba(255,60,172,.12);
-  border:1px solid rgba(255,60,172,.3);
+  background:rgba(255,60,172,.12);border:1px solid rgba(255,60,172,.3);
   display:flex;align-items:center;justify-content:center;
   font-size:22px;flex-shrink:0;
-  animation:icon-throb 1.5s ease-in-out infinite;
+  animation:kick-shake 2s ease-in-out infinite;
 }
-@keyframes icon-throb{0%,100%{box-shadow:0 0 0 0 rgba(255,60,172,.3)}50%{box-shadow:0 0 0 8px rgba(255,60,172,.0)}}
+@keyframes kick-shake{0%,100%{transform:rotate(0)}25%{transform:rotate(-8deg)}75%{transform:rotate(8deg)}}
 .al-kick-title{font-size:20px;font-weight:900;color:#fff}
 .al-kick-sub{font-size:12px;color:rgba(255,60,172,.7);margin-top:3px}
 .al-kick-by{
@@ -155,7 +151,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);dis
   border-radius:20px;padding:4px 14px;
   font-size:12px;font-weight:700;color:var(--c2);
 }
-.al-kick-list{padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:8px;max-height:340px;overflow-y:auto}
+.al-kick-list{padding:16px;display:grid;grid-template-columns:repeat(2,1fr);gap:8px;max-height:320px;overflow-y:auto}
 .al-kick-list::-webkit-scrollbar{width:3px}
 .al-kick-list::-webkit-scrollbar-thumb{background:rgba(255,60,172,.3)}
 .kick-card{
@@ -163,41 +159,28 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);dis
   border:1px solid rgba(255,60,172,.12);
   border-radius:10px;padding:12px 14px;
   display:flex;align-items:center;gap:10px;
-  transition:all .15s;cursor:default;
   position:relative;overflow:hidden;
 }
-.kick-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,60,172,.06),transparent);pointer-events:none}
+.kick-card::before{
+  content:'';position:absolute;right:0;top:0;bottom:0;width:2px;
+  background:linear-gradient(to bottom,transparent,var(--c2),transparent);
+}
 .kick-num{
-  font-family:'Orbitron',monospace;font-size:16px;font-weight:900;
+  font-family:'Orbitron',monospace;font-size:18px;font-weight:900;
   color:var(--c2);text-shadow:0 0 10px rgba(255,60,172,.5);
-  min-width:24px;flex-shrink:0;
+  min-width:28px;text-align:center;flex-shrink:0;
 }
 .kick-name{font-size:13px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .al-kick-footer{
-  padding:12px 16px 16px;
-  border-top:1px solid rgba(255,60,172,.1);
+  padding:12px 16px 16px;border-top:1px solid rgba(255,60,172,.1);
   display:flex;align-items:center;justify-content:space-between;
 }
-.al-footer-hint{
-  font-size:12px;color:var(--muted);
-  display:flex;align-items:center;gap:8px;
-}
-.al-footer-hint .chat-icon{
+.al-kick-footer .chat-icon{
   background:rgba(255,255,255,.06);border:1px solid var(--border2);
   border-radius:6px;padding:3px 8px;
   font-family:'Orbitron',monospace;font-size:10px;font-weight:700;color:var(--c2);
 }
-.al-timer{
-  font-family:'Orbitron',monospace;font-size:13px;font-weight:700;
-  color:rgba(255,60,172,.6);
-}
-.btn-al-cancel{
-  background:none;border:1px solid var(--border2);color:var(--muted);
-  padding:6px 14px;border-radius:7px;cursor:pointer;
-  font-family:'Tajawal',sans-serif;font-size:12px;font-weight:700;
-  transition:all .2s;
-}
-.btn-al-cancel:hover{border-color:var(--c2);color:var(--c2)}
+.al-kick-footer .al-timer{color:rgba(255,60,172,.6)}
 
 /* ── REVIVE LIST — GREEN REVIVAL STYLE ── */
 .al-rev{
@@ -208,6 +191,7 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);dis
   pointer-events:all;
   animation:al-in .35s cubic-bezier(.34,1.4,.64,1);
 }
+@keyframes al-in{from{opacity:0;transform:translate(-50%,-48%) scale(.92)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
 .al-rev .al-bg{
   background:#00100a;
   border:1px solid rgba(0,255,136,.2);
@@ -271,12 +255,26 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);dis
   padding:12px 16px 16px;border-top:1px solid rgba(0,255,136,.08);
   display:flex;align-items:center;justify-content:space-between;
 }
-.al-rev-footer .chat-icon{
+.al-footer-hint{
+  font-size:12px;color:var(--muted);
+  display:flex;align-items:center;gap:8px;
+}
+.al-footer-hint .chat-icon{
   background:rgba(255,255,255,.06);border:1px solid var(--border2);
   border-radius:6px;padding:3px 8px;
   font-family:'Orbitron',monospace;font-size:10px;font-weight:700;color:var(--c5);
 }
+.al-timer{
+  font-family:'Orbitron',monospace;font-size:13px;font-weight:700;
+}
 .al-rev-footer .al-timer{color:rgba(0,255,136,.5)}
+.btn-al-cancel{
+  background:none;border:1px solid var(--border2);color:var(--muted);
+  padding:6px 14px;border-radius:7px;cursor:pointer;
+  font-family:'Tajawal',sans-serif;font-size:12px;font-weight:700;
+  transition:all .2s;
+}
+.btn-al-cancel:hover{border-color:var(--c2);color:var(--c2)}
 
 /* ── PROTECT LIST — PURPLE SHIELD STYLE ── */
 .al-prot{
@@ -356,43 +354,694 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);dis
 }
 .al-prot-footer .al-timer{color:rgba(121,40,202,.6)}
 
-/* ══ ACTION ANIMATIONS ══ */
+/* ══ ACTION ANIMATIONS — CINEMATIC SCENES ══ */
 #anim-overlay{position:fixed;inset:0;z-index:700;pointer-events:none;display:none}
 #anim-overlay.show{display:block}
-.anim-kick{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;animation:kas 2.4s ease forwards}
-@keyframes kas{0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}12%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}22%{transform:translate(-50%,-50%) scale(1)}78%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-52%) scale(.9)}}
-.anim-kick .big{font-size:100px;display:block;filter:drop-shadow(0 0 28px rgba(255,60,172,1));animation:kshk .3s .12s ease}
-@keyframes kshk{0%,100%{transform:rotate(0)}30%{transform:rotate(-18deg)}70%{transform:rotate(18deg)}}
-.anim-kick .aname{font-size:34px;font-weight:900;color:#fff;text-shadow:0 0 30px rgba(255,60,172,.8);margin-top:10px}
-.anim-kick .albl{font-size:13px;font-weight:700;color:var(--c2);letter-spacing:3px;text-transform:uppercase;margin-top:6px;text-shadow:0 0 10px rgba(255,60,172,.6)}
-.shard{position:absolute;width:4px;height:20px;background:var(--c2);border-radius:2px;transform-origin:top center;animation:sf 1s ease forwards}
-@keyframes sf{0%{opacity:1;transform:rotate(var(--r)) translateY(0)}100%{opacity:0;transform:rotate(var(--r)) translateY(220px)}}
-.kick-flash{position:fixed;inset:0;background:rgba(255,60,172,.14);animation:fl .35s ease forwards}
-@keyframes fl{0%{opacity:1}100%{opacity:0}}
 
-.anim-rev{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;animation:ras 2.4s ease forwards}
-@keyframes ras{0%{opacity:0;transform:translate(-50%,-50%) scale(.3) rotate(-10deg)}12%{opacity:1;transform:translate(-50%,-50%) scale(1.1) rotate(2deg)}22%{transform:translate(-50%,-50%) scale(1) rotate(0)}78%{opacity:1}100%{opacity:0;transform:translate(-50%,-54%) scale(.9)}}
-.anim-rev .big{font-size:100px;display:block;filter:drop-shadow(0 0 28px rgba(0,255,136,1));animation:rpls .5s ease infinite alternate}
-@keyframes rpls{from{transform:scale(1)}to{transform:scale(1.08)}}
-.anim-rev .aname{font-size:34px;font-weight:900;color:#fff;text-shadow:0 0 30px rgba(0,255,136,.8);margin-top:10px}
-.anim-rev .albl{font-size:13px;font-weight:700;color:var(--c5);letter-spacing:3px;text-transform:uppercase;margin-top:6px}
-.rpart{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--c5);box-shadow:0 0 8px var(--c5);animation:rrise 1.5s ease forwards}
-@keyframes rrise{0%{opacity:1;transform:translate(var(--dx),0)}100%{opacity:0;transform:translate(var(--dx),-200px)}}
-.rev-flash{position:fixed;inset:0;background:rgba(0,255,136,.08);animation:fl .4s ease forwards}
+/* ━━ KICK SCENE: bouncer throws player into trash ━━ */
+.scene-kick{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:600px;height:340px;
+  display:flex;align-items:flex-end;justify-content:center;
+  animation:scene-fade 3s ease forwards;
+}
+@keyframes scene-fade{
+  0%{opacity:0}
+  10%{opacity:1}
+  88%{opacity:1}
+  100%{opacity:0}
+}
+.scene-floor{
+  position:absolute;bottom:30px;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(255,60,172,.3),rgba(255,60,172,.6),rgba(255,60,172,.3),transparent);
+  box-shadow:0 0 20px rgba(255,60,172,.4);
+}
+.scene-floor::after{
+  content:'';position:absolute;top:2px;left:0;right:0;height:30px;
+  background:linear-gradient(180deg,rgba(255,60,172,.08),transparent);
+}
 
-.anim-prot{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;animation:pas 2.4s ease forwards}
-@keyframes pas{0%{opacity:0;transform:translate(-50%,-50%) scale(.4)}12%{opacity:1;transform:translate(-50%,-50%) scale(1.12)}22%{transform:translate(-50%,-50%) scale(1)}78%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(.85)}}
-.anim-prot .big{font-size:100px;display:block;filter:drop-shadow(0 0 28px rgba(121,40,202,1))}
-.anim-prot .aname{font-size:34px;font-weight:900;color:#fff;text-shadow:0 0 30px rgba(121,40,202,.9);margin-top:10px}
-.anim-prot .albl{font-size:13px;font-weight:700;color:#c77dff;letter-spacing:3px;text-transform:uppercase;margin-top:6px}
-.pring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:2px solid rgba(121,40,202,.6);animation:pre var(--dur) ease forwards}
-@keyframes pre{0%{width:0;height:0;opacity:.8}100%{width:320px;height:320px;opacity:0}}
-.prot-flash{position:fixed;inset:0;background:rgba(121,40,202,.1);animation:fl .4s ease forwards}
+/* Bouncer character (left) */
+.bouncer{
+  position:absolute;bottom:32px;left:80px;
+  width:90px;height:140px;
+  animation:bouncer-action 3s ease forwards;
+}
+@keyframes bouncer-action{
+  0%{transform:translateX(0) scaleX(1)}
+  20%{transform:translateX(0) scaleX(1)}
+  35%{transform:translateX(20px) scaleX(1) rotate(-8deg)}
+  50%{transform:translateX(40px) scaleX(1) rotate(5deg)}
+  60%{transform:translateX(30px) scaleX(1) rotate(0)}
+  100%{transform:translateX(30px) scaleX(1) rotate(0)}
+}
+.bouncer-body{position:relative;width:100%;height:100%}
+.bouncer-head{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:42px;height:42px;border-radius:50%;
+  background:linear-gradient(135deg,#f4a261,#e76f51);
+  border:2px solid #c44536;
+  box-shadow:inset -4px -4px 8px rgba(0,0,0,.3);
+}
+.bouncer-head::before{
+  content:'';position:absolute;top:8px;left:8px;
+  width:6px;height:6px;border-radius:50%;background:#1a1a1a;
+  box-shadow:14px 0 0 #1a1a1a;
+}
+.bouncer-head::after{
+  content:'';position:absolute;bottom:10px;left:50%;transform:translateX(-50%);
+  width:14px;height:3px;background:#1a1a1a;border-radius:2px;
+}
+.bouncer-torso{
+  position:absolute;top:38px;left:50%;transform:translateX(-50%);
+  width:60px;height:60px;
+  background:linear-gradient(135deg,#1a1a2e,#16213e);
+  border:2px solid #0f0f1e;border-radius:10px 10px 6px 6px;
+}
+.bouncer-torso::after{
+  content:'💪';position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);font-size:18px;
+}
+.bouncer-arm-right{
+  position:absolute;top:50px;left:75%;
+  width:14px;height:50px;
+  background:linear-gradient(135deg,#f4a261,#e76f51);
+  border-radius:8px;transform-origin:top center;
+  animation:throw-arm 3s ease forwards;
+}
+@keyframes throw-arm{
+  0%,20%{transform:rotate(0deg)}
+  30%{transform:rotate(-90deg)}
+  45%{transform:rotate(60deg)}
+  100%{transform:rotate(40deg)}
+}
+.bouncer-legs{
+  position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:50px;height:42px;display:flex;justify-content:space-between;
+}
+.bouncer-legs::before,.bouncer-legs::after{
+  content:'';width:18px;height:100%;
+  background:linear-gradient(180deg,#2c2c44,#16213e);
+  border-radius:6px;
+}
 
-/* ══ WINNER OVERLAY ══ */
+/* Player being thrown */
+.victim{
+  position:absolute;bottom:32px;left:200px;
+  width:60px;height:90px;
+  animation:victim-fly 3s ease forwards;
+  z-index:10;
+}
+@keyframes victim-fly{
+  0%,18%{transform:translate(0,0) rotate(0deg);opacity:0}
+  20%{transform:translate(0,0) rotate(0deg);opacity:1}
+  35%{transform:translate(20px,-30px) rotate(180deg);opacity:1}
+  55%{transform:translate(180px,-140px) rotate(540deg);opacity:1}
+  75%{transform:translate(280px,-40px) rotate(900deg);opacity:1}
+  85%{transform:translate(310px,30px) rotate(1080deg);opacity:1}
+  100%{transform:translate(310px,30px) rotate(1080deg);opacity:0}
+}
+.victim-body{position:relative;width:100%;height:100%}
+.victim-head{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:32px;height:32px;border-radius:50%;
+  background:linear-gradient(135deg,#ffd29b,#f4a261);
+  border:2px solid #c44536;
+}
+.victim-head::before{
+  content:'😵';position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);font-size:22px;
+}
+.victim-torso{
+  position:absolute;top:28px;left:50%;transform:translateX(-50%);
+  width:42px;height:40px;
+  background:linear-gradient(135deg,#ff3cac,#e91e63);
+  border-radius:8px;
+}
+.victim-legs{
+  position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:30px;height:24px;
+  background:linear-gradient(180deg,#1a3a52,#0d2a3f);
+  border-radius:4px;
+}
+
+/* Trash can (right) */
+.trashcan{
+  position:absolute;bottom:32px;right:90px;
+  width:100px;height:120px;
+  animation:trash-shake 3s ease forwards;
+}
+@keyframes trash-shake{
+  0%,55%{transform:rotate(0)}
+  60%{transform:rotate(-5deg)}
+  65%{transform:rotate(5deg)}
+  70%{transform:rotate(-3deg)}
+  75%{transform:rotate(2deg)}
+  80%{transform:rotate(0)}
+  100%{transform:rotate(0)}
+}
+.trash-lid{
+  position:absolute;top:0;left:-5px;right:-5px;height:14px;
+  background:linear-gradient(180deg,#3a3a4a,#2a2a3a);
+  border:2px solid #1a1a2a;border-radius:6px 6px 2px 2px;
+  z-index:2;
+  animation:lid-bounce 3s ease forwards;
+  transform-origin:left center;
+}
+@keyframes lid-bounce{
+  0%,55%{transform:translateY(0) rotate(0)}
+  62%{transform:translateY(-40px) rotate(-30deg)}
+  72%{transform:translateY(-20px) rotate(-15deg)}
+  82%{transform:translateY(0) rotate(0)}
+  100%{transform:translateY(0) rotate(0)}
+}
+.trash-lid::after{
+  content:'';position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:30px;height:4px;background:#1a1a2a;border-radius:2px;
+}
+.trash-body{
+  position:absolute;top:12px;left:0;right:0;bottom:0;
+  background:linear-gradient(180deg,#4a4a5a,#2a2a3a 50%,#1a1a2a);
+  border:2px solid #1a1a2a;border-radius:4px 4px 8px 8px;
+}
+.trash-body::before{
+  content:'';position:absolute;top:8px;left:8px;right:8px;
+  height:1px;background:rgba(255,255,255,.1);
+  box-shadow:0 12px 0 rgba(255,255,255,.05),0 24px 0 rgba(255,255,255,.05),0 36px 0 rgba(255,255,255,.05);
+}
+.trash-body::after{
+  content:'🚫';position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);font-size:28px;opacity:.4;
+}
+.trash-stink{
+  position:absolute;top:-30px;left:50%;transform:translateX(-50%);
+  font-size:24px;opacity:0;
+  animation:stink-rise 3s ease forwards;
+}
+@keyframes stink-rise{
+  0%,70%{opacity:0;transform:translate(-50%,0)}
+  80%{opacity:.6;transform:translate(-50%,-10px)}
+  100%{opacity:0;transform:translate(-50%,-40px)}
+}
+
+/* Impact dust */
+.dust-cloud{
+  position:absolute;bottom:50px;right:120px;
+  width:80px;height:40px;opacity:0;
+  animation:dust 3s ease forwards;
+}
+@keyframes dust{
+  0%,72%{opacity:0;transform:scale(.3)}
+  78%{opacity:.8;transform:scale(1.2)}
+  90%{opacity:.4;transform:scale(1.5)}
+  100%{opacity:0;transform:scale(1.8)}
+}
+.dust-puff{
+  position:absolute;width:30px;height:30px;border-radius:50%;
+  background:radial-gradient(circle,rgba(200,200,210,.7),transparent);
+}
+.dust-puff:nth-child(1){top:0;left:0}
+.dust-puff:nth-child(2){top:5px;left:25px;width:35px;height:35px}
+.dust-puff:nth-child(3){top:10px;left:55px}
+
+/* Kick text */
+.kick-text{
+  position:absolute;top:30px;left:50%;transform:translateX(-50%);
+  text-align:center;
+  animation:txt-pop 3s ease forwards;
+}
+@keyframes txt-pop{
+  0%,15%{opacity:0;transform:translate(-50%,-20px) scale(.5)}
+  25%{opacity:1;transform:translate(-50%,0) scale(1.1)}
+  35%{transform:translate(-50%,0) scale(1)}
+  85%{opacity:1}
+  100%{opacity:0;transform:translate(-50%,-10px) scale(.95)}
+}
+.kick-text .kt-name{
+  font-size:30px;font-weight:900;color:#fff;
+  text-shadow:0 0 30px rgba(255,60,172,.9),0 2px 4px rgba(0,0,0,.5);
+}
+.kick-text .kt-label{
+  font-size:14px;font-weight:800;color:var(--c2);
+  letter-spacing:4px;text-transform:uppercase;margin-top:6px;
+  text-shadow:0 0 12px rgba(255,60,172,.7);
+}
+.kick-flash{position:fixed;inset:0;background:rgba(255,60,172,.18);animation:fl-quick .5s ease forwards}
+@keyframes fl-quick{0%{opacity:0}30%{opacity:1}100%{opacity:0}}
+
+/* ━━ REVIVE SCENE: medic carries player to hospital ━━ */
+.scene-rev{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:600px;height:340px;
+  display:flex;align-items:flex-end;justify-content:center;
+  animation:scene-fade 3s ease forwards;
+}
+.scene-rev .scene-floor{
+  background:linear-gradient(90deg,transparent,rgba(0,255,136,.3),rgba(0,255,136,.6),rgba(0,255,136,.3),transparent);
+  box-shadow:0 0 20px rgba(0,255,136,.4);
+}
+.scene-rev .scene-floor::after{
+  background:linear-gradient(180deg,rgba(0,255,136,.08),transparent);
+}
+
+/* Hospital building (right side) */
+.hospital{
+  position:absolute;bottom:32px;right:60px;
+  width:160px;height:200px;
+  animation:hosp-pulse 3s ease forwards;
+}
+@keyframes hosp-pulse{
+  0%,70%{filter:brightness(1)}
+  80%{filter:brightness(1.3) drop-shadow(0 0 20px rgba(0,255,136,.8))}
+  100%{filter:brightness(1.1) drop-shadow(0 0 10px rgba(0,255,136,.4))}
+}
+.hosp-roof{
+  position:absolute;top:0;left:-10px;right:-10px;height:30px;
+  background:linear-gradient(180deg,#dc3545,#a4161a);
+  border:2px solid #6a040f;border-radius:8px 8px 0 0;
+  z-index:2;
+}
+.hosp-cross{
+  position:absolute;top:-20px;left:50%;transform:translateX(-50%);
+  width:40px;height:40px;
+  background:#fff;border:3px solid #dc3545;border-radius:6px;
+  z-index:3;
+  animation:cross-glow 3s ease forwards;
+}
+@keyframes cross-glow{
+  0%,55%{box-shadow:0 0 0 rgba(255,255,255,0)}
+  70%{box-shadow:0 0 30px rgba(255,255,255,.9)}
+  100%{box-shadow:0 0 10px rgba(255,255,255,.4)}
+}
+.hosp-cross::before,.hosp-cross::after{
+  content:'';position:absolute;background:#dc3545;
+}
+.hosp-cross::before{top:50%;left:6px;right:6px;height:6px;transform:translateY(-50%)}
+.hosp-cross::after{left:50%;top:6px;bottom:6px;width:6px;transform:translateX(-50%)}
+.hosp-body{
+  position:absolute;top:28px;left:0;right:0;bottom:0;
+  background:linear-gradient(180deg,#f8f9fa,#dee2e6);
+  border:2px solid #6c757d;border-radius:0 0 6px 6px;
+}
+.hosp-windows{
+  position:absolute;top:20px;left:15px;right:15px;
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;
+}
+.hosp-win{
+  height:24px;background:linear-gradient(180deg,#4cc9f0,#3a86ff);
+  border:1.5px solid #1a3a52;border-radius:3px;
+  position:relative;
+}
+.hosp-win::after{
+  content:'';position:absolute;top:50%;left:0;right:0;height:1px;
+  background:#1a3a52;transform:translateY(-50%);
+}
+.hosp-win::before{
+  content:'';position:absolute;left:50%;top:0;bottom:0;width:1px;
+  background:#1a3a52;transform:translateX(-50%);
+}
+.hosp-door{
+  position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:36px;height:50px;
+  background:linear-gradient(180deg,#2a9d8f,#1d6b62);
+  border:2px solid #134e48;border-radius:18px 18px 0 0;
+  z-index:1;
+}
+.hosp-door::before{
+  content:'+';position:absolute;top:6px;left:50%;transform:translateX(-50%);
+  color:#fff;font-size:18px;font-weight:900;
+}
+.hosp-sign{
+  position:absolute;top:35px;left:50%;transform:translateX(-50%);
+  background:#dc3545;color:#fff;font-size:9px;font-weight:900;
+  padding:2px 8px;border-radius:3px;letter-spacing:1px;
+  border:1px solid #6a040f;
+}
+
+/* Medic carrying patient (moves left to right) */
+.medic-group{
+  position:absolute;bottom:32px;left:60px;
+  width:160px;height:130px;
+  animation:medic-walk 3s ease forwards;
+}
+@keyframes medic-walk{
+  0%{transform:translateX(0)}
+  10%{transform:translateX(0)}
+  70%{transform:translateX(280px)}
+  78%{transform:translateX(280px)}
+  85%{transform:translateX(280px) scale(.6);opacity:.4}
+  100%{transform:translateX(280px) scale(.4);opacity:0}
+}
+.medic-bob{
+  width:100%;height:100%;
+  animation:bob 0.4s ease-in-out infinite;
+}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+
+/* Medic */
+.medic{
+  position:absolute;bottom:0;left:0;
+  width:60px;height:120px;
+}
+.medic-head{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:36px;height:36px;border-radius:50%;
+  background:linear-gradient(135deg,#ffd29b,#f4a261);
+  border:2px solid #c44536;
+}
+.medic-head::before{
+  content:'';position:absolute;top:-4px;left:-2px;right:-2px;height:14px;
+  background:#fff;border:2px solid #dc3545;border-radius:50% 50% 0 0;
+}
+.medic-head::after{
+  content:'+';position:absolute;top:-2px;left:50%;transform:translateX(-50%);
+  color:#dc3545;font-size:14px;font-weight:900;
+}
+.medic-eyes{
+  position:absolute;top:18px;left:50%;transform:translateX(-50%);
+  width:18px;display:flex;justify-content:space-between;
+}
+.medic-eyes::before,.medic-eyes::after{
+  content:'';width:4px;height:4px;border-radius:50%;background:#1a1a1a;
+}
+.medic-torso{
+  position:absolute;top:34px;left:50%;transform:translateX(-50%);
+  width:48px;height:54px;
+  background:linear-gradient(135deg,#fff,#e9ecef);
+  border:2px solid #ced4da;border-radius:8px 8px 6px 6px;
+}
+.medic-torso::after{
+  content:'+';position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  color:#dc3545;font-size:22px;font-weight:900;
+}
+.medic-legs{
+  position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:36px;height:34px;display:flex;justify-content:space-between;
+}
+.medic-leg{
+  width:14px;height:100%;
+  background:linear-gradient(180deg,#1a3a52,#0d2a3f);
+  border-radius:5px;
+}
+.medic-leg.l{animation:step-l 0.4s ease-in-out infinite}
+.medic-leg.r{animation:step-r 0.4s ease-in-out infinite}
+@keyframes step-l{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(10deg)}}
+@keyframes step-r{0%,100%{transform:rotate(10deg)}50%{transform:rotate(-10deg)}}
+
+/* Patient being carried (held horizontally) */
+.patient{
+  position:absolute;bottom:50px;left:60px;
+  width:90px;height:40px;
+}
+.patient-head{
+  position:absolute;top:50%;left:0;transform:translateY(-50%);
+  width:28px;height:28px;border-radius:50%;
+  background:linear-gradient(135deg,#ffd29b,#f4a261);
+  border:2px solid #c44536;
+}
+.patient-head::before{
+  content:'😵';position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);font-size:16px;
+  animation:patient-blink 3s ease forwards;
+}
+@keyframes patient-blink{
+  0%,60%{content:'😵'}
+  70%,100%{content:'😌'}
+}
+.patient-body{
+  position:absolute;top:50%;left:24px;transform:translateY(-50%);
+  width:60px;height:24px;
+  background:linear-gradient(135deg,#ff6b6b,#ee5253);
+  border:2px solid #b71c1c;border-radius:6px;
+}
+.patient-body::after{
+  content:'';position:absolute;top:50%;right:6px;transform:translateY(-50%);
+  width:14px;height:3px;background:#fff;border-radius:2px;
+  box-shadow:0 6px 0 #fff,0 -6px 0 #fff;
+}
+
+/* Healing sparkles */
+.spark{
+  position:absolute;width:8px;height:8px;border-radius:50%;
+  background:var(--c5);box-shadow:0 0 12px var(--c5);
+  animation:spark-rise 1.5s ease forwards;
+}
+@keyframes spark-rise{
+  0%{opacity:0;transform:translate(0,0) scale(.3)}
+  30%{opacity:1;transform:translate(var(--dx),-30px) scale(1)}
+  100%{opacity:0;transform:translate(var(--dx),-100px) scale(.5)}
+}
+
+/* Revive text */
+.rev-text{
+  position:absolute;top:30px;left:50%;transform:translateX(-50%);
+  text-align:center;
+  animation:txt-pop 3s ease forwards;
+}
+.rev-text .kt-name{
+  font-size:30px;font-weight:900;color:#fff;
+  text-shadow:0 0 30px rgba(0,255,136,.9),0 2px 4px rgba(0,0,0,.5);
+}
+.rev-text .kt-label{
+  font-size:14px;font-weight:800;color:var(--c5);
+  letter-spacing:4px;text-transform:uppercase;margin-top:6px;
+  text-shadow:0 0 12px rgba(0,255,136,.7);
+}
+.rev-flash{position:fixed;inset:0;background:rgba(0,255,136,.12);animation:fl-quick .5s ease forwards}
+
+/* ━━ PROTECT SCENE: hero throws shield onto target ━━ */
+.scene-prot{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:600px;height:340px;
+  display:flex;align-items:flex-end;justify-content:center;
+  animation:scene-fade 3s ease forwards;
+}
+.scene-prot .scene-floor{
+  background:linear-gradient(90deg,transparent,rgba(121,40,202,.3),rgba(121,40,202,.6),rgba(121,40,202,.3),transparent);
+  box-shadow:0 0 20px rgba(121,40,202,.4);
+}
+.scene-prot .scene-floor::after{
+  background:linear-gradient(180deg,rgba(121,40,202,.08),transparent);
+}
+
+/* Hero (thrower, on the left) */
+.hero{
+  position:absolute;bottom:32px;left:100px;
+  width:80px;height:140px;
+  animation:hero-throw 3s ease forwards;
+}
+@keyframes hero-throw{
+  0%,15%{transform:translateX(0) scaleX(1)}
+  25%{transform:translateX(-15px) scaleX(1) rotate(-5deg)}
+  40%{transform:translateX(10px) scaleX(1) rotate(8deg)}
+  55%{transform:translateX(0) scaleX(1) rotate(0)}
+  100%{transform:translateX(0) scaleX(1) rotate(0)}
+}
+.hero-cape{
+  position:absolute;top:38px;left:-12px;
+  width:36px;height:80px;
+  background:linear-gradient(135deg,#7928ca,#c77dff);
+  border:2px solid #4a0d6e;
+  border-radius:5px 25px 60% 5px;
+  transform-origin:top right;
+  animation:cape-wave 1.5s ease-in-out infinite alternate;
+  z-index:0;
+}
+@keyframes cape-wave{
+  from{transform:rotate(-5deg) skewX(-3deg)}
+  to{transform:rotate(5deg) skewX(3deg)}
+}
+.hero-head{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,#ffd29b,#f4a261);
+  border:2px solid #c44536;z-index:2;
+}
+.hero-head::before{
+  content:'';position:absolute;top:6px;left:50%;transform:translateX(-50%);
+  width:30px;height:8px;
+  background:linear-gradient(135deg,#7928ca,#c77dff);border-radius:4px 4px 0 0;
+}
+.hero-head::after{
+  content:'';position:absolute;top:18px;left:8px;width:6px;height:5px;
+  border-radius:50%;background:#1a1a1a;
+  box-shadow:14px 0 0 #1a1a1a;
+}
+.hero-mask{
+  position:absolute;top:16px;left:50%;transform:translateX(-50%);
+  width:32px;height:10px;
+  background:#1a1a1a;border-radius:2px;z-index:3;
+}
+.hero-torso{
+  position:absolute;top:36px;left:50%;transform:translateX(-50%);
+  width:52px;height:54px;
+  background:linear-gradient(135deg,#7928ca,#9d4edd);
+  border:2px solid #4a0d6e;border-radius:10px 10px 6px 6px;
+  z-index:1;
+}
+.hero-torso::after{
+  content:'⚡';position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);font-size:22px;
+}
+.hero-arm{
+  position:absolute;top:46px;left:60%;
+  width:14px;height:46px;
+  background:linear-gradient(135deg,#7928ca,#9d4edd);
+  border-radius:7px;transform-origin:top center;
+  animation:arm-throw 3s ease forwards;
+  z-index:2;
+}
+@keyframes arm-throw{
+  0%,15%{transform:rotate(0)}
+  25%{transform:rotate(-100deg)}
+  40%{transform:rotate(80deg)}
+  100%{transform:rotate(60deg)}
+}
+.hero-legs{
+  position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:42px;height:42px;display:flex;justify-content:space-between;
+  z-index:1;
+}
+.hero-legs::before,.hero-legs::after{
+  content:'';width:16px;height:100%;
+  background:linear-gradient(180deg,#4a0d6e,#2d0747);
+  border-radius:6px;
+}
+
+/* Shield flying through air */
+.shield-fly{
+  position:absolute;bottom:80px;left:170px;
+  width:50px;height:50px;
+  animation:shield-arc 3s ease forwards;
+  z-index:5;
+}
+@keyframes shield-arc{
+  0%,20%{transform:translate(0,0) rotate(0deg);opacity:0}
+  25%{transform:translate(0,0) rotate(0deg);opacity:1}
+  35%{transform:translate(50px,-40px) rotate(180deg);opacity:1}
+  50%{transform:translate(150px,-90px) rotate(540deg);opacity:1}
+  65%{transform:translate(260px,-30px) rotate(900deg);opacity:1}
+  72%{transform:translate(290px,0) rotate(1080deg) scale(1.2);opacity:1}
+  78%{transform:translate(290px,0) rotate(1080deg) scale(1);opacity:1}
+  100%{transform:translate(290px,0) rotate(1080deg) scale(1);opacity:0}
+}
+.shield-icon{
+  width:100%;height:100%;
+  background:radial-gradient(circle,#c77dff,#7928ca);
+  border:3px solid #4a0d6e;
+  border-radius:50% 50% 50% 50% / 40% 40% 60% 60%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;
+  box-shadow:0 0 20px rgba(121,40,202,.8),inset 0 0 10px rgba(255,255,255,.3);
+}
+
+/* Target (right) — receives shield */
+.target-ally{
+  position:absolute;bottom:32px;right:120px;
+  width:80px;height:140px;
+  animation:target-react 3s ease forwards;
+}
+@keyframes target-react{
+  0%,65%{transform:translateY(0)}
+  72%{transform:translateY(-8px)}
+  78%{transform:translateY(0)}
+  100%{transform:translateY(0)}
+}
+.target-head{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,#ffd29b,#f4a261);
+  border:2px solid #c44536;
+}
+.target-head::before{
+  content:'😊';position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);font-size:20px;
+}
+.target-torso{
+  position:absolute;top:36px;left:50%;transform:translateX(-50%);
+  width:48px;height:52px;
+  background:linear-gradient(135deg,#00b4d8,#0077b6);
+  border:2px solid #023e7d;border-radius:8px 8px 6px 6px;
+}
+.target-legs{
+  position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:40px;height:46px;display:flex;justify-content:space-between;
+}
+.target-legs::before,.target-legs::after{
+  content:'';width:16px;height:100%;
+  background:linear-gradient(180deg,#1a3a52,#0d2a3f);border-radius:6px;
+}
+
+/* Shield bubble that forms around target */
+.shield-bubble{
+  position:absolute;bottom:32px;right:80px;
+  width:160px;height:160px;
+  border-radius:50%;
+  opacity:0;
+  animation:bubble-form 3s ease forwards;
+  pointer-events:none;
+}
+@keyframes bubble-form{
+  0%,72%{opacity:0;transform:scale(.2)}
+  80%{opacity:.7;transform:scale(1.2)}
+  86%{opacity:.5;transform:scale(1)}
+  100%{opacity:.4;transform:scale(1.05)}
+}
+.shield-bubble::before{
+  content:'';position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle,rgba(199,125,255,.3) 0%,rgba(121,40,202,.15) 50%,transparent 75%);
+  border:2px solid rgba(199,125,255,.6);
+  box-shadow:0 0 40px rgba(121,40,202,.5),inset 0 0 30px rgba(199,125,255,.3);
+}
+.shield-bubble::after{
+  content:'';position:absolute;top:15%;left:25%;
+  width:30%;height:25%;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.4),transparent);
+}
+
+/* Hexagon energy ripples */
+.hex-ring{
+  position:absolute;bottom:32px;right:80px;
+  width:160px;height:160px;border-radius:50%;
+  border:2px solid rgba(199,125,255,.6);
+  opacity:0;
+  animation:hex-ripple var(--dur) ease forwards;
+  pointer-events:none;
+}
+@keyframes hex-ripple{
+  0%,72%{opacity:0;transform:scale(.3)}
+  78%{opacity:.8;transform:scale(.5)}
+  100%{opacity:0;transform:scale(1.6)}
+}
+
+/* Protect text */
+.prot-text{
+  position:absolute;top:30px;left:50%;transform:translateX(-50%);
+  text-align:center;
+  animation:txt-pop 3s ease forwards;
+}
+.prot-text .kt-name{
+  font-size:30px;font-weight:900;color:#fff;
+  text-shadow:0 0 30px rgba(121,40,202,.9),0 2px 4px rgba(0,0,0,.5);
+}
+.prot-text .kt-label{
+  font-size:14px;font-weight:800;color:#c77dff;
+  letter-spacing:4px;text-transform:uppercase;margin-top:6px;
+  text-shadow:0 0 12px rgba(121,40,202,.7);
+}
+.prot-flash{position:fixed;inset:0;background:rgba(121,40,202,.12);animation:fl-quick .5s ease forwards}
+
+/* ══ WINNER OVERLAY (auto-hides 3s) ══ */
 #win-overlay{position:fixed;inset:0;background:rgba(2,2,10,.9);z-index:800;display:none;align-items:center;justify-content:center;backdrop-filter:blur(10px)}
 #win-overlay.show{display:flex;animation:ov-in .3s ease}
 @keyframes ov-in{from{opacity:0}to{opacity:1}}
+#win-overlay.hide{animation:ov-out .4s ease forwards}
+@keyframes ov-out{from{opacity:1}to{opacity:0}}
 .w-card{background:var(--s2);border-radius:24px;padding:52px 68px;text-align:center;overflow:hidden;animation:wi .5s cubic-bezier(.34,1.56,.64,1);max-width:480px;width:90%;position:relative}
 @keyframes wi{from{transform:scale(.6) rotate(-5deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
 .w-card::before{content:'';position:absolute;inset:-1px;border-radius:24px;background:linear-gradient(135deg,var(--c1),var(--c4),var(--c2),var(--c3));z-index:-1;animation:bspin 3s linear infinite}
@@ -402,13 +1051,13 @@ body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);dis
 @keyframes ci{from{transform:scale(0) rotate(-30deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
 .w-eyebrow{font-family:'Orbitron',monospace;font-size:10px;font-weight:700;color:var(--c3);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;text-shadow:0 0 10px rgba(245,166,35,.6)}
 .w-name{font-size:36px;font-weight:900;color:#fff;margin-bottom:14px}
-.w-perks{margin-bottom:24px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.w-perks{margin-bottom:18px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
 .w-perk{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;border:1px solid}
 .w-perk.kick{background:rgba(255,60,172,.1);border-color:rgba(255,60,172,.3);color:var(--c2)}
 .w-perk.rev{background:rgba(0,255,136,.1);border-color:rgba(0,255,136,.3);color:var(--c5)}
 .w-perk.prot{background:rgba(121,40,202,.1);border-color:rgba(121,40,202,.3);color:#c77dff}
-.btn-dismiss{background:transparent;border:1px solid var(--border2);color:var(--muted);padding:12px 28px;border-radius:8px;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:800;cursor:pointer;transition:all .2s}
-.btn-dismiss:hover{border-color:var(--c1);color:var(--c1);box-shadow:0 0 12px rgba(0,245,255,.2)}
+.w-countdown{font-family:'Orbitron',monospace;font-size:11px;color:var(--muted);letter-spacing:1px}
+.w-countdown b{color:var(--c3)}
 
 #cfx{position:fixed;inset:0;pointer-events:none;z-index:750}
 
@@ -479,29 +1128,315 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:16px;height:16px;b
 .cmd-name{font-family:'Orbitron',monospace;font-size:9px;font-weight:700;color:var(--c3);text-shadow:0 0 6px rgba(245,166,35,.4)}
 .cmd-desc{font-size:10px;color:var(--muted)}
 
-/* ── Active mode indicator on status pill ── */
 .status-pill.mode-kick{border-color:rgba(255,60,172,.4);box-shadow:0 0 20px rgba(255,60,172,.1)}
 .status-pill.mode-rev{border-color:rgba(0,255,136,.4);box-shadow:0 0 20px rgba(0,255,136,.1)}
 .status-pill.mode-prot{border-color:rgba(121,40,202,.4);box-shadow:0 0 20px rgba(121,40,202,.1)}
 
-/* ── CRYSTAL SHIELD OVERLAY ── */
-.crystal-overlay{
-  position:absolute;
-  inset:0;
-  border-radius:50%;
-  pointer-events:none;
-  z-index:15;
+/* ══ WINNER COUNTERS — live display under status ══ */
+.winner-counters{
+  display:none;
+  position:absolute;bottom:20px;left:50%;transform:translateX(-50%);
+  background:rgba(7,7,17,.85);border:1px solid rgba(245,166,35,.3);
+  border-radius:14px;padding:8px 16px;
+  display:none;align-items:center;gap:16px;
+  backdrop-filter:blur(10px);z-index:9;
+  box-shadow:0 0 30px rgba(245,166,35,.1);
+}
+.winner-counters.show{display:flex}
+.winner-counters::before{
+  content:'';position:absolute;top:-1px;left:20%;right:20%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--c3),transparent);
+}
+.wc-label{
+  font-family:'Orbitron',monospace;font-size:9px;font-weight:700;
+  color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;
+}
+.wc-winner-name{font-size:13px;font-weight:900;color:var(--c3);text-shadow:0 0 8px rgba(245,166,35,.5)}
+.wc-divider{width:1px;height:24px;background:var(--border2)}
+.wc-stat{display:flex;align-items:center;gap:6px}
+.wc-icon{font-size:14px}
+.wc-count{
+  font-family:'Orbitron',monospace;font-size:13px;font-weight:900;
+}
+.wc-count.kick{color:var(--c2);text-shadow:0 0 8px rgba(255,60,172,.4)}
+.wc-count.rev{color:var(--c5);text-shadow:0 0 8px rgba(0,255,136,.4)}
+.wc-count.prot{color:#c77dff;text-shadow:0 0 8px rgba(121,40,202,.4)}
+.wc-count.used-up{opacity:.4;text-decoration:line-through}
+
+/* ══ SHIELD BREAK SCENE: warrior attacks with sword ══ */
+.scene-shield-break{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:600px;height:340px;
+  display:flex;align-items:flex-end;justify-content:center;
+  animation:scene-fade 3s ease forwards;
+}
+.scene-shield-break .scene-floor{
+  position:absolute;bottom:30px;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(255,100,50,.4),rgba(255,150,50,.7),rgba(255,100,50,.4),transparent);
+  box-shadow:0 0 20px rgba(255,100,50,.5);
+}
+.scene-shield-break .scene-floor::after{
+  content:'';position:absolute;top:2px;left:0;right:0;height:30px;
+  background:linear-gradient(180deg,rgba(255,100,50,.1),transparent);
+}
+
+/* Attacker (warrior with sword - left side) */
+.attacker{
+  position:absolute;bottom:32px;left:80px;
+  width:90px;height:150px;
+  animation:attacker-lunge 3s ease forwards;
+}
+@keyframes attacker-lunge{
+  0%{transform:translateX(0) rotate(0)}
+  20%{transform:translateX(0) rotate(0)}
+  35%{transform:translateX(30px) rotate(-5deg)}
+  50%{transform:translateX(80px) rotate(8deg)}
+  60%{transform:translateX(100px) rotate(0)}
+  100%{transform:translateX(100px) rotate(0)}
+}
+.attacker-head{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,#8d99ae,#6c757d);
+  border:2px solid #495057;
+}
+.attacker-helmet{
+  position:absolute;top:-6px;left:50%;transform:translateX(-50%);
+  width:42px;height:24px;
+  background:linear-gradient(180deg,#adb5bd,#6c757d);
+  border:2px solid #343a40;
+  border-radius:21px 21px 4px 4px;
+  z-index:2;
+}
+.attacker-helmet::after{
+  content:'';position:absolute;top:-8px;left:50%;transform:translateX(-50%);
+  width:6px;height:14px;background:#dc3545;border-radius:3px;
+}
+.attacker-eyes{
+  position:absolute;top:18px;left:50%;transform:translateX(-50%);
+  width:20px;height:5px;background:#1a1a1a;
+  border-radius:2px;z-index:3;
+}
+.attacker-torso{
+  position:absolute;top:36px;left:50%;transform:translateX(-50%);
+  width:54px;height:58px;
+  background:linear-gradient(135deg,#dc3545,#a4161a);
+  border:2px solid #6a040f;border-radius:10px 10px 6px 6px;
+  z-index:1;
+}
+.attacker-torso::after{
+  content:'⚔';position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);font-size:20px;color:#fff;
+}
+.attacker-arm{
+  position:absolute;top:48px;left:70%;
+  width:14px;height:50px;
+  background:linear-gradient(135deg,#8d99ae,#6c757d);
+  border-radius:7px;transform-origin:top center;
+  animation:sword-swing 3s ease forwards;
+  z-index:3;
+}
+@keyframes sword-swing{
+  0%,20%{transform:rotate(40deg)}
+  30%{transform:rotate(-120deg)}
+  45%{transform:rotate(90deg)}
+  55%{transform:rotate(60deg)}
+  100%{transform:rotate(40deg)}
+}
+/* Sword attached to arm */
+.sword{
+  position:absolute;top:48px;left:75%;
+  width:8px;height:80px;
+  transform-origin:top center;
+  animation:sword-swing 3s ease forwards;
+  z-index:4;
+}
+.sword::before{
+  content:'';position:absolute;top:14px;left:-2px;
+  width:12px;height:60px;
+  background:linear-gradient(180deg,#e9ecef,#ced4da,#adb5bd);
+  border:1.5px solid #495057;
+  border-radius:1px 1px 50% 50%;
+  box-shadow:0 0 12px rgba(255,255,255,.6);
+}
+.sword::after{
+  content:'';position:absolute;top:8px;left:-6px;
+  width:20px;height:5px;
+  background:linear-gradient(180deg,#ffd700,#daa520);
+  border:1.5px solid #8b6914;border-radius:2px;
+}
+.sword-handle{
+  position:absolute;top:0;left:1px;
+  width:6px;height:14px;
+  background:linear-gradient(180deg,#6f4e37,#3e2723);
+  border-radius:3px;
+}
+.attacker-legs{
+  position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:44px;height:48px;display:flex;justify-content:space-between;
+  z-index:1;
+}
+.attacker-legs::before,.attacker-legs::after{
+  content:'';width:18px;height:100%;
+  background:linear-gradient(180deg,#495057,#212529);
+  border-radius:6px;
+}
+
+/* Defender with broken shield (right side) */
+.defender{
+  position:absolute;bottom:32px;right:120px;
+  width:80px;height:140px;
+  animation:defender-flinch 3s ease forwards;
+}
+@keyframes defender-flinch{
+  0%,55%{transform:translateX(0) rotate(0)}
+  62%{transform:translateX(15px) rotate(8deg)}
+  72%{transform:translateX(8px) rotate(3deg)}
+  85%{transform:translateX(0) rotate(0)}
+  100%{transform:translateX(0) rotate(0)}
+}
+.defender-head{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,#ffd29b,#f4a261);
+  border:2px solid #c44536;
+}
+.defender-head::before{
+  content:'😨';position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);font-size:20px;
+}
+.defender-torso{
+  position:absolute;top:36px;left:50%;transform:translateX(-50%);
+  width:48px;height:52px;
+  background:linear-gradient(135deg,#00b4d8,#0077b6);
+  border:2px solid #023e7d;border-radius:8px 8px 6px 6px;
+}
+.defender-legs{
+  position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:40px;height:46px;display:flex;justify-content:space-between;
+}
+.defender-legs::before,.defender-legs::after{
+  content:'';width:16px;height:100%;
+  background:linear-gradient(180deg,#1a3a52,#0d2a3f);border-radius:6px;
+}
+
+/* The shield being broken */
+.breaking-shield{
+  position:absolute;bottom:75px;right:130px;
+  width:60px;height:60px;
+  z-index:5;
+  animation:shield-impact 3s ease forwards;
+}
+@keyframes shield-impact{
+  0%,55%{transform:scale(1) rotate(0);opacity:1}
+  60%{transform:scale(1.15) rotate(-5deg);opacity:1}
+  65%{transform:scale(.95) rotate(5deg);opacity:1}
+  72%{transform:scale(1) rotate(0);opacity:0}
+  100%{opacity:0}
+}
+.shield-whole{
+  width:100%;height:100%;
+  background:radial-gradient(circle,#c77dff,#7928ca);
+  border:3px solid #4a0d6e;
+  border-radius:50% 50% 50% 50% / 40% 40% 60% 60%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;
+  box-shadow:0 0 20px rgba(121,40,202,.7),inset 0 0 10px rgba(255,255,255,.3);
+  position:relative;
+}
+.shield-crack-line{
+  position:absolute;top:10%;left:50%;width:3px;height:80%;
+  background:linear-gradient(180deg,transparent,#1a0010 20%,#1a0010 80%,transparent);
+  transform-origin:top;
   opacity:0;
-  transition:opacity .4s;
+  animation:crack-appear 3s ease forwards;
 }
-.wheel-wrap .crystal-layer{
-  position:absolute;
-  inset:0;
-  border-radius:50%;
-  pointer-events:none;
-  z-index:14;
+@keyframes crack-appear{
+  0%,55%{opacity:0}
+  60%{opacity:1;transform:translateX(-50%) rotate(0deg) scale(1)}
+  70%{opacity:1;transform:translateX(-50%) rotate(0deg) scale(1.2)}
+  100%{opacity:0}
 }
-/* crystal on protected player slice — drawn in canvas */
+.shield-crack-line.l{transform:translateX(-50%) rotate(-20deg)}
+.shield-crack-line.r{transform:translateX(-50%) rotate(20deg)}
+
+/* Shield shards flying after break */
+.shard-piece{
+  position:absolute;bottom:90px;right:140px;
+  width:18px;height:22px;
+  background:radial-gradient(circle,#c77dff,#7928ca);
+  border:2px solid #4a0d6e;
+  opacity:0;
+  z-index:6;
+  animation:shard-fly 3s ease forwards;
+}
+@keyframes shard-fly{
+  0%,68%{opacity:0;transform:translate(0,0) rotate(0)}
+  72%{opacity:1;transform:translate(var(--sx,0),var(--sy,0)) rotate(var(--sr,0deg))}
+  100%{opacity:0;transform:translate(calc(var(--sx,0) * 2),calc(var(--sy,0) * 2 + 60px)) rotate(calc(var(--sr,0deg) * 3))}
+}
+
+/* Impact spark/burst at hit moment */
+.hit-burst{
+  position:absolute;bottom:90px;right:155px;
+  width:80px;height:80px;
+  opacity:0;
+  animation:burst-flash 3s ease forwards;
+  z-index:5;
+}
+@keyframes burst-flash{
+  0%,58%{opacity:0;transform:scale(.3)}
+  62%{opacity:1;transform:scale(1.4)}
+  68%{opacity:.6;transform:scale(1.6)}
+  75%{opacity:0;transform:scale(2)}
+  100%{opacity:0}
+}
+.hit-burst::before{
+  content:'';position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle,#fff 0%,#fbbf24 20%,#f59e0b 40%,transparent 65%);
+  filter:blur(2px);
+}
+.hit-burst::after{
+  content:'💥';position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);font-size:42px;
+}
+
+/* Slash effect */
+.slash-line{
+  position:absolute;bottom:100px;right:150px;
+  width:100px;height:5px;
+  background:linear-gradient(90deg,transparent,#fff 30%,#fff 70%,transparent);
+  opacity:0;
+  transform:rotate(-25deg);
+  z-index:7;
+  animation:slash-flash 3s ease forwards;
+  box-shadow:0 0 12px rgba(255,255,255,.8);
+}
+@keyframes slash-flash{
+  0%,56%{opacity:0;transform:rotate(-25deg) scaleX(0)}
+  60%{opacity:1;transform:rotate(-25deg) scaleX(1)}
+  68%{opacity:.7;transform:rotate(-25deg) scaleX(1)}
+  74%{opacity:0;transform:rotate(-25deg) scaleX(1.3)}
+  100%{opacity:0}
+}
+
+/* Shield break text */
+.sb-text{
+  position:absolute;top:30px;left:50%;transform:translateX(-50%);
+  text-align:center;
+  animation:txt-pop 3s ease forwards;
+}
+.sb-text .kt-name{
+  font-size:30px;font-weight:900;color:#fff;
+  text-shadow:0 0 30px rgba(255,100,50,.9),0 2px 4px rgba(0,0,0,.5);
+}
+.sb-text .kt-label{
+  font-size:14px;font-weight:800;color:#ff6b35;
+  letter-spacing:4px;text-transform:uppercase;margin-top:6px;
+  text-shadow:0 0 12px rgba(255,100,50,.7);
+}
+.sb-flash{position:fixed;inset:0;background:rgba(255,100,50,.18);animation:fl-quick .5s ease forwards}
 </style>
 </head>
 <body>
@@ -510,21 +1445,18 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:16px;height:16px;b
 <canvas id="cfx"></canvas>
 <div id="anim-overlay"></div>
 
-<!-- ══ ACTION PANEL ══ -->
 <div id="action-panel"></div>
 
-<!-- ══ WINNER ══ -->
 <div id="win-overlay">
   <div class="w-card">
     <span class="w-crown">👑</span>
     <div class="w-eyebrow">الفائز بالجولة</div>
     <div class="w-name" id="wname">-</div>
     <div class="w-perks" id="wperks"></div>
-    <button class="btn-dismiss" onclick="closeWin()">متابعة اللعب ›</button>
+    <div class="w-countdown">تختفي خلال <b id="wctd">3</b> ثوانٍ...</div>
   </div>
 </div>
 
-<!-- ══ MAIN ══ -->
 <div class="main">
   <div class="hud">
     <div class="hud-g">
@@ -560,9 +1492,17 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:16px;height:16px;b
     <div class="sp-txt" id="sptxt">اتصل بقناتك لتبدأ</div>
   </div>
 
+  <div class="winner-counters" id="winner-counters">
+    <span class="wc-label">صلاحيات</span>
+    <span class="wc-winner-name" id="wc-wname">-</span>
+    <div class="wc-divider"></div>
+    <div class="wc-stat" id="wc-kick-stat"><span class="wc-icon">💥</span><span class="wc-count kick" id="wc-kick">0/1</span></div>
+    <div class="wc-stat" id="wc-rev-stat"><span class="wc-icon">💫</span><span class="wc-count rev" id="wc-rev">0/1</span></div>
+    <div class="wc-stat" id="wc-prot-stat"><span class="wc-icon">🛡️</span><span class="wc-count prot" id="wc-prot">0/1</span></div>
+  </div>
+
 </div>
 
-<!-- ══ SIDEBAR ══ -->
 <div class="sidebar">
   <div class="brand">
     <div class="brand-row">
@@ -596,7 +1536,7 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:16px;height:16px;b
       </div>
     </div>
     <div class="limit-row">
-      <div class="limit-label"><div class="ldot rev"></div>إنعاش (لكل لاعب)</div>
+      <div class="limit-label"><div class="ldot rev"></div>إنعاش (للفائز)</div>
       <div class="lctrl">
         <button class="lcb" onclick="chLim('rev',-1)">−</button>
         <span class="lcv" id="lim-rev">1</span>
@@ -604,7 +1544,7 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:16px;height:16px;b
       </div>
     </div>
     <div class="limit-row">
-      <div class="limit-label"><div class="ldot prot"></div>فزعة (لكل لاعب)</div>
+      <div class="limit-label"><div class="ldot prot"></div>فزعة (للفائز)</div>
       <div class="lctrl">
         <button class="lcb" onclick="chLim('prot',-1)">−</button>
         <span class="lcv" id="lim-prot">1</span>
@@ -636,11 +1576,11 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:16px;height:16px;b
     <div class="cmds-t">أوامر الشات</div>
     <div class="cmd-grid">
       <div class="cmd-chip"><span class="cmd-name">!دخول</span><span class="cmd-desc">الانضمام</span></div>
-      <div class="cmd-chip"><span class="cmd-name">!طرد</span><span class="cmd-desc">للفائز فقط</span></div>
-      <div class="cmd-chip"><span class="cmd-name">!انعاش</span><span class="cmd-desc">للفائز فقط</span></div>
-      <div class="cmd-chip"><span class="cmd-name">!فزعه</span><span class="cmd-desc">للفائز فقط</span></div>
-      <div class="cmd-chip"><span class="cmd-name">!لاعبين</span><span class="cmd-desc">عدد المشاركين</span></div>
-      <div class="cmd-chip"><span class="cmd-name">!تصفير</span><span class="cmd-desc">مسح (مود)</span></div>
+      <div class="cmd-chip"><span class="cmd-name">!طرد [رقم]</span><span class="cmd-desc">مع/بدون رقم</span></div>
+      <div class="cmd-chip"><span class="cmd-name">!انعاش</span><span class="cmd-desc">للفائز</span></div>
+      <div class="cmd-chip"><span class="cmd-name">!فزعه</span><span class="cmd-desc">للفائز</span></div>
+      <div class="cmd-chip"><span class="cmd-name">!لاعبين</span><span class="cmd-desc">العدد</span></div>
+      <div class="cmd-chip"><span class="cmd-name">!تصفير</span><span class="cmd-desc">مود</span></div>
     </div>
   </div>
 </div>
@@ -650,16 +1590,23 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:16px;height:16px;b
 let players=[], spinning=false, angle=0, roundNum=0;
 let twitchClient=null, protected_=new Set();
 let currentWinner=null;
-// limits: kick = global per round, rev/prot = per player per round
 let limits={kick:1,rev:1,prot:1};
-let kickInfinite=false; // لا نهائي للطرد
-// winnerUsed: kick tracks global; rev/prot tracked per player id
-let winnerUsed={kick:0}; // kick only global
-// per-player usage this round: { playerId: {rev:N, prot:N} }
-let playerUsed={};
+let kickInfinite=false;
+// عداد لكل لاعب (مفتاحه اسم اللاعب lowercase) — يستمر طوال الجلسة
+// {playerName: {kick:N, rev:N, prot:N}}
+let playerUsage={};
 
 let pendingAction=null;
 let actionTimer=null;
+let winnerTimer=null;
+let winnerCountdown=null;
+
+// دالة مساعدة: تجيب أو تنشئ عداد للاعب
+function getUsage(playerName){
+  const key=playerName.toLowerCase();
+  if(!playerUsage[key])playerUsage[key]={kick:0,rev:0,prot:0};
+  return playerUsage[key];
+}
 
 const WC=document.getElementById('wheel');
 const ctx=WC.getContext('2d');
@@ -669,6 +1616,7 @@ const W=WC.width, CX=W/2, R=268;
 function chLim(t,d){
   limits[t]=Math.max(0,Math.min(99,limits[t]+d));
   document.getElementById('lim-'+t).textContent=limits[t];
+  if(typeof updateWinnerCounters==='function')updateWinnerCounters();
 }
 function toggleInf(t){
   if(t==='kick'){
@@ -676,6 +1624,7 @@ function toggleInf(t){
     const btn=document.getElementById('inf-kick');
     btn.classList.toggle('inf-on',kickInfinite);
     document.getElementById('lim-kick').textContent=kickInfinite?'∞':limits.kick;
+    if(typeof updateWinnerCounters==='function')updateWinnerCounters();
   }
 }
 
@@ -753,7 +1702,6 @@ function setStatus(txt,type=''){
 const EV_ICONS={join:'👋',kick:'💥',rev:'💫',prot:'🛡️',win:'🏆',info:'ℹ️',conn:'🔌'};
 function addEv(text,type='info'){
   const log=document.getElementById('evlog');
-  // remove empty placeholder
   const empty=log.querySelector('.fp-empty');if(empty)empty.remove();
   const now=new Date();
   const ts=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
@@ -761,13 +1709,7 @@ function addEv(text,type='info'){
   el.className=`ev-item ev-${type}`;
   el.innerHTML=`<div class="ev-icon">${EV_ICONS[type]||'•'}</div><div class="ev-body"><div class="ev-text">${text}</div><div class="ev-time">${ts}</div></div>`;
   log.insertBefore(el,log.firstChild);
-  // keep max 60 events
   while(log.children.length>60)log.removeChild(log.lastChild);
-}
-function addFeed(html,type=''){
-  // map old type codes to new
-  const map={j:'join',k:'kick',w:'win',i:'info',tj:'join',tk:'kick',tw:'win',ti:'info'};
-  addEv(html,map[type]||'info');
 }
 function clearEvLog(){
   document.getElementById('evlog').innerHTML='<div class="fp-empty">لا يوجد أحداث بعد</div>';
@@ -784,16 +1726,9 @@ function renderAll(){
       const cls=p.eliminated?'elim':(protected_.has(p.id)?'prot':(isWin?'wg':''));
       const ico=p.eliminated?'✕':(protected_.has(p.id)?'🛡':(isWin?'★':'✓'));
       const icoC=p.eliminated?'color:var(--c2)':(protected_.has(p.id)?'color:var(--c4)':(isWin?'color:var(--c3)':'color:var(--c5)'));
-      // show per-player remaining uses
-      const pu=playerUsed[p.id]||{rev:0,prot:0};
-      const revLeft=Math.max(0,limits.rev-pu.rev);
-      const protLeft=Math.max(0,limits.prot-pu.prot);
-      const usageTip=(!p.eliminated&&(limits.rev>0||limits.prot>0))?
-        `<span style="font-size:9px;color:var(--muted);margin-right:4px">${limits.rev>0?'💫'+revLeft:''}${limits.prot>0?' 🛡'+protLeft:''}</span>`:'';
       return`<div class="sp-row ${cls}" id="sp${p.id}">
         <span class="sp-num">${p.id}</span>
         <span class="sp-name">${p.name}</span>
-        ${usageTip}
         <span class="sp-ico" style="${icoC};font-size:11px">${ico}</span>
       </div>`;
     }).join('');
@@ -804,6 +1739,20 @@ function renderAll(){
 /* ══ ACTION LISTS ════════════════════════════════════════ */
 function openActionList(type, winnerName, ch){
   cancelAction();
+  const usage=getUsage(winnerName);
+  // ⛔ تحقق من الحد قبل فتح القائمة
+  if(type==='kick'&&!kickInfinite&&usage.kick>=limits.kick){
+    if(twitchClient)twitchClient.say(ch,`❌ @${winnerName} استنفدت الطرد!`);
+    return;
+  }
+  if(type==='rev'&&usage.rev>=limits.rev){
+    if(twitchClient)twitchClient.say(ch,`❌ @${winnerName} استنفدت الإنعاش!`);
+    return;
+  }
+  if(type==='prot'&&usage.prot>=limits.prot){
+    if(twitchClient)twitchClient.say(ch,`❌ @${winnerName} استنفدت الفزعة!`);
+    return;
+  }
   const typeMap={
     kick:{list:players.filter(p=>!p.eliminated&&!(currentWinner&&p.id===currentWinner.id))},
     rev: {list:players.filter(p=>p.eliminated)},
@@ -811,11 +1760,10 @@ function openActionList(type, winnerName, ch){
   };
   const list=typeMap[type].list;
   if(!list.length){
-    const msg=type==='rev'?'لا يوجد لاعبين مطرودين!':'لا يوجد لاعبين متاحين!';
+    const msg=type==='rev'?'لا يوجد لاعبين مطرودين!':(type==='kick'?'لا يوجد لاعبين للطرد!':'لا يوجد لاعبين متاحين!');
     if(twitchClient)twitchClient.say(ch,`❌ ${msg}`);
     return;
   }
-  // winnerName هنا دائماً هو الفائز الفعلي (تم التحقق قبل الاستدعاء)
   pendingAction={type, winnerName, ch, list};
   let html='';
   if(type==='kick'){
@@ -893,10 +1841,8 @@ function cancelAction(){
   setStatus(currentWinner?`الفائز: ${currentWinner.name}`:'جاهز','gold');
 }
 
-/* ── resolveAction: per-player usage for rev/prot ── */
 function resolveAction(numStr, user, ch){
   if(!pendingAction)return;
-  // STRICT: فقط الفائز يقدر يكتب رقم — نفس الاسم بالضبط
   if(user.toLowerCase()!==pendingAction.winnerName.toLowerCase())return;
   const num=parseInt(numStr);
   if(isNaN(num))return;
@@ -907,60 +1853,356 @@ function resolveAction(numStr, user, ch){
   }
   const type=pendingAction.type;
   cancelAction();
+  const usage=getUsage(user);
 
   if(type==='kick'){
-    if(protected_.has(target.id)){
-      setStatus(`${target.name} محمي! انكسرت الحماية`,'gold');
-      addEv(`🛡 <b>${target.name}</b> كان محمياً — انكسرت الحماية`,'prot');
-      protected_.delete(target.id);renderAll();
-      animProt(target.name);
-    } else {
-      target.eliminated=true;
-      if(!kickInfinite) winnerUsed.kick++;
-      renderAll();setStatus('الفائز: '+currentWinner.name,'gold');
-      addEv(`<b>${target.name}</b> انطرد بواسطة ${user}`,'kick');
-      animKick(target.name);
-      if(twitchClient)twitchClient.say(ch,`💥 ${target.name} انطرد من العجلة!`);
+    if(!kickInfinite&&usage.kick>=limits.kick){
+      if(twitchClient)twitchClient.say(ch,`❌ @${user} استنفدت الطرد!`);
+      return;
     }
+    // الحماية تنكسر بدون استهلاك العداد - أنيميشن كسر الدرع
+    if(protected_.has(target.id)){
+      setStatus(`${target.name} محمي! تم كسر الدرع`,'gold');
+      addEv(`⚔️ <b>${user}</b> هاجم <b>${target.name}</b> وكسر درعه!`,'prot');
+      protected_.delete(target.id);renderAll();
+      animShieldBreak(target.name);
+      if(twitchClient)twitchClient.say(ch,`⚔️ ${target.name} كان محمياً! تم كسر الدرع`);
+      return;
+    }
+    target.eliminated=true;
+    if(!kickInfinite) usage.kick++;
+    renderAll();setStatus('الفائز: '+currentWinner.name,'gold');
+    const usedTxt=kickInfinite?'∞':`(${usage.kick}/${limits.kick})`;
+    addEv(`<b>${target.name}</b> انطرد بواسطة ${user} ${usedTxt}`,'kick');
+    animKick(target.name);
+    const left=kickInfinite?'∞':`متبقي ${Math.max(0,limits.kick-usage.kick)}`;
+    if(twitchClient)twitchClient.say(ch,`💥 ${target.name} انطرد من العجلة! (${left})`);
+    updateWinnerCounters();
   }
   else if(type==='rev'){
+    if(usage.rev>=limits.rev){
+      if(twitchClient)twitchClient.say(ch,`❌ @${user} استنفدت الإنعاش!`);
+      return;
+    }
     target.eliminated=false;
-    if(!playerUsed[currentWinner.id])playerUsed[currentWinner.id]={rev:0,prot:0};
-    playerUsed[currentWinner.id].rev++;
+    usage.rev++;
     renderAll();setStatus('الفائز: '+currentWinner.name,'gold');
-    addEv(`<b>${target.name}</b> رجع للعجلة بإنعاش من ${user}`,'rev');
+    addEv(`<b>${target.name}</b> رجع للعجلة بإنعاش من ${user} (${usage.rev}/${limits.rev})`,'rev');
     animRev(target.name);
-    if(twitchClient)twitchClient.say(ch,`💫 ${target.name} رجع للعجلة!`);
+    const left=Math.max(0,limits.rev-usage.rev);
+    if(twitchClient)twitchClient.say(ch,`💫 ${target.name} رجع للعجلة! (متبقي ${left} انعاش)`);
+    updateWinnerCounters();
   }
   else if(type==='prot'){
+    if(usage.prot>=limits.prot){
+      if(twitchClient)twitchClient.say(ch,`❌ @${user} استنفدت الفزعة!`);
+      return;
+    }
     protected_.add(target.id);
-    if(!playerUsed[currentWinner.id])playerUsed[currentWinner.id]={rev:0,prot:0};
-    playerUsed[currentWinner.id].prot++;
+    usage.prot++;
     renderAll();setStatus('الفائز: '+currentWinner.name,'gold');
-    addEv(`<b>${user}</b> حمى <b>${target.name}</b> 🛡`,'prot');
+    addEv(`<b>${user}</b> حمى <b>${target.name}</b> 🛡 (${usage.prot}/${limits.prot})`,'prot');
     animProt(target.name);
-    if(twitchClient)twitchClient.say(ch,`🛡️ ${target.name} محمي من الطرد!`);
+    const left=Math.max(0,limits.prot-usage.prot);
+    if(twitchClient)twitchClient.say(ch,`🛡️ ${target.name} محمي من الطرد! (متبقي ${left} فزعة)`);
+    updateWinnerCounters();
   }
+}
+
+/* ══ KICK DIRECT — execute kick immediately by number ══ */
+function executeKickByNumber(num, user, ch){
+  const usage=getUsage(user);
+  // التحقق من الحد
+  if(!kickInfinite&&usage.kick>=limits.kick){
+    if(twitchClient)twitchClient.say(ch,`❌ @${user} استنفدت الطرد! (${limits.kick}/${limits.kick})`);
+    return;
+  }
+  const target=players.find(p=>p.id===num);
+  if(!target){
+    if(twitchClient)twitchClient.say(ch,`❌ @${user} لا يوجد لاعب برقم ${num}!`);
+    return;
+  }
+  if(target.eliminated){
+    if(twitchClient)twitchClient.say(ch,`❌ @${user} ${target.name} مطرود بالفعل!`);
+    return;
+  }
+  if(currentWinner&&target.id===currentWinner.id){
+    if(twitchClient)twitchClient.say(ch,`❌ @${user} ما تقدر تطرد نفسك!`);
+    return;
+  }
+  // الحماية تنكسر بدون استهلاك العداد - أنيميشن كسر الدرع
+  if(protected_.has(target.id)){
+    setStatus(`${target.name} محمي! تم كسر الدرع`,'gold');
+    addEv(`⚔️ <b>${user}</b> هاجم <b>${target.name}</b> وكسر درعه!`,'prot');
+    protected_.delete(target.id);renderAll();
+    animShieldBreak(target.name);
+    if(twitchClient)twitchClient.say(ch,`⚔️ ${target.name} كان محمياً! تم كسر الدرع`);
+    return;
+  }
+  // الطرد الفعلي
+  target.eliminated=true;
+  if(!kickInfinite) usage.kick++;
+  renderAll();setStatus('الفائز: '+currentWinner.name,'gold');
+  const usedTxt=kickInfinite?'∞':`(${usage.kick}/${limits.kick})`;
+  addEv(`<b>${target.name}</b> انطرد بواسطة ${user} ${usedTxt}`,'kick');
+  animKick(target.name);
+  const used=kickInfinite?'∞':`(${usage.kick}/${limits.kick})`;
+  if(twitchClient)twitchClient.say(ch,`💥 ${target.name} انطرد من العجلة! ${used}`);
+  updateWinnerCounters();
+}
+
+/* ══ WINNER COUNTERS UI ══ */
+function updateWinnerCounters(){
+  const wc=document.getElementById('winner-counters');
+  if(!wc)return;
+  if(!currentWinner){
+    wc.classList.remove('show');
+    return;
+  }
+  wc.classList.add('show');
+  document.getElementById('wc-wname').textContent=currentWinner.name;
+  const usage=getUsage(currentWinner.name);
+
+  // Kick
+  const kickEl=document.getElementById('wc-kick');
+  const kickStat=document.getElementById('wc-kick-stat');
+  if(kickInfinite){
+    kickEl.textContent='∞';
+    kickEl.classList.remove('used-up');
+    kickStat.style.display='flex';
+  } else if(limits.kick>0){
+    kickEl.textContent=`${usage.kick}/${limits.kick}`;
+    kickEl.classList.toggle('used-up',usage.kick>=limits.kick);
+    kickStat.style.display='flex';
+  } else {
+    kickStat.style.display='none';
+  }
+
+  // Revive
+  const revEl=document.getElementById('wc-rev');
+  const revStat=document.getElementById('wc-rev-stat');
+  if(limits.rev>0){
+    revEl.textContent=`${usage.rev}/${limits.rev}`;
+    revEl.classList.toggle('used-up',usage.rev>=limits.rev);
+    revStat.style.display='flex';
+  } else {
+    revStat.style.display='none';
+  }
+
+  // Protect
+  const protEl=document.getElementById('wc-prot');
+  const protStat=document.getElementById('wc-prot-stat');
+  if(limits.prot>0){
+    protEl.textContent=`${usage.prot}/${limits.prot}`;
+    protEl.classList.toggle('used-up',usage.prot>=limits.prot);
+    protStat.style.display='flex';
+  } else {
+    protStat.style.display='none';
+  }
+}
+
+/* ━━ SHIELD BREAK: warrior with sword attacks protected player ━━ */
+function animShieldBreak(name){
+  // Generate flying shards
+  let shards='';
+  const shardCount=8;
+  for(let i=0;i<shardCount;i++){
+    const angle=(i/shardCount)*Math.PI*2;
+    const sx=Math.cos(angle)*60;
+    const sy=Math.sin(angle)*40-20;
+    const sr=(Math.random()-.5)*720;
+    shards+=`<div class="shard-piece" style="--sx:${sx}px;--sy:${sy}px;--sr:${sr}deg;animation-delay:${i*0.02}s"></div>`;
+  }
+
+  showAnim(`
+    <div class="sb-flash"></div>
+    <div class="scene-shield-break">
+      <div class="scene-floor"></div>
+
+      <div class="attacker">
+        <div class="attacker-helmet"></div>
+        <div class="attacker-head"></div>
+        <div class="attacker-eyes"></div>
+        <div class="attacker-torso"></div>
+        <div class="attacker-arm"></div>
+        <div class="sword">
+          <div class="sword-handle"></div>
+        </div>
+        <div class="attacker-legs"></div>
+      </div>
+
+      <div class="defender">
+        <div class="defender-head"></div>
+        <div class="defender-torso"></div>
+        <div class="defender-legs"></div>
+      </div>
+
+      <div class="breaking-shield">
+        <div class="shield-whole">🛡️</div>
+        <div class="shield-crack-line"></div>
+        <div class="shield-crack-line l"></div>
+        <div class="shield-crack-line r"></div>
+      </div>
+
+      <div class="slash-line"></div>
+      <div class="hit-burst"></div>
+      ${shards}
+
+      <div class="sb-text">
+        <div class="kt-name">${name}</div>
+        <div class="kt-label">انكسر الدرع ⚔️</div>
+      </div>
+    </div>
+  `);
 }
 
 /* ══ ANIMATIONS ══════════════════════════════════════════ */
 function showAnim(html){
   const ov=document.getElementById('anim-overlay');
   ov.innerHTML=html;ov.classList.add('show');
-  setTimeout(()=>{ov.classList.remove('show');ov.innerHTML=''},2600);
+  setTimeout(()=>{ov.classList.remove('show');ov.innerHTML=''},3000);
 }
 
+/* ━━ KICK: bouncer throws player into trash ━━ */
 function animKick(name){
-  const shards=Array.from({length:14},(_,i)=>`<div class="shard" style="--r:${i*(360/14)}deg;position:absolute;top:50%;left:50%;margin:-10px 0 0 -2px"></div>`).join('');
-  showAnim(`<div class="kick-flash"></div>${shards}<div class="anim-kick"><span class="big">💥</span><div class="aname">${name}</div><div class="albl">انطرد من العجلة</div></div>`);
+  showAnim(`
+    <div class="kick-flash"></div>
+    <div class="scene-kick">
+      <div class="scene-floor"></div>
+
+      <div class="bouncer">
+        <div class="bouncer-body">
+          <div class="bouncer-head"></div>
+          <div class="bouncer-torso"></div>
+          <div class="bouncer-arm-right"></div>
+          <div class="bouncer-legs"></div>
+        </div>
+      </div>
+
+      <div class="victim">
+        <div class="victim-body">
+          <div class="victim-head"></div>
+          <div class="victim-torso"></div>
+          <div class="victim-legs"></div>
+        </div>
+      </div>
+
+      <div class="dust-cloud">
+        <div class="dust-puff"></div>
+        <div class="dust-puff"></div>
+        <div class="dust-puff"></div>
+      </div>
+
+      <div class="trashcan">
+        <div class="trash-stink">💨</div>
+        <div class="trash-lid"></div>
+        <div class="trash-body"></div>
+      </div>
+
+      <div class="kick-text">
+        <div class="kt-name">${name}</div>
+        <div class="kt-label">في الزبالة 🗑️</div>
+      </div>
+    </div>
+  `);
 }
+
+/* ━━ REVIVE: medic carries player to hospital ━━ */
 function animRev(name){
-  const parts=Array.from({length:10},(_,i)=>`<div class="rpart" style="--dx:${(Math.random()-.5)*100}px;position:absolute;bottom:40%;left:${38+Math.random()*24}%;animation-delay:${i*.1}s"></div>`).join('');
-  showAnim(`<div class="rev-flash"></div>${parts}<div class="anim-rev"><span class="big">💫</span><div class="aname">${name}</div><div class="albl">رجع للعجلة</div></div>`);
+  let sparks='';
+  for(let i=0;i<8;i++){
+    const dx=(Math.random()-.5)*60;
+    const left=20+Math.random()*60;
+    const delay=i*0.15;
+    sparks+=`<div class="spark" style="--dx:${dx}px;left:${left}%;bottom:50%;animation-delay:${delay}s"></div>`;
+  }
+  showAnim(`
+    <div class="rev-flash"></div>
+    <div class="scene-rev">
+      <div class="scene-floor"></div>
+
+      <div class="medic-group">
+        <div class="medic-bob">
+          <div class="medic">
+            <div class="medic-head">
+              <div class="medic-eyes"></div>
+            </div>
+            <div class="medic-torso"></div>
+            <div class="medic-legs">
+              <div class="medic-leg l"></div>
+              <div class="medic-leg r"></div>
+            </div>
+          </div>
+          <div class="patient">
+            <div class="patient-head"></div>
+            <div class="patient-body"></div>
+          </div>
+        </div>
+      </div>
+
+      ${sparks}
+
+      <div class="hospital">
+        <div class="hosp-cross"></div>
+        <div class="hosp-roof"></div>
+        <div class="hosp-body">
+          <div class="hosp-sign">HOSPITAL</div>
+          <div class="hosp-windows">
+            <div class="hosp-win"></div>
+            <div class="hosp-win"></div>
+            <div class="hosp-win"></div>
+            <div class="hosp-win"></div>
+          </div>
+          <div class="hosp-door"></div>
+        </div>
+      </div>
+
+      <div class="rev-text">
+        <div class="kt-name">${name}</div>
+        <div class="kt-label">دخل المستشفى 🏥</div>
+      </div>
+    </div>
+  `);
 }
+
+/* ━━ PROTECT: hero throws shield onto target ━━ */
 function animProt(name){
-  const rings=['0.5s','0.9s','1.3s'].map(d=>`<div class="pring" style="--dur:${d}"></div>`).join('');
-  showAnim(`<div class="prot-flash"></div>${rings}<div class="anim-prot"><span class="big">🛡️</span><div class="aname">${name}</div><div class="albl">محمي من الطرد</div></div>`);
+  showAnim(`
+    <div class="prot-flash"></div>
+    <div class="scene-prot">
+      <div class="scene-floor"></div>
+
+      <div class="hero">
+        <div class="hero-cape"></div>
+        <div class="hero-head"></div>
+        <div class="hero-mask"></div>
+        <div class="hero-torso"></div>
+        <div class="hero-arm"></div>
+        <div class="hero-legs"></div>
+      </div>
+
+      <div class="shield-fly">
+        <div class="shield-icon">🛡️</div>
+      </div>
+
+      <div class="target-ally">
+        <div class="target-head"></div>
+        <div class="target-torso"></div>
+        <div class="target-legs"></div>
+      </div>
+
+      <div class="hex-ring" style="--dur:1s"></div>
+      <div class="hex-ring" style="--dur:1.3s;animation-delay:0.15s"></div>
+      <div class="hex-ring" style="--dur:1.6s;animation-delay:0.3s"></div>
+
+      <div class="shield-bubble"></div>
+
+      <div class="prot-text">
+        <div class="kt-name">${name}</div>
+        <div class="kt-label">محمي بدرع 🛡️</div>
+      </div>
+    </div>
+  `);
 }
 
 /* ══ SPIN ════════════════════════════════════════════════ */
@@ -973,7 +2215,8 @@ function trySpinWheel(){
 }
 function doSpin(){
   spinning=true;roundNum++;currentWinner=null;
-  winnerUsed={kick:0};playerUsed={};
+  updateWinnerCounters(); // يخفي اللوحة لأن currentWinner=null
+  closeWin();
   document.getElementById('spinBtn').disabled=true;
   document.getElementById('hub').classList.add('act','spinning');
   document.getElementById('hub-txt').textContent='GO';
@@ -1000,33 +2243,65 @@ function finishSpin(){
 
 function celebrate(w){
   currentWinner=w;
-  winnerUsed={kick:0};
-  playerUsed={};
+  // العداد يستمر من الراوند السابق — مايترست
+  updateWinnerCounters();
   setStatus('الفائز: '+w.name,'gold');renderAll();
   addEv(`<b>${w.name}</b> فاز بالجولة!`,'win');
   launchConfetti();
   let perksHtml='';
   if(kickInfinite)perksHtml+=`<div class="w-perk kick">💥 طرد ∞</div>`;
   else if(limits.kick>0)perksHtml+=`<div class="w-perk kick">💥 طرد ×${limits.kick}</div>`;
-  if(limits.rev>0) perksHtml+=`<div class="w-perk rev">💫 إنعاش ×${limits.rev}/لاعب</div>`;
-  if(limits.prot>0)perksHtml+=`<div class="w-perk prot">🛡 فزعة ×${limits.prot}/لاعب</div>`;
+  if(limits.rev>0) perksHtml+=`<div class="w-perk rev">💫 إنعاش ×${limits.rev}</div>`;
+  if(limits.prot>0)perksHtml+=`<div class="w-perk prot">🛡 فزعة ×${limits.prot}</div>`;
   document.getElementById('wperks').innerHTML=perksHtml;
   document.getElementById('wname').textContent=w.name;
-  setTimeout(()=>document.getElementById('win-overlay').classList.add('show'),400);
+
+  // إظهار النافذة لمدة 3 ثواني ثم إخفاؤها تلقائياً
+  setTimeout(()=>{
+    const ov=document.getElementById('win-overlay');
+    ov.classList.remove('hide');
+    ov.classList.add('show');
+    // عد تنازلي
+    let secs=3;
+    document.getElementById('wctd').textContent=secs;
+    clearInterval(winnerCountdown);
+    winnerCountdown=setInterval(()=>{
+      secs--;
+      document.getElementById('wctd').textContent=secs;
+      if(secs<=0)clearInterval(winnerCountdown);
+    },1000);
+    // إخفاء بعد 3 ثواني
+    clearTimeout(winnerTimer);
+    winnerTimer=setTimeout(closeWin,3000);
+  },400);
+
   if(twitchClient){
     const ch=document.getElementById('channelName').value.trim();
-    const k=kickInfinite?'!طرد(∞)':(limits.kick>0?`!طرد(${limits.kick}x)`:'');
-    const cmds=[k,limits.rev>0?`!انعاش(${limits.rev}x/لاعب)`:'',limits.prot>0?`!فزعه(${limits.prot}x/لاعب)`:''].filter(Boolean).join(' ');
+    const k=kickInfinite?'!طرد <رقم>(∞)':(limits.kick>0?`!طرد <رقم>(${limits.kick}x)`:'');
+    const cmds=[k,limits.rev>0?`!انعاش(${limits.rev}x)`:'',limits.prot>0?`!فزعه(${limits.prot}x)`:''].filter(Boolean).join(' ');
     twitchClient.say(ch,`🏆 الفائز هو ${w.name}! صلاحياتك: ${cmds||'لا يوجد'} 🎉`);
   }
 }
-function closeWin(){document.getElementById('win-overlay').classList.remove('show')}
+function closeWin(){
+  clearTimeout(winnerTimer);
+  clearInterval(winnerCountdown);
+  const ov=document.getElementById('win-overlay');
+  if(ov.classList.contains('show')){
+    ov.classList.add('hide');
+    setTimeout(()=>{
+      ov.classList.remove('show');
+      ov.classList.remove('hide');
+    },400);
+  }
+}
 
 /* ══ CLEAR ═══════════════════════════════════════════════ */
 function clearAll(){
   if(players.length&&!confirm('حذف جميع المشاركين؟'))return;
   players=[];protected_.clear();roundNum=0;currentWinner=null;
-  winnerUsed={kick:0};playerUsed={};cancelAction();
+  playerUsage={}; // مسح كل العدادات
+  updateWinnerCounters();
+  cancelAction();
   renderAll();setStatus('تم مسح القائمة');addEv('تم مسح القائمة','info');
 }
 
@@ -1058,23 +2333,21 @@ function handleCmd(tags,msg,ch){
   const user=tags['display-name']||tags.username;
   const isMod=!!(tags.mod||tags.badges?.broadcaster);
   const raw=msg.trim();
-  const cmd=raw.split(' ')[0].toLowerCase();
+  const parts=raw.split(/\s+/);
+  const cmd=parts[0].toLowerCase();
+  const arg=parts[1];
 
-  // ══ GATE 1: لما القائمة مفتوحة ══
-  // أي رسالة من أي شخص — نتحقق: هو الفائز؟
-  // إذا رقم وهو الفائز → ننفذ. بخلاف ذلك → تجاهل تام بلا رد
+  // GATE 1: قائمة الإنعاش/الفزعة مفتوحة — فقط الفائز يرد برقم
   if(pendingAction){
     const isThisWinner=(user.toLowerCase()===pendingAction.winnerName.toLowerCase());
     if(/^\d+$/.test(raw)){
       if(isThisWinner) resolveAction(raw,user,ch);
-      // أي شخص آخر يكتب رقم — صمت مطبق
       return;
     }
-    // أي أمر من أي شخص غير الفائز وهي القائمة مفتوحة — صمت
     if(!isThisWinner) return;
   }
 
-  // ══ GATE 2: !دخول مفتوح للكل دائماً ══
+  // GATE 2: !دخول مفتوح للكل
   if(cmd==='!دخول'){
     if(players.find(p=>p.name.toLowerCase()===user.toLowerCase()))return;
     const id=players.length?Math.max(...players.map(p=>p.id))+1:1;
@@ -1084,43 +2357,46 @@ function handleCmd(tags,msg,ch){
     return;
   }
 
-  // ══ GATE 3: !لاعبين مفتوح للكل ══
+  // GATE 3: !لاعبين مفتوح للكل
   if(cmd==='!لاعبين'){
     const n=players.filter(p=>!p.eliminated).length;
     twitchClient&&twitchClient.say(ch,`👥 المشاركين: ${n} لاعب`);
     return;
   }
 
-  // ══ GATE 4: !تصفير للمودز فقط ══
+  // GATE 4: !تصفير للمودز
   if(cmd==='!تصفير'&&isMod){
     players=[];protected_.clear();roundNum=0;currentWinner=null;
-    winnerUsed={kick:0};playerUsed={};cancelAction();
+    playerUsage={}; // مسح كل العدادات
+    updateWinnerCounters();
+    cancelAction();
     renderAll();setStatus('تم تصفير القائمة');
     addEv('تصفير بواسطة '+user,'info');
     twitchClient&&twitchClient.say(ch,'🗑 تم تصفير قائمة العجلة');
     return;
   }
 
-  // ══ GATE 5: باقي الأوامر — الفائز الحالي فقط، بدون استثناء ══
+  // GATE 5: باقي الأوامر — الفائز فقط
   const isWinner=!!(currentWinner&&currentWinner.name.toLowerCase()===user.toLowerCase());
-  if(!isWinner){
-    // أي شخص غير الفائز يكتب !طرد/!انعاش/!فزعه — صمت مطبق (لا رد)
-    return;
-  }
+  if(!isWinner) return;
+  const usage=getUsage(user);
 
-  // من هنا: المستخدم هو الفائز بالتأكيد
+  // !طرد <رقم اختياري> — طرد مباشر بالرقم، أو فتح قائمة لو ما فيه رقم
   if(cmd==='!طرد'){
-    if(!kickInfinite&&winnerUsed.kick>=limits.kick){
+    if(!kickInfinite&&usage.kick>=limits.kick){
       twitchClient&&twitchClient.say(ch,`❌ @${user} استنفدت الطرد! (${limits.kick}/${limits.kick})`);
       return;
     }
-    openActionList('kick',user,ch);
+    if(arg&&/^\d+$/.test(arg)){
+      executeKickByNumber(parseInt(arg),user,ch);
+    } else {
+      openActionList('kick',user,ch);
+    }
     return;
   }
 
   if(cmd==='!انعاش'){
-    const pu=playerUsed[currentWinner.id]||{rev:0,prot:0};
-    if(pu.rev>=limits.rev){
+    if(usage.rev>=limits.rev){
       twitchClient&&twitchClient.say(ch,`❌ @${user} استنفدت الإنعاش! (${limits.rev}/${limits.rev})`);
       return;
     }
@@ -1129,8 +2405,7 @@ function handleCmd(tags,msg,ch){
   }
 
   if(cmd==='!فزعه'){
-    const pu=playerUsed[currentWinner.id]||{rev:0,prot:0};
-    if(pu.prot>=limits.prot){
+    if(usage.prot>=limits.prot){
       twitchClient&&twitchClient.say(ch,`❌ @${user} استنفدت الفزعة! (${limits.prot}/${limits.prot})`);
       return;
     }
