@@ -6,6 +6,92 @@
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
     <script src="tmi.min.js"></script>
 <script src="https://unpkg.com/tmi.js@1.8.5/dist/tmi.min.js"></script>
+<script>
+/* kick_chat.js - مدمج */
+(function(){
+  const PUSHER_WS = "wss://ws-us2.pusher.com/app/32cbd69e4b950bf97679?protocol=7&client=js&version=8.4.0-rc2&flash=false";
+
+  async function getChatroomId(channel){
+    const res = await fetch(`https://kick.com/api/v2/channels/${encodeURIComponent(channel)}`);
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    if(!data || !data.chatroom || !data.chatroom.id) throw new Error('chatroom id not found');
+    return data.chatroom.id;
+  }
+
+  function parseMessage(e){
+    try{
+      const frame = JSON.parse(e.data);
+      if(frame.event === "App\\Events\\ChatMessageEvent"){
+        const payload = JSON.parse(frame.data);
+        const sender = payload.sender || {};
+        const username = sender.username || sender.slug || (sender.displayname||'').replace(/\s+/g,'') || 'user';
+        const name = sender.slug || sender.username || sender.displayname || username;
+        const text = (payload.content || '').trim();
+        const isMod = !!(sender.is_moderator || (sender.identity && sender.identity.badges && sender.identity.badges.some(b=>b.type==='moderator')));
+        const isBroadcaster = !!(sender.is_broadcaster || (sender.identity && sender.identity.badges && sender.identity.badges.some(b=>b.type==='broadcaster')));
+        return { userId: sender.id || username, username, name, isModOrBroadcaster: isMod || isBroadcaster, text };
+      }
+    }catch(err){}
+    return null;
+  }
+
+  function connect(channelName, onMessage, onReady, onError){
+    let ws = null, pingTimer = null, closed=false;
+    let state={ws:null,pingTimer:null,closed:false};
+
+    (async ()=>{
+      try{
+        const chatroomId = await getChatroomId(channelName);
+        ws = new WebSocket(PUSHER_WS);
+        state.ws=ws;
+
+        ws.onopen = ()=>{
+          ws.send(JSON.stringify({
+            event: "pusher:subscribe",
+            data: { auth: "", channel: `chatrooms.${chatroomId}.v2` }
+          }));
+          pingTimer = setInterval(()=>{
+            if(ws && ws.readyState === WebSocket.OPEN){
+              ws.send(JSON.stringify({ event:"pusher:ping", data:{} }));
+            }
+          }, 12000);
+          state.pingTimer=pingTimer;
+          if(onReady)onReady();
+        };
+
+        ws.onmessage = (ev)=>{
+          const msg = parseMessage(ev);
+          if(msg && onMessage) onMessage(msg);
+        };
+
+        ws.onerror = (err)=> {
+          if(onError)onError(err);
+        };
+
+        ws.onclose = ()=>{
+          if(pingTimer){ clearInterval(pingTimer); pingTimer=null; }
+          if(!state.closed){
+            setTimeout(()=>{ if(!state.closed) connect(channelName, onMessage, null, onError); }, 1500);
+          }
+        };
+      }catch(err){
+        if(onError)onError(err);
+      }
+    })();
+
+    return {
+      disconnect(){
+        state.closed = true;
+        try{ if(state.pingTimer) clearInterval(state.pingTimer); }catch(e){}
+        try{ if(state.ws) state.ws.close(); }catch(e){}
+      }
+    };
+  }
+
+  window.KickChat = { connect };
+})();
+</script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -1132,6 +1218,30 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:16px;height:16px;b
 .status-pill.mode-rev{border-color:rgba(0,255,136,.4);box-shadow:0 0 20px rgba(0,255,136,.1)}
 .status-pill.mode-prot{border-color:rgba(121,40,202,.4);box-shadow:0 0 20px rgba(121,40,202,.1)}
 
+/* ── PLATFORM TABS ── */
+.platform-tabs{display:flex;gap:6px;margin-bottom:8px}
+.pt-btn{
+  flex:1;
+  background:var(--s3);border:1px solid var(--border2);color:var(--muted);
+  padding:8px 10px;border-radius:8px;cursor:pointer;
+  font-family:'Tajawal',sans-serif;font-size:12px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  transition:all .15s;
+  position:relative;overflow:hidden;
+}
+.pt-btn:hover{border-color:var(--border2);color:var(--text)}
+.pt-btn.active{color:#fff;border-color:transparent}
+.pt-btn#pt-twitch.active{
+  background:linear-gradient(135deg,#9146ff,#7928ca);
+  box-shadow:0 0 16px rgba(145,70,255,.35);
+}
+.pt-btn#pt-kick.active{
+  background:linear-gradient(135deg,#53fc18,#0d6e0a);
+  color:#000;
+  box-shadow:0 0 16px rgba(83,252,24,.35);
+}
+.pt-btn svg{flex-shrink:0}
+
 /* ══ WINNER COUNTERS — live display under status ══ */
 .winner-counters{
   display:none;
@@ -1513,10 +1623,20 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:16px;height:16px;b
 
   <div class="ctl">
     <div>
-      <div class="flabel"><span>القناة</span><div class="live-ind" id="liveind"></div></div>
+      <div class="flabel"><span>المنصة والقناة</span><div class="live-ind" id="liveind"></div></div>
+      <div class="platform-tabs">
+        <button class="pt-btn active" id="pt-twitch" onclick="selectPlatform('twitch')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/></svg>
+          Twitch
+        </button>
+        <button class="pt-btn" id="pt-kick" onclick="selectPlatform('kick')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h5.4v4.2h2.7v-2.1h2.7V3H21v5.4h-2.7v2.7h-2.7v2.7h2.7v2.7H21V21h-7.2v-2.1h-2.7v-2.1H8.4V21H3z"/></svg>
+          Kick
+        </button>
+      </div>
       <div class="row">
         <input type="text" id="channelName" placeholder="اسم القناة...">
-        <button class="btn btn-conn" id="connBtn" onclick="connectTwitch()">اتصال</button>
+        <button class="btn btn-conn" id="connBtn" onclick="connectChat()">اتصال</button>
         <button class="btn btn-ghost" onclick="clearAll()" title="مسح">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
         </button>
@@ -1588,7 +1708,7 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:16px;height:16px;b
 <script>
 /* ══ STATE ══════════════════════════════════════════════ */
 let players=[], spinning=false, angle=0, roundNum=0;
-let twitchClient=null, protected_=new Set();
+let twitchClient=null, kickClient=null, currentPlatform='twitch', protected_=new Set();
 let currentWinner=null;
 let limits={kick:1,rev:1,prot:1};
 let kickInfinite=false;
@@ -1742,15 +1862,15 @@ function openActionList(type, winnerName, ch){
   const usage=getUsage(winnerName);
   // ⛔ تحقق من الحد قبل فتح القائمة
   if(type==='kick'&&!kickInfinite&&usage.kick>=limits.kick){
-    if(twitchClient)twitchClient.say(ch,`❌ @${winnerName} استنفدت الطرد!`);
+    sayChat(ch,`❌ @${winnerName} استنفدت الطرد!`);
     return;
   }
   if(type==='rev'&&usage.rev>=limits.rev){
-    if(twitchClient)twitchClient.say(ch,`❌ @${winnerName} استنفدت الإنعاش!`);
+    sayChat(ch,`❌ @${winnerName} استنفدت الإنعاش!`);
     return;
   }
   if(type==='prot'&&usage.prot>=limits.prot){
-    if(twitchClient)twitchClient.say(ch,`❌ @${winnerName} استنفدت الفزعة!`);
+    sayChat(ch,`❌ @${winnerName} استنفدت الفزعة!`);
     return;
   }
   const typeMap={
@@ -1761,7 +1881,7 @@ function openActionList(type, winnerName, ch){
   const list=typeMap[type].list;
   if(!list.length){
     const msg=type==='rev'?'لا يوجد لاعبين مطرودين!':(type==='kick'?'لا يوجد لاعبين للطرد!':'لا يوجد لاعبين متاحين!');
-    if(twitchClient)twitchClient.say(ch,`❌ ${msg}`);
+    sayChat(ch,`❌ ${msg}`);
     return;
   }
   pendingAction={type, winnerName, ch, list};
@@ -1783,7 +1903,7 @@ function openActionList(type, winnerName, ch){
       </div>
     </div></div>`;
     setStatus(`@${winnerName} — اكتب رقم اللاعب`,'kick');
-    if(twitchClient)twitchClient.say(ch,`💥 @${winnerName} اكتب رقم اللاعب اللي تبي تطرده!`);
+    sayChat(ch,`💥 @${winnerName} اكتب رقم اللاعب اللي تبي تطرده!`);
   }
   else if(type==='rev'){
     html=`<div class="al-rev"><div class="al-bg">
@@ -1802,7 +1922,7 @@ function openActionList(type, winnerName, ch){
       </div>
     </div></div>`;
     setStatus(`@${winnerName} — اكتب رقم اللاعب`,'rev');
-    if(twitchClient)twitchClient.say(ch,`💫 @${winnerName} اكتب رقم اللاعب اللي تبي تنعشه!`);
+    sayChat(ch,`💫 @${winnerName} اكتب رقم اللاعب اللي تبي تنعشه!`);
   }
   else if(type==='prot'){
     html=`<div class="al-prot"><div class="al-bg">
@@ -1821,7 +1941,7 @@ function openActionList(type, winnerName, ch){
       </div>
     </div></div>`;
     setStatus(`@${winnerName} — اكتب رقم اللاعب`,'prot');
-    if(twitchClient)twitchClient.say(ch,`🛡️ @${winnerName} اكتب رقم اللاعب اللي تبي تحميه!`);
+    sayChat(ch,`🛡️ @${winnerName} اكتب رقم اللاعب اللي تبي تحميه!`);
   }
   const panel=document.getElementById('action-panel');
   panel.innerHTML=html;panel.classList.add('show');
@@ -1830,7 +1950,7 @@ function openActionList(type, winnerName, ch){
     secs--;
     const t=document.getElementById('al-timer');
     if(t)t.textContent=secs;
-    if(secs<=0){cancelAction();if(twitchClient)twitchClient.say(ch,'⏰ انتهى الوقت!')}
+    if(secs<=0){cancelAction();sayChat(ch,'⏰ انتهى الوقت!')}
   },1000);
 }
 
@@ -1848,7 +1968,7 @@ function resolveAction(numStr, user, ch){
   if(isNaN(num))return;
   const target=pendingAction.list.find(p=>p.id===num);
   if(!target){
-    if(twitchClient)twitchClient.say(ch,`❌ @${user} رقم ${num} غير موجود في القائمة!`);
+    sayChat(ch,`❌ @${user} رقم ${num} غير موجود في القائمة!`);
     return;
   }
   const type=pendingAction.type;
@@ -1857,7 +1977,7 @@ function resolveAction(numStr, user, ch){
 
   if(type==='kick'){
     if(!kickInfinite&&usage.kick>=limits.kick){
-      if(twitchClient)twitchClient.say(ch,`❌ @${user} استنفدت الطرد!`);
+      sayChat(ch,`❌ @${user} استنفدت الطرد!`);
       return;
     }
     // الحماية تنكسر بدون استهلاك العداد - أنيميشن كسر الدرع
@@ -1866,7 +1986,7 @@ function resolveAction(numStr, user, ch){
       addEv(`⚔️ <b>${user}</b> هاجم <b>${target.name}</b> وكسر درعه!`,'prot');
       protected_.delete(target.id);renderAll();
       animShieldBreak(target.name);
-      if(twitchClient)twitchClient.say(ch,`⚔️ ${target.name} كان محمياً! تم كسر الدرع`);
+      sayChat(ch,`⚔️ ${target.name} كان محمياً! تم كسر الدرع`);
       return;
     }
     target.eliminated=true;
@@ -1876,12 +1996,12 @@ function resolveAction(numStr, user, ch){
     addEv(`<b>${target.name}</b> انطرد بواسطة ${user} ${usedTxt}`,'kick');
     animKick(target.name);
     const left=kickInfinite?'∞':`متبقي ${Math.max(0,limits.kick-usage.kick)}`;
-    if(twitchClient)twitchClient.say(ch,`💥 ${target.name} انطرد من العجلة! (${left})`);
+    sayChat(ch,`💥 ${target.name} انطرد من العجلة! (${left})`);
     updateWinnerCounters();
   }
   else if(type==='rev'){
     if(usage.rev>=limits.rev){
-      if(twitchClient)twitchClient.say(ch,`❌ @${user} استنفدت الإنعاش!`);
+      sayChat(ch,`❌ @${user} استنفدت الإنعاش!`);
       return;
     }
     target.eliminated=false;
@@ -1890,12 +2010,12 @@ function resolveAction(numStr, user, ch){
     addEv(`<b>${target.name}</b> رجع للعجلة بإنعاش من ${user} (${usage.rev}/${limits.rev})`,'rev');
     animRev(target.name);
     const left=Math.max(0,limits.rev-usage.rev);
-    if(twitchClient)twitchClient.say(ch,`💫 ${target.name} رجع للعجلة! (متبقي ${left} انعاش)`);
+    sayChat(ch,`💫 ${target.name} رجع للعجلة! (متبقي ${left} انعاش)`);
     updateWinnerCounters();
   }
   else if(type==='prot'){
     if(usage.prot>=limits.prot){
-      if(twitchClient)twitchClient.say(ch,`❌ @${user} استنفدت الفزعة!`);
+      sayChat(ch,`❌ @${user} استنفدت الفزعة!`);
       return;
     }
     protected_.add(target.id);
@@ -1904,7 +2024,7 @@ function resolveAction(numStr, user, ch){
     addEv(`<b>${user}</b> حمى <b>${target.name}</b> 🛡 (${usage.prot}/${limits.prot})`,'prot');
     animProt(target.name);
     const left=Math.max(0,limits.prot-usage.prot);
-    if(twitchClient)twitchClient.say(ch,`🛡️ ${target.name} محمي من الطرد! (متبقي ${left} فزعة)`);
+    sayChat(ch,`🛡️ ${target.name} محمي من الطرد! (متبقي ${left} فزعة)`);
     updateWinnerCounters();
   }
 }
@@ -1914,20 +2034,20 @@ function executeKickByNumber(num, user, ch){
   const usage=getUsage(user);
   // التحقق من الحد
   if(!kickInfinite&&usage.kick>=limits.kick){
-    if(twitchClient)twitchClient.say(ch,`❌ @${user} استنفدت الطرد! (${limits.kick}/${limits.kick})`);
+    sayChat(ch,`❌ @${user} استنفدت الطرد! (${limits.kick}/${limits.kick})`);
     return;
   }
   const target=players.find(p=>p.id===num);
   if(!target){
-    if(twitchClient)twitchClient.say(ch,`❌ @${user} لا يوجد لاعب برقم ${num}!`);
+    sayChat(ch,`❌ @${user} لا يوجد لاعب برقم ${num}!`);
     return;
   }
   if(target.eliminated){
-    if(twitchClient)twitchClient.say(ch,`❌ @${user} ${target.name} مطرود بالفعل!`);
+    sayChat(ch,`❌ @${user} ${target.name} مطرود بالفعل!`);
     return;
   }
   if(currentWinner&&target.id===currentWinner.id){
-    if(twitchClient)twitchClient.say(ch,`❌ @${user} ما تقدر تطرد نفسك!`);
+    sayChat(ch,`❌ @${user} ما تقدر تطرد نفسك!`);
     return;
   }
   // الحماية تنكسر بدون استهلاك العداد - أنيميشن كسر الدرع
@@ -1936,7 +2056,7 @@ function executeKickByNumber(num, user, ch){
     addEv(`⚔️ <b>${user}</b> هاجم <b>${target.name}</b> وكسر درعه!`,'prot');
     protected_.delete(target.id);renderAll();
     animShieldBreak(target.name);
-    if(twitchClient)twitchClient.say(ch,`⚔️ ${target.name} كان محمياً! تم كسر الدرع`);
+    sayChat(ch,`⚔️ ${target.name} كان محمياً! تم كسر الدرع`);
     return;
   }
   // الطرد الفعلي
@@ -1947,7 +2067,7 @@ function executeKickByNumber(num, user, ch){
   addEv(`<b>${target.name}</b> انطرد بواسطة ${user} ${usedTxt}`,'kick');
   animKick(target.name);
   const used=kickInfinite?'∞':`(${usage.kick}/${limits.kick})`;
-  if(twitchClient)twitchClient.say(ch,`💥 ${target.name} انطرد من العجلة! ${used}`);
+  sayChat(ch,`💥 ${target.name} انطرد من العجلة! ${used}`);
   updateWinnerCounters();
 }
 
@@ -2275,11 +2395,11 @@ function celebrate(w){
     winnerTimer=setTimeout(closeWin,3000);
   },400);
 
-  if(twitchClient){
+  if(twitchClient||kickClient){
     const ch=document.getElementById('channelName').value.trim();
     const k=kickInfinite?'!طرد <رقم>(∞)':(limits.kick>0?`!طرد <رقم>(${limits.kick}x)`:'');
     const cmds=[k,limits.rev>0?`!انعاش(${limits.rev}x)`:'',limits.prot>0?`!فزعه(${limits.prot}x)`:''].filter(Boolean).join(' ');
-    twitchClient.say(ch,`🏆 الفائز هو ${w.name}! صلاحياتك: ${cmds||'لا يوجد'} 🎉`);
+    sayChat(ch,`🏆 الفائز هو ${w.name}! صلاحياتك: ${cmds||'لا يوجد'} 🎉`);
   }
 }
 function closeWin(){
@@ -2311,28 +2431,106 @@ const CFC=['#00f5ff','#ff3cac','#f5a623','#7928ca','#00ff88','#ffffff'];
 function launchConfetti(){cfC.width=innerWidth;cfC.height=innerHeight;cfPcs=Array.from({length:130},()=>({x:Math.random()*cfC.width,y:-20,vx:(Math.random()-.5)*6,vy:2.5+Math.random()*5,rot:Math.random()*360,rs:(Math.random()-.5)*10,w:5+Math.random()*10,h:3+Math.random()*6,col:CFC[Math.floor(Math.random()*CFC.length)],shape:Math.random()>.5?'r':'c',alpha:.8+Math.random()*.2}));if(!cfOn){cfOn=true;cfLoop()}}
 function cfLoop(){cfX.clearRect(0,0,cfC.width,cfC.height);cfPcs=cfPcs.filter(p=>p.y<cfC.height+20);cfPcs.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.rot+=p.rs;cfX.save();cfX.globalAlpha=p.alpha;cfX.translate(p.x,p.y);cfX.rotate(p.rot*Math.PI/180);cfX.fillStyle=p.col;if(p.shape==='c'){cfX.beginPath();cfX.arc(0,0,p.w/2,0,Math.PI*2);cfX.fill()}else cfX.fillRect(-p.w/2,-p.h/2,p.w,p.h);cfX.restore()});if(cfPcs.length)requestAnimationFrame(cfLoop);else{cfOn=false;cfX.clearRect(0,0,cfC.width,cfC.height)}}
 
-/* ══ TWITCH ══════════════════════════════════════════════ */
-function connectTwitch(){
+/* ══ PLATFORM ══════════════════════════════════════════════ */
+function selectPlatform(p){
+  if(p===currentPlatform)return;
+  // قطع الاتصال إذا كان موجود
+  disconnectAll();
+  currentPlatform=p;
+  document.getElementById('pt-twitch').classList.toggle('active',p==='twitch');
+  document.getElementById('pt-kick').classList.toggle('active',p==='kick');
+  const input=document.getElementById('channelName');
+  input.placeholder=p==='kick'?'اسم القناة في Kick...':'اسم القناة في Twitch...';
+}
+
+function disconnectAll(){
+  if(twitchClient){try{twitchClient.disconnect()}catch(e){}twitchClient=null}
+  if(kickClient){try{kickClient.disconnect()}catch(e){}kickClient=null}
+  const cb=document.getElementById('connBtn');
+  cb.textContent='اتصال';cb.classList.remove('on');
+  document.getElementById('liveind').classList.remove('on');
+  document.getElementById('livebadge').style.opacity='.3';
+}
+
+/* إرسال رسالة للشات — تويتش فقط (كيك يحتاج مصادقة OAuth) */
+function sayChat(ch, msg){
+  if(currentPlatform==='twitch'&&twitchClient){
+    try{twitchClient.say(ch,msg)}catch(e){}
+  }
+  // Kick: نتجاهل الإرسال بصمت (يحتاج مصادقة)
+}
+
+/* ══ CONNECT ROUTER ════════════════════════════════════════ */
+function connectChat(){
   const ch=document.getElementById('channelName').value.trim();
   if(!ch){alert('يرجى إدخال اسم القناة');return;}
-  setStatus('جاري الاتصال...');
+  if(currentPlatform==='twitch')connectTwitch(ch);
+  else connectKick(ch);
+}
+
+function connectTwitch(ch){
+  setStatus('جاري الاتصال بـ Twitch...');
   if(twitchClient){try{twitchClient.disconnect()}catch(e){}}
   const client=new tmi.Client({connection:{reconnect:true,secure:true},channels:[ch]});
   client.connect().then(()=>{
-    twitchClient=client;setStatus('متصل بـ '+ch,'on');
-    document.getElementById('connBtn').textContent='متصل ✓';document.getElementById('connBtn').classList.add('on');
-    document.getElementById('liveind').classList.add('on');document.getElementById('livebadge').style.opacity='1';
+    twitchClient=client;
+    setStatus('متصل بـ Twitch / '+ch,'on');
+    document.getElementById('connBtn').textContent='متصل ✓';
+    document.getElementById('connBtn').classList.add('on');
+    document.getElementById('liveind').classList.add('on');
+    document.getElementById('livebadge').style.opacity='1';
     client.say(ch,'🎡 عجلة الشخصنة جاهزة! اكتبوا !دخول للمشاركة 🎉');
-    addEv(`متصل بشات <b>${ch}</b>`,'conn');
-  }).catch(()=>{setStatus('فشل الاتصال ← تأكد من اسم القناة');document.getElementById('connBtn').textContent='إعادة محاولة'});
-  client.on('message',(c,tags,msg,self)=>{if(self)return;handleCmd(tags,msg.trim(),c)});
+    addEv(`متصل بـ Twitch / <b>${ch}</b>`,'conn');
+  }).catch(()=>{
+    setStatus('فشل الاتصال بـ Twitch ← تأكد من اسم القناة');
+    document.getElementById('connBtn').textContent='إعادة محاولة';
+  });
+  client.on('message',(c,tags,msg,self)=>{
+    if(self)return;
+    // نبني tags-shaped object يفهمه handleCmd
+    handleChatCmd({
+      user: tags['display-name']||tags.username,
+      isMod: !!(tags.mod||tags.badges?.broadcaster),
+      text: msg.trim()
+    }, c);
+  });
+}
+
+function connectKick(ch){
+  setStatus('جاري الاتصال بـ Kick...');
+  if(kickClient){try{kickClient.disconnect()}catch(e){}}
+  kickClient=KickChat.connect(ch,
+    // onMessage
+    (m)=>{
+      handleChatCmd({
+        user: m.name||m.username,
+        isMod: !!m.isModOrBroadcaster,
+        text: (m.text||'').trim()
+      }, ch);
+    },
+    // onReady
+    ()=>{
+      setStatus('متصل بـ Kick / '+ch,'on');
+      document.getElementById('connBtn').textContent='متصل ✓';
+      document.getElementById('connBtn').classList.add('on');
+      document.getElementById('liveind').classList.add('on');
+      document.getElementById('livebadge').style.opacity='1';
+      addEv(`متصل بـ Kick / <b>${ch}</b> (قراءة فقط)`,'conn');
+    },
+    // onError
+    (err)=>{
+      setStatus('فشل الاتصال بـ Kick ← تأكد من اسم القناة');
+      document.getElementById('connBtn').textContent='إعادة محاولة';
+    }
+  );
 }
 
 /* ══ COMMANDS ════════════════════════════════════════════ */
-function handleCmd(tags,msg,ch){
-  const user=tags['display-name']||tags.username;
-  const isMod=!!(tags.mod||tags.badges?.broadcaster);
-  const raw=msg.trim();
+function handleChatCmd(msg, ch){
+  const user=msg.user;
+  const isMod=!!msg.isMod;
+  const raw=(msg.text||'').trim();
+  if(!raw)return;
   const parts=raw.split(/\s+/);
   const cmd=parts[0].toLowerCase();
   const arg=parts[1];
@@ -2360,7 +2558,7 @@ function handleCmd(tags,msg,ch){
   // GATE 3: !لاعبين مفتوح للكل
   if(cmd==='!لاعبين'){
     const n=players.filter(p=>!p.eliminated).length;
-    twitchClient&&twitchClient.say(ch,`👥 المشاركين: ${n} لاعب`);
+    sayChat(ch,`👥 المشاركين: ${n} لاعب`);
     return;
   }
 
@@ -2372,7 +2570,7 @@ function handleCmd(tags,msg,ch){
     cancelAction();
     renderAll();setStatus('تم تصفير القائمة');
     addEv('تصفير بواسطة '+user,'info');
-    twitchClient&&twitchClient.say(ch,'🗑 تم تصفير قائمة العجلة');
+    sayChat(ch,'🗑 تم تصفير قائمة العجلة');
     return;
   }
 
@@ -2384,7 +2582,7 @@ function handleCmd(tags,msg,ch){
   // !طرد <رقم اختياري> — طرد مباشر بالرقم، أو فتح قائمة لو ما فيه رقم
   if(cmd==='!طرد'){
     if(!kickInfinite&&usage.kick>=limits.kick){
-      twitchClient&&twitchClient.say(ch,`❌ @${user} استنفدت الطرد! (${limits.kick}/${limits.kick})`);
+      sayChat(ch,`❌ @${user} استنفدت الطرد! (${limits.kick}/${limits.kick})`);
       return;
     }
     if(arg&&/^\d+$/.test(arg)){
@@ -2397,7 +2595,7 @@ function handleCmd(tags,msg,ch){
 
   if(cmd==='!انعاش'){
     if(usage.rev>=limits.rev){
-      twitchClient&&twitchClient.say(ch,`❌ @${user} استنفدت الإنعاش! (${limits.rev}/${limits.rev})`);
+      sayChat(ch,`❌ @${user} استنفدت الإنعاش! (${limits.rev}/${limits.rev})`);
       return;
     }
     openActionList('rev',user,ch);
@@ -2406,7 +2604,7 @@ function handleCmd(tags,msg,ch){
 
   if(cmd==='!فزعه'){
     if(usage.prot>=limits.prot){
-      twitchClient&&twitchClient.say(ch,`❌ @${user} استنفدت الفزعة! (${limits.prot}/${limits.prot})`);
+      sayChat(ch,`❌ @${user} استنفدت الفزعة! (${limits.prot}/${limits.prot})`);
       return;
     }
     openActionList('prot',user,ch);
