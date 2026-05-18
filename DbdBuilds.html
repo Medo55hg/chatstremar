@@ -119,6 +119,146 @@ body::before{
     radial-gradient(ellipse at center, rgba(139,10,10,0.1) 0%, transparent 60%),
     linear-gradient(180deg, rgba(10,7,6,0) 0%, rgba(10,7,6,0.8) 100%);
 }
+
+/* ═══ مربعات الإعلانات يمين ويسار العنوان ═══ */
+.hero-wrap{
+  display:flex;align-items:center;justify-content:center;
+  gap:32px;max-width:1400px;margin:0 auto;flex-wrap:wrap;
+}
+.hero-banner{
+  flex-shrink:0;width:300px;
+  display:flex;flex-direction:column;align-items:center;
+  background:linear-gradient(180deg, rgba(26,21,18,0.7) 0%, rgba(19,16,13,0.7) 100%);
+  border:1px solid var(--gold-deep);
+  padding:18px;position:relative;
+  box-shadow:0 8px 24px rgba(0,0,0,0.6), inset 0 1px 0 rgba(201,169,97,0.1);
+}
+.hero-banner::before{
+  content:"";position:absolute;top:-1px;left:-1px;right:-1px;height:2px;
+  background:linear-gradient(90deg, transparent, var(--gold) 30%, var(--blood-bright) 50%, var(--gold) 70%, transparent);
+}
+.hero-banner.empty{
+  border-style:dashed;border-color:var(--line-bright);
+  background:rgba(255,255,255,0.02);opacity:0.6;
+}
+.hero-banner.empty .banner-empty-msg{
+  color:var(--ink-muted);font-size:13px;text-align:center;
+  padding:24px 8px;line-height:1.7;font-weight:500;
+}
+.banner-title{
+  font-size:18px;color:var(--gold-bright);font-weight:800;
+  letter-spacing:0.5px;margin-bottom:12px;text-align:center;
+  text-shadow:0 1px 4px rgba(0,0,0,0.6);
+  width:100%;line-height:1.3;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.banner-img-wrap{
+  width:100%;aspect-ratio:1;
+  background:var(--bg-darker);border:1px solid var(--line);
+  overflow:hidden;display:flex;align-items:center;justify-content:center;
+  margin-bottom:12px;position:relative;
+}
+.banner-img-wrap img{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform 0.5s ease;
+}
+.hero-banner:hover .banner-img-wrap img{transform:scale(1.05)}
+.banner-img-wrap .banner-img-placeholder{
+  color:var(--ink-faded);font-size:32px;
+}
+.banner-countdown{
+  width:100%;display:grid;grid-template-columns:repeat(4, 1fr);
+  gap:5px;padding-top:12px;border-top:1px solid var(--line);
+}
+.banner-countdown-unit{
+  background:var(--bg-deep);border:1px solid var(--line);
+  padding:8px 4px;text-align:center;
+}
+.banner-countdown-num{
+  font-size:22px;color:var(--gold-bright);font-weight:900;
+  line-height:1;display:block;letter-spacing:1px;
+  text-shadow:0 0 8px rgba(201,169,97,0.4);
+  font-variant-numeric:tabular-nums;
+}
+.banner-countdown-label{
+  font-size:9px;color:var(--ink-muted);font-weight:700;
+  letter-spacing:1px;margin-top:4px;display:block;
+}
+.banner-countdown.expired{
+  grid-template-columns:1fr;
+}
+.banner-countdown.expired .banner-countdown-unit{
+  background:rgba(139,10,10,0.15);border-color:var(--blood);
+  padding:10px;
+}
+.banner-countdown.expired .banner-countdown-num{
+  font-size:14px;color:var(--blood-bright);
+}
+
+.hero-center{flex:1;min-width:280px;max-width:760px}
+
+@media (max-width:1100px){
+  .hero-banner{width:250px;padding:14px}
+  .banner-title{font-size:15px}
+  .banner-countdown-num{font-size:18px}
+}
+@media (max-width:900px){
+  .hero-wrap{flex-direction:column;gap:24px}
+  .hero-banner{width:100%;max-width:380px}
+  .hero-banner.empty{display:none}
+}
+
+/* قسم تعديل المربعات في لوحة الأدمن */
+.banners-editor{
+  display:grid;grid-template-columns:repeat(auto-fit, minmax(360px, 1fr));
+  gap:20px;margin-bottom:24px;
+}
+.banner-edit-card{
+  background:var(--bg-card);border:1px solid var(--line);
+  padding:20px;
+}
+.banner-edit-card h4{
+  font-size:16px;color:var(--gold-bright);font-weight:800;
+  margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:8px;
+}
+.banner-edit-row{margin-bottom:14px}
+.banner-edit-row label{
+  display:block;font-size:13px;color:var(--ink-secondary);
+  margin-bottom:6px;font-weight:600;
+}
+.banner-edit-row input{
+  width:100%;background:var(--bg-darker);border:1px solid var(--line);
+  padding:9px 12px;color:var(--ink-primary);font-size:14px;
+  font-family:'Cairo',sans-serif;
+}
+.banner-edit-row input:focus{outline:none;border-color:var(--gold-deep)}
+.banner-edit-row input[type="datetime-local"]{
+  color-scheme:dark;cursor:pointer;
+  font-size:15px;padding:11px 12px;
+}
+.banner-edit-row input[type="datetime-local"]::-webkit-calendar-picker-indicator{
+  filter:invert(0.7) sepia(1) saturate(3) hue-rotate(20deg);
+  cursor:pointer;font-size:18px;padding:4px;
+  background-color:transparent;
+}
+.banner-edit-row input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover{
+  filter:invert(0.9) sepia(1) saturate(4) hue-rotate(15deg);
+}
+.banner-edit-row .hint{
+  font-size:11px;color:var(--ink-muted);margin-top:4px;font-weight:500;
+}
+.banner-edit-preview{
+  margin-top:12px;padding:10px;background:var(--bg-darker);
+  border:1px dashed var(--line);text-align:center;
+}
+.banner-edit-preview img{
+  max-width:100px;max-height:100px;object-fit:cover;
+  border:1px solid var(--line);
+}
+.banner-edit-actions{
+  display:flex;gap:8px;margin-top:12px;
+}
 .hero-ornament{color:var(--gold-deep);font-size:30px;margin-bottom:24px;letter-spacing:8px}
 .hero-title{
   font-size:clamp(40px, 7vw, 78px);font-weight:900;
@@ -925,8 +1065,25 @@ body.theme-legendary .topbar{
 
 <section class="hero" id="heroSection">
   <div class="hero-ornament">✦ ✦ ✦</div>
-  <h1 class="hero-title">بيلدات مجتمع <span class="accent">DBD</span></h1>
-  <p class="hero-sub">مرجع شامل لبيلدات الكيلرز والسيرفايفرز — يضيفها اللاعبون، ويقيّمها المجتمع، ويعتمدها حارس الموقع</p>
+
+  <div class="hero-wrap">
+    <!-- المربع الأيمن -->
+    <div class="hero-banner empty" id="heroBannerRight" data-banner="right">
+      <div class="banner-empty-msg">📢 منطقة الإعلان<br>يديرها الأدمن</div>
+    </div>
+
+    <!-- العنوان الرئيسي -->
+    <div class="hero-center">
+      <h1 class="hero-title">بيلدات مجتمع <span class="accent">DBD</span></h1>
+      <p class="hero-sub">مرجع شامل لبيلدات الكيلرز والسيرفايفرز — يضيفها اللاعبون، ويقيّمها المجتمع، ويعتمدها حارس الموقع</p>
+    </div>
+
+    <!-- المربع الأيسر -->
+    <div class="hero-banner empty" id="heroBannerLeft" data-banner="left">
+      <div class="banner-empty-msg">📢 منطقة الإعلان<br>يديرها الأدمن</div>
+    </div>
+  </div>
+
   <div class="hero-divider"><span>المرجع الأول</span></div>
   <div style="margin-top:20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
     <button class="btn btn-blood" onclick="openCreateBuild()">+ اقترح بيلد جديد</button>
@@ -957,7 +1114,7 @@ body.theme-legendary .topbar{
     <div class="badges-info-section">
       <div class="badges-info-header">
         <h3>نظام الأوسمة والمراتب</h3>
-        <div class="badges-info-sub">كلما زاد تفاعلك واقتراحاتك للبيلدات، ارتفعت رتبتك — الأوسمة تُمنح حسب عدد البيلدات المعتمدة، + اذا انت ستريمر تواصل معي عشان تحصل ع البادج </div>
+        <div class="badges-info-sub">كلما زاد تفاعلك واقتراحاتك للبيلدات، ارتفعت رتبتك — الأوسمة تُمنح حسب عدد البيلدات المعتمدة</div>
       </div>
       <div class="badges-grid">
         <div class="badge-tier tier-bronze">
@@ -1024,6 +1181,7 @@ body.theme-legendary .topbar{
       <button class="active" data-admin-tab="pending" onclick="setAdminTab('pending')">قيد المراجعة</button>
       <button data-admin-tab="all" onclick="setAdminTab('all')">جميع البيلدات</button>
       <button data-admin-tab="users" onclick="setAdminTab('users')">المسجّلون</button>
+      <button data-admin-tab="banners" onclick="setAdminTab('banners')">📢 مربعات الإعلانات</button>
     </div>
 
     <div id="adminContent"></div>
@@ -2210,6 +2368,7 @@ async function init() {
   renderBuilds();
   renderStats();
   restoreTheme();
+  loadBannersFromFirebase();
   showWelcomeIfNeeded();
 }
 
@@ -2225,6 +2384,7 @@ setTimeout(() => {
     renderBuilds();
     renderStats();
     restoreTheme();
+    loadBannersFromFirebase();
     showWelcomeIfNeeded();
   }
 }, 5000);
@@ -3286,6 +3446,13 @@ function renderAdmin() {
           }).join('') +
         '</tbody>' +
       '</table></div>';
+  } else if (state.adminTab === 'banners') {
+    content.innerHTML =
+      '<div style="margin-bottom:20px;padding:16px;border:1px dashed var(--gold-deep);background:rgba(201,169,97,0.06)">' +
+        '<h3 style="color:var(--gold-bright);font-size:16px;margin-bottom:8px">📢 مربعات الإعلانات حول العنوان</h3>' +
+        '<p style="color:var(--ink-secondary);font-size:14px;line-height:1.7">تظهر هذه المربعات يمين ويسار العنوان الرئيسي في الصفحة الرئيسية. كل مربع يحتوي على: عنوان + صورة + مؤقت تنازلي. عطّل المربع لإخفائه عن الزوار.</p>' +
+      '</div>' +
+      renderBannersEditor();
   }
 }
 
@@ -3305,6 +3472,268 @@ async function deleteUser(username) {
     toast('تم حذف الحساب');
   } catch (e) { console.error(e); toast('فشل الحذف', 'error'); }
 }
+
+// ═══════════════════════════════════════════════════════════════
+// 📢 نظام مربعات الإعلانات (يمين/يسار العنوان)
+// ═══════════════════════════════════════════════════════════════
+// كل مربع له: title, imageUrl, deadline (timestamp ms), active
+let bannersState = { left: null, right: null };
+let bannersListener = null;
+let bannerTimerInterval = null;
+
+function defaultBanner() {
+  return { title: '', imageUrl: '', deadline: 0, active: false };
+}
+
+async function loadBannersFromFirebase() {
+  if (!window.firebaseAvailable) {
+    try {
+      const raw = localStorage.getItem('dbdcommunity_banners_v1');
+      if (raw) bannersState = JSON.parse(raw);
+    } catch (e) {}
+    renderBanners();
+    return;
+  }
+  const { ref, get, onValue } = window._fb;
+  try {
+    const snap = await get(ref(window.db, 'banners'));
+    const data = snap.val();
+    if (data) bannersState = { left: data.left || null, right: data.right || null };
+    renderBanners();
+    // الاستماع للتغييرات الحية
+    if (!bannersListener) {
+      bannersListener = onValue(ref(window.db, 'banners'), (s) => {
+        const d = s.val();
+        bannersState = { left: (d && d.left) || null, right: (d && d.right) || null };
+        renderBanners();
+      });
+    }
+  } catch (e) { console.error('Banners load failed:', e); }
+}
+
+async function saveBanner(side, banner) {
+  if (!isAdmin()) { toast('للأدمن فقط', 'error'); return; }
+  bannersState[side] = banner;
+  if (window.firebaseAvailable) {
+    const { ref, set } = window._fb;
+    try {
+      await set(ref(window.db, 'banners/' + side), banner);
+      toast('تم حفظ المربع');
+      renderBanners();
+    } catch (e) {
+      console.error('Firebase save banner failed:', e);
+      // الحفظ المحلي كحل احتياطي
+      try {
+        localStorage.setItem('dbdcommunity_banners_v1', JSON.stringify(bannersState));
+        renderBanners();
+        const msg = (e && e.message && e.message.toLowerCase().includes('permission'))
+          ? 'فشل Firebase (صلاحيات) — تم الحفظ محلياً فقط. حدّث قواعد Firebase ليحفظ للجميع'
+          : 'فشل Firebase — تم الحفظ محلياً فقط. الخطأ: ' + (e.message || e);
+        toast(msg, 'error');
+      } catch (e2) {
+        toast('فشل الحفظ نهائياً: ' + (e.message || e), 'error');
+      }
+    }
+  } else {
+    try {
+      localStorage.setItem('dbdcommunity_banners_v1', JSON.stringify(bannersState));
+      renderBanners();
+      toast('تم الحفظ محلياً (لا يوجد Firebase)');
+    } catch (e) {
+      toast('فشل الحفظ: ' + (e.message || e), 'error');
+    }
+  }
+}
+
+async function clearBanner(side) {
+  if (!isAdmin()) return;
+  if (!confirm('مسح هذا المربع؟')) return;
+  bannersState[side] = null;
+  if (window.firebaseAvailable) {
+    const { ref, remove } = window._fb;
+    try {
+      await remove(ref(window.db, 'banners/' + side));
+      toast('تم مسح المربع');
+      renderBanners();
+    } catch (e) {
+      console.error('Firebase remove banner failed:', e);
+      try {
+        localStorage.setItem('dbdcommunity_banners_v1', JSON.stringify(bannersState));
+        renderBanners();
+        toast('تم المسح محلياً فقط (Firebase رفض)', 'error');
+      } catch (e2) {
+        toast('فشل المسح: ' + (e.message || e), 'error');
+      }
+    }
+  } else {
+    try {
+      localStorage.setItem('dbdcommunity_banners_v1', JSON.stringify(bannersState));
+      renderBanners();
+      toast('تم المسح محلياً');
+    } catch (e) {
+      toast('فشل المسح: ' + (e.message || e), 'error');
+    }
+  }
+}
+
+function formatCountdown(deadline) {
+  if (!deadline) return null;
+  const now = Date.now();
+  const diff = deadline - now;
+  if (diff <= 0) return { expired: true };
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+  return { expired: false, days, hours, minutes, seconds };
+}
+
+function renderBannerSide(side) {
+  const el = document.getElementById('heroBanner' + (side === 'left' ? 'Left' : 'Right'));
+  if (!el) return;
+  const b = bannersState[side];
+  if (!b || !b.active || (!b.title && !b.imageUrl)) {
+    el.classList.add('empty');
+    el.innerHTML = '<div class="banner-empty-msg">📢 منطقة الإعلان<br>يديرها الأدمن</div>';
+    return;
+  }
+  el.classList.remove('empty');
+
+  // المؤقت
+  let countdownHTML = '';
+  if (b.deadline) {
+    const cd = formatCountdown(b.deadline);
+    if (cd && cd.expired) {
+      countdownHTML =
+        '<div class="banner-countdown expired">' +
+          '<div class="banner-countdown-unit">' +
+            '<span class="banner-countdown-num">⌛ انتهى</span>' +
+          '</div>' +
+        '</div>';
+    } else if (cd) {
+      countdownHTML =
+        '<div class="banner-countdown">' +
+          '<div class="banner-countdown-unit">' +
+            '<span class="banner-countdown-num">' + cd.days + '</span>' +
+            '<span class="banner-countdown-label">أيام</span>' +
+          '</div>' +
+          '<div class="banner-countdown-unit">' +
+            '<span class="banner-countdown-num">' + String(cd.hours).padStart(2,'0') + '</span>' +
+            '<span class="banner-countdown-label">ساعة</span>' +
+          '</div>' +
+          '<div class="banner-countdown-unit">' +
+            '<span class="banner-countdown-num">' + String(cd.minutes).padStart(2,'0') + '</span>' +
+            '<span class="banner-countdown-label">دقيقة</span>' +
+          '</div>' +
+          '<div class="banner-countdown-unit">' +
+            '<span class="banner-countdown-num">' + String(cd.seconds).padStart(2,'0') + '</span>' +
+            '<span class="banner-countdown-label">ثانية</span>' +
+          '</div>' +
+        '</div>';
+    }
+  }
+
+  el.innerHTML =
+    (b.title ? '<div class="banner-title">' + escapeHTML(b.title) + '</div>' : '') +
+    '<div class="banner-img-wrap">' +
+      (b.imageUrl
+        ? '<img src="' + escapeAttr(b.imageUrl) + '" alt="' + escapeAttr(b.title || '') + '" onerror="this.parentNode.innerHTML=\'<span class=banner-img-placeholder>🖼</span>\'">'
+        : '<span class="banner-img-placeholder">🖼</span>') +
+    '</div>' +
+    countdownHTML;
+}
+
+function renderBanners() {
+  renderBannerSide('left');
+  renderBannerSide('right');
+
+  // تشغيل/إيقاف المؤقت حسب الحاجة
+  const hasActiveCountdown =
+    (bannersState.left && bannersState.left.active && bannersState.left.deadline && bannersState.left.deadline > Date.now()) ||
+    (bannersState.right && bannersState.right.active && bannersState.right.deadline && bannersState.right.deadline > Date.now());
+
+  if (hasActiveCountdown && !bannerTimerInterval) {
+    bannerTimerInterval = setInterval(() => {
+      renderBannerSide('left');
+      renderBannerSide('right');
+    }, 1000); // تحديث كل ثانية
+  } else if (!hasActiveCountdown && bannerTimerInterval) {
+    clearInterval(bannerTimerInterval);
+    bannerTimerInterval = null;
+  }
+}
+
+// تحويل تاريخ من input type="datetime-local" إلى timestamp
+function dateLocalToTimestamp(dateLocal) {
+  if (!dateLocal) return 0;
+  const d = new Date(dateLocal);
+  return isNaN(d.getTime()) ? 0 : d.getTime();
+}
+
+// تحويل timestamp إلى صيغة input
+function timestampToDateLocal(ts) {
+  if (!ts) return '';
+  const d = new Date(ts);
+  if (isNaN(d.getTime())) return '';
+  const pad = (n) => String(n).padStart(2, '0');
+  return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()) +
+    'T' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+}
+
+function renderBannersEditor() {
+  if (!isAdmin()) return '';
+  const make = (side, label) => {
+    const b = bannersState[side] || defaultBanner();
+    return '<div class="banner-edit-card">' +
+      '<h4>📢 ' + label + '</h4>' +
+      '<div class="banner-edit-row">' +
+        '<label>عنوان المربع</label>' +
+        '<input type="text" id="be_' + side + '_title" placeholder="مثال: تحديث جديد!" value="' + escapeAttr(b.title || '') + '" maxlength="60">' +
+        '<div class="hint">حتى 60 حرفاً، يظهر فوق الصورة</div>' +
+      '</div>' +
+      '<div class="banner-edit-row">' +
+        '<label>رابط الصورة</label>' +
+        '<input type="url" id="be_' + side + '_image" placeholder="https://..." value="' + escapeAttr(b.imageUrl || '') + '">' +
+        '<div class="hint">رابط مباشر لصورة (jpg/png/webp)</div>' +
+      '</div>' +
+      '<div class="banner-edit-row">' +
+        '<label>تاريخ ووقت الانتهاء (المؤقت)</label>' +
+        '<input type="datetime-local" id="be_' + side + '_deadline" value="' + timestampToDateLocal(b.deadline || 0) + '">' +
+        '<div class="hint">المؤقت يعدّ تنازلياً للوقت المحدد. اتركه فارغاً لإخفاء المؤقت</div>' +
+      '</div>' +
+      '<div class="banner-edit-row">' +
+        '<label style="display:inline-flex;align-items:center;gap:8px;cursor:pointer">' +
+          '<input type="checkbox" id="be_' + side + '_active" ' + (b.active ? 'checked' : '') + ' style="accent-color:var(--gold);cursor:pointer">' +
+          '<span>تفعيل المربع (يظهر للزوار)</span>' +
+        '</label>' +
+      '</div>' +
+      '<div class="banner-edit-actions">' +
+        '<button class="btn btn-gold btn-sm" onclick="saveBannerFromEditor(\'' + side + '\')">حفظ</button>' +
+        '<button class="btn btn-blood btn-sm" onclick="clearBanner(\'' + side + '\')">مسح</button>' +
+      '</div>' +
+    '</div>';
+  };
+  return '<div class="banners-editor">' +
+    make('right', 'المربع الأيمن') +
+    make('left', 'المربع الأيسر') +
+  '</div>';
+}
+
+function saveBannerFromEditor(side) {
+  const title = document.getElementById('be_' + side + '_title').value.trim();
+  const imageUrl = document.getElementById('be_' + side + '_image').value.trim();
+  const deadlineRaw = document.getElementById('be_' + side + '_deadline').value;
+  const active = document.getElementById('be_' + side + '_active').checked;
+  saveBanner(side, {
+    title: title,
+    imageUrl: imageUrl,
+    deadline: dateLocalToTimestamp(deadlineRaw),
+    active: !!active
+  });
+}
+
+window.saveBannerFromEditor = saveBannerFromEditor;
+window.clearBanner = clearBanner;
 
 function renderStats() {
   const approved = state.builds.filter(b => b.status === 'approved');
