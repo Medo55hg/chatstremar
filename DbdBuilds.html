@@ -1191,6 +1191,7 @@ body.theme-legendary .topbar{
 .theme-option.locked{opacity:0.5;cursor:not-allowed}
 .theme-option.locked:hover{background:transparent;color:var(--ink-secondary)}
 .theme-wrap{position:relative}
+.topbar-right{display:flex;align-items:center;gap:12px}
 
 /* تنويه الصور */
 .img-notice{
@@ -1336,38 +1337,45 @@ body.theme-legendary .topbar{
         <li><button class="nav-tab hidden" data-view="admin" id="adminTabBtn" onclick="showView('admin')">⚜ لوحة الأدمن</button></li>
       </ul>
     </nav>
-    <div class="user-zone" id="userZone">
-      <div class="connection-status loading" id="connStatus"><span class="status-dot"></span><span>جاري الاتصال...</span></div>
-      <button class="btn btn-sm" onclick="openAuth()">تسجيل الدخول</button>
-    </div>
-    <!-- قائمة الثيم (منفصلة عن userZone حتى لا تُحذف عند renderSession) -->
-    <div class="theme-wrap" id="themeWrapGlobal" style="position:absolute;top:calc(100% + 6px);left:16px;z-index:600">
-      <div class="theme-options" id="themeOptions">
-        <div class="theme-menu-title">🎨 اختر ثيم الموقع</div>
-        <div class="theme-option" data-theme="" onclick="selectTheme('')">
-          <div class="theme-swatch default"></div>
-          <span>افتراضي (دموي)</span>
+    <div class="topbar-right">
+      <div class="theme-wrap" id="themeWrapGlobal">
+        <button class="theme-selector" onclick="toggleThemeMenu(event)" id="themeBtn">🎨 الثيم</button>
+        <div class="theme-options" id="themeOptions">
+          <div class="theme-menu-title">🎨 اختر ثيم الموقع</div>
+          <div class="theme-option" data-theme="" onclick="selectTheme('')">
+            <div class="theme-swatch default"></div>
+            <span>افتراضي (دموي)</span>
+          </div>
+          <div class="theme-option" data-theme="bronze" data-requires="bronze" onclick="selectTheme('bronze')">
+            <div class="theme-swatch bronze"></div>
+            <span>برونزي 🥉</span>
+            <span class="lock-icon">🔒</span>
+          </div>
+          <div class="theme-option" data-theme="silver" data-requires="silver" onclick="selectTheme('silver')">
+            <div class="theme-swatch silver"></div>
+            <span>فضي 🥈</span>
+            <span class="lock-icon">🔒</span>
+          </div>
+          <div class="theme-option" data-theme="gold" data-requires="gold" onclick="selectTheme('gold')">
+            <div class="theme-swatch gold"></div>
+            <span>ذهبي 🥇</span>
+            <span class="lock-icon">🔒</span>
+          </div>
+          <div class="theme-option" data-theme="diamond" data-requires="diamond" onclick="selectTheme('diamond')">
+            <div class="theme-swatch diamond"></div>
+            <span>ماسي 💎</span>
+            <span class="lock-icon">🔒</span>
+          </div>
+          <div class="theme-option" data-theme="legendary" data-requires="legendary" onclick="selectTheme('legendary')">
+            <div class="theme-swatch legendary"></div>
+            <span>أسطوري 👑</span>
+            <span class="lock-icon">🔒</span>
+          </div>
         </div>
-        <div class="theme-option" data-theme="bronze" onclick="selectTheme('bronze')">
-          <div class="theme-swatch bronze"></div>
-          <span>برونزي 🥉</span>
-        </div>
-        <div class="theme-option" data-theme="silver" onclick="selectTheme('silver')">
-          <div class="theme-swatch silver"></div>
-          <span>فضي 🥈</span>
-        </div>
-        <div class="theme-option" data-theme="gold" onclick="selectTheme('gold')">
-          <div class="theme-swatch gold"></div>
-          <span>ذهبي 🥇</span>
-        </div>
-        <div class="theme-option" data-theme="diamond" onclick="selectTheme('diamond')">
-          <div class="theme-swatch diamond"></div>
-          <span>ماسي 💎</span>
-        </div>
-        <div class="theme-option" data-theme="legendary" onclick="selectTheme('legendary')">
-          <div class="theme-swatch legendary"></div>
-          <span>أسطوري 👑</span>
-        </div>
+      </div>
+      <div class="user-zone" id="userZone">
+        <div class="connection-status loading" id="connStatus"><span class="status-dot"></span><span>جاري الاتصال...</span></div>
+        <button class="btn btn-sm" onclick="openAuth()">تسجيل الدخول</button>
       </div>
     </div>
   </div>
@@ -1397,6 +1405,7 @@ body.theme-legendary .topbar{
   <div class="hero-divider"><span>المرجع الأول</span></div>
   <div style="margin-top:20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
     <button class="btn btn-blood" onclick="openCreateBuild()">+ اقترح بيلد جديد</button>
+    <button class="btn btn-gold" onclick="showView('random')">🎲 بيركات عشوائية</button>
     <button class="btn" onclick="document.getElementById('buildsAnchor').scrollIntoView({behavior:'smooth'})">تصفّح البيلدات</button>
   </div>
   <div class="hero-stats">
@@ -2169,7 +2178,7 @@ const KNOWN_PERKS = [
   ['FriendlyCompetition','Friendly Competition','survivor','Orela Rose'],
   // Rick Grimes
   ['DontYouGiveUp','Don\'t You Give Up','survivor','Rick Grimes'],
-  ['Committed','Committed','survivor','Rick Grimes'],
+  ['ANY','ANY','survivor','Rick Grimes'],
   ['LeapOfFaith','Leap of Faith','survivor','Rick Grimes'],
   // Michonne Grimes
   ['FightOrFlight','Fight or Flight','survivor','Michonne Grimes'],
@@ -3438,9 +3447,6 @@ function renderSession() {
         '<button class="user-menu-item" onclick="openMyBuilds();closeUserMenu()">' +
           '<span class="umi-icon">📋</span><span>بيلداتي</span>' +
         '</button>' +
-        '<button class="user-menu-item" onclick="openThemeFromMenu()">' +
-          '<span class="umi-icon">🎨</span><span>الثيم</span>' +
-        '</button>' +
         '<div class="user-menu-divider"></div>' +
         '<button class="user-menu-item logout" onclick="logout();closeUserMenu()">' +
           '<span class="umi-icon">🚪</span><span>تسجيل الخروج</span>' +
@@ -4568,8 +4574,13 @@ function getUserBadgeLevel(username) {
 }
 
 function canUseTheme(themeName) {
-  // كل الثيمات متاحة للجميع الآن
-  return true;
+  if (!themeName) return true; // افتراضي متاح للجميع
+  const required = THEME_ORDER[themeName] || 0;
+  if (!state.session) return false;
+  // الأدمن يفتح كل شي
+  if (isAdmin()) return true;
+  const userLevel = getUserBadgeLevel(state.session.username);
+  return userLevel >= required;
 }
 
 function applyTheme(themeName) {
@@ -4761,9 +4772,10 @@ function tryAutoFillPortrait() {
 document.addEventListener('click', e => {
   if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('active');
   // إغلاق قائمة الثيم
+  const themeBtn = document.getElementById('themeBtn');
   const themeMenu = document.getElementById('themeOptions');
   if (themeMenu && themeMenu.classList.contains('active')) {
-    if (!themeMenu.contains(e.target)) {
+    if (e.target !== themeBtn && !themeBtn?.contains(e.target) && !themeMenu.contains(e.target)) {
       themeMenu.classList.remove('active');
     }
   }
