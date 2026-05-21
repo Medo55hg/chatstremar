@@ -9,23 +9,24 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg-deep:#0a0706;
-  --bg-darker:#13100d;
-  --bg-card:#1a1512;
-  --bg-card-hover:#231b16;
-  --ink-primary:#e8d9b8;
-  --ink-secondary:#a89377;
+  --bg-deep:#080605;
+  --bg-darker:#110d0b;
+  --bg-card:#191310;
+  --bg-card-hover:#221a15;
+  --ink-primary:#ede0c4;
+  --ink-secondary:#ab9678;
   --ink-muted:#6b5a47;
   --ink-faded:#4a3f33;
   --blood:#8b0a0a;
-  --blood-bright:#b81414;
+  --blood-bright:#c41818;
   --blood-deep:#5a0606;
   --gold:#c9a961;
-  --gold-bright:#e6c478;
+  --gold-bright:#ecca7e;
   --gold-deep:#8a7038;
   --line:#3a2f24;
   --line-bright:#5a4a38;
   --shadow-deep:0 10px 40px rgba(0,0,0,0.8);
+  --fog:rgba(180,160,130,0.03);
 }
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',sans-serif}
 html,body{
@@ -34,45 +35,87 @@ html,body{
 }
 body{
   background-image:
-    radial-gradient(ellipse at top, rgba(139,10,10,0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at bottom, rgba(201,169,97,0.04) 0%, transparent 50%),
-    linear-gradient(180deg, #0a0706 0%, #13100d 100%);
+    radial-gradient(ellipse at top, rgba(139,10,10,0.1) 0%, transparent 55%),
+    radial-gradient(ellipse at bottom, rgba(201,169,97,0.05) 0%, transparent 55%),
+    linear-gradient(180deg, #080605 0%, #110d0b 100%);
   background-attachment:fixed;
 }
+/* طبقة الفيلم/الحبيبات */
 body::before{
   content:"";position:fixed;inset:0;pointer-events:none;z-index:1;
   background-image:
     repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(0,0,0,0.03) 3px, transparent 4px),
-    radial-gradient(circle at 20% 10%, rgba(0,0,0,0.4) 0%, transparent 40%),
-    radial-gradient(circle at 80% 90%, rgba(0,0,0,0.4) 0%, transparent 40%);
+    radial-gradient(circle at 20% 10%, rgba(0,0,0,0.45) 0%, transparent 42%),
+    radial-gradient(circle at 80% 90%, rgba(0,0,0,0.45) 0%, transparent 42%);
+}
+/* طبقة الضباب المتحرك — توقيع DBD */
+body::after{
+  content:"";position:fixed;inset:-50%;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 40% 30% at 30% 40%, var(--fog) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 35% at 70% 60%, var(--fog) 0%, transparent 60%),
+    radial-gradient(ellipse 35% 45% at 50% 80%, var(--fog) 0%, transparent 60%);
+  animation:fog-drift 40s ease-in-out infinite alternate;
+  opacity:0.8;
+}
+@keyframes fog-drift{
+  0%{transform:translate(0,0) scale(1)}
+  50%{transform:translate(3%,-2%) scale(1.08)}
+  100%{transform:translate(-3%,2%) scale(1.04)}
 }
 
 .topbar{
   position:sticky;top:0;z-index:100;
-  background:linear-gradient(180deg, #0a0706 0%, rgba(10,7,6,0.95) 100%);
+  background:linear-gradient(180deg, #080605 0%, rgba(8,6,5,0.96) 100%);
   border-bottom:1px solid var(--line);
   padding:14px 0;backdrop-filter:blur(8px);
 }
+header,main,footer,.topbar{position:relative;z-index:2}
 .topbar-inner{max-width:1300px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:14px;text-decoration:none;cursor:pointer}
 .brand-mark{
-  width:46px;height:46px;border:1px solid var(--gold-deep);
+  width:48px;height:48px;
+  border:1px solid var(--gold-deep);
   display:flex;align-items:center;justify-content:center;
   color:var(--gold);font-size:26px;position:relative;
+  background:radial-gradient(circle at 50% 40%, rgba(139,10,10,0.25) 0%, rgba(10,7,6,0.6) 70%);
+  box-shadow:inset 0 0 16px rgba(0,0,0,0.6);
+  transition:all 0.4s ease;overflow:hidden;
 }
-.brand-mark::before,.brand-mark::after{content:"";position:absolute;background:var(--gold-deep)}
-.brand-mark::before{top:-3px;right:-3px;width:8px;height:1px}
-.brand-mark::after{top:-3px;right:-3px;width:1px;height:8px}
+.brand-mark::before,.brand-mark::after{content:"";position:absolute;background:var(--gold-deep);transition:all 0.3s}
+.brand-mark::before{top:-3px;right:-3px;width:9px;height:1px}
+.brand-mark::after{top:-3px;right:-3px;width:1px;height:9px}
+.brand:hover .brand-mark{
+  border-color:var(--blood-bright);
+  box-shadow:inset 0 0 20px rgba(139,10,10,0.5), 0 0 16px rgba(139,10,10,0.4);
+  transform:rotate(-3deg);
+}
+.brand:hover .brand-mark::before,.brand:hover .brand-mark::after{background:var(--blood-bright)}
+/* وميض الشعار */
+.brand-mark .mark-glow{
+  position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 50%, rgba(201,169,97,0.2) 0%, transparent 60%);
+  animation:mark-pulse 4s ease-in-out infinite;
+}
+@keyframes mark-pulse{0%,100%{opacity:0.3}50%{opacity:0.8}}
 .brand-name{font-size:21px;color:var(--ink-primary);font-weight:800;line-height:1.1;letter-spacing:0.5px}
-.brand-sub{font-size:11px;color:var(--ink-muted);letter-spacing:2px;margin-top:3px;font-weight:500}
+.brand-name .nm-accent{color:var(--blood-bright);text-shadow:0 0 12px rgba(196,24,24,0.5)}
+.brand-sub{font-size:11px;color:var(--ink-muted);letter-spacing:3px;margin-top:3px;font-weight:500}
 .nav-tabs{display:flex;gap:4px;list-style:none}
 .nav-tab{
   background:transparent;border:1px solid transparent;
   color:var(--ink-secondary);font-size:14px;font-weight:600;
-  padding:8px 18px;cursor:pointer;transition:all 0.2s;
+  padding:8px 18px;cursor:pointer;transition:all 0.25s;position:relative;
 }
-.nav-tab:hover{color:var(--ink-primary);border-color:var(--line)}
-.nav-tab.active{color:var(--gold);border-color:var(--gold-deep);background:rgba(201,169,97,0.05)}
+.nav-tab::after{
+  content:"";position:absolute;bottom:-1px;right:50%;left:50%;height:2px;
+  background:linear-gradient(90deg, transparent, var(--gold), transparent);
+  transition:all 0.3s ease;opacity:0;
+}
+.nav-tab:hover{color:var(--ink-primary)}
+.nav-tab:hover::after{right:15%;left:15%;opacity:1}
+.nav-tab.active{color:var(--gold);border-color:var(--gold-deep);background:rgba(201,169,97,0.06)}
+.nav-tab.active::after{right:15%;left:15%;opacity:1}
 .user-zone{display:flex;align-items:center;gap:12px;font-size:13px}
 .user-pill{
   padding:6px 14px;border:1px solid var(--line);
@@ -90,10 +133,18 @@ body::before{
 }
 .btn:hover{border-color:var(--gold-deep);color:var(--gold-bright);background:rgba(201,169,97,0.05)}
 .btn:disabled{opacity:0.5;cursor:not-allowed}
+/* تأثير اللمعان المنزلق على الأزرار */
+.btn{position:relative;overflow:hidden}
+.btn::before{
+  content:"";position:absolute;top:0;left:-120%;width:60%;height:100%;
+  background:linear-gradient(110deg, transparent, rgba(255,255,255,0.13), transparent);
+  transition:left 0.6s ease;pointer-events:none;
+}
+.btn:hover::before{left:120%}
 .btn-blood{border-color:var(--blood);color:var(--ink-primary);background:rgba(139,10,10,0.2)}
-.btn-blood:hover{background:var(--blood);border-color:var(--blood-bright);color:#fff}
+.btn-blood:hover{background:var(--blood);border-color:var(--blood-bright);color:#fff;box-shadow:0 0 18px rgba(139,10,10,0.4)}
 .btn-gold{border-color:var(--gold-deep);color:var(--gold-bright);background:rgba(201,169,97,0.08)}
-.btn-gold:hover{background:var(--gold);color:#0a0706;border-color:var(--gold-bright)}
+.btn-gold:hover{background:var(--gold);color:#0a0706;border-color:var(--gold-bright);box-shadow:0 0 18px rgba(201,169,97,0.4)}
 .btn-ghost{border-color:transparent;color:var(--ink-muted);padding:6px 14px}
 .btn-ghost:hover{color:var(--ink-primary);background:rgba(255,255,255,0.03)}
 .btn-sm{padding:6px 14px;font-size:12px}
@@ -259,14 +310,23 @@ body::before{
 .banner-edit-actions{
   display:flex;gap:8px;margin-top:12px;
 }
-.hero-ornament{color:var(--gold-deep);font-size:30px;margin-bottom:24px;letter-spacing:8px}
+.hero-ornament{color:var(--gold-deep);font-size:30px;margin-bottom:24px;letter-spacing:8px;animation:ornament-flicker 5s ease-in-out infinite}
+@keyframes ornament-flicker{0%,100%{opacity:0.6}50%{opacity:1;text-shadow:0 0 16px rgba(201,169,97,0.4)}}
 .hero-title{
   font-size:clamp(40px, 7vw, 78px);font-weight:900;
   color:var(--ink-primary);line-height:1.2;
   text-shadow:0 2px 20px rgba(0,0,0,0.8), 0 0 60px rgba(139,10,10,0.3);
   margin-bottom:20px;letter-spacing:-0.5px;
 }
-.hero-title .accent{color:var(--blood-bright)}
+.hero-title .accent{
+  color:var(--blood-bright);position:relative;
+  text-shadow:0 0 30px rgba(196,24,24,0.6);
+  animation:accent-glow 3.5s ease-in-out infinite;
+}
+@keyframes accent-glow{
+  0%,100%{text-shadow:0 0 30px rgba(196,24,24,0.5)}
+  50%{text-shadow:0 0 45px rgba(196,24,24,0.9), 0 0 70px rgba(196,24,24,0.4)}
+}
 .hero-sub{
   font-size:20px;color:var(--ink-secondary);max-width:760px;margin:0 auto 32px;
   line-height:1.8;font-weight:400;
@@ -281,12 +341,26 @@ body::before{
 }
 .hero-divider span{font-size:16px;font-weight:600;letter-spacing:2px}
 .hero-stats{display:flex;justify-content:center;gap:40px;margin-top:48px;flex-wrap:wrap}
-.hero-stat{text-align:center;min-width:110px}
-.hero-stat .num{font-size:46px;color:var(--gold-bright);font-weight:900;line-height:1}
+.hero-stat{text-align:center;min-width:110px;transition:transform 0.3s}
+.hero-stat:hover{transform:translateY(-4px)}
+.hero-stat .num{
+  font-size:46px;color:var(--gold-bright);font-weight:900;line-height:1;
+  text-shadow:0 0 20px rgba(201,169,97,0.25);transition:text-shadow 0.3s;
+}
+.hero-stat:hover .num{text-shadow:0 0 30px rgba(201,169,97,0.6)}
 .hero-stat .lbl{font-size:13px;color:var(--ink-muted);letter-spacing:1px;margin-top:8px;font-weight:600}
 
 .container{max-width:1300px;margin:0 auto;padding:48px 32px;position:relative;z-index:2}
-.section-title{font-size:38px;color:var(--ink-primary);text-align:center;margin-bottom:8px;font-weight:800}
+.section-title{
+  font-size:38px;color:var(--ink-primary);text-align:center;margin-bottom:8px;font-weight:800;
+  position:relative;display:inline-block;left:50%;transform:translateX(-50%);
+}
+.section-title::before,.section-title::after{
+  content:"◆";position:absolute;top:50%;transform:translateY(-50%);
+  color:var(--gold-deep);font-size:14px;opacity:0.7;
+}
+.section-title::before{right:calc(100% + 18px)}
+.section-title::after{left:calc(100% + 18px)}
 .section-sub{text-align:center;color:var(--ink-muted);font-size:18px;margin-bottom:40px;font-weight:400}
 
 .setup-warning{
@@ -322,15 +396,22 @@ body::before{
 .build-card{
   background:linear-gradient(180deg, var(--bg-card) 0%, var(--bg-darker) 100%);
   border:1px solid var(--line);position:relative;
-  transition:all 0.3s;cursor:pointer;overflow:hidden;
+  transition:all 0.35s cubic-bezier(0.2,0.8,0.3,1);cursor:pointer;overflow:hidden;
 }
 .build-card::before{
   content:"";position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg, transparent, var(--blood) 50%, transparent);
-  opacity:0;transition:opacity 0.3s;
+  background:linear-gradient(90deg, transparent, var(--blood-bright) 50%, transparent);
+  opacity:0;transition:opacity 0.3s;z-index:2;
 }
-.build-card:hover{border-color:var(--gold-deep);transform:translateY(-4px);box-shadow:var(--shadow-deep)}
+/* توهج زاوي عند المرور */
+.build-card::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(circle at 50% 0%, rgba(201,169,97,0.08) 0%, transparent 50%);
+  opacity:0;transition:opacity 0.4s;
+}
+.build-card:hover{border-color:var(--gold-deep);transform:translateY(-5px);box-shadow:0 16px 44px rgba(0,0,0,0.7), 0 0 24px rgba(139,10,10,0.15)}
 .build-card:hover::before{opacity:1}
+.build-card:hover::after{opacity:1}
 .build-card.pending{border-style:dashed;border-color:var(--gold-deep);background:linear-gradient(180deg, rgba(201,169,97,0.05) 0%, var(--bg-darker) 100%)}
 .build-header{padding:18px 20px 14px;border-bottom:1px solid var(--line)}
 .build-role{
@@ -349,14 +430,22 @@ body::before{
 .perk{
   aspect-ratio:1;background:var(--bg-darker);
   border:1px solid var(--line);display:flex;align-items:center;justify-content:center;
-  position:relative;overflow:hidden;
+  position:relative;overflow:hidden;transition:all 0.25s;
 }
+.perk::after{
+  content:"";position:absolute;inset:0;border:1px solid transparent;
+  transition:all 0.25s;pointer-events:none;
+}
+.build-card:hover .perk{border-color:var(--gold-deep)}
+.perk:hover{transform:scale(1.06);z-index:3}
+.perk:hover::after{border-color:var(--gold-bright);box-shadow:inset 0 0 12px rgba(201,169,97,0.3)}
 .perk img{width:100%;height:100%;object-fit:cover}
 .perk-empty{color:var(--ink-faded);font-size:24px}
 .perk-name-tip{
   position:absolute;bottom:0;left:0;right:0;
-  background:rgba(0,0,0,0.85);color:var(--ink-primary);
-  font-size:10px;text-align:center;padding:3px;font-weight:600;
+  background:linear-gradient(180deg, transparent, rgba(0,0,0,0.92));
+  color:var(--gold-bright);
+  font-size:10px;text-align:center;padding:8px 3px 3px;font-weight:600;
   opacity:0;transition:opacity 0.2s;
 }
 .perk:hover .perk-name-tip{opacity:1}
@@ -790,6 +879,182 @@ footer .mark{color:var(--gold-deep);font-size:14px;margin-top:18px;font-weight:7
 .center{text-align:center}
 
 /* ═══════════════════════════════════════════════════════════════ */
+/* صفحة البيلد العشوائي */
+.random-page{
+  max-width:1100px;margin:0 auto;
+}
+.random-hero{
+  text-align:center;padding:40px 24px 30px;
+  background:radial-gradient(ellipse at center, rgba(139,10,10,0.12) 0%, transparent 60%);
+  border-bottom:1px solid var(--line);margin-bottom:40px;
+}
+.random-hero h2{
+  font-size:42px;color:var(--gold-bright);font-weight:900;
+  text-shadow:0 0 30px rgba(201,169,97,0.3);margin-bottom:12px;
+  letter-spacing:1px;
+}
+.random-hero p{font-size:17px;color:var(--ink-secondary);max-width:580px;margin:0 auto;line-height:1.7}
+
+.random-role-selector{
+  display:flex;justify-content:center;gap:18px;margin-bottom:32px;flex-wrap:wrap;
+}
+.random-role-btn{
+  background:linear-gradient(180deg, var(--bg-card) 0%, var(--bg-darker) 100%);
+  border:2px solid var(--line);padding:28px 42px;
+  cursor:pointer;font-family:'Cairo',sans-serif;
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  transition:all 0.3s ease;min-width:220px;position:relative;overflow:hidden;
+}
+.random-role-btn::before{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.04) 50%, transparent 60%);
+  transform:translateX(-100%);transition:transform 0.6s;
+}
+.random-role-btn:hover::before{transform:translateX(100%)}
+.random-role-btn .role-icon{font-size:54px;line-height:1;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.5))}
+.random-role-btn .role-name{font-size:18px;color:var(--ink-primary);font-weight:800;letter-spacing:0.5px}
+.random-role-btn .role-desc{font-size:12px;color:var(--ink-muted);font-weight:500}
+.random-role-btn[data-role="killer"]:hover{border-color:var(--blood);background:linear-gradient(180deg, rgba(139,10,10,0.15) 0%, var(--bg-darker) 100%);transform:translateY(-4px);box-shadow:0 12px 32px rgba(139,10,10,0.4)}
+.random-role-btn[data-role="survivor"]:hover{border-color:var(--gold-deep);background:linear-gradient(180deg, rgba(201,169,97,0.1) 0%, var(--bg-darker) 100%);transform:translateY(-4px);box-shadow:0 12px 32px rgba(201,169,97,0.3)}
+.random-role-btn.selected[data-role="killer"]{border-color:var(--blood-bright);background:linear-gradient(180deg, rgba(139,10,10,0.25) 0%, var(--bg-darker) 100%);box-shadow:0 0 24px rgba(139,10,10,0.5)}
+.random-role-btn.selected[data-role="survivor"]{border-color:var(--gold);background:linear-gradient(180deg, rgba(201,169,97,0.2) 0%, var(--bg-darker) 100%);box-shadow:0 0 24px rgba(201,169,97,0.4)}
+.random-role-btn.selected .role-name{color:var(--gold-bright)}
+
+.random-stage{
+  margin:0 auto;padding:36px 28px;
+  background:linear-gradient(180deg, var(--bg-card) 0%, var(--bg-darker) 100%);
+  border:1px solid var(--gold-deep);position:relative;
+  box-shadow:0 12px 40px rgba(0,0,0,0.6);max-width:820px;
+}
+.random-stage::before{
+  content:"";position:absolute;top:-1px;left:0;right:0;height:2px;
+  background:linear-gradient(90deg, transparent, var(--blood-bright) 30%, var(--gold) 50%, var(--blood-bright) 70%, transparent);
+}
+.random-stage-header{text-align:center;margin-bottom:24px}
+.random-stage-header h3{
+  font-size:22px;color:var(--gold-bright);font-weight:800;
+  display:inline-flex;align-items:center;gap:12px;
+}
+.random-stage-header h3::before,.random-stage-header h3::after{
+  content:"✦";color:var(--gold-deep);font-size:16px;
+}
+.random-build-perks{
+  display:grid;grid-template-columns:repeat(4, 1fr);
+  gap:14px;margin-bottom:28px;
+}
+.random-perk-slot{
+  aspect-ratio:1;background:var(--bg-deep);
+  border:2px solid var(--line);position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.random-perk-slot::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg, transparent, var(--gold-deep), transparent);
+}
+.random-perk-slot.empty{
+  border-style:dashed;
+}
+.random-perk-slot.empty .perk-placeholder{
+  font-size:48px;color:var(--ink-faded);opacity:0.5;
+}
+.random-perk-slot.rolling{
+  border-color:var(--gold);
+  box-shadow:0 0 20px rgba(201,169,97,0.5), inset 0 0 30px rgba(201,169,97,0.15);
+  animation:slot-glow 0.4s ease-in-out infinite alternate;
+}
+@keyframes slot-glow{
+  from{box-shadow:0 0 15px rgba(201,169,97,0.4), inset 0 0 20px rgba(201,169,97,0.1)}
+  to{box-shadow:0 0 30px rgba(201,169,97,0.8), inset 0 0 40px rgba(201,169,97,0.25)}
+}
+.random-perk-slot.locked{
+  border-color:var(--gold);
+  box-shadow:0 0 16px rgba(201,169,97,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+.random-perk-slot .reel{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  transition:transform 1.2s cubic-bezier(0.25, 0.46, 0.3, 1);
+}
+.random-perk-slot .reel.spinning{
+  transition:transform 0.12s linear;
+}
+.random-perk-slot .reel-item{
+  width:100%;aspect-ratio:1;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--bg-deep);position:relative;
+}
+.random-perk-slot .reel-item img{
+  width:100%;height:100%;object-fit:cover;
+}
+.random-perk-slot .perk-label{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(180deg, transparent, rgba(0,0,0,0.92));
+  color:var(--gold-bright);font-size:11px;font-weight:700;
+  padding:14px 6px 8px;text-align:center;line-height:1.3;
+  text-shadow:0 1px 2px rgba(0,0,0,0.8);
+  pointer-events:none;
+  opacity:0;transition:opacity 0.3s ease 0.2s;
+}
+.random-perk-slot.locked .perk-label{opacity:1}
+.random-perk-slot.empty .perk-label{display:none}
+
+.random-final-glow{
+  animation:final-celebration 0.8s ease-out;
+}
+@keyframes final-celebration{
+  0%{transform:scale(1)}
+  20%{transform:scale(1.08)}
+  100%{transform:scale(1)}
+}
+
+.random-controls{
+  display:flex;justify-content:center;gap:14px;flex-wrap:wrap;
+}
+.btn-random{
+  background:linear-gradient(180deg, var(--blood) 0%, var(--blood-deep) 100%);
+  border:2px solid var(--blood-bright);color:#fff;
+  padding:16px 40px;font-size:17px;font-weight:800;
+  font-family:'Cairo',sans-serif;cursor:pointer;
+  letter-spacing:1px;transition:all 0.2s ease;
+  box-shadow:0 6px 20px rgba(139,10,10,0.5);
+  display:inline-flex;align-items:center;gap:10px;
+}
+.btn-random:hover{
+  background:linear-gradient(180deg, var(--blood-bright) 0%, var(--blood) 100%);
+  transform:translateY(-2px);box-shadow:0 10px 28px rgba(184,20,20,0.6);
+}
+.btn-random:active{transform:translateY(0)}
+.btn-random:disabled{
+  opacity:0.5;cursor:not-allowed;transform:none;
+}
+.btn-random .roll-icon{font-size:20px;line-height:1}
+.btn-random.rolling .roll-icon{animation:roll-spin 0.6s linear infinite}
+@keyframes roll-spin{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(360deg)}
+}
+
+.random-result-summary{
+  margin-top:20px;padding:14px 18px;text-align:center;
+  background:rgba(201,169,97,0.05);border:1px dashed var(--gold-deep);
+  font-size:14px;color:var(--ink-secondary);font-weight:600;
+  opacity:0;transition:opacity 0.4s ease 1s;
+}
+.random-result-summary.show{opacity:1}
+.random-result-summary .perk-list{
+  display:block;color:var(--gold-bright);font-size:13px;margin-top:6px;font-weight:700;
+}
+
+@media (max-width:680px){
+  .random-build-perks{grid-template-columns:repeat(2, 1fr);gap:10px}
+  .random-hero h2{font-size:32px}
+  .random-role-btn{padding:20px 28px;min-width:160px}
+  .random-role-btn .role-icon{font-size:42px}
+  .btn-random{padding:14px 32px;font-size:15px}
+  .random-stage{padding:24px 16px}
+}
+
+/* ═══════════════════════════════════════════════════════════════ */
 /* شاشة الترحيب */
 .welcome-overlay{
   position:fixed;inset:0;background:rgba(10,7,6,0.92);z-index:5000;
@@ -894,12 +1159,16 @@ body.theme-legendary .topbar{
 }
 .theme-selector:hover{border-color:var(--gold-deep);color:var(--gold-bright)}
 .theme-options{
-  position:absolute;top:calc(100% + 8px);left:0;z-index:200;
+  position:absolute;top:calc(100% + 8px);left:0;z-index:600;
   background:var(--bg-card);border:1px solid var(--gold-deep);
-  min-width:200px;box-shadow:0 8px 24px rgba(0,0,0,0.6);
+  min-width:230px;box-shadow:0 8px 24px rgba(0,0,0,0.6);
   display:none;
 }
-.theme-options.active{display:block}
+.theme-options.active{display:block;animation:menu-drop 0.18s ease-out}
+.theme-menu-title{
+  padding:12px 14px;font-size:13px;font-weight:800;color:var(--gold-bright);
+  border-bottom:1px solid var(--line);background:rgba(201,169,97,0.06);
+}
 .theme-option{
   display:flex;align-items:center;gap:10px;padding:10px 14px;
   cursor:pointer;border-bottom:1px solid var(--line);
@@ -922,6 +1191,50 @@ body.theme-legendary .topbar{
 .theme-option.locked{opacity:0.5;cursor:not-allowed}
 .theme-option.locked:hover{background:transparent;color:var(--ink-secondary)}
 .theme-wrap{position:relative}
+
+/* تنويه الصور */
+.img-notice{
+  margin-top:10px;padding:9px 13px;
+  background:rgba(201,150,40,0.1);border:1px solid rgba(201,150,40,0.35);
+  border-radius:2px;font-size:12.5px;color:#e0b870;font-weight:600;
+  line-height:1.6;
+}
+
+/* ═══ قائمة المستخدم المنسدلة ═══ */
+.user-menu-wrap{position:relative}
+.user-pill{
+  cursor:pointer;font-family:'Cairo',sans-serif;
+  transition:all 0.2s;
+}
+.user-pill:hover{filter:brightness(1.15)}
+.user-menu-arrow{
+  font-size:11px;color:var(--ink-muted);margin-right:4px;
+  transition:transform 0.2s;
+}
+.user-menu-wrap .user-menu.active ~ .user-pill .user-menu-arrow,
+.user-pill:has(~ .user-menu.active) .user-menu-arrow{transform:rotate(180deg)}
+.user-menu{
+  position:absolute;top:calc(100% + 8px);left:0;z-index:300;
+  background:var(--bg-card);border:1px solid var(--gold-deep);
+  min-width:190px;box-shadow:0 8px 28px rgba(0,0,0,0.7);
+  display:none;overflow:hidden;
+}
+.user-menu.active{display:block;animation:menu-drop 0.18s ease-out}
+@keyframes menu-drop{
+  from{opacity:0;transform:translateY(-6px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.user-menu-item{
+  display:flex;align-items:center;gap:10px;width:100%;
+  padding:12px 16px;background:transparent;border:none;
+  color:var(--ink-secondary);font-size:14px;font-weight:600;
+  cursor:pointer;font-family:'Cairo',sans-serif;text-align:right;
+  transition:all 0.15s;
+}
+.user-menu-item:hover{background:rgba(201,169,97,0.12);color:var(--gold-bright)}
+.user-menu-item .umi-icon{font-size:16px;flex-shrink:0}
+.user-menu-item.logout:hover{background:rgba(139,10,10,0.18);color:var(--blood-bright)}
+.user-menu-divider{height:1px;background:var(--line);margin:4px 0}
 
 /* ═══ زر التواصل العائم ═══ */
 .contact-float{
@@ -1008,10 +1321,10 @@ body.theme-legendary .topbar{
 <header class="topbar">
   <div class="topbar-inner">
     <a class="brand" onclick="showView('home');return false">
-      <div class="brand-mark">⛧</div>
+      <div class="brand-mark"><span class="mark-glow"></span>⛧</div>
       <div>
-        <div class="brand-name">بيلدات مجتمع DBD</div>
-        <div class="brand-sub">DBD COMMUNITY BUILDS</div>
+        <div class="brand-name">بيلدات مجتمع <span class="nm-accent">DBD</span></div>
+        <div class="brand-sub">DEAD BY DAYLIGHT</div>
       </div>
     </a>
     <nav>
@@ -1019,46 +1332,43 @@ body.theme-legendary .topbar{
         <li><button class="nav-tab active" data-view="home" onclick="showView('home')">الرئيسية</button></li>
         <li><button class="nav-tab" data-view="killer" onclick="showView('killer')">الكيلرز</button></li>
         <li><button class="nav-tab" data-view="survivor" onclick="showView('survivor')">السيرفايفرز</button></li>
+        <li><button class="nav-tab" data-view="random" onclick="showView('random')">🎲 بيركات عشوائية</button></li>
         <li><button class="nav-tab hidden" data-view="admin" id="adminTabBtn" onclick="showView('admin')">⚜ لوحة الأدمن</button></li>
       </ul>
     </nav>
     <div class="user-zone" id="userZone">
       <div class="connection-status loading" id="connStatus"><span class="status-dot"></span><span>جاري الاتصال...</span></div>
-      <div class="theme-wrap">
-        <button class="theme-selector" onclick="toggleThemeMenu(event)" id="themeBtn">🎨 الثيم</button>
-        <div class="theme-options" id="themeOptions">
-          <div class="theme-option" data-theme="" onclick="selectTheme('')">
-            <div class="theme-swatch default"></div>
-            <span>افتراضي</span>
-          </div>
-          <div class="theme-option" data-theme="bronze" data-requires="bronze" onclick="selectTheme('bronze')">
-            <div class="theme-swatch bronze"></div>
-            <span>برونزي 🥉</span>
-            <span class="lock-icon">🔒</span>
-          </div>
-          <div class="theme-option" data-theme="silver" data-requires="silver" onclick="selectTheme('silver')">
-            <div class="theme-swatch silver"></div>
-            <span>فضي 🥈</span>
-            <span class="lock-icon">🔒</span>
-          </div>
-          <div class="theme-option" data-theme="gold" data-requires="gold" onclick="selectTheme('gold')">
-            <div class="theme-swatch gold"></div>
-            <span>ذهبي 🥇</span>
-            <span class="lock-icon">🔒</span>
-          </div>
-          <div class="theme-option" data-theme="diamond" data-requires="diamond" onclick="selectTheme('diamond')">
-            <div class="theme-swatch diamond"></div>
-            <span>ماسي 💎</span>
-            <span class="lock-icon">🔒</span>
-          </div>
-          <div class="theme-option" data-theme="legendary" data-requires="legendary" onclick="selectTheme('legendary')">
-            <div class="theme-swatch legendary"></div>
-            <span>أسطوري 👑</span>
-            <span class="lock-icon">🔒</span>
-          </div>
+      <button class="btn btn-sm" onclick="openAuth()">تسجيل الدخول</button>
+    </div>
+    <!-- قائمة الثيم (منفصلة عن userZone حتى لا تُحذف عند renderSession) -->
+    <div class="theme-wrap" id="themeWrapGlobal" style="position:absolute;top:calc(100% + 6px);left:16px;z-index:600">
+      <div class="theme-options" id="themeOptions">
+        <div class="theme-menu-title">🎨 اختر ثيم الموقع</div>
+        <div class="theme-option" data-theme="" onclick="selectTheme('')">
+          <div class="theme-swatch default"></div>
+          <span>افتراضي (دموي)</span>
+        </div>
+        <div class="theme-option" data-theme="bronze" onclick="selectTheme('bronze')">
+          <div class="theme-swatch bronze"></div>
+          <span>برونزي 🥉</span>
+        </div>
+        <div class="theme-option" data-theme="silver" onclick="selectTheme('silver')">
+          <div class="theme-swatch silver"></div>
+          <span>فضي 🥈</span>
+        </div>
+        <div class="theme-option" data-theme="gold" onclick="selectTheme('gold')">
+          <div class="theme-swatch gold"></div>
+          <span>ذهبي 🥇</span>
+        </div>
+        <div class="theme-option" data-theme="diamond" onclick="selectTheme('diamond')">
+          <div class="theme-swatch diamond"></div>
+          <span>ماسي 💎</span>
+        </div>
+        <div class="theme-option" data-theme="legendary" onclick="selectTheme('legendary')">
+          <div class="theme-swatch legendary"></div>
+          <span>أسطوري 👑</span>
         </div>
       </div>
-      <button class="btn btn-sm" onclick="openAuth()">تسجيل الدخول</button>
     </div>
   </div>
 </header>
@@ -1075,7 +1385,7 @@ body.theme-legendary .topbar{
     <!-- العنوان الرئيسي -->
     <div class="hero-center">
       <h1 class="hero-title">بيلدات مجتمع <span class="accent">DBD</span></h1>
-      <p class="hero-sub">مرجع شامل لبيلدات الكيلرز والسيرفايفرز — يضيفها اللاعبون، ويقيّمها المجتمع،تقييمك يفرق</p>
+      <p class="hero-sub">مرجع شامل لبيلدات الكيلرز والسيرفايفرز — يضيفها اللاعبون، ويقيّمها المجتمع، ويعتمدها حارس الموقع</p>
     </div>
 
     <!-- المربع الأيسر -->
@@ -1161,9 +1471,8 @@ body.theme-legendary .topbar{
       <div class="filter-group">
         <label>الترتيب:</label>
         <select class="search-box" id="sortSelect" onchange="renderBuilds()" style="min-width:150px">
-          <option value="rating">الأعلى تقييماً</option>
-          <option value="recent">الأحدث</option>
           <option value="popular">الأكثر تقييماً</option>
+          <option value="recent">الأحدث</option>
         </select>
       </div>
     </div>
@@ -1185,6 +1494,49 @@ body.theme-legendary .topbar{
     </div>
 
     <div id="adminContent"></div>
+  </section>
+
+  <!-- ═══ صفحة البيركات العشوائية ═══ -->
+  <section id="view-random" class="view hidden">
+    <div class="random-page">
+      <div class="random-hero">
+        <h2>🎲 بيركات عشوائية</h2>
+        <p>اختر تصنيفك، اضغط الزر، وخلّي القدر يختار لك 4 بيركات. مثالي للتحدّيات وتجريب بيلدات جديدة لم تخطر ببالك من قبل.</p>
+        <div class="img-notice" style="max-width:580px;margin:14px auto 0">⚠️ بعض صور البيركات قد لا تظهر حالياً، لكن أسماء البيركات تظهر بشكل صحيح.</div>
+      </div>
+
+      <div class="random-role-selector">
+        <button class="random-role-btn" data-role="killer" onclick="selectRandomRole('killer')">
+          <span class="role-icon">🔪</span>
+          <span class="role-name">كيلر</span>
+          <span class="role-desc">بيركات الجزّار</span>
+        </button>
+        <button class="random-role-btn" data-role="survivor" onclick="selectRandomRole('survivor')">
+          <span class="role-icon">🏃</span>
+          <span class="role-name">سيرفايفر</span>
+          <span class="role-desc">بيركات الناجي</span>
+        </button>
+      </div>
+
+      <div class="random-stage" id="randomStage" style="display:none">
+        <div class="random-stage-header">
+          <h3 id="randomStageTitle">بيلدك العشوائي</h3>
+        </div>
+        <div class="random-build-perks" id="randomPerkSlots">
+          <div class="random-perk-slot empty" data-slot="0"><span class="perk-placeholder">✦</span></div>
+          <div class="random-perk-slot empty" data-slot="1"><span class="perk-placeholder">✦</span></div>
+          <div class="random-perk-slot empty" data-slot="2"><span class="perk-placeholder">✦</span></div>
+          <div class="random-perk-slot empty" data-slot="3"><span class="perk-placeholder">✦</span></div>
+        </div>
+        <div class="random-controls">
+          <button class="btn-random" id="randomRollBtn" onclick="rollRandomBuild()">
+            <span class="roll-icon">🎲</span>
+            <span>بيلد عشوائي</span>
+          </button>
+        </div>
+        <div class="random-result-summary" id="randomResultSummary"></div>
+      </div>
+    </div>
   </section>
 </main>
 
@@ -1300,7 +1652,8 @@ body.theme-legendary .topbar{
             <div class="perk-slot" data-slot="2"><span class="slot-num">٣</span><span class="slot-label">اضغط لإضافة</span></div>
             <div class="perk-slot" data-slot="3"><span class="slot-num">٤</span><span class="slot-label">اضغط لإضافة</span></div>
           </div>
-          <div class="field-hint">اضغط أي خانة، اكتب اسم البيرك بالإنجليزي، وستظهر الصورة تلقائياً من dbd-randomizer.com</div>
+          <div class="field-hint">اضغط أي خانة، اكتب اسم البيرك بالإنجليزي، وستظهر الصورة تلقائياً.</div>
+          <div class="img-notice">⚠️ ملاحظة: بعض صور البيركات قد لا تظهر حالياً، لكن اسم البيرك سيُحفظ بشكل صحيح. نعمل على حل المشكلة.</div>
         </div>
 
         <div class="field" id="addonsField">
@@ -1343,6 +1696,7 @@ body.theme-legendary .topbar{
           <div class="autocomplete-list" id="perkPickerSuggestions"></div>
         </div>
         <div class="field-hint">اكتب اسم البيرك بالعربي أو الإنجليزي. الاقتراحات تشمل الصورة تلقائياً</div>
+        <div class="img-notice">⚠️ بعض صور البيركات قد لا تظهر حالياً — الاسم يُحفظ بشكل صحيح على أي حال.</div>
       </div>
       <div class="field">
         <label>رابط الأيقونة <span class="text-muted">(يُملأ تلقائياً عند الاختيار من القائمة)</span></label>
@@ -1636,7 +1990,7 @@ const KNOWN_PERKS = [
   // Meg Thomas
   ['Adrenaline','Adrenaline','survivor','Meg Thomas'],
   ['SprintBurst','Sprint Burst','survivor','Meg Thomas'],
-  ['QuickAndQuiet','Quick & Quiet','survivor','Meg Thomas'],
+  ['QuickQuiet','Quick & Quiet','survivor','Meg Thomas'],
   // Claudette Morel
   ['SelfCare','Self-Care','survivor','Claudette Morel'],
   ['BotanyKnowledge','Botany Knowledge','survivor','Claudette Morel'],
@@ -1682,7 +2036,7 @@ const KNOWN_PERKS = [
   ['WindowsOfOpportunity','Windows of Opportunity','survivor','Kate Denson'],
   ['BoilOver','Boil Over','survivor','Kate Denson'],
   // Adam Francis
-  ['DiversionPerk','Diversion','survivor','Adam Francis'],
+  ['Diversion','Diversion','survivor','Adam Francis'],
   ['Deliverance','Deliverance','survivor','Adam Francis'],
   ['Autodidact','Autodidact','survivor','Adam Francis'],
   // Jeff Johansen
@@ -1716,9 +2070,9 @@ const KNOWN_PERKS = [
   // Cheryl Mason
   ['SoulGuard','Soul Guard','survivor','Cheryl Mason'],
   ['BloodPact','Blood Pact','survivor','Cheryl Mason'],
-  ['Repressed','Repressed Alliance','survivor','Cheryl Mason'],
+  ['RepressedAlliance','Repressed Alliance','survivor','Cheryl Mason'],
   // Felix Richter
-  ['Desperate','Desperate Measures','survivor','Felix Richter'],
+  ['DesperateMeasures','Desperate Measures','survivor','Felix Richter'],
   ['BuiltToLast','Built to Last','survivor','Felix Richter'],
   ['Visionary','Visionary','survivor','Felix Richter'],
   // Elodie Rakoto
@@ -1743,18 +2097,18 @@ const KNOWN_PERKS = [
   ['Clairvoyance','Clairvoyance','survivor','Mikaela Reid'],
   // Jonah Vasquez
   ['Overcome','Overcome','survivor','Jonah Vasquez'],
-  ['Corrective','Corrective Action','survivor','Jonah Vasquez'],
+  ['CorrectiveAction','Corrective Action','survivor','Jonah Vasquez'],
   ['Troubleshooter','Troubleshooter','survivor','Jonah Vasquez'],
   // Yoichi Asakawa
-  ['Empathic','Empathic Connection','survivor','Yoichi Asakawa'],
+  ['EmpathicConnection','Empathic Connection','survivor','Yoichi Asakawa'],
   ['ParentalGuidance','Parental Guidance','survivor','Yoichi Asakawa'],
   ['BoonDarkTheory','Boon: Dark Theory','survivor','Yoichi Asakawa'],
   // Haddie Kaur
   ['Overzealous','Overzealous','survivor','Haddie Kaur'],
-  ['Inner','Inner Focus','survivor','Haddie Kaur'],
-  ['Residual','Residual Manifest','survivor','Haddie Kaur'],
+  ['InnerFocus','Inner Focus','survivor','Haddie Kaur'],
+  ['ResidualManifest','Residual Manifest','survivor','Haddie Kaur'],
   // Ada Wong
-  ['WireTap','Wiretap','survivor','Ada Wong'],
+  ['Wiretap','Wiretap','survivor','Ada Wong'],
   ['ReactiveHealing','Reactive Healing','survivor','Ada Wong'],
   ['LowProfile','Low Profile','survivor','Ada Wong'],
   // Rebecca Chambers
@@ -1764,7 +2118,7 @@ const KNOWN_PERKS = [
   // Vittorio Toscano
   ['PotentialEnergy','Potential Energy','survivor','Vittorio Toscano'],
   ['BoonExponential','Boon: Exponential','survivor','Vittorio Toscano'],
-  ['Quickening','Quick Gambit','survivor','Vittorio Toscano'],
+  ['QuickGambit','Quick Gambit','survivor','Vittorio Toscano'],
   // Thalita Lyra
   ['MadeForThis','Made for This','survivor','Thalita Lyra'],
   ['TeamworkPowerOfTwo','Teamwork: Power of Two','survivor','Thalita Lyra'],
@@ -1775,20 +2129,20 @@ const KNOWN_PERKS = [
   ['Scavenger','Scavenger','survivor','Renato Lyra'],
   // Gabriel Soma
   ['TroubleShooter','Troubleshooter','survivor','Gabriel Soma'],
-  ['Plot','Plot Twist','survivor','Gabriel Soma'],
+  ['PlotTwist','Plot Twist','survivor','Gabriel Soma'],
   ['SelfAware','Self-Aware','survivor','Gabriel Soma'],
   // Nicolas Cage
   ['Dramaturgy','Dramaturgy','survivor','Nicolas Cage'],
-  ['Scene','Scene Partner','survivor','Nicolas Cage'],
-  ['Stage','Stage Production','survivor','Nicolas Cage'],
+  ['ScenePartner','Scene Partner','survivor','Nicolas Cage'],
+  ['StageProduction','Stage Production','survivor','Nicolas Cage'],
   // Ellen Ripley
   ['ChemicalTrap','Chemical Trap','survivor','Ellen Ripley'],
-  ['Lucky','Lucky Star','survivor','Ellen Ripley'],
+  ['LuckyStar','Lucky Star','survivor','Ellen Ripley'],
   ['LightFooted','Light-Footed','survivor','Ellen Ripley'],
   // Aestri Yazar
   ['BloodRush','Blood Rush','survivor','Aestri Yazar'],
   ['StridentEchoes','Strident Echoes','survivor','Aestri Yazar'],
-  ['Mirrored','Mirrored Illusion','survivor','Aestri Yazar'],
+  ['MirroredIllusion','Mirrored Illusion','survivor','Aestri Yazar'],
   // Sable Ward
   ['InvocationWeavingSpiders','Invocation: Weaving Spiders','survivor','Sable Ward'],
   ['StrengthInShadows','Strength in Shadows','survivor','Sable Ward'],
@@ -1796,26 +2150,26 @@ const KNOWN_PERKS = [
   // Alan Wake
   ['ChampionOfLight','Champion of Light','survivor','Alan Wake'],
   ['BoonIllumination','Boon: Illumination','survivor','Alan Wake'],
-  ['Deadlines','Deadline','survivor','Alan Wake'],
+  ['Deadline','Deadline','survivor','Alan Wake'],
   // Lara Croft
   ['Specialist','Specialist','survivor','Lara Croft'],
-  ['HardenedHeart','Hardened','survivor','Lara Croft'],
+  ['Hardened','Hardened','survivor','Lara Croft'],
   ['Finesse','Finesse','survivor','Lara Croft'],
   // Trevor Belmont
   ['BardicInspiration','Bardic Inspiration','survivor','Trevor Belmont'],
-  ['Mirror','Mirror Illusion','survivor','Trevor Belmont'],
-  ['Vanity','Vanity Mirror','survivor','Trevor Belmont'],
+  ['MirrorIllusion','Mirror Illusion','survivor','Trevor Belmont'],
+  ['VanityMirror','Vanity Mirror','survivor','Trevor Belmont'],
   // Taurie Cain
-  ['BoonHymnOfThorns','Hymn of Thorns','survivor','Taurie Cain'],
-  ['Faerie','Friendly Bond','survivor','Taurie Cain'],
+  ['HymnOfThorns','Hymn of Thorns','survivor','Taurie Cain'],
+  ['FriendlyBond','Friendly Bond','survivor','Taurie Cain'],
   ['Empath','Empathy Within','survivor','Taurie Cain'],
   // Orela Rose
   ['ShoulderTheBurden','Shoulder the Burden','survivor','Orela Rose'],
   ['StillSight','Still Sight','survivor','Orela Rose'],
-  ['Friendly','Friendly Competition','survivor','Orela Rose'],
+  ['FriendlyCompetition','Friendly Competition','survivor','Orela Rose'],
   // Rick Grimes
   ['DontYouGiveUp','Don\'t You Give Up','survivor','Rick Grimes'],
-  ['CommitedToWhatComes','Committed','survivor','Rick Grimes'],
+  ['Committed','Committed','survivor','Rick Grimes'],
   ['LeapOfFaith','Leap of Faith','survivor','Rick Grimes'],
   // Michonne Grimes
   ['FightOrFlight','Fight or Flight','survivor','Michonne Grimes'],
@@ -1843,7 +2197,7 @@ const KNOWN_PERKS = [
   ['BrutalStrength','Brutal Strength','killer','The Trapper'],
   ['Agitation','Agitation','killer','The Trapper'],
   // Wraith
-  ['PredatorOriginal','Predator','killer','The Wraith'],
+  ['Predator','Predator','killer','The Wraith'],
   ['Bloodhound','Bloodhound','killer','The Wraith'],
   ['Shadowborn','Shadowborn','killer','The Wraith'],
   // Hillbilly
@@ -1855,7 +2209,7 @@ const KNOWN_PERKS = [
   ['Thanatophobia','Thanatophobia','killer','The Nurse'],
   ['ANursesCalling','A Nurse\'s Calling','killer','The Nurse'],
   // Hag
-  ['HexThirdSeal','Hex: The Third Seal','killer','The Hag'],
+  ['HexTheThirdSeal','Hex: The Third Seal','killer','The Hag'],
   ['HexRuin','Hex: Ruin','killer','The Hag'],
   ['HexDevourHope','Hex: Devour Hope','killer','The Hag'],
   // Michael Myers (Shape)
@@ -1864,7 +2218,7 @@ const KNOWN_PERKS = [
   ['DyingLight','Dying Light','killer','The Shape'],
   // Huntress
   ['BeastOfPrey','Beast of Prey','killer','The Huntress'],
-  ['Territorial','Territorial Imperative','killer','The Huntress'],
+  ['TerritorialImperative','Territorial Imperative','killer','The Huntress'],
   ['HexHuntressLullaby','Hex: Huntress Lullaby','killer','The Huntress'],
   // Doctor
   ['Overcharge','Overcharge','killer','The Doctor'],
@@ -1896,23 +2250,23 @@ const KNOWN_PERKS = [
   ['IronMaiden','Iron Maiden','killer','The Legion'],
   // Plague
   ['CorruptIntervention','Corrupt Intervention','killer','The Plague'],
-  ['Infectious','Infectious Fright','killer','The Plague'],
+  ['InfectiousFright','Infectious Fright','killer','The Plague'],
   ['DarkDevotion','Dark Devotion','killer','The Plague'],
   // Ghost Face
   ['ImAllEars','I\'m All Ears','killer','The Ghost Face'],
   ['ThrillingTremors','Thrilling Tremors','killer','The Ghost Face'],
   ['FurtiveChase','Furtive Chase','killer','The Ghost Face'],
   // Demogorgon
-  ['SurgePerk','Surge','killer','The Demogorgon'],
+  ['Surge','Surge','killer','The Demogorgon'],
   ['Mindbreaker','Mindbreaker','killer','The Demogorgon'],
   ['CruelLimits','Cruel Limits','killer','The Demogorgon'],
   // Oni
   ['ZanshinTactics','Zanshin Tactics','killer','The Oni'],
   ['BloodEcho','Blood Echo','killer','The Oni'],
-  ['NemesisPerk','Nemesis','killer','The Oni'],
+  ['Nemesis','Nemesis','killer','The Oni'],
   // Deathslinger
   ['Gearhead','Gearhead','killer','The Deathslinger'],
-  ['Dead Mans Switch','Dead Man\'s Switch','killer','The Deathslinger'],
+  ['DeadMansSwitch','Dead Man\'s Switch','killer','The Deathslinger'],
   ['HexRetribution','Hex: Retribution','killer','The Deathslinger'],
   // Pyramid Head (Executioner)
   ['ForcedPenance','Forced Penance','killer','The Executioner'],
@@ -1933,11 +2287,11 @@ const KNOWN_PERKS = [
   // Nemesis
   ['LethalPursuer','Lethal Pursuer','killer','The Nemesis'],
   ['Eruption','Eruption','killer','The Nemesis'],
-  ['HysteriaPerk','Hysteria','killer','The Nemesis'],
+  ['Hysteria','Hysteria','killer','The Nemesis'],
   // Cenobite
   ['Deadlock','Deadlock','killer','The Cenobite'],
   ['HexPlaything','Hex: Plaything','killer','The Cenobite'],
-  ['Scourge Hook Gift of Pain','Scourge Hook: Gift of Pain','killer','The Cenobite'],
+  ['ScourgeHookGiftOfPain','Scourge Hook: Gift of Pain','killer','The Cenobite'],
   // Artist
   ['ScourgeHookPainResonance','Scourge Hook: Pain Resonance','killer','The Artist'],
   ['GrimEmbrace','Grim Embrace','killer','The Artist'],
@@ -1948,52 +2302,52 @@ const KNOWN_PERKS = [
   ['ScourgeHookFloodsOfRage','Scourge Hook: Floods of Rage','killer','The Onryo'],
   // Dredge
   ['DarknessRevealed','Darkness Revealed','killer','The Dredge'],
-  ['DissolutionPerk','Dissolution','killer','The Dredge'],
-  ['SeptemberKiller','Septic Touch','killer','The Dredge'],
+  ['Dissolution','Dissolution','killer','The Dredge'],
+  ['SepticTouch','Septic Touch','killer','The Dredge'],
   // Mastermind (Wesker)
   ['AwakenedAwareness','Awakened Awareness','killer','The Mastermind'],
-  ['Superior','Superior Anatomy','killer','The Mastermind'],
+  ['SuperiorAnatomy','Superior Anatomy','killer','The Mastermind'],
   ['Terminus','Terminus','killer','The Mastermind'],
   // Knight
   ['Hubris','Hubris','killer','The Knight'],
   ['NowhereToHide','Nowhere to Hide','killer','The Knight'],
   ['Undone','Undone','killer','The Knight'],
   // Skull Merchant
-  ['Game Afoot','Game Afoot','killer','The Skull Merchant'],
-  ['ThwackPerk','Thwack!','killer','The Skull Merchant'],
-  ['LeverAge','Leverage','killer','The Skull Merchant'],
+  ['GameAfoot','Game Afoot','killer','The Skull Merchant'],
+  ['Thwack','Thwack!','killer','The Skull Merchant'],
+  ['Leverage','Leverage','killer','The Skull Merchant'],
   // Singularity
   ['MachineLearning','Machine Learning','killer','The Singularity'],
-  ['Forced Hesitation','Forced Hesitation','killer','The Singularity'],
+  ['ForcedHesitation','Forced Hesitation','killer','The Singularity'],
   ['GeneticLimits','Genetic Limits','killer','The Singularity'],
   // Xenomorph
   ['UltimateWeapon','Ultimate Weapon','killer','The Xenomorph'],
   ['AlienInstinct','Alien Instinct','killer','The Xenomorph'],
-  ['Rapid Brutality','Rapid Brutality','killer','The Xenomorph'],
+  ['RapidBrutality','Rapid Brutality','killer','The Xenomorph'],
   // Good Guy (Chucky)
-  ['FriendsTillTheEnd','Friends \'til the End','killer','The Good Guy'],
+  ['FriendsTilTheEnd','Friends \'til the End','killer','The Good Guy'],
   ['HexTwoCanPlay','Hex: Two Can Play','killer','The Good Guy'],
-  ['Batteries Included','Batteries Included','killer','The Good Guy'],
+  ['BatteriesIncluded','Batteries Included','killer','The Good Guy'],
   // Unknown
-  ['UnforeseenPerk','Unforeseen','killer','The Unknown'],
+  ['Unforeseen','Unforeseen','killer','The Unknown'],
   ['UndoneTwo','Undone','killer','The Unknown'],
-  ['WeavingSpidersKiller','Weave Attunement','killer','The Unknown'],
+  ['WeaveAttunement','Weave Attunement','killer','The Unknown'],
   // Lich (Vecna)
-  ['Languid Touch','Languid Touch','killer','The Lich'],
+  ['LanguidTouch','Languid Touch','killer','The Lich'],
   ['NoQuarter','Weave Attunement','killer','The Lich'],
-  ['DarknessOfNeg','Dark Arrogance','killer','The Lich'],
+  ['DarkArrogance','Dark Arrogance','killer','The Lich'],
   // Dark Lord (Dracula)
   ['HumanGreed','Human Greed','killer','The Dark Lord'],
   ['HexWretchedFate','Hex: Wretched Fate','killer','The Dark Lord'],
-  ['DominancePerk','Dominance','killer','The Dark Lord'],
+  ['Dominance','Dominance','killer','The Dark Lord'],
   // Houndmaster
   ['ScourgeHookJaggedCompass','Scourge Hook: Jagged Compass','killer','The Houndmaster'],
   ['NoQuarter','No Quarter','killer','The Houndmaster'],
   ['AllShakingThunder','All-Shaking Thunder','killer','The Houndmaster'],
   // Ghoul (Kaneki)
   ['HelpInTheShadows','Help in the Shadows','killer','The Ghoul'],
-  ['Endless','Endless Hunger','killer','The Ghoul'],
-  ['Unforgiven','The Unforgiven','killer','The Ghoul'],
+  ['EndlessHunger','Endless Hunger','killer','The Ghoul'],
+  ['TheUnforgiven','The Unforgiven','killer','The Ghoul'],
   // Animatronic (FNAF)
   ['Rampage','Rampage','killer','The Animatronic'],
   ['Springlock','Springlock Failure','killer','The Animatronic'],
@@ -2009,7 +2363,7 @@ const KNOWN_PERKS = [
   // Generic Killer
   ['BitterMurmur','Bitter Murmur','killer','Generic'],
   ['Deerstalker','Deerstalker','killer','Generic'],
-  ['DistressingPerk','Distressing','killer','Generic'],
+  ['Distressing','Distressing','killer','Generic'],
   ['HexNoOneEscapesDeath','Hex: No One Escapes Death','killer','Generic'],
   ['Insidious','Insidious','killer','Generic'],
   ['IronGrasp','Iron Grasp','killer','Generic'],
@@ -2023,6 +2377,94 @@ const KNOWN_PERKS = [
 ];
 
 // ───── بناء قواعد البيانات ─────
+// توليد قائمة filenames بديلة (fallback) شاملة جداً
+function generateFilenameVariants(filename, name) {
+  const variants = new Set();
+  if (filename) variants.add(filename);
+
+  const pascalName = autoPascal(name);
+  variants.add(pascalName);
+
+  // إزالة كل البادئات الشائعة
+  const prefixes = ['Hex', 'Boon', 'Scourge Hook', 'Invocation', 'Teamwork'];
+  let stripped = name;
+  let foundPrefix = '';
+  for (const pre of prefixes) {
+    const re = new RegExp('^' + pre.replace(/ /g, '\\s+') + ':\\s*', 'i');
+    if (re.test(name)) {
+      stripped = name.replace(re, '');
+      foundPrefix = pre.replace(/\s+/g, '');
+      break;
+    }
+  }
+  if (foundPrefix) {
+    variants.add(autoPascal(stripped));
+    variants.add(foundPrefix + autoPascal(stripped));
+    variants.add(foundPrefix.toLowerCase() + autoPascal(stripped));
+    variants.add(autoPascal(stripped) + 'Perk');
+    variants.add(foundPrefix + autoPascal(stripped) + 'Perk');
+  }
+
+  // معالجة &
+  if (name.includes('&')) {
+    variants.add(autoPascal(name.replace(/&/g, 'And')));
+    variants.add(autoPascal(name.replace(/&/g, 'and')));
+    variants.add(autoPascal(name.replace(/\s*&\s*/g, ' ')));
+  }
+
+  // إضافة "Perk" suffix
+  variants.add(pascalName + 'Perk');
+
+  // إزالة كل علامات الترقيم والمسافات بأشكال مختلفة
+  const cleanWords = name.replace(/[':\-—–·.,!?&()\[\]"]/g, ' ').split(/\s+/).filter(w => w);
+
+  // الكلمة الأولى فقط
+  if (cleanWords.length > 1) {
+    variants.add(autoPascal(cleanWords[0]));
+    variants.add(cleanWords[0]);
+    // الكلمتين الأوليتين
+    variants.add(autoPascal(cleanWords.slice(0, 2).join(' ')));
+    // آخر كلمة فقط
+    variants.add(autoPascal(cleanWords[cleanWords.length - 1]));
+    // بدون آخر كلمة
+    variants.add(autoPascal(cleanWords.slice(0, -1).join(' ')));
+  }
+
+  // ضع suffix "Perk" على المتغيرات
+  const baseList = Array.from(variants);
+  for (const v of baseList) {
+    variants.add(v + 'Perk');
+  }
+
+  // محاولة بدون apostrophe في كلمات مثل "Don't" و "Friend's" و "Hangman's"
+  // مثلاً: "Don't" → "Dont" بدل "DonT"
+  const cleanedApostrophe = name.replace(/(\w)'(\w)/g, '$1$2');
+  if (cleanedApostrophe !== name) {
+    variants.add(autoPascal(cleanedApostrophe));
+    if (foundPrefix) {
+      const cleanStrip = stripped.replace(/(\w)'(\w)/g, '$1$2');
+      variants.add(autoPascal(cleanStrip));
+      variants.add(foundPrefix + autoPascal(cleanStrip));
+    }
+  }
+
+  // محاولة filename بحروف صغيرة كاملة + Capitalize أول حرف فقط
+  const firstUpperOnly = pascalName.charAt(0).toUpperCase() + pascalName.slice(1).toLowerCase();
+  if (firstUpperOnly !== pascalName) variants.add(firstUpperOnly);
+
+  // محاولة camelCase (أول حرف صغير)
+  if (pascalName.length > 1) {
+    variants.add(pascalName.charAt(0).toLowerCase() + pascalName.slice(1));
+  }
+
+  // حالة خاصة: الكلمات اللي بعد علامة ! أو ؟
+  if (name.endsWith('!') || name.endsWith('?')) {
+    variants.add(autoPascal(name.slice(0, -1)));
+  }
+
+  return Array.from(variants).filter(v => v && v.length > 0 && v.length < 80);
+}
+
 function buildPerksDatabase() {
   const seen = {};
   const out = [];
@@ -2033,15 +2475,112 @@ function buildPerksDatabase() {
     if (seen[key]) continue;
     seen[key] = 1;
     const folder = (role === 'killer' ? 'Killer' : 'Survivor') + '/Perks/90';
+    const variants = generateFilenameVariants(filename, name);
     out.push({
       name: name,
       role: role,
       character: character,
-      image: dbdImg(folder, filename)
+      image: dbdImg(folder, filename),
+      imageFallbacks: variants.slice(1).map(v => dbdImg(folder, v)) // كل الباقي ما عدا الأصلي
     });
   }
   return out;
 }
+
+// خريطة من URL إلى البيرك (لاسترجاع fallbacks بسرعة)
+let _imgUrlToPerk = {};
+function rebuildImgUrlMap() {
+  _imgUrlToPerk = {};
+  for (let i = 0; i < perksDatabase.length; i++) {
+    const p = perksDatabase[i];
+    if (p.image) _imgUrlToPerk[p.image] = p;
+    if (p.imageFallbacks) {
+      for (let j = 0; j < p.imageFallbacks.length; j++) {
+        if (!_imgUrlToPerk[p.imageFallbacks[j]]) _imgUrlToPerk[p.imageFallbacks[j]] = p;
+      }
+    }
+  }
+}
+
+// معالج onerror للصورة - يجرب fallbacks
+function handlePerkImgError(imgEl) {
+  if (!imgEl) return;
+  const currentSrc = imgEl.src;
+  // العثور على البيرك المرتبط بالـURL الحالي
+  let perk = _imgUrlToPerk[currentSrc];
+  if (!perk) {
+    // محاولة العثور بالـpathname
+    for (const url in _imgUrlToPerk) {
+      if (currentSrc.endsWith(url.split('/').pop())) { perk = _imgUrlToPerk[url]; break; }
+    }
+  }
+  if (!perk || !perk.imageFallbacks || perk.imageFallbacks.length === 0) {
+    imgEl.style.visibility = 'hidden';
+    return;
+  }
+  // حساب المحاولة الحالية
+  let tried = parseInt(imgEl.dataset.fallbackIdx || '-1');
+  tried++;
+  if (tried >= perk.imageFallbacks.length) {
+    imgEl.style.visibility = 'hidden';
+    imgEl.onerror = null;
+    return;
+  }
+  imgEl.dataset.fallbackIdx = String(tried);
+  imgEl.src = perk.imageFallbacks[tried];
+}
+
+// نسخة متقدمة تستخدم اسم البيرك للعثور على fallbacks (للبيلدات المحفوظة)
+function handlePerkImgErrorByName(imgEl, perkName) {
+  if (!imgEl) return;
+  // محاولة العثور على البيرك في القاعدة باسمه
+  const normalized = normalizeText(perkName);
+  let perk = null;
+  for (let i = 0; i < perksDatabase.length; i++) {
+    if (normalizeText(perksDatabase[i].name) === normalized) {
+      perk = perksDatabase[i]; break;
+    }
+  }
+
+  let allTries;
+  if (perk && perk.imageFallbacks) {
+    allTries = [perk.image].concat(perk.imageFallbacks);
+  } else if (perkName) {
+    // البيرك غير موجود في القاعدة - نولّد fallbacks ديناميكياً من الاسم
+    // نجرب لكلا الـfolders (killer + survivor)
+    const variants = generateFilenameVariants(autoPascal(perkName), perkName);
+    const killerImgs = variants.map(v => dbdImg('Killer/Perks/90', v));
+    const survImgs = variants.map(v => dbdImg('Survivor/Perks/90', v));
+    // نخمّن الـrole من الـURL الحالي
+    const currentSrc = imgEl.src || '';
+    if (currentSrc.includes('/Killer/')) {
+      allTries = killerImgs.concat(survImgs);
+    } else if (currentSrc.includes('/Survivor/')) {
+      allTries = survImgs.concat(killerImgs);
+    } else {
+      allTries = survImgs.concat(killerImgs);
+    }
+  } else {
+    imgEl.style.visibility = 'hidden';
+    imgEl.onerror = null;
+    return;
+  }
+
+  let tried = parseInt(imgEl.dataset.fallbackIdx || '-1');
+  tried++;
+  // تخطي إذا الـURL الحالي = الـURL التالي
+  while (tried < allTries.length && allTries[tried] === imgEl.src) tried++;
+  if (tried >= allTries.length) {
+    imgEl.style.visibility = 'hidden';
+    imgEl.onerror = null;
+    return;
+  }
+  imgEl.dataset.fallbackIdx = String(tried);
+  imgEl.src = allTries[tried];
+}
+
+window.handlePerkImgError = handlePerkImgError;
+window.handlePerkImgErrorByName = handlePerkImgErrorByName;
 
 function buildCharsDatabase() {
   const out = [];
@@ -2064,6 +2603,7 @@ function buildCharsDatabase() {
 const perksDatabase = buildPerksDatabase();
 const charsDatabase = buildCharsDatabase();
 const perksDbStatus = 'ok';
+rebuildImgUrlMap();
 
 function updatePerkDataStatusUI() {
   const el = document.getElementById('perkDataStatus');
@@ -2546,8 +3086,10 @@ function showView(view) {
   document.querySelectorAll('.nav-tab').forEach(t =>
     t.classList.toggle('active', t.dataset.view === view)
   );
-  $('heroSection').style.display = (view === 'admin') ? 'none' : 'block';
+  // إخفاء hero في صفحات الأدمن والعشوائي
+  $('heroSection').style.display = (view === 'admin' || view === 'random') ? 'none' : 'block';
   if (view === 'admin') renderAdmin();
+  else if (view === 'random') initRandomPage();
   else renderBuilds();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -2559,6 +3101,195 @@ function setRoleFilter(role) {
   );
   renderBuilds();
 }
+
+// ═══════════════════════════════════════════════════════════════
+// 🎲 صفحة البيلد العشوائي
+// ═══════════════════════════════════════════════════════════════
+let randomState = {
+  role: null,       // 'killer' | 'survivor'
+  isRolling: false,
+  currentBuild: []  // [perk, perk, perk, perk]
+};
+
+function initRandomPage() {
+  // إعادة تعيين الحالة عند فتح الصفحة
+  if (!randomState.role) {
+    document.querySelectorAll('.random-role-btn').forEach(b => b.classList.remove('selected'));
+    const stage = document.getElementById('randomStage');
+    if (stage) stage.style.display = 'none';
+  }
+}
+
+function selectRandomRole(role) {
+  if (randomState.isRolling) return;
+  randomState.role = role;
+  randomState.currentBuild = [];
+  document.querySelectorAll('.random-role-btn').forEach(b => {
+    b.classList.toggle('selected', b.dataset.role === role);
+  });
+  const stage = document.getElementById('randomStage');
+  const title = document.getElementById('randomStageTitle');
+  if (stage) stage.style.display = 'block';
+  if (title) title.textContent = role === 'killer' ? 'بيلد كيلر عشوائي' : 'بيلد سيرفايفر عشوائي';
+  resetRandomSlots();
+  const summary = document.getElementById('randomResultSummary');
+  if (summary) summary.classList.remove('show');
+}
+
+function resetRandomSlots() {
+  document.querySelectorAll('.random-perk-slot').forEach(slot => {
+    slot.classList.remove('rolling', 'locked', 'random-final-glow');
+    slot.classList.add('empty');
+    slot.innerHTML = '<span class="perk-placeholder">✦</span>';
+  });
+}
+
+// أخذ بيركات عشوائية من القاعدة حسب التصنيف
+function getRandomPerks(role, count) {
+  const pool = perksDatabase.filter(p => p.role === role);
+  if (pool.length === 0) return [];
+  // خوارزمية Fisher-Yates لخلط ثم أخذ أول count
+  const shuffled = pool.slice();
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled.slice(0, count);
+}
+
+// أخذ بيرك عشوائي واحد للعرض في الـreel أثناء الدوران
+function getRandomPerkForReel(role) {
+  const pool = perksDatabase.filter(p => p.role === role);
+  if (pool.length === 0) return null;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+// ────────────────────────────────────────────────────
+// انميشن البيركات: slot machine style
+// كل خانة تدور بصور عشوائية ثم تتوقف على البيرك النهائي
+// الخانات تتوقف واحدة ورا الثانية
+// ────────────────────────────────────────────────────
+async function rollRandomBuild() {
+  if (randomState.isRolling) return;
+  if (!randomState.role) { toast('اختر تصنيف أولاً', 'error'); return; }
+
+  randomState.isRolling = true;
+  const btn = document.getElementById('randomRollBtn');
+  const summary = document.getElementById('randomResultSummary');
+  if (btn) { btn.disabled = true; btn.classList.add('rolling'); }
+  if (summary) summary.classList.remove('show');
+
+  // اختيار البيركات النهائية مسبقاً
+  const finalPerks = getRandomPerks(randomState.role, 4);
+  if (finalPerks.length < 4) {
+    toast('لا توجد بيركات كافية في القاعدة', 'error');
+    if (btn) { btn.disabled = false; btn.classList.remove('rolling'); }
+    randomState.isRolling = false;
+    return;
+  }
+  randomState.currentBuild = finalPerks;
+
+  // إعداد الخانات وبدء الدوران لكلها
+  const slots = document.querySelectorAll('.random-perk-slot');
+  slots.forEach((slot, i) => {
+    setupReel(slot, randomState.role, finalPerks[i]);
+    slot.classList.remove('empty', 'locked', 'random-final-glow');
+    slot.classList.add('rolling');
+  });
+
+  // ابدأ الدوران بسرعة كبيرة
+  slots.forEach(slot => startSpinning(slot));
+
+  // إيقاف الخانات واحدة ورى الثانية
+  await sleep(900); // مدة الدوران السريع قبل البدء بالإيقاف
+  for (let i = 0; i < slots.length; i++) {
+    await sleep(550); // الفارق بين كل خانة والثانية
+    stopSpinning(slots[i], randomState.role, finalPerks[i]);
+  }
+
+  // بعد كل الخانات تم إيقافها
+  await sleep(900);
+  randomState.isRolling = false;
+  if (btn) { btn.disabled = false; btn.classList.remove('rolling'); }
+  showResultSummary(finalPerks);
+}
+
+function setupReel(slot, role, finalPerk) {
+  // كل reel فيها سلسلة من البيركات العشوائية + البيرك النهائي في الأخير
+  // 20 بيرك عشوائي + النهائي = 21
+  const reelCount = 20;
+  const items = [];
+  for (let i = 0; i < reelCount; i++) {
+    const rp = getRandomPerkForReel(role);
+    items.push(rp);
+  }
+  items.push(finalPerk); // النهائي في آخر مكان
+
+  slot.innerHTML =
+    '<div class="reel" style="transform:translateY(0)">' +
+      items.map(p => {
+        if (!p) return '<div class="reel-item"></div>';
+        return '<div class="reel-item">' +
+          (p.image ? '<img src="' + escapeAttr(p.image) + '" alt="" onerror="handlePerkImgError(this)">' : '') +
+        '</div>';
+      }).join('') +
+    '</div>' +
+    '<div class="perk-label">' + escapeHTML(finalPerk.name) + '</div>';
+}
+
+function startSpinning(slot) {
+  const reel = slot.querySelector('.reel');
+  if (!reel) return;
+  // الـreel فيها 21 صورة بارتفاع 100% لكل واحدة
+  // ندورها بسرعة بين -1100% و 0% بشكل متكرر بقفزات صغيرة
+  let pos = 0;
+  reel.classList.add('spinning');
+  // نخزن interval للحفاظ على الحركة
+  slot._spinInterval = setInterval(() => {
+    pos = (pos + 1) % 20;
+    reel.style.transform = 'translateY(-' + (pos * 100) + '%)';
+  }, 90);
+}
+
+function stopSpinning(slot, role, finalPerk) {
+  const reel = slot.querySelector('.reel');
+  if (!reel) return;
+  // إيقاف الـinterval
+  if (slot._spinInterval) {
+    clearInterval(slot._spinInterval);
+    slot._spinInterval = null;
+  }
+  // إزالة كلاس الدوران السريع، نخلي transition الناعمة تتولى
+  reel.classList.remove('spinning');
+  // الانتقال للبيرك النهائي (آخر عنصر، فهرس 20)
+  // نضيف تأخير قصير عشان transition يطبق
+  requestAnimationFrame(() => {
+    reel.style.transform = 'translateY(-2000%)'; // 20 * 100%
+  });
+  // بعد ما يخلص الانتقال، نظهر الـlabel ونلغي rolling
+  setTimeout(() => {
+    slot.classList.remove('rolling');
+    slot.classList.add('locked', 'random-final-glow');
+    setTimeout(() => slot.classList.remove('random-final-glow'), 800);
+  }, 1200);
+}
+
+function showResultSummary(perks) {
+  const summary = document.getElementById('randomResultSummary');
+  if (!summary) return;
+  const list = perks.map(p => p.name).join(' • ');
+  summary.innerHTML =
+    '✨ هذا بيلدك العشوائي ' + (randomState.role === 'killer' ? '🔪' : '🏃') + '<br>' +
+    '<span class="perk-list">' + escapeHTML(list) + '</span>';
+  summary.classList.add('show');
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+window.selectRandomRole = selectRandomRole;
+window.rollRandomBuild = rollRandomBuild;
 
 function openAuth() {
   clearErrors();
@@ -2686,32 +3417,62 @@ function logout() {
 function renderSession() {
   const z = $('userZone');
   const connHTML = z.querySelector('.connection-status')?.outerHTML || '';
-  // الحفاظ على زر الثيم
-  const themeWrap = z.querySelector('.theme-wrap');
-  const themeHTML = themeWrap ? themeWrap.outerHTML : '';
 
   if (!state.session) {
-    z.innerHTML = connHTML + themeHTML + '<button class="btn btn-sm" onclick="openAuth()">تسجيل الدخول</button>';
+    z.innerHTML = connHTML + '<button class="btn btn-sm" onclick="openAuth()">تسجيل الدخول</button>';
     $('adminTabBtn').classList.add('hidden');
-    if (typeof updateThemeMenuUI === 'function') updateThemeMenuUI();
     return;
   }
   const admin = isAdmin();
-  z.innerHTML = connHTML + themeHTML +
-    '<div class="user-pill ' + (admin ? 'admin' : '') + '">' +
-      '<span class="dot"></span>' +
-      '<span>' + escapeHTML(state.session.username) + '</span>' +
-      (admin ? '<span style="color:var(--blood-bright);margin-right:4px">⚜</span>' : '') +
-    '</div>' +
-    renderStreamerBadgeHTML(state.session.username) +
-    renderBadgeHTML(state.session.username) +
-    '<button class="my-builds-btn" onclick="openMyBuilds()" title="بيلداتي">📋 بيلداتي</button>' +
-    '<button class="btn btn-sm" onclick="logout()">خروج</button>';
+  z.innerHTML = connHTML +
+    '<div class="user-menu-wrap">' +
+      '<button class="user-pill ' + (admin ? 'admin' : '') + '" onclick="toggleUserMenu(event)" id="userPillBtn">' +
+        '<span class="dot"></span>' +
+        '<span>' + escapeHTML(state.session.username) + '</span>' +
+        (admin ? '<span style="color:var(--blood-bright);margin-right:4px">⚜</span>' : '') +
+        renderStreamerBadgeHTML(state.session.username) +
+        renderBadgeHTML(state.session.username) +
+        '<span class="user-menu-arrow">▾</span>' +
+      '</button>' +
+      '<div class="user-menu" id="userMenu">' +
+        '<button class="user-menu-item" onclick="openMyBuilds();closeUserMenu()">' +
+          '<span class="umi-icon">📋</span><span>بيلداتي</span>' +
+        '</button>' +
+        '<button class="user-menu-item" onclick="openThemeFromMenu()">' +
+          '<span class="umi-icon">🎨</span><span>الثيم</span>' +
+        '</button>' +
+        '<div class="user-menu-divider"></div>' +
+        '<button class="user-menu-item logout" onclick="logout();closeUserMenu()">' +
+          '<span class="umi-icon">🚪</span><span>تسجيل الخروج</span>' +
+        '</button>' +
+      '</div>' +
+    '</div>';
   $('adminTabBtn').classList.toggle('hidden', !admin);
-  // تحديث قائمة الثيم ومحاولة استعادة الثيم المحفوظ
   if (typeof updateThemeMenuUI === 'function') updateThemeMenuUI();
   if (typeof restoreTheme === 'function') restoreTheme();
 }
+
+function toggleUserMenu(e) {
+  if (e) e.stopPropagation();
+  const menu = document.getElementById('userMenu');
+  if (menu) menu.classList.toggle('active');
+}
+function closeUserMenu() {
+  const menu = document.getElementById('userMenu');
+  if (menu) menu.classList.remove('active');
+}
+function openThemeFromMenu() {
+  closeUserMenu();
+  // فتح قائمة الثيم
+  const themeMenu = document.getElementById('themeOptions');
+  if (themeMenu) {
+    themeMenu.classList.add('active');
+    if (typeof updateThemeMenuUI === 'function') updateThemeMenuUI();
+  }
+}
+window.toggleUserMenu = toggleUserMenu;
+window.closeUserMenu = closeUserMenu;
+window.openThemeFromMenu = openThemeFromMenu;
 
 // ═══ بيلداتي: عرض بيلدات المستخدم الحالي ═══
 function openMyBuilds() {
@@ -2735,7 +3496,7 @@ function openCreateBuild() {
   state.addonsDraft = [null, null];
   $('buildForm').reset();
   $('bfPortraitPrev').innerHTML = '';
-  $('buildModalTitle').textContent = isAdmin() ? 'أضف بيلد (شرحك يفرق بالبيلد)' : 'اقترح بيلد جديد';
+  $('buildModalTitle').textContent = isAdmin() ? 'أضف بيلد (يُنشر مباشرة)' : 'اقترح بيلد جديد';
   $('buildSubmitBtn').textContent = isAdmin() ? 'نشر البيلد' : 'إرسال للمراجعة';
   renderPerkSlots();
   updateRoleHint();
@@ -2937,7 +3698,7 @@ function renderPerkSuggestions() {
       if (item.isCustom) metaHTML += '<span class="ai-meta" style="color:var(--gold-bright)">⚡ مخصص</span>';
     }
     return '<div class="autocomplete-item' + (item.isCustom ? ' custom' : '') + '" data-perk-idx="' + i + '">' +
-      (item.image ? '<img src="' + escapeAttr(item.image) + '" onerror="this.style.visibility=\'hidden\'">' : '<div style="width:36px;height:36px;background:var(--bg-darker);border:1px solid var(--line)"></div>') +
+      (item.image ? '<img src="' + escapeAttr(item.image) + '" onerror="' + (isAddon ? 'this.style.visibility=\'hidden\'' : 'handlePerkImgError(this)') + '">' : '<div style="width:36px;height:36px;background:var(--bg-darker);border:1px solid var(--line)"></div>') +
       '<div class="ai-info">' +
         '<div class="ai-name">' + escapeHTML(item.name) + '</div>' +
         '<div>' + metaHTML + '</div>' +
@@ -3067,10 +3828,9 @@ function visibleBuilds() {
     (b.name + ' ' + b.character + ' ' + b.desc + ' ' + (b.author || '') + ' ' + (b.perks||[]).map(p => p.name).join(' '))
       .toLowerCase().includes(q)
   );
-  const sort = ($('sortSelect') && $('sortSelect').value) || 'rating';
-  if (sort === 'rating') arr.sort((a, b) => avgRating(b) - avgRating(a));
-  else if (sort === 'recent') arr.sort((a, b) => b.created - a.created);
-  else if (sort === 'popular') arr.sort((a, b) => (b.ratings||[]).length - (a.ratings||[]).length);
+  const sort = ($('sortSelect') && $('sortSelect').value) || 'popular';
+  if (sort === 'recent') arr.sort((a, b) => b.created - a.created);
+  else arr.sort((a, b) => (b.ratings||[]).length - (a.ratings||[]).length); // popular (افتراضي)
   return arr;
 }
 
@@ -3123,7 +3883,7 @@ function buildCardHTML(b) {
   const perksHTML = perks.map(p =>
     '<div class="perk">' +
       (p.img
-        ? '<img src="' + escapeAttr(p.img) + '" onerror="this.style.display=\'none\'">'
+        ? '<img src="' + escapeAttr(p.img) + '" onerror="handlePerkImgErrorByName(this, \'' + escapeAttr(p.name || '').replace(/'/g, '\\\'') + '\')">'
         : '<span class="perk-empty">✦</span>') +
       (p.name ? '<div class="perk-name-tip">' + escapeHTML(p.name) + '</div>' : '') +
     '</div>'
@@ -3185,7 +3945,7 @@ function openDetail(id) {
     const num = ['١', '٢', '٣', '٤'][i];
     return '<div class="detail-perk">' +
       '<div class="detail-perk-img">' +
-        (p.img ? '<img src="' + escapeAttr(p.img) + '" onerror="this.style.display=\'none\'">' : '') +
+        (p.img ? '<img src="' + escapeAttr(p.img) + '" onerror="handlePerkImgErrorByName(this, \'' + escapeAttr(p.name || '').replace(/'/g, '\\\'') + '\')">' : '') +
         '<span class="detail-perk-num">' + num + '</span>' +
       '</div>' +
       '<div class="detail-perk-name">' + escapeHTML(p.name || '—') + '</div>' +
@@ -3808,13 +4568,8 @@ function getUserBadgeLevel(username) {
 }
 
 function canUseTheme(themeName) {
-  if (!themeName) return true; // افتراضي متاح للجميع
-  const required = THEME_ORDER[themeName] || 0;
-  if (!state.session) return false;
-  // الأدمن يفتح كل شي
-  if (isAdmin()) return true;
-  const userLevel = getUserBadgeLevel(state.session.username);
-  return userLevel >= required;
+  // كل الثيمات متاحة للجميع الآن
+  return true;
 }
 
 function applyTheme(themeName) {
@@ -4006,11 +4761,18 @@ function tryAutoFillPortrait() {
 document.addEventListener('click', e => {
   if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('active');
   // إغلاق قائمة الثيم
-  const themeBtn = document.getElementById('themeBtn');
   const themeMenu = document.getElementById('themeOptions');
   if (themeMenu && themeMenu.classList.contains('active')) {
-    if (e.target !== themeBtn && !themeMenu.contains(e.target)) {
+    if (!themeMenu.contains(e.target)) {
       themeMenu.classList.remove('active');
+    }
+  }
+  // إغلاق قائمة المستخدم
+  const userPill = document.getElementById('userPillBtn');
+  const userMenu = document.getElementById('userMenu');
+  if (userMenu && userMenu.classList.contains('active')) {
+    if (e.target !== userPill && !userPill?.contains(e.target) && !userMenu.contains(e.target)) {
+      userMenu.classList.remove('active');
     }
   }
 });
