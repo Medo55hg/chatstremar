@@ -3335,6 +3335,75 @@ body.theme-legendary .topbar {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* ═══ شريط آخر الأخبار ═══ */
+.news-ticker-bar {
+  width: 100%;
+  background: linear-gradient(90deg, rgba(139,10,10,0.25) 0%, rgba(17,13,11,0.97) 15%, rgba(17,13,11,0.97) 85%, rgba(139,10,10,0.25) 100%);
+  border-top: 1px solid var(--blood-deep);
+  border-bottom: 1px solid var(--blood-deep);
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+  position: relative;
+  z-index: 2;
+  height: 44px;
+}
+.news-ticker-label {
+  flex-shrink: 0;
+  background: linear-gradient(135deg, var(--blood-deep) 0%, var(--blood) 100%);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  border-left: 2px solid var(--blood-bright);
+  gap: 8px;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+  box-shadow: 4px 0 12px rgba(0,0,0,0.4);
+  position: relative;
+  z-index: 1;
+}
+.news-ticker-content {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  direction: ltr;
+}
+.news-ticker-scroll {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  animation: ticker-move 40s linear infinite;
+  will-change: transform;
+}
+.news-ticker-scroll:hover {
+  animation-play-state: paused;
+}
+.news-ticker-item {
+  font-size: 14px;
+  color: var(--ink-primary);
+  font-weight: 600;
+  padding: 0 8px;
+  direction: rtl;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.news-ticker-sep {
+  color: var(--gold);
+  font-size: 10px;
+  margin: 0 24px;
+  opacity: 0.7;
+}
+@keyframes ticker-move {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
 </style>
 </head>
 <body>
@@ -3429,6 +3498,15 @@ body.theme-legendary .topbar {
       <div class="banner-empty-msg">📢 منطقة الإعلان<br>يديرها الأدمن</div>
     </div>
   </div>
+
+  <!-- شريط آخر الأخبار -->
+  <div class="news-ticker-bar" id="newsTickerBar" style="display:none;margin-top:20px">
+    <div class="news-ticker-label">📰 آخر الأخبار</div>
+    <div class="news-ticker-content">
+      <div class="news-ticker-scroll" id="newsTickerScroll"></div>
+    </div>
+  </div>
+
 <!--  -->
   <div class="hero-divider"><span>المرجع الأول</span></div>
   <div style="margin-top:20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
@@ -3519,6 +3597,7 @@ body.theme-legendary .topbar {
       <button data-admin-tab="all" onclick="setAdminTab('all')">جميع البيلدات</button>
       <button data-admin-tab="users" onclick="setAdminTab('users')">المسجّلون</button>
       <button data-admin-tab="banners" onclick="setAdminTab('banners')">📢 مربعات الإعلانات</button>
+      <button data-admin-tab="news" onclick="setAdminTab('news')">📰 آخر الأخبار</button>
     </div>
 
     <div id="adminContent"></div>
@@ -4937,6 +5016,7 @@ async function init() {
   renderStats();
   restoreTheme();
   loadBannersFromFirebase();
+  loadNewsTickerFromFirebase();
   showWelcomeIfNeeded();
 }
 
@@ -6238,6 +6318,22 @@ function renderAdmin() {
         '<p style="color:var(--ink-secondary);font-size:14px;line-height:1.7">تظهر هذه المربعات يمين ويسار العنوان الرئيسي في الصفحة الرئيسية. كل مربع يحتوي على: عنوان + صورة + مؤقت تنازلي. عطّل المربع لإخفائه عن الزوار.</p>' +
       '</div>' +
       renderBannersEditor();
+  } else if (state.adminTab === 'news') {
+    const currentText = newsTickerText || '';
+    content.innerHTML =
+      '<div style="margin-bottom:20px;padding:16px;border:1px dashed var(--blood);background:rgba(139,10,10,0.08)">' +
+        '<h3 style="color:var(--gold-bright);font-size:16px;margin-bottom:8px">📰 شريط آخر الأخبار</h3>' +
+        '<p style="color:var(--ink-secondary);font-size:14px;line-height:1.7">يظهر الشريط تحت مربعات الإعلانات مباشرة. أدخل كل خبر في سطر منفصل (اضغط Enter للسطر التالي). الشريط يمشي من اليمين لليسار باستمرار.</p>' +
+      '</div>' +
+      '<div class="field">' +
+        '<label style="display:block;font-size:13px;font-weight:700;color:var(--ink-secondary);margin-bottom:8px">نصوص الأخبار (كل خبر في سطر جديد)</label>' +
+        '<textarea id="newsTickerInput" style="width:100%;background:var(--bg-darker);border:1px solid var(--line);padding:14px;color:var(--ink-primary);font-size:15px;font-family:Cairo,sans-serif;min-height:180px;resize:vertical;line-height:2;direction:rtl" placeholder="الخبر الأول&#10;الخبر الثاني&#10;الخبر الثالث">' + escapeHTML(currentText) + '</textarea>' +
+        '<div style="font-size:12px;color:var(--ink-muted);margin-top:6px">اترك الحقل فارغاً لإخفاء الشريط نهائياً</div>' +
+      '</div>' +
+      '<div style="display:flex;gap:10px;margin-top:4px">' +
+        '<button class="btn btn-gold" onclick="saveNewsTicker()">حفظ الأخبار</button>' +
+        '<button class="btn btn-blood btn-sm" onclick="clearNewsTicker()">مسح الأخبار</button>' +
+      '</div>';
   }
 }
 
@@ -6524,6 +6620,111 @@ function saveBannerFromEditor(side) {
 
 window.saveBannerFromEditor = saveBannerFromEditor;
 window.clearBanner = clearBanner;
+
+// ═══════════════════════════════════════════════════════════════
+// 📰 نظام شريط آخر الأخبار
+// ═══════════════════════════════════════════════════════════════
+let newsTickerText = '';
+let newsTickerListener = null;
+
+async function loadNewsTickerFromFirebase() {
+  if (!window.firebaseAvailable) {
+    try {
+      const raw = localStorage.getItem('dbdcommunity_newsticker_v1');
+      if (raw !== null) newsTickerText = raw;
+    } catch(e) {}
+    renderNewsTicker();
+    return;
+  }
+  const { ref, get, onValue } = window._fb;
+  try {
+    const snap = await get(ref(window.db, 'newsTicker'));
+    const d = snap.val();
+    newsTickerText = (d && d.text) || '';
+    renderNewsTicker();
+    if (!newsTickerListener) {
+      newsTickerListener = onValue(ref(window.db, 'newsTicker'), (s) => {
+        const v = s.val();
+        newsTickerText = (v && v.text) || '';
+        renderNewsTicker();
+      });
+    }
+  } catch(e) { console.error('News ticker load failed:', e); }
+}
+
+function renderNewsTicker() {
+  const bar = document.getElementById('newsTickerBar');
+  const scroll = document.getElementById('newsTickerScroll');
+  if (!bar || !scroll) return;
+
+  const lines = newsTickerText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+  if (lines.length === 0) {
+    bar.style.display = 'none';
+    return;
+  }
+  bar.style.display = 'flex';
+
+  // بناء العناصر ومضاعفتها للتكرار السلس
+  const itemsHTML = lines.map(line =>
+    '<span class="news-ticker-item">' + escapeHTML(line) + '</span>' +
+    '<span class="news-ticker-sep">◆</span>'
+  ).join('');
+  scroll.innerHTML = itemsHTML + itemsHTML;
+
+  // ضبط مدة الحركة بناءً على عدد الأحرف (40px لكل حرف تقريباً)
+  const totalChars = lines.join('').length;
+  const duration = Math.max(20, Math.min(60, totalChars * 0.4));
+  scroll.style.animationDuration = duration + 's';
+}
+
+async function saveNewsTicker() {
+  if (!isAdmin()) { toast('للأدمن فقط', 'error'); return; }
+  const input = document.getElementById('newsTickerInput');
+  if (!input) return;
+  const text = input.value;
+  newsTickerText = text;
+
+  if (window.firebaseAvailable) {
+    const { ref, set } = window._fb;
+    try {
+      await set(ref(window.db, 'newsTicker'), { text });
+      renderNewsTicker();
+      toast('تم حفظ الأخبار');
+    } catch(e) {
+      console.error(e);
+      try {
+        localStorage.setItem('dbdcommunity_newsticker_v1', text);
+        renderNewsTicker();
+        toast('فشل Firebase — تم الحفظ محلياً', 'error');
+      } catch(e2) { toast('فشل الحفظ', 'error'); }
+    }
+  } else {
+    try {
+      localStorage.setItem('dbdcommunity_newsticker_v1', text);
+      renderNewsTicker();
+      toast('تم حفظ الأخبار محلياً');
+    } catch(e) { toast('فشل الحفظ', 'error'); }
+  }
+}
+
+async function clearNewsTicker() {
+  if (!isAdmin()) return;
+  if (!confirm('مسح كل الأخبار؟')) return;
+  newsTickerText = '';
+  if (window.firebaseAvailable) {
+    const { ref, remove } = window._fb;
+    try {
+      await remove(ref(window.db, 'newsTicker'));
+    } catch(e) { console.error(e); }
+  }
+  try { localStorage.removeItem('dbdcommunity_newsticker_v1'); } catch(e) {}
+  renderNewsTicker();
+  renderAdmin();
+  toast('تم مسح الأخبار');
+}
+
+window.saveNewsTicker = saveNewsTicker;
+window.clearNewsTicker = clearNewsTicker;
 
 function renderStats() {
   const approved = state.builds.filter(b => b.status === 'approved');
