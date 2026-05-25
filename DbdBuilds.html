@@ -6,7 +6,7 @@
 <title>بيلدات مجتمع DBD</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Cinzel+Decorative:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
   :root {
   --bg-deep: #080605;
@@ -438,11 +438,12 @@ footer,
 /* ═══ مربعات الإعلانات يمين ويسار العنوان ═══ */
 .hero-card {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
-  gap: 32px;
+  gap: 24px;
   max-width: 1400px;
   margin: 0 auto;
+  width: 100%;
 }
 .hero-wrap {
   display: grid;
@@ -453,8 +454,9 @@ footer,
   margin: 0 auto;
 }
 .hero-banner {
-  flex-shrink: 0;
-  width: 300px;
+  flex: 1;
+  min-width: 240px;
+  max-width: 420px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -593,7 +595,7 @@ footer,
 
 @media (max-width: 1100px) {
   .hero-banner {
-    width: 250px;
+    min-width: 200px;
     padding: 14px;
   }
   .banner-title {
@@ -3404,9 +3406,672 @@ body.theme-legendary .topbar {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
+
+/* ═══════════════════════════════════════════════════════════════ */
+/* ═══  CINEMATIC DBD ENHANCEMENTS  ═══════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════ */
+
+/* ── Custom Scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #080605; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #5a0606 0%, #8b0a0a 60%, #5a0606 100%);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #8b0a0a 0%, #c41818 100%);
+  box-shadow: 0 0 8px rgba(196,24,24,0.6);
+}
+::-webkit-scrollbar-corner { background: #080605; }
+* { scrollbar-width: thin; scrollbar-color: #8b0a0a #080605; }
+
+/* ── Particle Canvas ── */
+#particleCanvas {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+/* ── VHS Scanlines overlay element (toggled by JS) ── */
+#vhsScanlines {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9990;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0,0,0,0) 0px,
+    rgba(0,0,0,0) 2px,
+    rgba(0,0,40,0.07) 3px,
+    rgba(0,0,0,0) 4px
+  );
+}
+#vhsScanlines::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,20,0.55) 100%);
+}
+
+/* ── Page view transitions ── */
+.view { animation: viewFadeIn 0.45s ease; }
+@keyframes viewFadeIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Hero upgrades ── */
+.hero {
+  background:
+    radial-gradient(ellipse at 50% -10%, rgba(139,10,10,0.28) 0%, transparent 60%),
+    radial-gradient(ellipse at 20% 60%, rgba(139,10,10,0.07) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 60%, rgba(201,169,97,0.04) 0%, transparent 50%),
+    linear-gradient(180deg, rgba(10,7,6,0) 0%, rgba(10,7,6,0.85) 100%) !important;
+  min-height: 58vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  animation: heroGlowPulse 8s ease-in-out infinite;
+}
+@keyframes heroGlowPulse {
+  0%,100% { box-shadow: none; }
+  50%      { box-shadow: inset 0 -80px 120px rgba(139,10,10,0.08); }
+}
+.hero-title {
+  font-size: clamp(38px, 5.5vw, 70px) !important;
+  letter-spacing: -1px !important;
+}
+.hero-title .accent { font-family: 'Cinzel Decorative', 'Cairo', cursive; }
+.brand-sub { font-family: 'Cinzel Decorative', cursive; letter-spacing: 4px !important; }
+
+/* ── Hero CTA button group ── */
+.hero-cta-group {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 36px 0 0;
+}
+.btn-hero-primary {
+  background: linear-gradient(135deg, var(--blood) 0%, var(--blood-deep) 100%);
+  border: 2px solid var(--blood-bright);
+  color: #fff;
+  padding: 18px 46px;
+  font-size: 17px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: 'Cairo', sans-serif;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 28px rgba(139,10,10,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.btn-hero-primary::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -120%; width: 60%; height: 100%;
+  background: linear-gradient(110deg, transparent, rgba(255,255,255,0.18), transparent);
+  transition: left 0.6s ease;
+  pointer-events: none;
+}
+.btn-hero-primary:hover::before { left: 120%; }
+.btn-hero-primary:hover {
+  background: linear-gradient(135deg, var(--blood-bright) 0%, var(--blood) 100%);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 44px rgba(196,24,24,0.65), 0 0 60px rgba(196,24,24,0.15);
+}
+.btn-hero-secondary {
+  background: transparent;
+  border: 2px solid var(--gold-deep);
+  color: var(--gold-bright);
+  padding: 18px 46px;
+  font-size: 17px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: 'Cairo', sans-serif;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.btn-hero-secondary::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -120%; width: 60%; height: 100%;
+  background: linear-gradient(110deg, transparent, rgba(201,169,97,0.2), transparent);
+  transition: left 0.6s ease;
+  pointer-events: none;
+}
+.btn-hero-secondary:hover::before { left: 120%; }
+.btn-hero-secondary:hover {
+  background: rgba(201,169,97,0.1);
+  border-color: var(--gold-bright);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 44px rgba(201,169,97,0.35);
+}
+.btn-hero-ghost {
+  background: transparent;
+  border: 1px solid var(--line-bright);
+  color: var(--ink-secondary);
+  padding: 18px 36px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Cairo', sans-serif;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+.btn-hero-ghost:hover {
+  color: var(--ink-primary);
+  border-color: var(--line-bright);
+  background: rgba(255,255,255,0.03);
+  transform: translateY(-2px);
+}
+
+/* ── Enhanced build card hover ── */
+.build-card:hover {
+  box-shadow:
+    0 22px 55px rgba(0,0,0,0.88),
+    0 0 45px rgba(139,10,10,0.3),
+    0 0 90px rgba(139,10,10,0.08) !important;
+}
+
+/* ── Section separator line ── */
+.section-separator {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--blood-deep) 20%,
+    var(--gold-deep) 50%,
+    var(--blood-deep) 80%,
+    transparent 100%);
+  opacity: 0.4;
+  margin: 0;
+}
+
+/* ═══ NEWS SECTION STYLES ═══ */
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+  margin-top: 0;
+}
+.news-card {
+  background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-darker) 100%);
+  border: 1px solid var(--line);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.38s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+.news-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--blood-bright) 50%, transparent);
+  opacity: 0;
+  transition: opacity 0.35s;
+  z-index: 2;
+}
+.news-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 0%, rgba(139,10,10,0.07) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.news-card:hover {
+  border-color: var(--blood);
+  transform: translateY(-6px);
+  box-shadow: 0 22px 55px rgba(0,0,0,0.85), 0 0 40px rgba(139,10,10,0.22);
+}
+.news-card:hover::before { opacity: 1; }
+.news-card:hover::after  { opacity: 1; }
+
+.news-card-image {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: linear-gradient(135deg, var(--bg-deeper, var(--bg-darker)) 0%, rgba(139,10,10,0.1) 100%);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.news-card-image img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.55s ease;
+  display: block;
+}
+.news-card:hover .news-card-image img { transform: scale(1.07); }
+.news-card-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 45%, rgba(8,6,5,0.88) 100%);
+  pointer-events: none;
+}
+.news-card-icon-ph {
+  font-size: 50px;
+  opacity: 0.18;
+}
+.news-card-body { padding: 20px 22px 12px; }
+.news-card-badge {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  color: var(--blood-bright);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.news-card-badge::before {
+  content: '';
+  display: inline-block;
+  width: 16px; height: 1px;
+  background: var(--blood-bright);
+}
+.news-card-title {
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--ink-primary);
+  line-height: 1.35;
+  margin-bottom: 10px;
+  transition: color 0.2s;
+}
+.news-card:hover .news-card-title { color: #fff; }
+.news-card-text {
+  font-size: 14px;
+  color: var(--ink-secondary);
+  line-height: 1.75;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.news-card-footer {
+  padding: 12px 22px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.news-card-meta {
+  font-size: 12px;
+  color: var(--ink-muted);
+  font-weight: 500;
+}
+.news-read-more {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--blood-bright);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Cairo', sans-serif;
+  letter-spacing: 1px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 0;
+  transition: all 0.2s;
+}
+.news-read-more:hover { color: var(--gold-bright); gap: 8px; }
+.news-empty {
+  padding: 80px 32px;
+  text-align: center;
+  grid-column: 1 / -1;
+  border: 1px dashed var(--line-bright);
+  background: rgba(0,0,0,0.2);
+}
+.news-empty .icon {
+  font-size: 54px;
+  display: block;
+  margin-bottom: 18px;
+  opacity: 0.25;
+}
+.news-empty h3 { color: var(--ink-secondary); font-size: 22px; margin-bottom: 10px; font-weight: 700; }
+.news-empty p  { color: var(--ink-muted); font-size: 15px; }
+
+/* news admin form */
+.news-articles-list { display: flex; flex-direction: column; gap: 14px; }
+.news-article-item {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  padding: 16px 18px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.news-article-item .nai-body { flex: 1; min-width: 0; }
+.news-article-item .nai-title { font-size: 16px; font-weight: 700; color: var(--ink-primary); margin-bottom: 4px; }
+.news-article-item .nai-text { font-size: 13px; color: var(--ink-muted); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.news-article-item .nai-date { font-size: 11px; color: var(--ink-faded); margin-top: 6px; }
+.news-article-item .nai-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+@media (max-width: 640px) { .news-grid { grid-template-columns: 1fr; } }
+
+/* ═══ RANDOM PERK GLITCH ═══ */
+@keyframes perkGlitch {
+  0%   { transform: translate(0) skewX(0); filter: none; }
+  18%  { transform: translate(-4px,0) skewX(-3deg); filter: hue-rotate(90deg) saturate(3) brightness(1.6); }
+  36%  { transform: translate(4px,-1px) skewX(3deg); filter: hue-rotate(-90deg) saturate(2) brightness(1.3); }
+  54%  { transform: translate(-2px,1px); filter: brightness(2); }
+  72%  { transform: translate(3px,0) skewX(-1deg); filter: none; }
+  100% { transform: translate(0) skewX(0); filter: none; }
+}
+.random-perk-slot.glitching { animation: perkGlitch 0.45s ease; }
+
+@keyframes perkReveal {
+  0%  { opacity: 0; transform: rotateY(90deg) scale(0.8); }
+  60% { opacity: 1; transform: rotateY(-8deg) scale(1.06); }
+  100%{ opacity: 1; transform: rotateY(0deg) scale(1); }
+}
+.random-perk-slot.reveal { animation: perkReveal 0.55s cubic-bezier(0.3,0.8,0.3,1) forwards; }
+
+/* ═══ THEME: VHS ═══ */
+body.theme-vhs {
+  --blood: #5a4fa0; --blood-bright: #8b7de8; --blood-deep: #34288a;
+  --gold: #00d4c8; --gold-bright: #33ffe8; --gold-deep: #00a89e;
+  --bg-deep: #04040c; --bg-darker: #08081a; --bg-card: #100e24; --bg-card-hover: #18162e;
+  --line: #1c1a34; --line-bright: #282640;
+  --ink-primary: #e8e0ff; --ink-secondary: #9080c8; --ink-muted: #554870; --ink-faded: #302850;
+}
+body.theme-vhs {
+  background-image:
+    radial-gradient(ellipse at top, rgba(90,79,160,0.18) 0%, transparent 55%),
+    radial-gradient(ellipse at bottom, rgba(0,212,200,0.06) 0%, transparent 55%),
+    linear-gradient(180deg, #04040c 0%, #08081a 100%);
+}
+body.theme-vhs::after {
+  background:
+    radial-gradient(ellipse 40% 30% at 30% 40%, rgba(90,79,160,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 35% at 70% 60%, rgba(0,212,200,0.03) 0%, transparent 60%);
+}
+body.theme-vhs #vhsScanlines { display: block; }
+body.theme-vhs .hero-title .accent,
+body.theme-vhs .brand-name .nm-accent {
+  animation: vhsGlitch 6s ease-in-out infinite;
+}
+@keyframes vhsGlitch {
+  0%, 85%, 100% { text-shadow: 0 0 30px rgba(139,125,232,0.7); transform: none; clip-path: none; }
+  87% { text-shadow: -3px 0 rgba(255,0,200,0.9), 3px 0 rgba(0,255,255,0.9); transform: skewX(-2deg); clip-path: inset(10% 0 40% 0); }
+  89% { text-shadow: 3px 0 rgba(255,0,200,0.9), -3px 0 rgba(0,255,255,0.9); transform: skewX(2deg); clip-path: inset(60% 0 5% 0); }
+  91% { text-shadow: 0 0 30px rgba(139,125,232,0.7); transform: none; clip-path: none; }
+}
+body.theme-vhs .topbar { background: linear-gradient(180deg, #04040c 0%, rgba(4,4,12,0.96) 100%); border-bottom-color: #1c1a34; }
+
+/* ═══ THEME: ENTITY ═══ */
+body.theme-entity {
+  --blood: #5a0fa0; --blood-bright: #9c2ee8; --blood-deep: #35006a;
+  --gold: #b500e8; --gold-bright: #d066ff; --gold-deep: #78009e;
+  --bg-deep: #050008; --bg-darker: #0c0014; --bg-card: #140020; --bg-card-hover: #1e0030;
+  --line: #220038; --line-bright: #320050;
+  --ink-primary: #f0d5ff; --ink-secondary: #b07ad8; --ink-muted: #6a3a90; --ink-faded: #3d205a;
+}
+body.theme-entity {
+  background-image:
+    radial-gradient(ellipse at top, rgba(90,15,160,0.22) 0%, transparent 55%),
+    radial-gradient(ellipse at bottom, rgba(181,0,232,0.09) 0%, transparent 55%),
+    linear-gradient(180deg, #050008 0%, #0c0014 100%);
+}
+body.theme-entity::after {
+  background:
+    radial-gradient(ellipse 40% 30% at 30% 40%, rgba(90,15,160,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 35% at 70% 60%, rgba(181,0,232,0.05) 0%, transparent 60%);
+}
+body.theme-entity .topbar { background: linear-gradient(180deg, #050008 0%, rgba(5,0,8,0.97) 100%); border-bottom-color: #320050; }
+
+/* ═══ THEME: CLEAN DARK ═══ */
+body.theme-clean {
+  --blood: #383838; --blood-bright: #5e5e5e; --blood-deep: #222;
+  --gold: #888; --gold-bright: #c8c8c8; --gold-deep: #505050;
+  --bg-deep: #080808; --bg-darker: #101010; --bg-card: #181818; --bg-card-hover: #202020;
+  --line: #282828; --line-bright: #363636;
+  --ink-primary: #eeeeee; --ink-secondary: #999; --ink-muted: #585858; --ink-faded: #363636;
+}
+body.theme-clean { background-image: linear-gradient(180deg, #080808 0%, #101010 100%); }
+body.theme-clean::before { display: none; }
+body.theme-clean::after  { display: none; }
+body.theme-clean .hero {
+  background: rgba(0,0,0,0.08) !important;
+  min-height: 50vh;
+  animation: none;
+}
+body.theme-clean .hero-ornament { display: none; }
+body.theme-clean #particleCanvas { display: none; }
+body.theme-clean .build-card:hover {
+  box-shadow: 0 16px 40px rgba(0,0,0,0.6), 0 0 18px rgba(255,255,255,0.03) !important;
+}
+body.theme-clean .topbar { background: linear-gradient(180deg, #080808 0%, rgba(8,8,8,0.97) 100%); }
+
+/* ═══ THEME SWATCH EXTRAS ═══ */
+.theme-swatch.vhs    { background: linear-gradient(135deg, #0a0820 0%, #5a4fa0 50%, #00d4c8 100%); }
+.theme-swatch.entity { background: linear-gradient(135deg, #0a0014 0%, #5a0fa0 50%, #b500e8 100%); }
+.theme-swatch.clean  { background: linear-gradient(135deg, #080808 0%, #383838 50%, #c8c8c8 100%); }
+.theme-swatch.blood  { background: linear-gradient(135deg, #000000 0%, #5a0000 40%, #cc0000 100%); }
+
+/* ═══════════════════════════════════════════════════════════════ */
+/* ═══  BLOOD HORROR THEME  ════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════ */
+body.theme-blood {
+  --blood: #8b0000; --blood-bright: #cc1111; --blood-deep: #3d0000;
+  --gold: #cc1111; --gold-bright: #ff3333; --gold-deep: #660000;
+  --bg-deep: #000000; --bg-darker: #040000; --bg-card: #0a0000; --bg-card-hover: #130000;
+  --line: #1e0000; --line-bright: #2e0000;
+  --ink-primary: #ffe0e0; --ink-secondary: #cc7777; --ink-muted: #773333; --ink-faded: #3d1414;
+}
+body.theme-blood {
+  background-image:
+    radial-gradient(ellipse at 50% -5%, rgba(180,0,0,0.45) 0%, transparent 58%),
+    radial-gradient(ellipse at 20% 90%, rgba(80,0,0,0.3) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 90%, rgba(100,0,0,0.25) 0%, transparent 50%),
+    linear-gradient(180deg, #000000 0%, #040000 100%);
+}
+/* Heartbeat pulse — replaces the default fog layer */
+body.theme-blood::before {
+  background-image:
+    radial-gradient(ellipse 80% 60% at 50% 10%, rgba(200,0,0,0.35) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 30% 80%, rgba(100,0,0,0.2) 0%, transparent 60%);
+  animation: bloodHeartbeat 1.35s ease-in-out infinite !important;
+}
+body.theme-blood::after {
+  background:
+    radial-gradient(ellipse 45% 35% at 30% 45%, rgba(140,0,0,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 55% 40% at 70% 55%, rgba(100,0,0,0.05) 0%, transparent 60%);
+}
+@keyframes bloodHeartbeat {
+  0%,100% { opacity: 0.55; transform: scale(1); }
+  12%     { opacity: 1;    transform: scale(1.015); }
+  24%     { opacity: 0.55; transform: scale(1); }
+  40%     { opacity: 0.85; transform: scale(1.008); }
+  56%     { opacity: 0.55; transform: scale(1); }
+}
+body.theme-blood .topbar {
+  background: linear-gradient(180deg, #000000 0%, rgba(0,0,0,0.97) 100%);
+  border-bottom: 1px solid #1e0000;
+}
+body.theme-blood .brand-name .nm-accent {
+  color: var(--blood-bright);
+  animation: bloodGlowPulse 1.35s ease-in-out infinite;
+  text-shadow: 0 0 20px rgba(204,17,17,0.9);
+}
+@keyframes bloodGlowPulse {
+  0%,100% { text-shadow: 0 0 16px rgba(204,17,17,0.6); }
+  12%     { text-shadow: 0 0 35px rgba(204,17,17,1), 0 0 60px rgba(204,17,17,0.4); }
+  24%     { text-shadow: 0 0 16px rgba(204,17,17,0.6); }
+  40%     { text-shadow: 0 0 28px rgba(204,17,17,0.9), 0 0 50px rgba(204,17,17,0.3); }
+}
+/* Blood card top line always visible + blood glow hover */
+body.theme-blood .build-card::before {
+  opacity: 1 !important;
+  height: 3px !important;
+  background: linear-gradient(90deg, transparent, #cc0000 25%, #ff2222 50%, #cc0000 75%, transparent) !important;
+  box-shadow: 0 0 20px rgba(204,0,0,0.6), 0 8px 30px rgba(160,0,0,0.3);
+}
+body.theme-blood .build-card:hover {
+  border-color: #cc1111 !important;
+  box-shadow:
+    0 24px 60px rgba(0,0,0,0.97),
+    0 0 55px rgba(204,0,0,0.55),
+    0 0 100px rgba(180,0,0,0.18) !important;
+}
+/* Blood pulsing hero title */
+body.theme-blood .hero-title .accent {
+  animation: bloodGlowPulse 1.35s ease-in-out infinite;
+}
+/* Blood section titles */
+body.theme-blood .section-title {
+  text-shadow: 0 0 40px rgba(200,0,0,0.25);
+}
+
+/* ═══ MODAL — CINEMATIC ZOOM-IN ═══ */
+.modal-overlay {
+  backdrop-filter: blur(0px);
+  transition: backdrop-filter 0.35s ease;
+}
+.modal-overlay.active {
+  backdrop-filter: blur(14px) !important;
+  background: rgba(0,0,0,0.9) !important;
+  animation: overlayFadeIn 0.32s ease forwards;
+}
+@keyframes overlayFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.modal-overlay.active .modal {
+  animation: modalZoomIn 0.42s cubic-bezier(0.25, 0.85, 0.25, 1) forwards;
+}
+@keyframes modalZoomIn {
+  from { transform: scale(0.86) translateY(28px); opacity: 0; filter: blur(4px); }
+  to   { transform: scale(1)    translateY(0);    opacity: 1; filter: blur(0); }
+}
+.modal-overlay.closing .modal {
+  animation: modalZoomOut 0.28s ease forwards;
+}
+@keyframes modalZoomOut {
+  from { transform: scale(1) translateY(0); opacity: 1; }
+  to   { transform: scale(0.9) translateY(16px); opacity: 0; }
+}
+
+/* ═══ BUILD CARD — CLICK FLASH ANIMATION ═══ */
+@keyframes cardClickFlash {
+  0%   { box-shadow: 0 22px 40px rgba(0,0,0,0.7), 0 0 10px rgba(196,24,24,0.1); }
+  30%  { box-shadow: 0 22px 40px rgba(0,0,0,0.7), 0 0 65px rgba(196,24,24,0.9), 0 0 110px rgba(196,24,24,0.35); }
+  65%  { box-shadow: 0 22px 50px rgba(0,0,0,0.8), 0 0 38px rgba(196,24,24,0.6); }
+  100% { box-shadow: 0 22px 55px rgba(0,0,0,0.88), 0 0 45px rgba(139,10,10,0.3); }
+}
+.build-card.card-clicked {
+  animation: cardClickFlash 0.5s ease forwards;
+  pointer-events: none;
+}
+
+/* ═══ THEMES PAGE ═══ */
+.themes-page-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+  margin-top: 8px;
+}
+.theme-page-card {
+  background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-darker) 100%);
+  border: 1px solid var(--line);
+  padding: 0;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.32s cubic-bezier(0.2, 0.8, 0.3, 1);
+  position: relative;
+}
+.theme-page-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold) 50%, transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.theme-page-card:hover { transform: translateY(-5px); border-color: var(--gold-deep); box-shadow: 0 18px 44px rgba(0,0,0,0.7), 0 0 24px rgba(139,10,10,0.15); }
+.theme-page-card:hover::before { opacity: 1; }
+.theme-page-card.active-theme { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold-deep), 0 16px 40px rgba(0,0,0,0.6); }
+.theme-page-card.active-theme::before { opacity: 1; }
+.theme-page-card.locked-theme { opacity: 0.5; cursor: not-allowed; }
+.theme-page-card.locked-theme:hover { transform: none; border-color: var(--line); box-shadow: none; }
+.theme-card-swatch {
+  width: 100%;
+  height: 110px;
+  position: relative;
+}
+.theme-card-swatch-inner {
+  width: 100%; height: 100%;
+}
+.theme-card-lock {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.55);
+  font-size: 28px;
+}
+.theme-card-body { padding: 16px 18px; }
+.theme-card-name { font-size: 17px; font-weight: 800; color: var(--ink-primary); margin-bottom: 4px; }
+.theme-card-desc { font-size: 13px; color: var(--ink-muted); line-height: 1.5; margin-bottom: 12px; }
+.theme-card-active-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--gold-bright);
+  border: 1px solid var(--gold-deep);
+  padding: 2px 10px;
+  margin-bottom: 10px;
+  background: rgba(201,169,97,0.08);
+}
+.theme-card-btn {
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  border: 1px solid var(--line-bright);
+  color: var(--ink-secondary);
+  font-family: 'Cairo', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.theme-card-btn:hover { border-color: var(--gold-deep); color: var(--gold-bright); background: rgba(201,169,97,0.06); }
+.theme-page-card.active-theme .theme-card-btn { border-color: var(--gold); color: var(--gold-bright); background: rgba(201,169,97,0.1); }
 </style>
 </head>
 <body>
+
+<canvas id="particleCanvas"></canvas>
+<div id="vhsScanlines"></div>
 
 <div class="loading-overlay" id="loadingOverlay">
   <div class="loading-spinner"></div>
@@ -3425,48 +4090,13 @@ body.theme-legendary .topbar {
     <nav>
       <ul class="nav-tabs" id="navTabs">
         <li><button class="nav-tab active" data-view="home" onclick="showView('home')">الرئيسية</button></li>
-        <li><button class="nav-tab" data-view="killer" onclick="showView('killer')">الكيلرز</button></li>
-        <li><button class="nav-tab" data-view="survivor" onclick="showView('survivor')">السيرفايفرز</button></li>
+        <li><button class="nav-tab" data-view="builds" onclick="showView('builds')">البيلدات</button></li>
         <li><button class="nav-tab" data-view="random" onclick="showView('random')">🎲 بيركات عشوائية</button></li>
+        <li><button class="nav-tab" data-view="themes" onclick="showView('themes')">🎨 الثيمات</button></li>
         <li><button class="nav-tab hidden" data-view="admin" id="adminTabBtn" onclick="showView('admin')">⚜ لوحة الأدمن</button></li>
       </ul>
     </nav>
     <div class="topbar-right">
-      <div class="theme-wrap" id="themeWrapGlobal">
-        <button class="theme-selector" onclick="toggleThemeMenu(event)" id="themeBtn">🎨 الثيم</button>
-        <div class="theme-options" id="themeOptions">
-          <div class="theme-menu-title">🎨 اختر ثيم الموقع</div>
-          <div class="theme-option" data-theme="" onclick="selectTheme('')">
-            <div class="theme-swatch default"></div>
-            <span>افتراضي (دموي)</span>
-          </div>
-          <div class="theme-option" data-theme="bronze" data-requires="bronze" onclick="selectTheme('bronze')">
-            <div class="theme-swatch bronze"></div>
-            <span>برونزي 🥉</span>
-            <span class="lock-icon">🔒</span>
-          </div>
-          <div class="theme-option" data-theme="silver" data-requires="silver" onclick="selectTheme('silver')">
-            <div class="theme-swatch silver"></div>
-            <span>فضي 🥈</span>
-            <span class="lock-icon">🔒</span>
-          </div>
-          <div class="theme-option" data-theme="gold" data-requires="gold" onclick="selectTheme('gold')">
-            <div class="theme-swatch gold"></div>
-            <span>ذهبي 🥇</span>
-            <span class="lock-icon">🔒</span>
-          </div>
-          <div class="theme-option" data-theme="diamond" data-requires="diamond" onclick="selectTheme('diamond')">
-            <div class="theme-swatch diamond"></div>
-            <span>ماسي 💎</span>
-            <span class="lock-icon">🔒</span>
-          </div>
-          <div class="theme-option" data-theme="legendary" data-requires="legendary" onclick="selectTheme('legendary')">
-            <div class="theme-swatch legendary"></div>
-            <span>أسطوري 👑</span>
-            <span class="lock-icon">🔒</span>
-          </div>
-        </div>
-      </div>
       <div class="user-zone" id="userZone">
         <div class="connection-status loading" id="connStatus"><span class="status-dot"></span><span>جاري الاتصال...</span></div>
         <button class="btn btn-sm" onclick="openAuth()">تسجيل الدخول</button>
@@ -3476,18 +4106,38 @@ body.theme-legendary .topbar {
 </header>
 
 <section class="hero" id="heroSection">
-  <div class="hero-ornament">✦ ✦ ✦</div>
 
-  <!-- TODO: TESTa -->
-  <div class="hero-wra">
-   <!-- العنوان الرئيسي -->
-  <div class="hero-center" style="max-width:760px;margin:0 auto">
-    <h1 class="hero-title">بيلدات مجتمع <span class="accent">DBD</span></h1>
-    <p class="hero-sub">مرجع شامل لبيلدات الكيلرز والسيرفايفرز — يضيفها اللاعبون، ويقيّمها المجتمع، ويعتمدها ادارة الموقع</p>
+  <!-- ── Cinematic Hero Center ── -->
+  <div style="max-width:900px;margin:0 auto;padding:0 32px;text-align:center;position:relative;z-index:2">
+
+    <div class="hero-ornament">⛧ &nbsp; ✦ &nbsp; ⛧</div>
+
+    <h1 class="hero-title">
+      بيلدات مجتمع <span class="accent">DBD</span>
+    </h1>
+
+    <p class="hero-sub">
+      ادخل عالم Dead by Daylight من زاوية مختلفة — بيلدات حقيقية يصنعها المجتمع، تقييمات المجتمع، وبيركات عشوائية لتحدّيات لا تنتهي.
+    </p>
+
+    <!-- CTA Buttons -->
+    <div class="hero-cta-group">
+      <button class="btn-hero-primary" onclick="document.getElementById('buildsAnchor').scrollIntoView({behavior:'smooth'})">
+        <span>🔪</span> استعرض البيلدات
+      </button>
+      <button class="btn-hero-secondary" onclick="showView('random')">
+        <span>🎲</span> مولّد البيلد العشوائي
+      </button>
+      <button class="btn-hero-ghost" onclick="openCreateBuild()">
+        <span>+</span> اقترح بيلداً
+      </button>
+    </div>
+
+    <div class="hero-divider"><span>المرجع الأول</span></div>
   </div>
 
-  <!-- مربعات الإعلانات الثلاثة جنب بعض تحت العنوان -->
-  <div class="hero-card">
+  <!-- ── Announcement Banners ── -->
+  <div class="hero-card" style="max-width:1400px;margin:0 auto;padding:0 32px;position:relative;z-index:2">
     <div class="hero-banner empty" id="heroBannerRight" data-banner="right">
       <div class="banner-empty-msg">📢 منطقة الإعلان<br>يديرها الأدمن</div>
     </div>
@@ -3499,23 +4149,16 @@ body.theme-legendary .topbar {
     </div>
   </div>
 
-  <!-- شريط آخر الأخبار -->
-  <div class="news-ticker-bar" id="newsTickerBar" style="display:none;margin-top:20px">
+  <!-- ── News Ticker ── -->
+  <div class="news-ticker-bar" id="newsTickerBar" style="display:none;margin-top:28px">
     <div class="news-ticker-label">📰 آخر الأخبار</div>
     <div class="news-ticker-content">
       <div class="news-ticker-scroll" id="newsTickerScroll"></div>
     </div>
   </div>
 
-<!--  -->
-  <div class="hero-divider"><span>المرجع الأول</span></div>
-  <div style="margin-top:20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-    <button class="btn btn-blood" onclick="openCreateBuild()">+ اقترح بيلد جديد</button>
-    <button class="btn btn-gold" onclick="showView('random')">🎲 بيركات عشوائية</button>
-    <button class="btn" onclick="document.getElementById('buildsAnchor').scrollIntoView({behavior:'smooth'})">تصفّح البيلدات</button>
-  </div>
-  <!--  -->
-  <div class="hero-stats">
+  <!-- ── Stats ── -->
+  <div class="hero-stats" style="position:relative;z-index:2">
     <div class="hero-stat"><div class="num" id="statBuilds">0</div><div class="lbl">إجمالي البيلدات</div></div>
     <div class="hero-stat"><div class="num" id="statKillers">0</div><div class="lbl">بيلدات كيلر</div></div>
     <div class="hero-stat"><div class="num" id="statSurvivors">0</div><div class="lbl">بيلدات سيرفايفر</div></div>
@@ -3523,12 +4166,14 @@ body.theme-legendary .topbar {
     <div class="hero-stat"><div class="num" id="statRatings">0</div><div class="lbl">التقييمات</div></div>
   </div>
 
-  <div class="setup-warning hidden" id="setupWarning">
+  <div class="setup-warning hidden" id="setupWarning" style="position:relative;z-index:2">
     <h3>⚠ Firebase غير مُعدّ بعد</h3>
     <p>لتفعيل المشاركة بين كل المستخدمين، يلزم إعداد مشروع Firebase وتحديث ملف <code>firebase-config.js</code>.</p>
     <p>الموقع يعمل حالياً في وضع محلي (البيانات تُحفظ في متصفحك فقط). راجع التعليمات في الملف للإعداد.</p>
   </div>
+
 </section>
+<span class="section-separator"></span>
 
 <main class="container">
   <div id="buildsAnchor"></div>
@@ -3586,6 +4231,18 @@ body.theme-legendary .topbar {
     <div id="buildsGrid" class="builds-grid"></div>
   </section>
 
+  <!-- ═══ THEMES PAGE ═══ -->
+  <section id="view-themes" class="view hidden">
+    <div style="padding-top:16px">
+      <div style="text-align:center;margin-bottom:44px">
+        <div class="hero-ornament" style="font-size:22px;margin-bottom:16px;color:var(--blood-bright)">⛧ ✦ ⛧</div>
+        <h2 class="section-title">🎨 الثيمات</h2>
+        <p class="section-sub">اختر ثيماً يعكس أسلوبك داخل عالم DBD</p>
+      </div>
+      <div id="themesPageGrid" class="themes-page-grid"></div>
+    </div>
+  </section>
+
   <section id="view-admin" class="view hidden">
     <h2 class="section-title">⚜ لوحة الأدمن ⚜</h2>
     <p class="section-sub">تحكم كامل بكل بيلدات وحسابات الموقع</p>
@@ -3597,7 +4254,7 @@ body.theme-legendary .topbar {
       <button data-admin-tab="all" onclick="setAdminTab('all')">جميع البيلدات</button>
       <button data-admin-tab="users" onclick="setAdminTab('users')">المسجّلون</button>
       <button data-admin-tab="banners" onclick="setAdminTab('banners')">📢 مربعات الإعلانات</button>
-      <button data-admin-tab="news" onclick="setAdminTab('news')">📰 آخر الأخبار</button>
+      <button data-admin-tab="news" onclick="setAdminTab('news')">📰 شريط الأخبار</button>
     </div>
 
     <div id="adminContent"></div>
@@ -5180,7 +5837,14 @@ function showView(view) {
   }
   state.currentView = view;
   document.querySelectorAll('.view').forEach(el => el.classList.add('hidden'));
-  if (view === 'killer' || view === 'survivor') {
+  if (view === 'builds') {
+    // Builds page: show home view but hide the hero
+    $('view-home').classList.remove('hidden');
+    state.roleFilter = 'all';
+    document.querySelectorAll('[data-filter-role]').forEach(c =>
+      c.classList.toggle('active', c.dataset.filterRole === 'all')
+    );
+  } else if (view === 'killer' || view === 'survivor') {
     $('view-home').classList.remove('hidden');
     state.roleFilter = view;
     document.querySelectorAll('[data-filter-role]').forEach(c =>
@@ -5194,10 +5858,12 @@ function showView(view) {
   document.querySelectorAll('.nav-tab').forEach(t =>
     t.classList.toggle('active', t.dataset.view === view)
   );
-  // إخفاء hero في صفحات الأدمن والعشوائي
-  $('heroSection').style.display = (view === 'admin' || view === 'random') ? 'none' : 'block';
+  // Hide hero on non-home views
+  const hideHero = view === 'admin' || view === 'random' || view === 'builds' || view === 'themes';
+  $('heroSection').style.display = hideHero ? 'none' : 'block';
   if (view === 'admin') renderAdmin();
   else if (view === 'random') initRandomPage();
+  else if (view === 'themes') renderThemesPage();
   else renderBuilds();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -6834,11 +7500,12 @@ function getUserBadgeLevel(username) {
   return THEME_ORDER[user.badge] || 0;
 }
 
+const FREE_THEMES = new Set(['vhs','entity','clean','blood']);
 function canUseTheme(themeName) {
   if (!themeName) return true; // افتراضي متاح للجميع
+  if (FREE_THEMES.has(themeName)) return true; // ثيمات مجانية للجميع
   const required = THEME_ORDER[themeName] || 0;
   if (!state.session) return false;
-  // الأدمن يفتح كل شي
   if (isAdmin()) return true;
   const userLevel = getUserBadgeLevel(state.session.username);
   return userLevel >= required;
@@ -6846,7 +7513,8 @@ function canUseTheme(themeName) {
 
 function applyTheme(themeName) {
   const body = document.body;
-  ['theme-bronze','theme-silver','theme-gold','theme-diamond','theme-legendary'].forEach(c => body.classList.remove(c));
+  ['theme-bronze','theme-silver','theme-gold','theme-diamond','theme-legendary',
+   'theme-vhs','theme-entity','theme-clean','theme-blood'].forEach(c => body.classList.remove(c));
   if (themeName) body.classList.add('theme-' + themeName);
 }
 
@@ -7057,6 +7725,210 @@ document.addEventListener('keydown', e => {
 });
 
 $('footerYear').textContent = new Date().getFullYear();
+
+// ═══════════════════════════════════════════════════════════════
+// 🌫  PARTICLE / EMBER SYSTEM
+// ═══════════════════════════════════════════════════════════════
+(function initParticles() {
+  const canvas = document.getElementById('particleCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W = 0, H = 0, particles = [];
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // ember particle factory
+  function makeParticle() {
+    const side = Math.random() < 0.5 ? 'fog' : 'ember';
+    if (side === 'ember') {
+      return {
+        type: 'ember',
+        x: Math.random() * W,
+        y: H + Math.random() * 40,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: -(0.3 + Math.random() * 0.8),
+        size: 0.8 + Math.random() * 1.6,
+        alpha: 0.4 + Math.random() * 0.5,
+        life: 1,
+        decay: 0.0015 + Math.random() * 0.003
+      };
+    } else {
+      return {
+        type: 'fog',
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.15,
+        vy: -(0.05 + Math.random() * 0.12),
+        size: 60 + Math.random() * 120,
+        alpha: 0.01 + Math.random() * 0.025,
+        life: 1,
+        decay: 0.0004 + Math.random() * 0.0006
+      };
+    }
+  }
+
+  // seed initial particles
+  for (let i = 0; i < 60; i++) {
+    const p = makeParticle();
+    p.y = Math.random() * H;   // spread vertically at start
+    particles.push(p);
+  }
+
+  function getEmberColor() {
+    const body = document.body;
+    if (body.classList.contains('theme-vhs'))    return [120,100,230];
+    if (body.classList.contains('theme-entity')) return [160, 40,220];
+    if (body.classList.contains('theme-clean'))  return [100,100,100];
+    if (body.classList.contains('theme-blood'))  return [Math.random() < 0.7 ? 200 : 160, 0, 0];
+    // default DBD ember: red-orange
+    return [Math.random() < 0.6 ? 180 : 220, Math.random() < 0.5 ? 30 : 60, 10];
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    // spawn new particles to maintain count
+    while (particles.length < 80) particles.push(makeParticle());
+
+    particles = particles.filter(p => p.life > 0);
+
+    particles.forEach(p => {
+      p.x  += p.vx + Math.sin(Date.now() * 0.0003 + p.y * 0.01) * 0.08;
+      p.y  += p.vy;
+      p.life -= p.decay;
+
+      if (p.type === 'ember') {
+        const [r, g, b] = getEmberColor();
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${r},${g},${b},${p.alpha * p.life})`;
+        ctx.fill();
+        // soft glow halo
+        const grd = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 4);
+        grd.addColorStop(0, `rgba(${r},${g},${b},${p.alpha * p.life * 0.3})`);
+        grd.addColorStop(1, `rgba(${r},${g},${b},0)`);
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * 4, 0, Math.PI * 2);
+        ctx.fillStyle = grd;
+        ctx.fill();
+      } else {
+        // fog wisp
+        const grd = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size);
+        grd.addColorStop(0, `rgba(180,160,140,${p.alpha * p.life})`);
+        grd.addColorStop(1, `rgba(180,160,140,0)`);
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = grd;
+        ctx.fill();
+      }
+
+      // wrap around edges
+      if (p.y < -p.size * 2) p.life = 0;
+      if (p.x < -200) p.x = W + 100;
+      if (p.x >  W + 200) p.x = -100;
+    });
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ═══════════════════════════════════════════════════════════════
+// 🎨  THEMES PAGE RENDERER
+// ═══════════════════════════════════════════════════════════════
+const THEME_DEFS = [
+  { id: '',        name: 'DBD الافتراضي',   emoji: '🩸', desc: 'الأسلوب الأصلي — أسود دموي مع توهج ذهبي',                          gradient: 'linear-gradient(135deg,#080605 0%,#5a0606 50%,#c9a961 100%)', free: true },
+  { id: 'blood',   name: 'Blood Horror',    emoji: '🔴', desc: 'أسود قاتم مع أحمر دموي نابض — أكثر عدوانية وهولاً',               gradient: 'linear-gradient(135deg,#000 0%,#5a0000 45%,#cc0000 100%)',    free: true },
+  { id: 'vhs',     name: 'VHS كلاسيك',     emoji: '📼', desc: 'بنفسجي/سيان مع مؤثر CRT وخطوط فحص كلاسيكية',                     gradient: 'linear-gradient(135deg,#0a0820 0%,#5a4fa0 50%,#00d4c8 100%)', free: true },
+  { id: 'entity',  name: 'The Entity',      emoji: '🕷', desc: 'بنفسجي داكن خارق للطبيعة — روح الـ Entity نفسها',                gradient: 'linear-gradient(135deg,#0a0014 0%,#5a0fa0 50%,#b500e8 100%)', free: true },
+  { id: 'clean',   name: 'Clean Dark',      emoji: '🌑', desc: 'أسود ورمادي نظيف — بدون ضوضاء بصرية',                            gradient: 'linear-gradient(135deg,#080808 0%,#383838 50%,#c8c8c8 100%)',  free: true },
+  { id: 'bronze',  name: 'برونزي',          emoji: '🥉', desc: 'ثيم الوسام البرونزي — نبرة دافئة',                                  gradient: 'linear-gradient(135deg,#1a1209 0%,#cd7f32 50%,#e8a673 100%)', requires: 'bronze' },
+  { id: 'silver',  name: 'فضي',             emoji: '🥈', desc: 'ثيم الوسام الفضي — رمادي فضي أنيق',                               gradient: 'linear-gradient(135deg,#0d0f12 0%,#6a6a6a 50%,#e5e5e5 100%)', requires: 'silver' },
+  { id: 'gold',    name: 'ذهبي',            emoji: '🥇', desc: 'ثيم الوسام الذهبي — ذهب ملكي لامع',                               gradient: 'linear-gradient(135deg,#0f0c05 0%,#c9a961 50%,#ffd700 100%)',  requires: 'gold' },
+  { id: 'diamond', name: 'ماسي',            emoji: '💎', desc: 'ثيم الوسام الماسي — ضوء فيروزي باهر',                             gradient: 'linear-gradient(135deg,#06121a 0%,#5fc9e8 50%,#b9f2ff 100%)', requires: 'diamond' },
+  { id: 'legendary',name:'أسطوري',          emoji: '👑', desc: 'ثيم الأسطوري — ذهب وقرمزي مذهل',                                  gradient: 'linear-gradient(135deg,#0a0510 0%,#b81414 40%,#ffd700 100%)',  requires: 'legendary' },
+];
+
+function renderThemesPage() {
+  const grid = document.getElementById('themesPageGrid');
+  if (!grid) return;
+  const currentTheme = (() => { try { return localStorage.getItem(THEME_KEY) || ''; } catch(e) { return ''; } })();
+  grid.innerHTML = THEME_DEFS.map(t => {
+    const unlocked = canUseTheme(t.id);
+    const isActive = t.id === currentTheme;
+    return (
+      '<div class="theme-page-card' + (isActive ? ' active-theme' : '') + (unlocked ? '' : ' locked-theme') + '" onclick="' + (unlocked ? 'selectTheme(\'' + t.id + '\');renderThemesPage()' : '') + '">' +
+        '<div class="theme-card-swatch">' +
+          '<div class="theme-card-swatch-inner" style="background:' + t.gradient + '"></div>' +
+          (!unlocked ? '<div class="theme-card-lock">🔒</div>' : '') +
+          (isActive ? '<div style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.75);padding:4px 10px;font-size:11px;font-weight:800;color:var(--gold-bright);border:1px solid var(--gold-deep);letter-spacing:1px">✦ مفعّل</div>' : '') +
+        '</div>' +
+        '<div class="theme-card-body">' +
+          '<div class="theme-card-name">' + t.emoji + ' ' + t.name + '</div>' +
+          '<div class="theme-card-desc">' + t.desc + '</div>' +
+          (unlocked
+            ? '<button class="theme-card-btn">' + (isActive ? '✦ مفعّل حالياً' : 'تطبيق الثيم') + '</button>'
+            : '<button class="theme-card-btn" disabled style="opacity:0.5;cursor:not-allowed">🔒 يحتاج وسام ' + (t.requires || '') + '</button>') +
+        '</div>' +
+      '</div>'
+    );
+  }).join('');
+}
+window.renderThemesPage = renderThemesPage;
+
+// ═══════════════════════════════════════════════════════════════
+// 🎬  CINEMATIC MODAL CLOSE WITH ANIMATION
+// ═══════════════════════════════════════════════════════════════
+(function patchModalClose() {
+  const origClose = window.closeModal;
+  if (!origClose) return;
+  window.closeModal = function(id) {
+    const overlay = document.getElementById(id);
+    if (!overlay) return;
+    const modal = overlay.querySelector('.modal');
+    if (modal) {
+      overlay.classList.add('closing');
+      modal.style.animation = 'modalZoomOut 0.26s ease forwards';
+      setTimeout(() => {
+        overlay.classList.remove('active', 'closing');
+        modal.style.animation = '';
+      }, 260);
+    } else {
+      origClose(id);
+    }
+  };
+})();
+
+// ═══════════════════════════════════════════════════════════════
+// ✨  CARD CLICK FLASH ANIMATION
+// ═══════════════════════════════════════════════════════════════
+document.addEventListener('click', function(e) {
+  const card = e.target.closest('.build-card');
+  if (!card || card.classList.contains('pending')) return;
+  card.classList.remove('card-clicked');
+  void card.offsetWidth; // force reflow to restart animation
+  card.classList.add('card-clicked');
+  card.addEventListener('animationend', () => card.classList.remove('card-clicked'), { once: true });
+});
+
+// ── Random perk slot: add glitch class on spin ──
+(function patchRandomGlitch() {
+  const origRoll = window.rollRandomBuild;
+  if (!origRoll) return;
+  window.rollRandomBuild = function() {
+    document.querySelectorAll('.random-perk-slot').forEach(slot => {
+      slot.classList.remove('glitching', 'reveal');
+      void slot.offsetWidth;
+      slot.classList.add('glitching');
+    });
+    origRoll();
+  };
+})();
 </script>
 </body>
 </html>
