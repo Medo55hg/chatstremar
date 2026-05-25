@@ -2898,68 +2898,228 @@ footer .mark {
 }
 
 /* ═══════════════════════════════════════════════════════════════ */
-/* الثيمات حسب الوسام */
+/* 🎨 HIGH-QUALITY BADGE THEMES                                   */
+/* ═══════════════════════════════════════════════════════════════ */
+
+/* ── BRONZE: The Forge ── */
 body.theme-bronze {
-  --bg-deep: #1a1209;
-  --bg-darker: #241809;
-  --bg-card: #2a1d0d;
-  --gold: #cd7f32;
-  --gold-bright: #e8a673;
-  --gold-deep: #8b5a2b;
-  --line: #4a341c;
-  --line-bright: #6b4423;
+  --bg-deep:     #0f0a04;
+  --bg-darker:   #1a1006;
+  --bg-card:     #241608;
+  --gold:        #cd7f32;
+  --gold-bright: #f0a855;
+  --gold-deep:   #8b5a2b;
+  --line:        #3d2810;
+  --line-bright: #5e3e18;
+  --blood:       #8b2200;
+  --blood-bright:#c43000;
+  --ink-primary: #f5e8d0;
+  --ink-secondary:#c8a882;
+  --ink-muted:   #8a6e50;
+  --ink-faded:   #5a4530;
 }
+body.theme-bronze .topbar {
+  background: linear-gradient(90deg,rgba(20,12,4,.97),rgba(50,30,8,.95),rgba(20,12,4,.97));
+  border-bottom-color: #5e3e18;
+  box-shadow: 0 2px 20px rgba(205,127,50,.14);
+}
+body.theme-bronze .build-card:hover {
+  box-shadow: 0 16px 40px rgba(0,0,0,.65),0 0 32px rgba(205,127,50,.3);
+  border-color: #cd7f32;
+}
+body.theme-bronze .nav-tab.active {
+  color: #f0a855;
+  border-bottom-color: #cd7f32;
+  text-shadow: 0 0 12px rgba(205,127,50,.6);
+}
+body.theme-bronze .section-title {
+  text-shadow: 0 0 24px rgba(205,127,50,.5),0 0 60px rgba(205,127,50,.15);
+}
+body.theme-bronze .hero-title {
+  text-shadow: 0 0 40px rgba(205,127,50,.45),0 4px 24px rgba(0,0,0,.8);
+}
+body.theme-bronze::after {
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(205,127,50,.06) 0%,transparent 70%);
+}
+
+/* ── SILVER: Moonlit Ash ── */
 body.theme-silver {
-  --bg-deep: #0d0f12;
-  --bg-darker: #15181c;
-  --bg-card: #1d2126;
-  --gold: #c0c0c0;
-  --gold-bright: #e5e5e5;
-  --gold-deep: #8a8a8a;
-  --line: #33383f;
-  --line-bright: #4e545c;
+  --bg-deep:     #07080c;
+  --bg-darker:   #0e1018;
+  --bg-card:     #161924;
+  --gold:        #b8c8d8;
+  --gold-bright: #e8eef5;
+  --gold-deep:   #7a8fa0;
+  --line:        #262e40;
+  --line-bright: #3a4860;
+  --blood:       #6a2040;
+  --blood-bright:#9a2a5a;
+  --ink-primary: #e8eef8;
+  --ink-secondary:#a8b8cc;
+  --ink-muted:   #6878a0;
+  --ink-faded:   #38485e;
 }
+body.theme-silver .topbar {
+  background: linear-gradient(90deg,rgba(7,8,12,.97),rgba(16,20,30,.95),rgba(7,8,12,.97));
+  border-bottom-color: #3a4860;
+  box-shadow: 0 2px 20px rgba(184,200,216,.08);
+}
+body.theme-silver .build-card:hover {
+  box-shadow: 0 16px 40px rgba(0,0,0,.7),0 0 30px rgba(184,200,216,.2);
+  border-color: #7a8fa0;
+}
+body.theme-silver .nav-tab.active {
+  color: #e8eef5;
+  border-bottom-color: #b8c8d8;
+  text-shadow: 0 0 12px rgba(184,200,216,.5);
+}
+body.theme-silver .section-title {
+  text-shadow: 0 0 20px rgba(200,220,240,.4),0 0 60px rgba(184,200,216,.1);
+}
+body.theme-silver::after {
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 90% 40% at 50% 0%,rgba(160,180,220,.04) 0%,transparent 70%);
+}
+
+/* ── GOLD: Royal Embers ── */
 body.theme-gold {
-  --bg-deep: #0f0c05;
-  --bg-darker: #18130a;
-  --bg-card: #211a0e;
-  --gold: #ffd700;
-  --gold-bright: #fff5b3;
-  --gold-deep: #c9a961;
-  --line: #3d301a;
-  --line-bright: #5a4828;
+  --bg-deep:     #0a0700;
+  --bg-darker:   #140e00;
+  --bg-card:     #1c1402;
+  --gold:        #ffcc00;
+  --gold-bright: #ffe566;
+  --gold-deep:   #c9a200;
+  --line:        #382a00;
+  --line-bright: #584200;
+  --blood:       #993300;
+  --blood-bright:#cc4400;
+  --ink-primary: #fff8e0;
+  --ink-secondary:#e0c060;
+  --ink-muted:   #9a7a20;
+  --ink-faded:   #5a4a10;
 }
+body.theme-gold .topbar {
+  background: linear-gradient(90deg,rgba(10,7,0,.97),rgba(36,26,0,.95),rgba(10,7,0,.97));
+  border-bottom-color: #584200;
+  box-shadow: 0 2px 24px rgba(255,204,0,.18);
+}
+body.theme-gold .build-card:hover {
+  box-shadow: 0 16px 40px rgba(0,0,0,.6),0 0 40px rgba(255,204,0,.35);
+  border-color: #ffcc00;
+}
+body.theme-gold .nav-tab.active {
+  color: #ffe566;
+  border-bottom-color: #ffcc00;
+  text-shadow: 0 0 16px rgba(255,204,0,.7);
+}
+body.theme-gold .section-title {
+  text-shadow: 0 0 28px rgba(255,204,0,.65),0 0 60px rgba(255,180,0,.2);
+}
+body.theme-gold .hero-title {
+  text-shadow: 0 0 50px rgba(255,204,0,.55),0 4px 24px rgba(0,0,0,.8);
+}
+body.theme-gold::after {
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(255,204,0,.08) 0%,transparent 70%);
+}
+
+/* ── DIAMOND: Frozen Abyss ── */
 body.theme-diamond {
-  --bg-deep: #06121a;
-  --bg-darker: #091c2a;
-  --bg-card: #0e2738;
-  --gold: #b9f2ff;
-  --gold-bright: #e8faff;
-  --gold-deep: #5fc9e8;
-  --line: #1a3d52;
-  --line-bright: #26597a;
-  --blood: #8b1a4a;
-  --blood-bright: #b81c5f;
+  --bg-deep:     #020c18;
+  --bg-darker:   #041428;
+  --bg-card:     #061e38;
+  --gold:        #80e8ff;
+  --gold-bright: #ccf5ff;
+  --gold-deep:   #2eb8e0;
+  --line:        #0c2c48;
+  --line-bright: #1a4468;
+  --blood:       #600048;
+  --blood-bright:#9a0070;
+  --ink-primary: #e0f5ff;
+  --ink-secondary:#80c8e0;
+  --ink-muted:   #3a7898;
+  --ink-faded:   #183c58;
 }
+body.theme-diamond .topbar {
+  background: linear-gradient(90deg,rgba(2,12,24,.97),rgba(6,28,50,.95),rgba(2,12,24,.97));
+  border-bottom-color: #1a4468;
+  box-shadow: 0 2px 24px rgba(128,232,255,.1);
+}
+body.theme-diamond .build-card:hover {
+  box-shadow: 0 16px 40px rgba(0,0,0,.7),0 0 44px rgba(80,220,255,.32);
+  border-color: #2eb8e0;
+}
+body.theme-diamond .nav-tab.active {
+  color: #ccf5ff;
+  border-bottom-color: #80e8ff;
+  text-shadow: 0 0 16px rgba(128,232,255,.65);
+}
+body.theme-diamond .section-title {
+  text-shadow: 0 0 24px rgba(128,232,255,.55),0 0 60px rgba(80,200,255,.15);
+}
+body.theme-diamond::after {
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 90% 50% at 50% 0%,rgba(80,200,255,.07) 0%,transparent 70%);
+}
+
+/* ── LEGENDARY: Dark Apotheosis ── */
 body.theme-legendary {
-  --bg-deep: #0a0510;
-  --bg-darker: #10081d;
-  --bg-card: #180b2a;
-  --gold: #ffd700;
-  --gold-bright: #fff8dc;
-  --gold-deep: #c9a961;
-  --line: #2d1f4a;
-  --line-bright: #3f2a6b;
-  --blood: #b81414;
-  --blood-bright: #e63838;
+  --bg-deep:     #050006;
+  --bg-darker:   #0a000e;
+  --bg-card:     #120016;
+  --gold:        #e8b800;
+  --gold-bright: #ffe44c;
+  --gold-deep:   #b08800;
+  --line:        #280030;
+  --line-bright: #3e0050;
+  --blood:       #cc0020;
+  --blood-bright:#ff1030;
+  --ink-primary: #fff0f8;
+  --ink-secondary:#e0a0cc;
+  --ink-muted:   #8a3068;
+  --ink-faded:   #4a1040;
 }
 body.theme-legendary .topbar {
-  background: linear-gradient(
-    90deg,
-    rgba(184, 20, 20, 0.15),
-    rgba(74, 10, 61, 0.3),
-    rgba(184, 20, 20, 0.15)
-  );
+  background: linear-gradient(90deg,rgba(5,0,6,.97),rgba(28,0,36,.95),rgba(5,0,6,.97));
+  border-bottom-color: #3e0050;
+  box-shadow: 0 2px 30px rgba(200,0,255,.14),0 0 50px rgba(204,0,32,.08);
+}
+body.theme-legendary .build-card:hover {
+  box-shadow: 0 16px 40px rgba(0,0,0,.8),0 0 44px rgba(200,0,255,.28),0 0 60px rgba(204,0,32,.18);
+  border-color: #9900cc;
+}
+body.theme-legendary .nav-tab.active {
+  color: #ffe44c;
+  border-bottom-color: #e8b800;
+  text-shadow: 0 0 16px rgba(232,184,0,.8),0 0 32px rgba(200,0,255,.4);
+}
+body.theme-legendary .section-title {
+  text-shadow: 0 0 24px rgba(220,80,255,.5),0 0 60px rgba(204,0,32,.2);
+}
+body.theme-legendary .hero-title {
+  text-shadow: 0 0 50px rgba(220,80,255,.4),0 0 80px rgba(204,0,32,.3),0 4px 24px rgba(0,0,0,.9);
+}
+body.theme-legendary::after {
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(180,0,255,.07) 0%,transparent 60%),
+             radial-gradient(ellipse 60% 40% at 20% 100%,rgba(204,0,32,.05) 0%,transparent 70%);
+}
+@keyframes legendaryCardPulse {
+  0%,100%{ box-shadow:0 16px 40px rgba(0,0,0,.7),0 0 20px rgba(200,0,255,.2),0 0 40px rgba(204,0,32,.1); }
+  50%    { box-shadow:0 16px 40px rgba(0,0,0,.8),0 0 36px rgba(200,0,255,.45),0 0 60px rgba(204,0,32,.25); }
+}
+
+/* ── CUSTOM THEME ── */
+body.theme-custom {
+  --bg-deep:     var(--cu-bg,    #0c0806);
+  --bg-darker:   var(--cu-bg2,   #160f08);
+  --bg-card:     var(--cu-card,  #201608);
+  --gold:        var(--cu-a1,    #cd7f32);
+  --gold-bright: var(--cu-a2,    #e8a673);
+  --gold-deep:   var(--cu-ad,    #8b5a2b);
+  --line:        var(--cu-line,  #3a2810);
+  --line-bright: var(--cu-line2, #5a3e18);
 }
 
 .theme-selector {
@@ -4066,12 +4226,246 @@ body.theme-blood .section-title {
 }
 .theme-card-btn:hover { border-color: var(--gold-deep); color: var(--gold-bright); background: rgba(201,169,97,0.06); }
 .theme-page-card.active-theme .theme-card-btn { border-color: var(--gold); color: var(--gold-bright); background: rgba(201,169,97,0.1); }
+
+/* ═══════════════════════════════════════════════════════════════ */
+/* 🌑 THEME TRANSITION OVERLAY                                    */
+/* ═══════════════════════════════════════════════════════════════ */
+#themeTransitionOverlay {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 99998;
+  transition: opacity 0.14s ease;
+}
+
+/* ═══════════════════════════════════════════════════════════════ */
+/* 🎨 CUSTOM THEME BUILDER                                        */
+/* ═══════════════════════════════════════════════════════════════ */
+.ctb-section {
+  margin-top: 48px;
+  border: 1px solid var(--line-bright);
+  background: linear-gradient(180deg,var(--bg-card) 0%,var(--bg-darker) 100%);
+  position: relative;
+  overflow: hidden;
+}
+.ctb-section::before {
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold) 50%,transparent);
+}
+.ctb-header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:18px 24px;
+  cursor:pointer;
+  user-select:none;
+  border-bottom:1px solid var(--line);
+}
+.ctb-header-title {
+  font-size:18px;
+  font-weight:800;
+  color:var(--gold-bright);
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.ctb-header-sub {
+  font-size:13px;
+  font-weight:500;
+  color:var(--ink-muted);
+  margin-top:3px;
+}
+.ctb-header-arrow {
+  font-size:13px;
+  color:var(--ink-muted);
+  transition:transform 0.3s ease;
+  flex-shrink:0;
+}
+.ctb-section.open .ctb-header-arrow { transform:rotate(180deg); }
+.ctb-body {
+  display:none;
+  padding:28px 24px;
+}
+.ctb-section.open .ctb-body {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:28px;
+}
+@media(max-width:700px){ .ctb-section.open .ctb-body{ grid-template-columns:1fr; } }
+.ctb-full-col { grid-column:1/-1; }
+.ctb-group { display:flex;flex-direction:column;gap:14px; }
+.ctb-group-title {
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:1.5px;
+  color:var(--gold-bright);
+  text-transform:uppercase;
+  border-bottom:1px solid var(--line);
+  padding-bottom:7px;
+  margin-bottom:2px;
+}
+.ctb-row { display:flex;align-items:center;gap:12px; }
+.ctb-label {
+  font-size:13px;
+  font-weight:600;
+  color:var(--ink-secondary);
+  width:120px;
+  flex-shrink:0;
+}
+.ctb-color-input {
+  -webkit-appearance:none;
+  appearance:none;
+  width:44px;
+  height:40px;
+  border:2px solid var(--line-bright);
+  background:none;
+  cursor:pointer;
+  padding:2px;
+  transition:border-color 0.2s;
+  flex-shrink:0;
+}
+.ctb-color-input:hover { border-color:var(--gold-deep); }
+.ctb-hex-val {
+  font-size:11px;
+  font-family:monospace;
+  color:var(--ink-muted);
+  background:var(--bg-deep);
+  border:1px solid var(--line);
+  padding:4px 8px;
+  min-width:68px;
+  text-align:center;
+}
+.ctb-presets { display:flex;flex-wrap:wrap;gap:6px; }
+.ctb-preset-btn {
+  padding:6px 13px;
+  font-size:12px;
+  font-weight:700;
+  font-family:'Cairo',sans-serif;
+  border:1px solid var(--line-bright);
+  background:transparent;
+  color:var(--ink-secondary);
+  cursor:pointer;
+  transition:all 0.18s;
+}
+.ctb-preset-btn:hover { border-color:var(--gold-deep);color:var(--gold-bright);background:rgba(255,255,255,.04); }
+.ctb-preset-btn.active { border-color:var(--gold);color:var(--gold-bright);background:rgba(201,169,97,.12); }
+.ctb-name-input {
+  width:100%;
+  padding:10px 14px;
+  background:var(--bg-deep);
+  border:1px solid var(--line-bright);
+  color:var(--ink-primary);
+  font-family:'Cairo',sans-serif;
+  font-size:14px;
+  font-weight:600;
+  outline:none;
+  transition:border-color 0.2s;
+  box-sizing:border-box;
+}
+.ctb-name-input:focus { border-color:var(--gold-deep); }
+.ctb-preview-pane {
+  border:1px solid var(--line);
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  min-height:140px;
+  transition:all 0.2s;
+}
+.ctb-preview-card {
+  padding:12px 14px;
+  border:1px solid;
+  font-size:13px;
+  font-weight:700;
+  line-height:1.5;
+  transition:all 0.2s;
+}
+.ctb-preview-btn-mock {
+  padding:8px 12px;
+  font-size:12px;
+  font-weight:700;
+  font-family:'Cairo',sans-serif;
+  border:1px solid;
+  background:transparent;
+  width:100%;
+  text-align:center;
+  transition:all 0.2s;
+  color:inherit;
+}
+.ctb-actions {
+  display:flex;
+  gap:10px;
+  margin-top:8px;
+}
+.ctb-save-btn {
+  flex:1;
+  padding:12px;
+  font-family:'Cairo',sans-serif;
+  font-size:14px;
+  font-weight:800;
+  border:1px solid var(--gold-deep);
+  background:rgba(201,169,97,.08);
+  color:var(--gold-bright);
+  cursor:pointer;
+  transition:all 0.2s;
+  letter-spacing:0.5px;
+}
+.ctb-save-btn:hover { background:rgba(201,169,97,.15);border-color:var(--gold); }
+.ctb-apply-preview-btn {
+  padding:12px 18px;
+  font-family:'Cairo',sans-serif;
+  font-size:13px;
+  font-weight:700;
+  border:1px solid var(--line-bright);
+  background:transparent;
+  color:var(--ink-secondary);
+  cursor:pointer;
+  transition:all 0.2s;
+}
+.ctb-apply-preview-btn:hover { border-color:var(--gold-deep);color:var(--gold-bright); }
+.ctb-saved-section { margin-top:40px; }
+.ctb-saved-title {
+  font-size:15px;
+  font-weight:800;
+  color:var(--gold-bright);
+  margin-bottom:14px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding-bottom:8px;
+  border-bottom:1px solid var(--line);
+}
+.custom-theme-card { position:relative; }
+.ctb-delete-btn {
+  position:absolute;
+  top:8px;
+  left:8px;
+  width:28px;
+  height:28px;
+  background:rgba(0,0,0,.75);
+  border:1px solid rgba(255,80,80,.35);
+  color:rgba(255,100,100,.8);
+  font-size:13px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  transition:opacity 0.2s;
+  z-index:2;
+}
+.custom-theme-card:hover .ctb-delete-btn { opacity:1; }
 </style>
 </head>
 <body>
 
 <canvas id="particleCanvas"></canvas>
 <div id="vhsScanlines"></div>
+<div id="themeTransitionOverlay"></div>
 
 <div class="loading-overlay" id="loadingOverlay">
   <div class="loading-spinner"></div>
@@ -4240,6 +4634,83 @@ body.theme-blood .section-title {
         <p class="section-sub">اختر ثيماً يعكس أسلوبك داخل عالم DBD</p>
       </div>
       <div id="themesPageGrid" class="themes-page-grid"></div>
+
+      <!-- ═══ CUSTOM THEME BUILDER ═══ -->
+      <div class="ctb-section" id="customThemeBuilderSection">
+        <div class="ctb-header" onclick="toggleCustomThemeBuilder()">
+          <div>
+            <div class="ctb-header-title">✦ منشئ الثيم المخصص</div>
+            <div class="ctb-header-sub">صمّم ثيمك الخاص واحفظه</div>
+          </div>
+          <div class="ctb-header-arrow">▼</div>
+        </div>
+        <div class="ctb-body">
+          <!-- Colors + Glow -->
+          <div class="ctb-group">
+            <div class="ctb-group-title">الألوان</div>
+            <div class="ctb-row">
+              <span class="ctb-label">خلفية الموقع</span>
+              <input type="color" class="ctb-color-input" id="ctbBgColor" value="#0c0806" oninput="updateCtbPreview()">
+              <span class="ctb-hex-val" id="ctbBgHex">#0c0806</span>
+            </div>
+            <div class="ctb-row">
+              <span class="ctb-label">خلفية الكارد</span>
+              <input type="color" class="ctb-color-input" id="ctbCardColor" value="#241408" oninput="updateCtbPreview()">
+              <span class="ctb-hex-val" id="ctbCardHex">#241408</span>
+            </div>
+            <div class="ctb-row">
+              <span class="ctb-label">اللون الأساسي</span>
+              <input type="color" class="ctb-color-input" id="ctbAccent1" value="#cd7f32" oninput="updateCtbPreview()">
+              <span class="ctb-hex-val" id="ctbA1Hex">#cd7f32</span>
+            </div>
+            <div class="ctb-row">
+              <span class="ctb-label">اللون الثانوي</span>
+              <input type="color" class="ctb-color-input" id="ctbAccent2" value="#e8a673" oninput="updateCtbPreview()">
+              <span class="ctb-hex-val" id="ctbA2Hex">#e8a673</span>
+            </div>
+            <div class="ctb-group-title" style="margin-top:8px">توهج الكارد</div>
+            <div class="ctb-presets" id="ctbGlowPresets">
+              <button class="ctb-preset-btn active" onclick="setCtbPreset('glow','none',this)">بدون</button>
+              <button class="ctb-preset-btn" onclick="setCtbPreset('glow','subtle',this)">خفيف</button>
+              <button class="ctb-preset-btn" onclick="setCtbPreset('glow','normal',this)">عادي</button>
+              <button class="ctb-preset-btn" onclick="setCtbPreset('glow','intense',this)">قوي</button>
+              <button class="ctb-preset-btn" onclick="setCtbPreset('glow','pulse',this)">نابض ✦</button>
+            </div>
+          </div>
+
+          <!-- Preview + Save -->
+          <div class="ctb-group">
+            <div class="ctb-group-title">خلفية الجو</div>
+            <div class="ctb-presets" id="ctbBgStylePresets">
+              <button class="ctb-preset-btn active" onclick="setCtbPreset('bgstyle','dark',this)">داكن</button>
+              <button class="ctb-preset-btn" onclick="setCtbPreset('bgstyle','fog',this)">ضباب</button>
+              <button class="ctb-preset-btn" onclick="setCtbPreset('bgstyle','blood',this)">دموي</button>
+              <button class="ctb-preset-btn" onclick="setCtbPreset('bgstyle','abyss',this)">هاوية</button>
+              <button class="ctb-preset-btn" onclick="setCtbPreset('bgstyle','ethereal',this)">أثيري</button>
+            </div>
+            <div class="ctb-group-title" style="margin-top:8px">معاينة فورية</div>
+            <div class="ctb-preview-pane" id="ctbPreviewPane">
+              <div id="ctbPreviewCard" class="ctb-preview-card">
+                <div style="font-size:13px;font-weight:800;margin-bottom:3px">بيلد تجريبي ✦</div>
+                <div style="font-size:11px;opacity:.65">Dead by Daylight Community</div>
+              </div>
+              <div id="ctbPreviewBtnMock" class="ctb-preview-btn-mock">تطبيق الثيم</div>
+            </div>
+            <div class="ctb-group-title" style="margin-top:8px">اسم الثيم</div>
+            <input type="text" class="ctb-name-input" id="ctbThemeName" placeholder="اكتب اسماً لثيمك..." value="ثيمي المخصص" maxlength="30" oninput="">
+            <div class="ctb-actions">
+              <button class="ctb-save-btn" onclick="saveCustomTheme()">💾 حفظ الثيم</button>
+              <button class="ctb-apply-preview-btn" onclick="previewCustomThemeLive()">👁 تجربة</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ SAVED CUSTOM THEMES ═══ -->
+      <div id="ctbSavedSection" class="ctb-saved-section" style="display:none">
+        <div class="ctb-saved-title">✦ ثيماتي المحفوظة</div>
+        <div id="ctbSavedGrid" class="themes-page-grid"></div>
+      </div>
     </div>
   </section>
 
@@ -7511,11 +7982,21 @@ function canUseTheme(themeName) {
   return userLevel >= required;
 }
 
-function applyTheme(themeName) {
+function applyTheme(themeName, _instant) {
   const body = document.body;
-  ['theme-bronze','theme-silver','theme-gold','theme-diamond','theme-legendary',
-   'theme-vhs','theme-entity','theme-clean','theme-blood'].forEach(c => body.classList.remove(c));
-  if (themeName) body.classList.add('theme-' + themeName);
+  const ALL_THEMES = ['theme-bronze','theme-silver','theme-gold','theme-diamond','theme-legendary',
+                      'theme-vhs','theme-entity','theme-clean','theme-blood','theme-custom'];
+  const doSwitch = () => {
+    ALL_THEMES.forEach(c => body.classList.remove(c));
+    // clear any custom-theme CSS vars
+    ['--cu-bg','--cu-bg2','--cu-card','--cu-a1','--cu-a2','--cu-ad','--cu-line','--cu-line2']
+      .forEach(v => body.style.removeProperty(v));
+    if (themeName) body.classList.add('theme-' + themeName);
+  };
+  const overlay = document.getElementById('themeTransitionOverlay');
+  if (_instant || !overlay) { doSwitch(); return; }
+  overlay.style.opacity = '0.88';
+  setTimeout(() => { doSwitch(); overlay.style.opacity = '0'; }, 140);
 }
 
 function selectTheme(themeName) {
@@ -7565,12 +8046,14 @@ function updateThemeMenuUI() {
 
 function restoreTheme() {
   try {
-    const saved = localStorage.getItem(THEME_KEY);
-    if (saved && canUseTheme(saved)) {
-      applyTheme(saved);
+    const saved = localStorage.getItem(THEME_KEY) || '';
+    if (saved.startsWith('custom:')) {
+      const id = saved.slice(7);
+      applyCustomThemeById(id, true);
+    } else if (saved && canUseTheme(saved)) {
+      applyTheme(saved, true);
     } else if (saved && !canUseTheme(saved)) {
-      // المستخدم فقد الوصول (مثلاً تم سحب الوسام)، نرجع للافتراضي
-      applyTheme('');
+      applyTheme('', true);
     }
   } catch (e) {}
   updateThemeMenuUI();
@@ -7780,13 +8263,17 @@ $('footerYear').textContent = new Date().getFullYear();
   }
 
   function getEmberColor() {
-    const body = document.body;
-    if (body.classList.contains('theme-vhs'))    return [120,100,230];
-    if (body.classList.contains('theme-entity')) return [160, 40,220];
-    if (body.classList.contains('theme-clean'))  return [100,100,100];
-    if (body.classList.contains('theme-blood'))  return [Math.random() < 0.7 ? 200 : 160, 0, 0];
-    // default DBD ember: red-orange
-    return [Math.random() < 0.6 ? 180 : 220, Math.random() < 0.5 ? 30 : 60, 10];
+    const cl = document.body.classList;
+    if (cl.contains('theme-vhs'))       return [120,100,230];
+    if (cl.contains('theme-entity'))    return [160,40,220];
+    if (cl.contains('theme-clean'))     return [100,100,100];
+    if (cl.contains('theme-blood'))     return [Math.random()<0.7?200:160,0,0];
+    if (cl.contains('theme-bronze'))    return [Math.random()<0.6?205:160,Math.random()<0.5?100:60,20];
+    if (cl.contains('theme-silver'))    return [180,200,Math.random()<0.5?220:240];
+    if (cl.contains('theme-gold'))      return [255,Math.random()<0.6?200:160,0];
+    if (cl.contains('theme-diamond'))   return [Math.random()<0.6?80:120,220,255];
+    if (cl.contains('theme-legendary')) return [Math.random()<0.5?200:150,0,Math.random()<0.5?255:180];
+    return [Math.random()<0.6?180:220,Math.random()<0.5?30:60,10];
   }
 
   function draw() {
@@ -7842,44 +8329,206 @@ $('footerYear').textContent = new Date().getFullYear();
 // 🎨  THEMES PAGE RENDERER
 // ═══════════════════════════════════════════════════════════════
 const THEME_DEFS = [
-  { id: '',        name: 'DBD الافتراضي',   emoji: '🩸', desc: 'الأسلوب الأصلي — أسود دموي مع توهج ذهبي',                          gradient: 'linear-gradient(135deg,#080605 0%,#5a0606 50%,#c9a961 100%)', free: true },
-  { id: 'blood',   name: 'Blood Horror',    emoji: '🔴', desc: 'أسود قاتم مع أحمر دموي نابض — أكثر عدوانية وهولاً',               gradient: 'linear-gradient(135deg,#000 0%,#5a0000 45%,#cc0000 100%)',    free: true },
-  { id: 'vhs',     name: 'VHS كلاسيك',     emoji: '📼', desc: 'بنفسجي/سيان مع مؤثر CRT وخطوط فحص كلاسيكية',                     gradient: 'linear-gradient(135deg,#0a0820 0%,#5a4fa0 50%,#00d4c8 100%)', free: true },
-  { id: 'entity',  name: 'The Entity',      emoji: '🕷', desc: 'بنفسجي داكن خارق للطبيعة — روح الـ Entity نفسها',                gradient: 'linear-gradient(135deg,#0a0014 0%,#5a0fa0 50%,#b500e8 100%)', free: true },
-  { id: 'clean',   name: 'Clean Dark',      emoji: '🌑', desc: 'أسود ورمادي نظيف — بدون ضوضاء بصرية',                            gradient: 'linear-gradient(135deg,#080808 0%,#383838 50%,#c8c8c8 100%)',  free: true },
-  { id: 'bronze',  name: 'برونزي',          emoji: '🥉', desc: 'ثيم الوسام البرونزي — نبرة دافئة',                                  gradient: 'linear-gradient(135deg,#1a1209 0%,#cd7f32 50%,#e8a673 100%)', requires: 'bronze' },
-  { id: 'silver',  name: 'فضي',             emoji: '🥈', desc: 'ثيم الوسام الفضي — رمادي فضي أنيق',                               gradient: 'linear-gradient(135deg,#0d0f12 0%,#6a6a6a 50%,#e5e5e5 100%)', requires: 'silver' },
-  { id: 'gold',    name: 'ذهبي',            emoji: '🥇', desc: 'ثيم الوسام الذهبي — ذهب ملكي لامع',                               gradient: 'linear-gradient(135deg,#0f0c05 0%,#c9a961 50%,#ffd700 100%)',  requires: 'gold' },
-  { id: 'diamond', name: 'ماسي',            emoji: '💎', desc: 'ثيم الوسام الماسي — ضوء فيروزي باهر',                             gradient: 'linear-gradient(135deg,#06121a 0%,#5fc9e8 50%,#b9f2ff 100%)', requires: 'diamond' },
-  { id: 'legendary',name:'أسطوري',          emoji: '👑', desc: 'ثيم الأسطوري — ذهب وقرمزي مذهل',                                  gradient: 'linear-gradient(135deg,#0a0510 0%,#b81414 40%,#ffd700 100%)',  requires: 'legendary' },
+  { id: '',         name: 'DBD الافتراضي',  emoji:'🩸', desc:'الأسلوب الأصلي — أسود دموي مع توهج ذهبي',                 gradient:'linear-gradient(135deg,#080605 0%,#5a0606 50%,#c9a961 100%)',  free:true },
+  { id: 'blood',    name: 'Blood Horror',   emoji:'🔴', desc:'أسود قاتم مع أحمر دموي نابض — أكثر عدوانية وهولاً',        gradient:'linear-gradient(135deg,#000 0%,#5a0000 45%,#cc0000 100%)',     free:true },
+  { id: 'vhs',      name: 'VHS كلاسيك',    emoji:'📼', desc:'بنفسجي/سيان مع مؤثر CRT وخطوط فحص كلاسيكية',              gradient:'linear-gradient(135deg,#0a0820 0%,#5a4fa0 50%,#00d4c8 100%)',  free:true },
+  { id: 'entity',   name: 'The Entity',     emoji:'🕷', desc:'بنفسجي داكن خارق للطبيعة — روح الـ Entity نفسها',         gradient:'linear-gradient(135deg,#0a0014 0%,#5a0fa0 50%,#b500e8 100%)',  free:true },
+  { id: 'clean',    name: 'Clean Dark',     emoji:'🌑', desc:'أسود ورمادي نظيف — بدون ضوضاء بصرية',                     gradient:'linear-gradient(135deg,#080808 0%,#383838 50%,#c8c8c8 100%)',   free:true },
+  { id: 'bronze',   name: 'The Forge',      emoji:'🔥', desc:'وسام برونزي — نار المصهر ودفء النحاس القديم',              gradient:'linear-gradient(135deg,#0f0a04 0%,#6b3a18 45%,#f0a855 100%)',  requires:'bronze' },
+  { id: 'silver',   name: 'Moonlit Ash',    emoji:'🌙', desc:'وسام فضي — رماد القمر وبرودة الفولاذ الليلي',             gradient:'linear-gradient(135deg,#07080c 0%,#3a4860 45%,#e8eef5 100%)',  requires:'silver' },
+  { id: 'gold',     name: 'Royal Embers',   emoji:'👑', desc:'وسام ذهبي — جمر ملكي وذهب القصور القديمة',                gradient:'linear-gradient(135deg,#0a0700 0%,#584200 45%,#ffe566 100%)',   requires:'gold' },
+  { id: 'diamond',  name: 'Frozen Abyss',   emoji:'❄', desc:'وسام ماسي — هاوية متجمدة وضوء كريستالي باهر',             gradient:'linear-gradient(135deg,#020c18 0%,#1a4468 45%,#ccf5ff 100%)',  requires:'diamond' },
+  { id: 'legendary',name:'Dark Apotheosis', emoji:'⚡', desc:'وسام أسطوري — تحول مظلم وقوة كونية — أعلى المراتب',       gradient:'linear-gradient(135deg,#050006 0%,#3e0050 40%,#ffe44c 100%)',   requires:'legendary' },
 ];
+
+function buildThemeCardHtml(t, currentSaved, isCustom, customData) {
+  const unlocked = isCustom ? true : canUseTheme(t.id);
+  const isActive = isCustom
+    ? (currentSaved === 'custom:' + customData.id)
+    : (t.id === currentSaved);
+  const clickFn = isCustom
+    ? 'applyCustomThemeById(\'' + customData.id + '\')'
+    : (unlocked ? 'selectTheme(\'' + t.id + '\');renderThemesPage()' : '');
+  const gradient = isCustom
+    ? ('linear-gradient(135deg,' + customData.bgColor + ' 0%,' + customData.cardColor + ' 50%,' + customData.accent1 + ' 100%)')
+    : t.gradient;
+  const label = isCustom ? (customData.name || 'ثيم مخصص') : t.name;
+  const emoji = isCustom ? '🎨' : t.emoji;
+  const desc  = isCustom ? ('توهج: ' + (customData.glowStyle||'none') + ' · جو: ' + (customData.bgStyle||'dark')) : t.desc;
+  const delBtn = isCustom
+    ? '<button class="ctb-delete-btn" onclick="deleteCustomTheme(\'' + customData.id + '\',event)" title="حذف">✕</button>'
+    : '';
+  return (
+    '<div class="theme-page-card' + (isCustom?' custom-theme-card':'') + (isActive?' active-theme':'') + (unlocked?'':' locked-theme') + '" onclick="' + clickFn + '">' +
+      delBtn +
+      '<div class="theme-card-swatch">' +
+        '<div class="theme-card-swatch-inner" style="background:' + gradient + '"></div>' +
+        (!unlocked ? '<div class="theme-card-lock">🔒</div>' : '') +
+        (isActive ? '<div style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,.75);padding:4px 10px;font-size:11px;font-weight:800;color:var(--gold-bright);border:1px solid var(--gold-deep);letter-spacing:1px">✦ مفعّل</div>' : '') +
+      '</div>' +
+      '<div class="theme-card-body">' +
+        '<div class="theme-card-name">' + emoji + ' ' + label + '</div>' +
+        '<div class="theme-card-desc">' + desc + '</div>' +
+        (unlocked
+          ? '<button class="theme-card-btn">' + (isActive ? '✦ مفعّل حالياً' : 'تطبيق الثيم') + '</button>'
+          : '<button class="theme-card-btn" disabled style="opacity:.5;cursor:not-allowed">🔒 يحتاج وسام ' + (t.requires||'') + '</button>') +
+      '</div>' +
+    '</div>'
+  );
+}
 
 function renderThemesPage() {
   const grid = document.getElementById('themesPageGrid');
   if (!grid) return;
-  const currentTheme = (() => { try { return localStorage.getItem(THEME_KEY) || ''; } catch(e) { return ''; } })();
-  grid.innerHTML = THEME_DEFS.map(t => {
-    const unlocked = canUseTheme(t.id);
-    const isActive = t.id === currentTheme;
-    return (
-      '<div class="theme-page-card' + (isActive ? ' active-theme' : '') + (unlocked ? '' : ' locked-theme') + '" onclick="' + (unlocked ? 'selectTheme(\'' + t.id + '\');renderThemesPage()' : '') + '">' +
-        '<div class="theme-card-swatch">' +
-          '<div class="theme-card-swatch-inner" style="background:' + t.gradient + '"></div>' +
-          (!unlocked ? '<div class="theme-card-lock">🔒</div>' : '') +
-          (isActive ? '<div style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.75);padding:4px 10px;font-size:11px;font-weight:800;color:var(--gold-bright);border:1px solid var(--gold-deep);letter-spacing:1px">✦ مفعّل</div>' : '') +
-        '</div>' +
-        '<div class="theme-card-body">' +
-          '<div class="theme-card-name">' + t.emoji + ' ' + t.name + '</div>' +
-          '<div class="theme-card-desc">' + t.desc + '</div>' +
-          (unlocked
-            ? '<button class="theme-card-btn">' + (isActive ? '✦ مفعّل حالياً' : 'تطبيق الثيم') + '</button>'
-            : '<button class="theme-card-btn" disabled style="opacity:0.5;cursor:not-allowed">🔒 يحتاج وسام ' + (t.requires || '') + '</button>') +
-        '</div>' +
-      '</div>'
-    );
-  }).join('');
+  const currentSaved = (() => { try { return localStorage.getItem(THEME_KEY) || ''; } catch(e) { return ''; } })();
+  grid.innerHTML = THEME_DEFS.map(t => buildThemeCardHtml(t, currentSaved, false, null)).join('');
+
+  // render saved custom themes
+  const customThemes = getCustomThemes();
+  const savedSection = document.getElementById('ctbSavedSection');
+  const savedGrid = document.getElementById('ctbSavedGrid');
+  if (savedSection && savedGrid) {
+    if (customThemes.length > 0) {
+      savedSection.style.display = 'block';
+      savedGrid.innerHTML = customThemes.map(ct => buildThemeCardHtml(null, currentSaved, true, ct)).join('');
+    } else {
+      savedSection.style.display = 'none';
+    }
+  }
 }
 window.renderThemesPage = renderThemesPage;
+
+// ═══════════════════════════════════════════════════════════════
+// 🎨  CUSTOM THEME BUILDER
+// ═══════════════════════════════════════════════════════════════
+const CUSTOM_THEMES_KEY = 'dbdcommunity_custom_themes_v1';
+let _ctbGlow = 'none';
+let _ctbBgStyle = 'dark';
+
+function getCustomThemes() {
+  try { return JSON.parse(localStorage.getItem(CUSTOM_THEMES_KEY) || '[]'); } catch(e) { return []; }
+}
+
+function setCtbPreset(type, value, btn) {
+  if (type === 'glow') _ctbGlow = value; else _ctbBgStyle = value;
+  const container = btn.closest('.ctb-presets');
+  if (container) container.querySelectorAll('.ctb-preset-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updateCtbPreview();
+}
+
+function _adjustHex(hex, delta) {
+  let r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+  const c = v => Math.max(0,Math.min(255,Math.round(v+delta)));
+  return '#'+[c(r),c(g),c(b)].map(v=>v.toString(16).padStart(2,'0')).join('');
+}
+
+function updateCtbPreview() {
+  const bg   = (document.getElementById('ctbBgColor')   ||{}).value || '#0c0806';
+  const card = (document.getElementById('ctbCardColor') ||{}).value || '#241408';
+  const a1   = (document.getElementById('ctbAccent1')   ||{}).value || '#cd7f32';
+  const a2   = (document.getElementById('ctbAccent2')   ||{}).value || '#e8a673';
+  const setEl = (id, val) => { const el=document.getElementById(id); if(el) el.textContent=val; };
+  setEl('ctbBgHex', bg); setEl('ctbCardHex', card); setEl('ctbA1Hex', a1); setEl('ctbA2Hex', a2);
+  const pane = document.getElementById('ctbPreviewPane');
+  const pCard = document.getElementById('ctbPreviewCard');
+  const pBtn = document.getElementById('ctbPreviewBtnMock');
+  if (!pane || !pCard || !pBtn) return;
+  pane.style.background = bg;
+  pane.style.borderColor = a1 + '66';
+  pCard.style.background = card;
+  pCard.style.borderColor = a1;
+  pCard.style.color = a2;
+  const glowMap = { none:'none', subtle:`0 0 10px ${a1}44`, normal:`0 0 22px ${a1}88`, intense:`0 0 38px ${a1}bb`, pulse:`0 0 22px ${a1}88` };
+  pCard.style.boxShadow = glowMap[_ctbGlow] || 'none';
+  pBtn.style.borderColor = a1;
+  pBtn.style.color = a2;
+  pBtn.style.background = 'transparent';
+}
+
+function _buildCustomVars(theme) {
+  return {
+    '--cu-bg':    theme.bgColor,
+    '--cu-bg2':   _adjustHex(theme.bgColor, 14),
+    '--cu-card':  theme.cardColor,
+    '--cu-a1':    theme.accent1,
+    '--cu-a2':    theme.accent2,
+    '--cu-ad':    _adjustHex(theme.accent1, -45),
+    '--cu-line':  _adjustHex(theme.bgColor, 28),
+    '--cu-line2': _adjustHex(theme.bgColor, 46),
+  };
+}
+
+function applyCustomThemeById(id, instant) {
+  const themes = getCustomThemes();
+  const theme = themes.find(t => t.id === id);
+  if (!theme) return;
+  const body = document.body;
+  const doApply = () => {
+    applyTheme('custom', true);
+    Object.entries(_buildCustomVars(theme)).forEach(([k,v]) => body.style.setProperty(k,v));
+    body.dataset.ctbGlow = theme.glowStyle || 'none';
+  };
+  if (instant) { doApply(); } else {
+    const ov = document.getElementById('themeTransitionOverlay');
+    if (ov) { ov.style.opacity='0.88'; setTimeout(()=>{ doApply(); ov.style.opacity='0'; },140); }
+    else doApply();
+  }
+  try { localStorage.setItem(THEME_KEY,'custom:'+id); } catch(e) {}
+  updateThemeMenuUI();
+  renderThemesPage();
+}
+window.applyCustomThemeById = applyCustomThemeById;
+
+function previewCustomThemeLive() {
+  const bg   = (document.getElementById('ctbBgColor')   ||{}).value || '#0c0806';
+  const card = (document.getElementById('ctbCardColor') ||{}).value || '#241408';
+  const a1   = (document.getElementById('ctbAccent1')   ||{}).value || '#cd7f32';
+  const a2   = (document.getElementById('ctbAccent2')   ||{}).value || '#e8a673';
+  applyTheme('custom');
+  const body = document.body;
+  const vars = _buildCustomVars({ bgColor:bg, cardColor:card, accent1:a1, accent2:a2 });
+  Object.entries(vars).forEach(([k,v]) => body.style.setProperty(k,v));
+  toast('✦ معاينة الثيم المخصص — احفظه لتثبيته', 'info');
+}
+window.previewCustomThemeLive = previewCustomThemeLive;
+
+function saveCustomTheme() {
+  const name  = (document.getElementById('ctbThemeName') ||{}).value || 'ثيمي المخصص';
+  const bg    = (document.getElementById('ctbBgColor')   ||{}).value || '#0c0806';
+  const card  = (document.getElementById('ctbCardColor') ||{}).value || '#241408';
+  const a1    = (document.getElementById('ctbAccent1')   ||{}).value || '#cd7f32';
+  const a2    = (document.getElementById('ctbAccent2')   ||{}).value || '#e8a673';
+  if (!name.trim()) { toast('أدخل اسماً للثيم', 'error'); return; }
+  const themes = getCustomThemes();
+  if (themes.length >= 6) { toast('الحد الأقصى 6 ثيمات مخصصة', 'error'); return; }
+  const theme = { id:'custom_'+Date.now(), name:name.trim(), bgColor:bg, cardColor:card, accent1:a1, accent2:a2, glowStyle:_ctbGlow, bgStyle:_ctbBgStyle, createdAt:Date.now() };
+  themes.push(theme);
+  try { localStorage.setItem(CUSTOM_THEMES_KEY, JSON.stringify(themes)); } catch(e) {}
+  toast('✦ تم حفظ الثيم: ' + theme.name, 'success');
+  renderThemesPage();
+}
+window.saveCustomTheme = saveCustomTheme;
+
+function deleteCustomTheme(id, e) {
+  if (e) e.stopPropagation();
+  const themes = getCustomThemes().filter(t => t.id !== id);
+  try { localStorage.setItem(CUSTOM_THEMES_KEY, JSON.stringify(themes)); } catch(e) {}
+  try {
+    const active = localStorage.getItem(THEME_KEY) || '';
+    if (active === 'custom:' + id) { localStorage.removeItem(THEME_KEY); applyTheme(''); }
+  } catch(e) {}
+  renderThemesPage();
+}
+window.deleteCustomTheme = deleteCustomTheme;
+
+function toggleCustomThemeBuilder() {
+  const s = document.getElementById('customThemeBuilderSection');
+  if (s) s.classList.toggle('open');
+}
+window.toggleCustomThemeBuilder = toggleCustomThemeBuilder;
+window.setCtbPreset = setCtbPreset;
+window.updateCtbPreview = updateCtbPreview;
 
 // ═══════════════════════════════════════════════════════════════
 // 🎬  CINEMATIC MODAL CLOSE WITH ANIMATION
