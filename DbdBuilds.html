@@ -707,6 +707,75 @@ footer,
   gap: 8px;
   margin-top: 12px;
 }
+/* ── السلايد شو داخل البانر ── */
+.banner-slideshow {
+  width: 100%;
+  aspect-ratio: 1;
+  background: var(--bg-darker);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 8px;
+}
+.banner-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  pointer-events: none;
+}
+.banner-slide.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.banner-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+  display: block;
+}
+.hero-banner:hover .banner-slide.active img {
+  transform: scale(1.05);
+}
+.banner-dots {
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+  margin-bottom: 10px;
+}
+.banner-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ink-faded);
+  cursor: default;
+  border: none;
+  padding: 0;
+  transition: background 0.3s, transform 0.2s;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+.banner-dot.active {
+  background: var(--gold);
+  transform: scale(1.35);
+}
+/* ── أدوات إضافة الصور في لوحة الأدمن ── */
+.banner-images-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 8px;
+}
+.banner-img-input-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.banner-img-input-row input {
+  flex: 1;
+  margin-bottom: 0 !important;
+}
 .hero-ornament {
   color: var(--gold-deep);
   font-size: 30px;
@@ -7461,9 +7530,10 @@ async function deleteUser(username) {
 let bannersState = { left: null, center: null, right: null };
 let bannersListener = null;
 let bannerTimerInterval = null;
+let bannerSlideIntervals = { left: null, center: null, right: null };
 
 function defaultBanner() {
-  return { title: '', imageUrl: '', deadline: 0, active: false };
+  return { title: '', imageUrl: '', images: [], deadline: 0, active: false };
 }
 
 async function loadBannersFromFirebase() {
@@ -7573,8 +7643,20 @@ function renderBannerSide(side) {
   const sideName = side === 'left' ? 'Left' : (side === 'center' ? 'Center' : 'Right');
   const el = document.getElementById('heroBanner' + sideName);
   if (!el) return;
+
+  // إيقاف السلايد شو القديم لهذا البانر
+  if (bannerSlideIntervals[side]) {
+    clearInterval(bannerSlideIntervals[side]);
+    bannerSlideIntervals[side] = null;
+  }
+
   const b = bannersState[side];
-  if (!b || !b.active || (!b.title && !b.imageUrl)) {
+  // بناء قائمة الصور (يدعم المصفوفة الجديدة + الرابط القديم للتوافق)
+  const imgs = (b && b.images && b.images.length > 0)
+    ? b.images.filter(u => u && u.trim())
+    : (b && b.imageUrl ? [b.imageUrl] : []);
+
+  if (!b || !b.active || (!b.title && imgs.length === 0)) {
     el.classList.add('empty');
     el.innerHTML = '<div class="banner-empty-msg">📢 منطقة الإعلان<br>يديرها الأدمن</div>';
     return;
@@ -7615,14 +7697,78 @@ function renderBannerSide(side) {
     }
   }
 
+  // بناء HTML للصور
+  let imgHTML = '';
+  if (imgs.length === 0) {
+    imgHTML = '<div class="banner-img-wrap"><span class="banner-img-placeholder">🖼</span></div>';
+  } else if (imgs.length === 1) {
+    imgHTML =
+      '<div class="banner-img-wrap">' +
+        '<img src="' + escapeAttr(imgs[0]) + '" alt="' + escapeAttr(b.title || '') + '" onerror="this.parentNode.innerHTML=\'<span class=banner-img-placeholder>🖼</span>\'">' +
+      '</div>';
+  } else {
+    // سلايد شو بأكثر من صورة
+    const slidesHTML = imgs.map((url, i) =>
+      '<div class="banner-slide' + (i === 0 ? ' active' : '') + '">' +
+        '<img src="' + escapeAttr(url) + '" alt="' + escapeAttr(b.title || '') + '" loading="lazy" onerror="this.style.display=\'none\'">' +
+      '</div>'
+    ).join('');
+    const dotsHTML = '<div class="banner-dots">' +
+      imgs.map((_, i) =>
+        '<span class="banner-dot' + (i === 0 ? ' active' : '') + '"></span>'
+      ).join('') +
+    '</div>';
+    imgHTML = '<div class="banner-slideshow" id="slideshow_' + side + '">' + slidesHTML + '</div>' + dotsHTML;
+
+    // بدء التبديل التلقائي
+    let cur = 0;
+    bannerSlideIntervals[side] = setInterval(() => {
+      cur = (cur + 1) % imgs.length;
+      bannerGoToSlide(side, cur);
+    }, 4000);
+  }
+
   el.innerHTML =
     (b.title ? '<div class="banner-title">' + escapeHTML(b.title) + '</div>' : '') +
-    '<div class="banner-img-wrap">' +
-      (b.imageUrl
-        ? '<img src="' + escapeAttr(b.imageUrl) + '" alt="' + escapeAttr(b.title || '') + '" onerror="this.parentNode.innerHTML=\'<span class=banner-img-placeholder>🖼</span>\'">'
-        : '<span class="banner-img-placeholder">🖼</span>') +
-    '</div>' +
+    imgHTML +
     countdownHTML;
+}
+
+function bannerGoToSlide(side, idx) {
+  const sideName = side === 'left' ? 'Left' : (side === 'center' ? 'Center' : 'Right');
+  const el = document.getElementById('heroBanner' + sideName);
+  if (!el) return;
+  el.querySelectorAll('.banner-slide').forEach((s, i) => s.classList.toggle('active', i === idx));
+  el.querySelectorAll('.banner-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+}
+window.bannerGoToSlide = bannerGoToSlide;
+
+function updateBannerCountdown(side) {
+  const sideName = side === 'left' ? 'Left' : (side === 'center' ? 'Center' : 'Right');
+  const el = document.getElementById('heroBanner' + sideName);
+  if (!el) return;
+  const b = bannersState[side];
+  if (!b || !b.active || !b.deadline) return;
+  const countdown = el.querySelector('.banner-countdown');
+  if (!countdown) return;
+  const cd = formatCountdown(b.deadline);
+  if (!cd) return;
+  if (cd.expired) {
+    countdown.outerHTML =
+      '<div class="banner-countdown expired">' +
+        '<div class="banner-countdown-unit">' +
+          '<span class="banner-countdown-num">⌛ انتهى</span>' +
+        '</div>' +
+      '</div>';
+  } else {
+    const nums = countdown.querySelectorAll('.banner-countdown-num');
+    if (nums.length === 4) {
+      nums[0].textContent = cd.days;
+      nums[1].textContent = String(cd.hours).padStart(2, '0');
+      nums[2].textContent = String(cd.minutes).padStart(2, '0');
+      nums[3].textContent = String(cd.seconds).padStart(2, '0');
+    }
+  }
 }
 
 function renderBanners() {
@@ -7630,7 +7776,7 @@ function renderBanners() {
   renderBannerSide('center');
   renderBannerSide('right');
 
-  // تشغيل/إيقاف المؤقت حسب الحاجة
+  // تشغيل/إيقاف المؤقت حسب الحاجة — يحدّث العداد فقط بدون مس السلايد شو
   const hasActiveCountdown =
     (bannersState.left && bannersState.left.active && bannersState.left.deadline && bannersState.left.deadline > Date.now()) ||
     (bannersState.center && bannersState.center.active && bannersState.center.deadline && bannersState.center.deadline > Date.now()) ||
@@ -7638,9 +7784,9 @@ function renderBanners() {
 
   if (hasActiveCountdown && !bannerTimerInterval) {
     bannerTimerInterval = setInterval(() => {
-      renderBannerSide('left');
-      renderBannerSide('center');
-      renderBannerSide('right');
+      updateBannerCountdown('left');
+      updateBannerCountdown('center');
+      updateBannerCountdown('right');
     }, 1000);
   } else if (!hasActiveCountdown && bannerTimerInterval) {
     clearInterval(bannerTimerInterval);
@@ -7669,6 +7815,16 @@ function renderBannersEditor() {
   if (!isAdmin()) return '';
   const make = (side, label) => {
     const b = bannersState[side] || defaultBanner();
+    // دمج الصور القديمة (imageUrl) مع المصفوفة الجديدة
+    const existingImgs = (b.images && b.images.length > 0)
+      ? b.images
+      : (b.imageUrl ? [b.imageUrl] : ['']);
+    const imgsListHTML = existingImgs.map((url, i) =>
+      '<div class="banner-img-input-row">' +
+        '<input type="url" value="' + escapeAttr(url) + '" placeholder="https://... (jpg/png/webp)" class="be-img-input">' +
+        '<button class="btn btn-blood btn-sm" onclick="removeBannerImageRow(this)" title="إزالة" style="flex-shrink:0;padding:6px 10px">✕</button>' +
+      '</div>'
+    ).join('');
     return '<div class="banner-edit-card">' +
       '<h4>📢 ' + label + '</h4>' +
       '<div class="banner-edit-row">' +
@@ -7677,9 +7833,10 @@ function renderBannersEditor() {
         '<div class="hint">حتى 60 حرفاً، يظهر فوق الصورة</div>' +
       '</div>' +
       '<div class="banner-edit-row">' +
-        '<label>رابط الصورة</label>' +
-        '<input type="url" id="be_' + side + '_image" placeholder="https://..." value="' + escapeAttr(b.imageUrl || '') + '">' +
-        '<div class="hint">رابط مباشر لصورة (jpg/png/webp)</div>' +
+        '<label>روابط الصور (تبديل تلقائي كل 4.5 ثانية)</label>' +
+        '<div class="banner-images-list" id="be_' + side + '_imgs">' + imgsListHTML + '</div>' +
+        '<button class="btn btn-sm" onclick="addBannerImageRow(\'' + side + '\')" style="margin-top:6px;font-size:12px">+ إضافة صورة</button>' +
+        '<div class="hint" style="margin-top:6px">أضف أكثر من رابط ليتم التبديل بين الصور تلقائياً</div>' +
       '</div>' +
       '<div class="banner-edit-row">' +
         '<label>تاريخ ووقت الانتهاء (المؤقت)</label>' +
@@ -7705,14 +7862,43 @@ function renderBannersEditor() {
   '</div>';
 }
 
+function addBannerImageRow(side) {
+  const list = document.getElementById('be_' + side + '_imgs');
+  if (!list) return;
+  const row = document.createElement('div');
+  row.className = 'banner-img-input-row';
+  row.innerHTML =
+    '<input type="url" placeholder="https://... (jpg/png/webp)" class="be-img-input">' +
+    '<button class="btn btn-blood btn-sm" onclick="removeBannerImageRow(this)" title="إزالة" style="flex-shrink:0;padding:6px 10px">✕</button>';
+  list.appendChild(row);
+  row.querySelector('input').focus();
+}
+
+function removeBannerImageRow(btn) {
+  const list = btn.closest('.banner-images-list');
+  const rows = list.querySelectorAll('.banner-img-input-row');
+  if (rows.length <= 1) {
+    // إذا صف واحد فقط، امسح القيمة بدل الحذف
+    btn.closest('.banner-img-input-row').querySelector('input').value = '';
+    return;
+  }
+  btn.closest('.banner-img-input-row').remove();
+}
+
+window.addBannerImageRow = addBannerImageRow;
+window.removeBannerImageRow = removeBannerImageRow;
+
 function saveBannerFromEditor(side) {
   const title = document.getElementById('be_' + side + '_title').value.trim();
-  const imageUrl = document.getElementById('be_' + side + '_image').value.trim();
   const deadlineRaw = document.getElementById('be_' + side + '_deadline').value;
   const active = document.getElementById('be_' + side + '_active').checked;
+  // قراءة كل روابط الصور
+  const imgInputs = document.querySelectorAll('#be_' + side + '_imgs .be-img-input');
+  const images = Array.from(imgInputs).map(i => i.value.trim()).filter(u => u);
   saveBanner(side, {
     title: title,
-    imageUrl: imageUrl,
+    imageUrl: images[0] || '',
+    images: images,
     deadline: dateLocalToTimestamp(deadlineRaw),
     active: !!active
   });
