@@ -828,19 +828,23 @@ footer,
   transform: scale(1.2);
   filter: drop-shadow(0 0 20px rgba(196,24,24,0.8));
 }
-.clip-twitch-badge {
+.clip-platform-badge {
   position: absolute;
   top: 10px;
   left: 10px;
-  background: rgba(100,65,165,0.85);
-  color: #fff;
   font-size: 11px;
   font-weight: 700;
-  padding: 3px 8px;
+  padding: 3px 9px;
   border-radius: 3px;
   z-index: 2;
   letter-spacing: 0.5px;
 }
+.clip-platform-twitch    { background: rgba(145,70,255,0.88); color: #fff; }
+.clip-platform-youtube   { background: rgba(255,0,0,0.88); color: #fff; }
+.clip-platform-tiktok    { background: rgba(10,10,10,0.92); color: #00f2ea; border: 1px solid rgba(0,242,234,0.4); }
+.clip-platform-instagram { background: linear-gradient(45deg,rgba(225,48,108,0.88),rgba(131,58,180,0.88)); color: #fff; }
+.clip-platform-kick      { background: rgba(83,252,24,0.88); color: #000; }
+.clip-platform-unknown   { background: rgba(80,80,80,0.88); color: #fff; }
 .clip-body {
   padding: 14px 16px;
 }
@@ -8255,18 +8259,91 @@ window.clearBanner = clearBanner;
 let clipsState = [];
 let clipsListener = null;
 
+const PLATFORM_INFO = {
+  twitch:    { label: 'Twitch',    cls: 'clip-platform-twitch',    visitLabel: 'زيارة القناة على Twitch' },
+  youtube:   { label: 'YouTube',   cls: 'clip-platform-youtube',   visitLabel: 'زيارة القناة على YouTube' },
+  tiktok:    { label: 'TikTok',    cls: 'clip-platform-tiktok',    visitLabel: 'زيارة الحساب على TikTok' },
+  instagram: { label: 'Instagram', cls: 'clip-platform-instagram', visitLabel: 'زيارة الصفحة على Instagram' },
+  kick:      { label: 'Kick',      cls: 'clip-platform-kick',      visitLabel: 'زيارة القناة على Kick' },
+  unknown:   { label: 'فيديو',    cls: 'clip-platform-unknown',   visitLabel: 'زيارة الصفحة' }
+};
+
+function parsePlatformUrl(url) {
+  if (!url) return { platform: 'unknown', channel: '', videoId: '', channelUrl: '' };
+  let m;
+
+  // YouTube
+  m = url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
+  if (m) {
+    // محاولة استخراج اسم القناة من الرابط إذا كان موجوداً
+    const chMatch = url.match(/youtube\.com\/@([^/?#]+)/);
+    return { platform: 'youtube', channel: chMatch ? chMatch[1] : '', videoId: m[1],
+             channelUrl: chMatch ? 'https://www.youtube.com/@' + chMatch[1] : '' };
+  }
+
+  // TikTok - فيديو
+  m = url.match(/tiktok\.com\/@([^/?#]+)\/video\/(\d+)/);
+  if (m) return { platform: 'tiktok', channel: m[1], videoId: m[2],
+                  channelUrl: 'https://www.tiktok.com/@' + m[1] };
+  m = url.match(/tiktok\.com\/@([^/?#]+)/);
+  if (m) return { platform: 'tiktok', channel: m[1], videoId: '',
+                  channelUrl: 'https://www.tiktok.com/@' + m[1] };
+
+  // Instagram - ريل أو منشور
+  m = url.match(/instagram\.com\/(?:reel|p)\/([A-Za-z0-9_-]+)/);
+  if (m) return { platform: 'instagram', channel: '', videoId: m[1], channelUrl: '' };
+  m = url.match(/instagram\.com\/([^/?#]+)/);
+  if (m && !['p','reel','stories','explore','accounts','tv','reels'].includes(m[1])) {
+    return { platform: 'instagram', channel: m[1], videoId: '',
+             channelUrl: 'https://www.instagram.com/' + m[1] };
+  }
+
+  // Kick - كليب
+  m = url.match(/kick\.com\/([^/?#]+)\/clips\/([^/?#]+)/);
+  if (m) return { platform: 'kick', channel: m[1], videoId: m[2],
+                  channelUrl: 'https://kick.com/' + m[1] };
+  m = url.match(/kick\.com\/([^/?#]+)/);
+  if (m && !['categories','search','discover','login','signup'].includes(m[1])) {
+    return { platform: 'kick', channel: m[1], videoId: '',
+             channelUrl: 'https://kick.com/' + m[1] };
+  }
+
+  // Twitch - كليب twitch.tv/CHANNEL/clip/NAME
+  m = url.match(/twitch\.tv\/([^/?#]+)\/clip\/([^/?#]+)/i);
+  if (m) return { platform: 'twitch', channel: m[1], videoId: m[2],
+                  channelUrl: 'https://www.twitch.tv/' + m[1] };
+  // clips.twitch.tv/NAME
+  m = url.match(/clips\.twitch\.tv\/([^/?#]+)/i);
+  if (m) return { platform: 'twitch', channel: '', videoId: m[1], channelUrl: '' };
+  // twitch.tv/CHANNEL
+  m = url.match(/twitch\.tv\/([^/?#]+)/i);
+  if (m) return { platform: 'twitch', channel: m[1], videoId: '',
+                  channelUrl: 'https://www.twitch.tv/' + m[1] };
+
+  return { platform: 'unknown', channel: '', videoId: '', channelUrl: '' };
+}
+
+function getEmbedUrl(platform, videoId) {
+  if (!videoId) return '';
+  const host = window.location.hostname || 'localhost';
+  switch (platform) {
+    case 'youtube':   return 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0';
+    case 'twitch':    return 'https://clips.twitch.tv/embed?clip=' + encodeURIComponent(videoId) + '&parent=' + host + '&autoplay=true';
+    case 'kick':      return 'https://player.kick.com/clip/' + videoId;
+    case 'tiktok':    return 'https://www.tiktok.com/embed/v2/' + videoId;
+    case 'instagram': return 'https://www.instagram.com/p/' + videoId + '/embed/';
+    default:          return '';
+  }
+}
+
+function isSupportedPlatform(url) {
+  return /youtube\.com|youtu\.be|tiktok\.com|instagram\.com|kick\.com|twitch\.tv/i.test(url);
+}
+
+// للتوافق مع الكود القديم
 function parseTwitchClip(url) {
-  if (!url) return { channel: '', clipId: '' };
-  // https://www.twitch.tv/CHANNEL/clip/CLIPNAME
-  const m1 = url.match(/twitch\.tv\/([^/?#]+)\/clip\/([^/?#]+)/i);
-  if (m1) return { channel: m1[1], clipId: m1[2] };
-  // https://clips.twitch.tv/CLIPNAME
-  const m2 = url.match(/clips\.twitch\.tv\/([^/?#]+)/i);
-  if (m2) return { channel: '', clipId: m2[1] };
-  // https://www.twitch.tv/CHANNEL (channel page only)
-  const m3 = url.match(/twitch\.tv\/([^/?#]+)/i);
-  if (m3) return { channel: m3[1], clipId: '' };
-  return { channel: '', clipId: '' };
+  const r = parsePlatformUrl(url);
+  return { channel: r.channel, clipId: r.videoId };
 }
 
 async function loadClipsFromFirebase() {
@@ -8340,14 +8417,12 @@ async function deleteClip(id) {
   }
 }
 
-function openClipEmbed(clipId, title, channelUrl, channel, fallbackUrl) {
+function openClipEmbed(platform, videoId, title, channelUrl, channel, fallbackUrl) {
   let existing = document.getElementById('clipModalOverlay');
   if (existing) existing.remove();
 
-  const parent = window.location.hostname || 'localhost';
-  const embedUrl = clipId
-    ? 'https://clips.twitch.tv/embed?clip=' + encodeURIComponent(clipId) + '&parent=' + parent + '&autoplay=true'
-    : '';
+  const embedUrl = getEmbedUrl(platform, videoId);
+  const pInfo = PLATFORM_INFO[platform] || PLATFORM_INFO.unknown;
 
   const modal = document.createElement('div');
   modal.className = 'clip-modal-overlay';
@@ -8360,18 +8435,20 @@ function openClipEmbed(clipId, title, channelUrl, channel, fallbackUrl) {
       '</div>' +
       '<div class="clip-modal-iframe-wrap">' +
         (embedUrl
-          ? '<iframe src="' + escapeAttr(embedUrl) + '" allowfullscreen allow="autoplay; fullscreen"></iframe>'
-          : '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--ink-muted);font-size:14px;padding:32px;text-align:center">تعذّر تضمين اللقطة — جرّب زر "فتح في Twitch"</div>') +
+          ? '<iframe src="' + escapeAttr(embedUrl) + '" allowfullscreen allow="autoplay; fullscreen; clipboard-write; encrypted-media; picture-in-picture"></iframe>'
+          : '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--ink-muted);font-size:14px;padding:32px;text-align:center;gap:12px">' +
+              '<span style="font-size:40px">🎬</span>' +
+              '<span>لا يدعم التضمين المباشر<br>استخدم زر الفتح أدناه</span>' +
+            '</div>') +
       '</div>' +
       '<div class="clip-modal-footer">' +
-        '<a class="clip-watch-btn" href="' + escapeAttr(fallbackUrl) + '" target="_blank" rel="noopener" style="flex:1;display:block;text-align:center">↗ فتح في Twitch</a>' +
+        '<a class="clip-watch-btn" href="' + escapeAttr(fallbackUrl) + '" target="_blank" rel="noopener" style="flex:1;display:block;text-align:center">↗ فتح في ' + escapeHTML(pInfo.label) + '</a>' +
         (channelUrl
-          ? '<a class="clip-watch-btn" href="' + escapeAttr(channelUrl) + '" target="_blank" rel="noopener" style="flex:1;display:block;text-align:center;background:rgba(100,65,165,0.25);border-color:rgba(100,65,165,0.6)">🎮 زيارة قناة ' + escapeHTML(channel) + '</a>'
+          ? '<a class="clip-watch-btn" href="' + escapeAttr(channelUrl) + '" target="_blank" rel="noopener" style="flex:1;display:block;text-align:center;opacity:0.85">👤 ' + escapeHTML(pInfo.visitLabel) + (channel ? ': ' + escapeHTML(channel) : '') + '</a>'
           : '') +
       '</div>' +
     '</div>';
 
-  // إغلاق بالضغط خارج المودال
   modal.addEventListener('click', (e) => { if (e.target === modal) closeClipEmbed(); });
   document.body.appendChild(modal);
   document.body.style.overflow = 'hidden';
@@ -8418,11 +8495,12 @@ function renderClips() {
   }
 
   const cardsHTML = approved.map(clip => {
-    const { channel, clipId } = parseTwitchClip(clip.url);
-    const channelUrl = channel ? 'https://www.twitch.tv/' + channel : '';
+    const { platform, channel, videoId, channelUrl } = parsePlatformUrl(clip.url);
+    const pInfo = PLATFORM_INFO[platform] || PLATFORM_INFO.unknown;
     const displayTitle = clip.title || (channel ? 'لقطة من ' + channel : 'لقطة DBD');
     const onclickAttr = 'openClipEmbed(' +
-      JSON.stringify(clipId) + ',' +
+      JSON.stringify(platform) + ',' +
+      JSON.stringify(videoId) + ',' +
       JSON.stringify(displayTitle) + ',' +
       JSON.stringify(channelUrl) + ',' +
       JSON.stringify(channel) + ',' +
@@ -8430,18 +8508,15 @@ function renderClips() {
 
     const channelRow = channel
       ? '<div class="clip-channel-row">' +
-          '<span class="clip-channel-icon">📺</span>' +
-          '<span class="clip-channel-label">القناة:</span>' +
+          '<span class="clip-channel-icon">👤</span>' +
+          '<span class="clip-channel-label">الصانع:</span>' +
           '<a class="clip-channel-link" href="' + escapeAttr(channelUrl) + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">' + escapeHTML(channel) + '</a>' +
         '</div>'
       : '';
 
-    // التقييم
     const avg = avgClipRating(clip);
     const rCount = (clip.ratings || []).length;
-    const stars = avg > 0
-      ? '★'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg))
-      : '☆☆☆☆☆';
+    const stars = avg > 0 ? '★'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg)) : '☆☆☆☆☆';
     const canRate = state.session && clip.suggestedBy !== state.session.username;
     const myRating = state.session
       ? (((clip.ratings || []).find(r => r.user === state.session.username) || {}).value || 0)
@@ -8467,7 +8542,7 @@ function renderClips() {
       '<div class="clip-thumb clip-thumb-clickable" onclick="' + escapeAttr(onclickAttr) + '">' +
         '<div class="clip-thumb-bg"></div>' +
         '<span class="clip-play-icon">▶</span>' +
-        '<span class="clip-twitch-badge">Twitch</span>' +
+        '<span class="clip-platform-badge ' + pInfo.cls + '">' + escapeHTML(pInfo.label) + '</span>' +
       '</div>' +
       '<div class="clip-body">' +
         '<div class="clip-title">' + escapeHTML(displayTitle) + '</div>' +
@@ -8488,15 +8563,19 @@ function renderClipsEditor() {
   const approved = clipsState.filter(c => c.status === 'approved' || !c.status);
 
   const makeRow = (clip, isPending) => {
-    const { channel } = parseTwitchClip(clip.url);
+    const { platform, channel } = parsePlatformUrl(clip.url);
+    const pInfo = PLATFORM_INFO[platform] || PLATFORM_INFO.unknown;
     const avg = avgClipRating(clip);
     const rCount = (clip.ratings || []).length;
     return '<div class="clip-admin-row' + (isPending ? ' pending' : '') + '">' +
       '<div class="clip-admin-row-info">' +
         (isPending ? '<span class="clip-pending-badge">بانتظار الموافقة</span><br>' : '') +
-        '<div class="clip-admin-row-title">' + escapeHTML(clip.title || '(بدون عنوان)') + '</div>' +
+        '<div class="clip-admin-row-title">' +
+          '<span class="clip-platform-badge ' + pInfo.cls + '" style="position:static;margin-left:6px;font-size:10px">' + escapeHTML(pInfo.label) + '</span> ' +
+          escapeHTML(clip.title || '(بدون عنوان)') +
+        '</div>' +
         '<div class="clip-admin-row-url">' + escapeHTML(clip.url) + '</div>' +
-        (channel ? '<div class="clip-admin-row-channel">📺 ' + escapeHTML(channel) + '</div>' : '') +
+        (channel ? '<div class="clip-admin-row-channel">👤 ' + escapeHTML(channel) + '</div>' : '') +
         '<div style="font-size:11px;color:var(--ink-muted);margin-top:3px">' +
           'مقترح من: <span style="color:var(--gold)">' + escapeHTML(clip.suggestedBy || 'admin') + '</span>' +
           (avg > 0 ? ' • تقييم: <span style="color:var(--gold)">' + avg.toFixed(1) + '</span> (' + rCount + ')' : '') +
@@ -8529,7 +8608,7 @@ function renderClipsEditor() {
     pendingSection +
     '<div class="clips-add-form" id="clipAddForm">' +
       '<div style="font-size:14px;font-weight:700;color:var(--gold-bright);margin-bottom:2px">إضافة لقطة مباشرة (معتمدة فوراً)</div>' +
-      '<input type="url" id="clipUrlInput" placeholder="رابط اللقطة من تويتش (https://www.twitch.tv/...)" style="direction:ltr">' +
+      '<input type="url" id="clipUrlInput" placeholder="رابط من Twitch / YouTube / TikTok / Instagram / Kick" style="direction:ltr">' +
       '<input type="text" id="clipTitleInput" placeholder="عنوان اللقطة (اختياري)" maxlength="80">' +
       '<button class="btn btn-gold" onclick="addClipFromForm()">+ إضافة</button>' +
     '</div>' +
@@ -8542,8 +8621,8 @@ function addClipFromForm() {
   const titleInput = document.getElementById('clipTitleInput');
   const url = (urlInput ? urlInput.value.trim() : '');
   const title = (titleInput ? titleInput.value.trim() : '');
-  if (!url) { toast('أدخل رابط اللقطة', 'error'); return; }
-  if (!url.includes('twitch.tv')) { toast('الرابط يجب أن يكون من twitch.tv', 'error'); return; }
+  if (!url) { toast('أدخل رابط الفيديو', 'error'); return; }
+  if (!isSupportedPlatform(url)) { toast('الرابط غير مدعوم — يقبل: Twitch, YouTube, TikTok, Instagram, Kick', 'error'); return; }
   const clip = {
     id: 'clip_' + Date.now(), url, title, addedAt: Date.now(),
     status: 'approved', suggestedBy: 'admin', ratings: []
@@ -8600,8 +8679,8 @@ async function submitClipSuggestion() {
   const titleEl = document.getElementById('suggestClipTitle');
   const url = urlEl ? urlEl.value.trim() : '';
   const title = titleEl ? titleEl.value.trim() : '';
-  if (!url) { toast('أدخل رابط اللقطة', 'error'); return; }
-  if (!url.includes('twitch.tv')) { toast('الرابط يجب أن يكون من twitch.tv', 'error'); return; }
+  if (!url) { toast('أدخل رابط الفيديو', 'error'); return; }
+  if (!isSupportedPlatform(url)) { toast('الرابط غير مدعوم — يقبل: Twitch, YouTube, TikTok, Instagram, Kick', 'error'); return; }
   const clip = {
     id: 'clip_' + Date.now(), url, title, addedAt: Date.now(),
     status: 'pending', suggestedBy: state.session.username, ratings: []
