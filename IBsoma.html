@@ -479,20 +479,35 @@
   function dayKey(y,m,d){ return y+'-'+m+'-'+d; }
   function storageKeyForDays(y,m){ return 'days-'+y+'-'+m; }
 
-  async function safeGet(key, shared){
-    try{
-      const r = await window.storage.get(key, shared);
-      return r ? r.value : null;
-    }catch(e){ return null; }
+  const LS_PREFIX = 'bcal_v1_';
+  const hasWindowStorage = (typeof window.storage !== 'undefined') && window.storage && typeof window.storage.get === 'function';
+
+  function lsGet(key){
+    try{ return localStorage.getItem(LS_PREFIX+key); }catch(e){ return undefined; }
   }
-  async function safeSet(key, value, shared){
-    try{
-      await window.storage.set(key, value, shared);
-      return true;
-    }catch(e){ return false; }
+  function lsSet(key, value){
+    try{ localStorage.setItem(LS_PREFIX+key, value); return true; }catch(e){ return false; }
   }
-  async function safeDelete(key, shared){
-    try{ await window.storage.delete(key, shared); }catch(e){}
+
+  // Reads/writes go to localStorage (true per-browser/device persistence, survives
+  // refresh and reopening the downloaded file) and, when available, also to the
+  // Claude artifact's window.storage as a bonus secondary copy.
+  async function safeGet(key){
+    if(hasWindowStorage){
+      try{
+        const r = await window.storage.get(key, false);
+        if(r && r.value !== undefined && r.value !== null) return r.value;
+      }catch(e){}
+    }
+    const lv = lsGet(key);
+    return lv === undefined ? null : lv;
+  }
+  async function safeSet(key, value){
+    const lok = lsSet(key, value);
+    if(hasWindowStorage){
+      try{ await window.storage.set(key, value, false); }catch(e){}
+    }
+    return lok;
   }
 
   async function loadSettings(){
