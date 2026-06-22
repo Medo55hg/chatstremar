@@ -266,6 +266,10 @@
   .day-body .no-bc span{
     font-weight:800;font-size:clamp(9px,2vw,15px);letter-spacing:.5px;
   }
+  .day-body .gain-tag{
+    color:var(--cyan);font-weight:700;font-size:clamp(8px,1.6vw,12px);
+    letter-spacing:.3px;opacity:.9;
+  }
 
   /* ---------- modal ---------- */
   .modal-overlay{
@@ -329,16 +333,22 @@
     </div>
   </div>
   <div class="field">
-    <label>&nbsp;</label>
-    <button class="btn upload-btn" id="uploadBgBtn">رفع خلفية مخصصة
-      <input type="file" id="bgFileInput" accept="image/*">
-    </button>
+    <label>الخلفية المخصصة</label>
+    <div style="display:flex;gap:6px;">
+      <button class="btn upload-btn" id="uploadBgBtn">رفع
+        <input type="file" id="bgFileInput" accept="image/*">
+      </button>
+      <button class="btn danger" id="clearBgBtn">حذف</button>
+    </div>
   </div>
   <div class="field">
-    <label>&nbsp;</label>
-    <button class="btn upload-btn" id="uploadLogoBtn">رفع شعار
-      <input type="file" id="logoFileInput" accept="image/*">
-    </button>
+    <label>الشعار</label>
+    <div style="display:flex;gap:6px;">
+      <button class="btn upload-btn" id="uploadLogoBtn">رفع
+        <input type="file" id="logoFileInput" accept="image/*">
+      </button>
+      <button class="btn danger" id="clearLogoBtn">حذف</button>
+    </div>
   </div>
 
   <div class="divider-v"></div>
@@ -346,6 +356,10 @@
   <div class="field">
     <label>&nbsp;</label>
     <button class="btn danger" id="resetMonthBtn">إعادة تعيين الشهر</button>
+  </div>
+  <div class="field">
+    <label>&nbsp;</label>
+    <button class="btn" id="saveBtn">حفظ</button>
   </div>
   <div class="field">
     <label>&nbsp;</label>
@@ -383,6 +397,10 @@
     <div class="field">
       <label for="modalNameInput">اسم المتصدر / ملاحظة</label>
       <input type="text" id="modalNameInput" placeholder="اكتب الاسم هنا">
+    </div>
+    <div class="field">
+      <label for="modalGainInput">GAIN (اختياري)</label>
+      <input type="number" id="modalGainInput" placeholder="مثال: 120">
     </div>
     <div class="check-row">
       <input type="checkbox" id="modalNoBcCheck">
@@ -561,12 +579,20 @@
       body.className = 'day-body';
       const entry = state.days[dayNum];
       if(entry && entry.noBroadcast){
-        body.innerHTML = '<div class="no-bc">'+noBcIconSVG()+'<span>لا بث</span></div>';
-      } else if(entry && entry.name){
-        const tag = document.createElement('div');
-        tag.className = 'name-tag';
-        tag.textContent = entry.name;
-        body.appendChild(tag);
+        body.innerHTML = '<div class="no-bc">'+noBcIconSVG()+'<span>ما بث</span></div>';
+      } else if(entry && (entry.name || (entry.gain!==undefined && entry.gain!==null && entry.gain!==''))){
+        if(entry.name){
+          const tag = document.createElement('div');
+          tag.className = 'name-tag';
+          tag.textContent = entry.name;
+          body.appendChild(tag);
+        }
+        if(entry.gain!==undefined && entry.gain!==null && entry.gain!==''){
+          const g = document.createElement('div');
+          g.className = 'gain-tag';
+          g.textContent = 'GAIN ' + entry.gain;
+          body.appendChild(g);
+        }
       } else {
         body.innerHTML = defaultIconSVG();
       }
@@ -581,6 +607,7 @@
   const modalOverlay = document.getElementById('modalOverlay');
   const modalDayLabel = document.getElementById('modalDayLabel');
   const modalNameInput = document.getElementById('modalNameInput');
+  const modalGainInput = document.getElementById('modalGainInput');
   const modalNoBcCheck = document.getElementById('modalNoBcCheck');
   let activeDay = null;
 
@@ -589,6 +616,7 @@
     const entry = state.days[dayNum] || {};
     modalDayLabel.textContent = 'يوم ' + dayNum + ' — ' + state.title;
     modalNameInput.value = entry.name || '';
+    modalGainInput.value = (entry.gain!==undefined && entry.gain!==null) ? entry.gain : '';
     modalNoBcCheck.checked = !!entry.noBroadcast;
     modalOverlay.classList.add('show');
     setTimeout(()=>modalNameInput.focus(), 50);
@@ -604,10 +632,16 @@
     if(activeDay==null) return;
     const name = modalNameInput.value.trim();
     const noBc = modalNoBcCheck.checked;
-    if(!name && !noBc){
+    const gainRaw = modalGainInput.value.trim();
+    const gain = gainRaw === '' ? null : Number(gainRaw);
+    if(!name && !noBc && gain===null){
       delete state.days[activeDay];
     } else {
-      state.days[activeDay] = { name: noBc ? '' : name, noBroadcast: noBc };
+      state.days[activeDay] = {
+        name: noBc ? '' : name,
+        noBroadcast: noBc,
+        gain: noBc ? null : gain
+      };
     }
     await saveDays();
     renderGrid();
@@ -696,6 +730,29 @@
     state.days = {};
     await saveDays();
     renderGrid();
+  });
+
+  document.getElementById('saveBtn').addEventListener('click', async ()=>{
+    const btn = document.getElementById('saveBtn');
+    const original = btn.textContent;
+    btn.disabled = true;
+    await saveSettings();
+    await saveDays();
+    btn.textContent = 'تم الحفظ ✓';
+    setTimeout(()=>{ btn.textContent = original; btn.disabled = false; }, 1400);
+  });
+
+  document.getElementById('clearBgBtn').addEventListener('click', async ()=>{
+    state.customBg = null;
+    customBgImg.removeAttribute('src');
+    applyBackground();
+    await saveSettings();
+  });
+
+  document.getElementById('clearLogoBtn').addEventListener('click', async ()=>{
+    state.logo = null;
+    applyLogo();
+    await saveSettings();
   });
 
   const previewOverlay = document.getElementById('previewOverlay');
