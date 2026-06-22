@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>صانع جدول البث الشهري</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  :root{
+    --void:#060812;
+    --panel:#11162a;
+    --panel-2:#161d38;
+    --line:rgba(150,164,212,0.16);
+    --ink-100:#f1f3fb;
+    --ink-300:#aab1cc;
+    --ink-500:#717a9c;
+    --cyan:#67e8f9;
+    --violet:#a78bfa;
+    --rose:#fb7185;
+    --amber:#fbbf24;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:#04050b;
+    color:var(--ink-100);
+    font-family:'Tajawal',sans-serif;
+    min-height:100vh;
+    padding:28px 16px 60px;
+  }
+  h1.page-title{
+    text-align:center;
+    font-family:'Cairo',sans-serif;
+    font-weight:800;
+    font-size:22px;
+    letter-spacing:.5px;
+    margin:0 0 4px;
+    color:var(--ink-100);
+  }
+  p.page-sub{
+    text-align:center;
+    color:var(--ink-500);
+    font-size:13.5px;
+    margin:0 0 22px;
+  }
+
+  /* ---------- toolbar ---------- */
+  .toolbar{
+    max-width:920px;
+    margin:0 auto 26px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:16px 18px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+    align-items:flex-end;
+  }
+  .field{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .field label{
+    font-size:12px;
+    color:var(--ink-500);
+    font-weight:500;
+  }
+  .field input[type=text],
+  .field input[type=number],
+  .field select{
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    color:var(--ink-100);
+    border-radius:9px;
+    padding:8px 10px;
+    font-family:'Tajawal',sans-serif;
+    font-size:13.5px;
+    min-width:0;
+  }
+  .field input:focus,.field select:focus{outline:2px solid var(--cyan);outline-offset:1px;}
+  .field.title-field input{width:190px;}
+  .field.year-field input{width:80px;}
+  .field.month-field select{width:120px;}
+
+  .btn{
+    border:1px solid var(--line);
+    background:var(--panel-2);
+    color:var(--ink-100);
+    border-radius:9px;
+    padding:9px 14px;
+    font-family:'Tajawal',sans-serif;
+    font-size:13.5px;
+    font-weight:600;
+    cursor:pointer;
+    transition:transform .12s ease, border-color .12s ease;
+  }
+  .btn:hover{border-color:var(--cyan);}
+  .btn:active{transform:scale(.97);}
+  .btn.primary{
+    background:linear-gradient(135deg,var(--cyan),var(--violet));
+    color:#06070d;
+    border:none;
+    font-weight:800;
+  }
+  .btn.danger{border-color:rgba(251,113,133,.5);color:var(--rose);}
+  .btn:focus-visible{outline:2px solid var(--cyan);outline-offset:2px;}
+
+  .divider-v{width:1px;align-self:stretch;background:var(--line);margin:0 2px;}
+
+  .bg-presets{display:flex;gap:8px;}
+  .swatch{
+    width:34px;height:34px;border-radius:9px;cursor:pointer;
+    border:2px solid transparent;
+    position:relative;
+  }
+  .swatch.active{border-color:var(--cyan);}
+  .swatch:focus-visible{outline:2px solid var(--cyan);}
+  .sw-deep{background:radial-gradient(circle at 70% 30%,#7c3aed,#1e1b4b 60%,#05060d 100%);}
+  .sw-aurora{background:radial-gradient(circle at 30% 30%,#22d3ee,#0f172a 60%,#04050b 100%);}
+  .sw-mars{background:radial-gradient(circle at 65% 35%,#f97316,#3f1d1d 60%,#0a0506 100%);}
+  .sw-void{background:linear-gradient(160deg,#1a1f33,#05060c);}
+
+  .upload-btn{position:relative;overflow:hidden;}
+  .upload-btn input[type=file]{
+    position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;
+  }
+
+  .hint{
+    max-width:920px;margin:-6px auto 22px;
+    color:var(--ink-500);font-size:12.5px;text-align:center;
+  }
+
+  /* ---------- poster (exported area) ---------- */
+  .poster-wrap{display:flex;justify-content:center;}
+  #poster{
+    position:relative;
+    width:min(920px,96vw);
+    aspect-ratio:1402/1135;
+    border-radius:10px;
+    overflow:hidden;
+    isolation:isolate;
+    background:#070914;
+  }
+  #poster.bg-deep::before{background:
+    radial-gradient(ellipse 60% 45% at 78% 18%, rgba(167,139,250,.35), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 12% 70%, rgba(56,189,248,.18), transparent 70%),
+    radial-gradient(circle at 50% 50%, #0d1024, #04050b 75%);
+  }
+  #poster.bg-aurora::before{background:
+    radial-gradient(ellipse 55% 45% at 15% 15%, rgba(34,211,238,.32), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 85% 75%, rgba(74,222,128,.16), transparent 70%),
+    radial-gradient(circle at 50% 50%, #081522, #03060a 75%);
+  }
+  #poster.bg-mars::before{background:
+    radial-gradient(ellipse 55% 45% at 80% 20%, rgba(249,115,22,.32), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 10% 80%, rgba(244,63,94,.16), transparent 70%),
+    radial-gradient(circle at 50% 50%, #1a0d0a, #050304 75%);
+  }
+  #poster.bg-void::before{background:linear-gradient(165deg,#161b2e,#05060c 70%);}
+  #poster.bg-custom::before{background:none;}
+  #poster::before{
+    content:'';position:absolute;inset:0;z-index:0;
+  }
+  #poster .custom-img{
+    position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;display:none;
+  }
+  #poster.bg-custom .custom-img{display:block;}
+  .stars{position:absolute;inset:0;z-index:1;opacity:.55;mix-blend-mode:screen;
+    background-image:
+      radial-gradient(1.4px 1.4px at 8% 12%, #fff, transparent),
+      radial-gradient(1px 1px at 22% 45%, #fff, transparent),
+      radial-gradient(1.6px 1.6px at 38% 8%, #fff, transparent),
+      radial-gradient(1px 1px at 52% 60%, #fff, transparent),
+      radial-gradient(1.2px 1.2px at 67% 22%, #fff, transparent),
+      radial-gradient(1px 1px at 79% 50%, #fff, transparent),
+      radial-gradient(1.4px 1.4px at 91% 15%, #fff, transparent),
+      radial-gradient(1px 1px at 15% 80%, #fff, transparent),
+      radial-gradient(1.3px 1.3px at 35% 88%, #fff, transparent),
+      radial-gradient(1px 1px at 58% 92%, #fff, transparent),
+      radial-gradient(1.5px 1.5px at 73% 78%, #fff, transparent),
+      radial-gradient(1px 1px at 88% 86%, #fff, transparent);
+    background-size:100% 100%;
+  }
+  .comet{
+    position:absolute;z-index:1;width:120px;height:1.5px;
+    background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.9));
+    transform:rotate(28deg);
+    opacity:0;
+    animation:fly 7s linear infinite;
+  }
+  .comet.c2{animation-delay:3.4s;top:8%;}
+  @keyframes fly{
+    0%{transform:translate(-140px,-40px) rotate(28deg);opacity:0;}
+    8%{opacity:.9;}
+    35%{opacity:.5;}
+    45%{opacity:0;}
+    100%{opacity:0;}
+  }
+
+  .poster-inner{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;}
+
+  .poster-head{
+    display:flex;flex-direction:column;align-items:center;
+    padding:clamp(14px,3.4%,34px) 0 clamp(8px,1.6%,16px);
+  }
+  #logoSlot{height:clamp(54px,12%,130px);display:flex;align-items:center;justify-content:center;margin-bottom:6px;}
+  #logoSlot img{height:100%;max-width:280px;object-fit:contain;filter:drop-shadow(0 0 18px rgba(167,139,250,.55));}
+  #logoSlot svg{height:65%;color:var(--cyan);}
+  .month-title{
+    font-family:'Cairo',sans-serif;
+    font-weight:900;
+    font-size:clamp(22px,4.6vw,40px);
+    color:#f3f4fb;
+    text-shadow:0 0 22px rgba(167,139,250,.55), 0 0 4px rgba(255,255,255,.3);
+    letter-spacing:1px;
+  }
+  .rule{
+    width:88%;height:1px;margin-top:clamp(8px,1.8%,16px);
+    background:linear-gradient(90deg,transparent,rgba(180,190,230,.55),transparent);
+    box-shadow:0 0 8px rgba(150,170,255,.4);
+  }
+
+  .grid-wrap{flex:1;padding:0 clamp(10px,2.4%,26px) clamp(10px,2.4%,22px);display:flex;flex-direction:column;}
+  .weekday-row{display:grid;grid-template-columns:repeat(7,1fr);gap:clamp(4px,.6%,8px);margin-bottom:clamp(6px,1%,10px);}
+  .weekday-row div{
+    text-align:center;color:var(--ink-300);
+    font-family:'Tajawal',sans-serif;font-weight:700;
+    font-size:clamp(10px,1.5vw,15px);
+    padding-bottom:4px;
+  }
+  .days-grid{flex:1;display:grid;grid-template-columns:repeat(7,1fr);gap:clamp(4px,.6%,8px);}
+  .day-cell{
+    border:1px solid rgba(150,164,212,.22);
+    border-radius:clamp(5px,1%,9px);
+    background:rgba(15,19,38,.45);
+    padding:clamp(4px,1%,10px) clamp(4px,1%,8px);
+    display:flex;flex-direction:column;
+    min-height:0;
+    position:relative;
+    cursor:default;
+  }
+  .day-cell.in-month{cursor:pointer;}
+  .day-cell.in-month:hover{border-color:rgba(103,232,249,.55);}
+  .day-cell.empty{background:transparent;border-color:rgba(150,164,212,.08);}
+  .day-num{
+    color:var(--ink-100);font-weight:700;
+    font-size:clamp(10px,1.7vw,16px);
+    font-family:'Tajawal',sans-serif;
+  }
+  .day-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;overflow:hidden;text-align:center;}
+  .day-body .icon-slot{width:clamp(16px,2.6vw,26px);height:auto;color:var(--cyan);opacity:.85;}
+  .day-body .name-tag{
+    color:var(--ink-100);font-weight:800;font-size:clamp(11px,2.6vw,22px);
+    line-height:1.2;word-break:break-word;font-family:'Cairo',sans-serif;
+    text-shadow:0 0 10px rgba(167,139,250,.35);
+  }
+  .day-body .no-bc{
+    display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--rose);
+  }
+  .day-body .no-bc svg{width:clamp(22px,5.2vw,46px);height:auto;color:var(--rose);}
+  .day-body .no-bc span{
+    font-weight:800;font-size:clamp(9px,2vw,15px);letter-spacing:.5px;
+  }
+
+  /* ---------- modal ---------- */
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(2,3,8,.72);
+    display:none;align-items:center;justify-content:center;z-index:50;
+    padding:16px;
+  }
+  .modal-overlay.show{display:flex;}
+  .modal-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:16px;
+    width:100%;max-width:340px;padding:20px;
+  }
+  .modal-card h3{margin:0 0 14px;font-family:'Cairo',sans-serif;font-size:17px;color:var(--ink-100);}
+  .modal-card .field{margin-bottom:14px;width:100%;}
+  .modal-card input[type=text]{width:100%;}
+  .check-row{display:flex;align-items:center;gap:8px;}
+  .check-row input{width:17px;height:17px;accent-color:var(--cyan);}
+  .check-row label{font-size:13.5px;color:var(--ink-300);}
+  .modal-actions{display:flex;gap:8px;margin-top:6px;}
+  .modal-actions .btn{flex:1;}
+
+  footer.note{
+    max-width:920px;margin:22px auto 0;color:var(--ink-500);
+    font-size:12px;text-align:center;line-height:1.7;
+  }
+
+  @media (max-width:560px){
+    .toolbar{justify-content:center;}
+    .field.title-field input{width:140px;}
+  }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">صانع جدول البث الشهري</h1>
+<p class="page-sub">عدّل الشهر والخلفية، واضغط على أي يوم لإضافة اسم أو تحديد عدم وجود بث — كل شيء يُحفظ تلقائيًا على جهازك</p>
+
+<div class="toolbar">
+  <div class="field month-field">
+    <label for="monthSelect">الشهر</label>
+    <select id="monthSelect"></select>
+  </div>
+  <div class="field year-field">
+    <label for="yearInput">السنة</label>
+    <input type="number" id="yearInput" min="1900" max="2200">
+  </div>
+  <div class="field title-field">
+    <label for="titleInput">العنوان المعروض</label>
+    <input type="text" id="titleInput" placeholder="مثال: مايو 2026">
+  </div>
+
+  <div class="divider-v"></div>
+
+  <div class="field">
+    <label>الخلفية</label>
+    <div class="bg-presets">
+      <div class="swatch sw-deep" data-bg="deep" tabindex="0" title="العمق الكوني"></div>
+      <div class="swatch sw-aurora" data-bg="aurora" tabindex="0" title="الشفق القطبي"></div>
+      <div class="swatch sw-mars" data-bg="mars" tabindex="0" title="توهج المريخ"></div>
+      <div class="swatch sw-void" data-bg="void" tabindex="0" title="الفراغ"></div>
+    </div>
+  </div>
+  <div class="field">
+    <label>&nbsp;</label>
+    <button class="btn upload-btn" id="uploadBgBtn">رفع خلفية مخصصة
+      <input type="file" id="bgFileInput" accept="image/*">
+    </button>
+  </div>
+  <div class="field">
+    <label>&nbsp;</label>
+    <button class="btn upload-btn" id="uploadLogoBtn">رفع شعار
+      <input type="file" id="logoFileInput" accept="image/*">
+    </button>
+  </div>
+
+  <div class="divider-v"></div>
+
+  <div class="field">
+    <label>&nbsp;</label>
+    <button class="btn danger" id="resetMonthBtn">إعادة تعيين الشهر</button>
+  </div>
+  <div class="field">
+    <label>&nbsp;</label>
+    <button class="btn primary" id="downloadBtn">تنزيل الصورة</button>
+  </div>
+</div>
+
+<div class="poster-wrap">
+  <div id="poster" class="bg-deep">
+    <img class="custom-img" id="customBgImg" alt="">
+    <div class="stars"></div>
+    <div class="comet"></div>
+    <div class="comet c2"></div>
+    <div class="poster-inner">
+      <div class="poster-head">
+        <div id="logoSlot"></div>
+        <div class="month-title" id="titleDisplay">مايو 2026</div>
+        <div class="rule"></div>
+      </div>
+      <div class="grid-wrap">
+        <div class="weekday-row">
+          <div>الأحد</div><div>الإثنين</div><div>الثلاثاء</div><div>الأربعاء</div><div>الخميس</div><div>الجمعة</div><div>السبت</div>
+        </div>
+        <div class="days-grid" id="daysGrid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="note">الصورة المُصدّرة تشمل فقط المنطقة الفاتحة أعلاه (الشعار والشهر والجدول) — أدوات التحكم لا تظهر في الصورة النهائية.</footer>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-card">
+    <h3 id="modalDayLabel">اليوم</h3>
+    <div class="field">
+      <label for="modalNameInput">اسم المتصدر / ملاحظة</label>
+      <input type="text" id="modalNameInput" placeholder="اكتب الاسم هنا">
+    </div>
+    <div class="check-row">
+      <input type="checkbox" id="modalNoBcCheck">
+      <label for="modalNoBcCheck">لم يكن هناك بث هذا اليوم</label>
+    </div>
+    <div class="modal-actions" style="margin-top:16px;">
+      <button class="btn" id="modalCancelBtn">إلغاء</button>
+      <button class="btn danger" id="modalClearBtn">مسح</button>
+      <button class="btn primary" id="modalSaveBtn">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="previewOverlay">
+  <div class="modal-card" style="max-width:520px;width:96%;">
+    <h3>الصورة جاهزة</h3>
+    <p style="color:var(--ink-300);font-size:13px;margin:-6px 0 12px;line-height:1.7;">
+      إذا لم يبدأ التنزيل تلقائيًا: اضغط مطوّلًا على الصورة (موبايل) أو بزر الفائدة الأيمن واختر "حفظ الصورة باسم" (كمبيوتر).
+    </p>
+    <img id="previewImg" alt="معاينة الصورة المُصدّرة" style="width:100%;border-radius:10px;border:1px solid var(--line);display:block;">
+    <div class="modal-actions" style="margin-top:14px;">
+      <button class="btn" id="previewCloseBtn">إغلاق</button>
+      <button class="btn primary" id="previewOpenTabBtn">فتح في نافذة جديدة</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  const ARABIC_MONTHS = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+
+  const monthSelect = document.getElementById('monthSelect');
+  const yearInput = document.getElementById('yearInput');
+  const titleInput = document.getElementById('titleInput');
+  const titleDisplay = document.getElementById('titleDisplay');
+  const daysGrid = document.getElementById('daysGrid');
+  const poster = document.getElementById('poster');
+  const customBgImg = document.getElementById('customBgImg');
+  const logoSlot = document.getElementById('logoSlot');
+
+  ARABIC_MONTHS.forEach((name,i)=>{
+    const opt = document.createElement('option');
+    opt.value = i+1;
+    opt.textContent = name;
+    monthSelect.appendChild(opt);
+  });
+
+  const now = new Date();
+  let state = {
+    month: now.getMonth()+1,
+    year: now.getFullYear(),
+    title: '',
+    titleManual: false,
+    bg: 'deep',
+    customBg: null,
+    logo: null,
+    days: {}
+  };
+
+  function defaultIconSVG(){
+    return '<svg class="icon-slot" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block">'+
+      '<path d="M3 11.2L13.5 4l7.5 4.6V18a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 18v-6.8z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>'+
+      '<path d="M3 11.2 12 16l9-4.8" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>'+
+      '<path d="M17 4.6 19.4 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>'+
+      '</svg>';
+  }
+  function noBcIconSVG(){
+    return '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block">'+
+      '<circle cx="12" cy="12" r="9.2" stroke="currentColor" stroke-width="2.2"/>'+
+      '<path d="M7.8 7.8l8.4 8.4M16.2 7.8l-8.4 8.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>'+
+      '</svg>';
+  }
+
+  function dayKey(y,m,d){ return y+'-'+m+'-'+d; }
+  function storageKeyForDays(y,m){ return 'days-'+y+'-'+m; }
+
+  async function safeGet(key, shared){
+    try{
+      const r = await window.storage.get(key, shared);
+      return r ? r.value : null;
+    }catch(e){ return null; }
+  }
+  async function safeSet(key, value, shared){
+    try{
+      await window.storage.set(key, value, shared);
+      return true;
+    }catch(e){ return false; }
+  }
+  async function safeDelete(key, shared){
+    try{ await window.storage.delete(key, shared); }catch(e){}
+  }
+
+  async function loadSettings(){
+    const raw = await safeGet('settings', false);
+    if(raw){
+      try{
+        const s = JSON.parse(raw);
+        Object.assign(state, s);
+      }catch(e){}
+    }
+    if(!state.title){
+      state.title = ARABIC_MONTHS[state.month-1] + ' ' + state.year;
+    }
+  }
+  async function saveSettings(){
+    const {month,year,title,titleManual,bg,customBg,logo} = state;
+    await safeSet('settings', JSON.stringify({month,year,title,titleManual,bg,customBg,logo}), false);
+  }
+
+  async function loadDaysForCurrentMonth(){
+    const raw = await safeGet(storageKeyForDays(state.year,state.month), false);
+    if(raw){
+      try{ state.days = JSON.parse(raw); }catch(e){ state.days = {}; }
+    } else {
+      state.days = {};
+    }
+  }
+  async function saveDays(){
+    await safeSet(storageKeyForDays(state.year,state.month), JSON.stringify(state.days), false);
+  }
+
+  function applyBackground(){
+    poster.className = 'bg-' + (state.customBg ? 'custom' : state.bg);
+    document.querySelectorAll('.swatch').forEach(sw=>{
+      sw.classList.toggle('active', !state.customBg && sw.dataset.bg === state.bg);
+    });
+    if(state.customBg){
+      customBgImg.src = state.customBg;
+    }
+  }
+
+  function applyLogo(){
+    if(state.logo){
+      logoSlot.innerHTML = '<img src="'+state.logo+'" alt="شعار">';
+    } else {
+      logoSlot.innerHTML = '<svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">'+
+        '<path d="M30 6l5 18 18 6-18 6-5 18-5-18-18-6 18-6 5-18z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>'+
+        '</svg>';
+    }
+  }
+
+  function syncTitleDisplay(){
+    titleInput.value = state.title;
+    titleDisplay.textContent = state.title;
+  }
+
+  function renderGrid(){
+    daysGrid.innerHTML = '';
+    const y = state.year, m = state.month;
+    const firstWeekday = new Date(y, m-1, 1).getDay();
+    const daysInMonth = new Date(y, m, 0).getDate();
+    const totalCells = firstWeekday + daysInMonth;
+    const rows = Math.ceil(totalCells/7);
+    const cellCount = rows*7;
+
+    for(let i=0;i<cellCount;i++){
+      const cell = document.createElement('div');
+      cell.className = 'day-cell';
+      const dayNum = i - firstWeekday + 1;
+
+      if(dayNum < 1 || dayNum > daysInMonth){
+        cell.classList.add('empty');
+        daysGrid.appendChild(cell);
+        continue;
+      }
+
+      cell.classList.add('in-month');
+      const numEl = document.createElement('div');
+      numEl.className = 'day-num';
+      numEl.textContent = dayNum;
+      cell.appendChild(numEl);
+
+      const body = document.createElement('div');
+      body.className = 'day-body';
+      const entry = state.days[dayNum];
+      if(entry && entry.noBroadcast){
+        body.innerHTML = '<div class="no-bc">'+noBcIconSVG()+'<span>لا بث</span></div>';
+      } else if(entry && entry.name){
+        const tag = document.createElement('div');
+        tag.className = 'name-tag';
+        tag.textContent = entry.name;
+        body.appendChild(tag);
+      } else {
+        body.innerHTML = defaultIconSVG();
+      }
+      cell.appendChild(body);
+
+      cell.addEventListener('click', ()=>openDayModal(dayNum));
+      daysGrid.appendChild(cell);
+    }
+  }
+
+  // ---------- modal ----------
+  const modalOverlay = document.getElementById('modalOverlay');
+  const modalDayLabel = document.getElementById('modalDayLabel');
+  const modalNameInput = document.getElementById('modalNameInput');
+  const modalNoBcCheck = document.getElementById('modalNoBcCheck');
+  let activeDay = null;
+
+  function openDayModal(dayNum){
+    activeDay = dayNum;
+    const entry = state.days[dayNum] || {};
+    modalDayLabel.textContent = 'يوم ' + dayNum + ' — ' + state.title;
+    modalNameInput.value = entry.name || '';
+    modalNoBcCheck.checked = !!entry.noBroadcast;
+    modalOverlay.classList.add('show');
+    setTimeout(()=>modalNameInput.focus(), 50);
+  }
+  function closeModal(){
+    modalOverlay.classList.remove('show');
+    activeDay = null;
+  }
+  document.getElementById('modalCancelBtn').addEventListener('click', closeModal);
+  modalOverlay.addEventListener('click', (e)=>{ if(e.target===modalOverlay) closeModal(); });
+
+  document.getElementById('modalSaveBtn').addEventListener('click', async ()=>{
+    if(activeDay==null) return;
+    const name = modalNameInput.value.trim();
+    const noBc = modalNoBcCheck.checked;
+    if(!name && !noBc){
+      delete state.days[activeDay];
+    } else {
+      state.days[activeDay] = { name: noBc ? '' : name, noBroadcast: noBc };
+    }
+    await saveDays();
+    renderGrid();
+    closeModal();
+  });
+  document.getElementById('modalClearBtn').addEventListener('click', async ()=>{
+    if(activeDay==null) return;
+    delete state.days[activeDay];
+    await saveDays();
+    renderGrid();
+    closeModal();
+  });
+
+  // ---------- toolbar events ----------
+  monthSelect.addEventListener('change', async ()=>{
+    state.month = parseInt(monthSelect.value,10);
+    if(!state.titleManual){
+      state.title = ARABIC_MONTHS[state.month-1] + ' ' + state.year;
+    }
+    await saveSettings();
+    await loadDaysForCurrentMonth();
+    syncTitleDisplay();
+    renderGrid();
+  });
+
+  yearInput.addEventListener('change', async ()=>{
+    const v = parseInt(yearInput.value,10);
+    if(!v || v<1900 || v>2200) return;
+    state.year = v;
+    if(!state.titleManual){
+      state.title = ARABIC_MONTHS[state.month-1] + ' ' + state.year;
+    }
+    await saveSettings();
+    await loadDaysForCurrentMonth();
+    syncTitleDisplay();
+    renderGrid();
+  });
+
+  titleInput.addEventListener('input', async ()=>{
+    state.title = titleInput.value;
+    state.titleManual = true;
+    titleDisplay.textContent = state.title;
+    await saveSettings();
+  });
+
+  document.querySelectorAll('.swatch').forEach(sw=>{
+    sw.addEventListener('click', async ()=>{
+      state.bg = sw.dataset.bg;
+      state.customBg = null;
+      applyBackground();
+      await saveSettings();
+    });
+    sw.addEventListener('keydown', (e)=>{
+      if(e.key==='Enter' || e.key===' '){ e.preventDefault(); sw.click(); }
+    });
+  });
+
+  document.getElementById('bgFileInput').addEventListener('change', (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = async ()=>{
+      state.customBg = reader.result;
+      applyBackground();
+      const ok = await saveSettings();
+      if(ok===false){ alert('تعذّر حفظ الخلفية — قد تكون الصورة كبيرة جدًا. جرّب صورة أصغر.'); }
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('logoFileInput').addEventListener('change', (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = async ()=>{
+      state.logo = reader.result;
+      applyLogo();
+      await saveSettings();
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('resetMonthBtn').addEventListener('click', async ()=>{
+    const ok = confirm('سيتم حذف كل الأسماء والملاحظات المحفوظة لشهر ' + state.title + ' فقط. متابعة؟');
+    if(!ok) return;
+    state.days = {};
+    await saveDays();
+    renderGrid();
+  });
+
+  const previewOverlay = document.getElementById('previewOverlay');
+  const previewImg = document.getElementById('previewImg');
+  document.getElementById('previewCloseBtn').addEventListener('click', ()=>previewOverlay.classList.remove('show'));
+  previewOverlay.addEventListener('click', (e)=>{ if(e.target===previewOverlay) previewOverlay.classList.remove('show'); });
+  document.getElementById('previewOpenTabBtn').addEventListener('click', ()=>{
+    if(previewImg.src) window.open(previewImg.src, '_blank');
+  });
+
+  document.getElementById('downloadBtn').addEventListener('click', async ()=>{
+    const btn = document.getElementById('downloadBtn');
+    const original = btn.textContent;
+    btn.textContent = 'جارٍ التحضير...';
+    btn.disabled = true;
+    try{
+      if(document.fonts && document.fonts.ready){ await document.fonts.ready; }
+      await new Promise(r=>setTimeout(r,150));
+      const canvas = await html2canvas(poster, {
+        scale: 2,
+        backgroundColor: '#04050b',
+        useCORS: true,
+        allowTaint: true,
+        imageTimeout: 15000
+      });
+      const filename = 'جدول-البث-' + (state.title||'').replace(/\s+/g,'-') + '.png';
+
+      const triggerDownload = (url)=>{
+        const link = document.createElement('a');
+        link.download = filename;
+        link.href = url;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      };
+
+      const toBlobAsync = (cv) => new Promise((resolve)=>{
+        if(cv.toBlob){ cv.toBlob((b)=>resolve(b), 'image/png'); }
+        else { resolve(null); }
+      });
+
+      const blob = await toBlobAsync(canvas);
+      let finalUrl;
+      if(blob){
+        finalUrl = URL.createObjectURL(blob);
+      } else {
+        finalUrl = canvas.toDataURL('image/png');
+      }
+      triggerDownload(finalUrl);
+      previewImg.src = finalUrl;
+      previewOverlay.classList.add('show');
+    }catch(err){
+      alert('حدث خطأ أثناء إنشاء الصورة. حاول مرة أخرى.');
+    }finally{
+      btn.textContent = original;
+      btn.disabled = false;
+    }
+  });
+
+  // ---------- init ----------
+  (async function init(){
+    await loadSettings();
+    monthSelect.value = state.month;
+    yearInput.value = state.year;
+    await loadDaysForCurrentMonth();
+    syncTitleDisplay();
+    applyBackground();
+    applyLogo();
+    renderGrid();
+  })();
+
+})();
+</script>
+</body>
+</html>
