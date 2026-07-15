@@ -558,6 +558,7 @@ footer{padding:50px 0 30px; border-top:1px solid var(--line); text-align:center;
       <button class="game-tab" data-tab="completed">✅ منتهية</button>
     </div>
     <div class="games-grid reveal" id="gamesGrid"></div>
+    <div class="games-more-wrap" id="gamesMoreWrap" style="text-align:center; margin-top:20px;"></div>
   </div>
 </section>
 
@@ -1008,6 +1009,7 @@ function animateCount(el, target){
 
 /* ============== RENDER: GAMES ============== */
 let activeGameTab = 'current';
+let gameExpanded = {current:false, planned:false, completed:false};
 function renderGames(){
   const games = DB.get('games').filter(g=>g.status===activeGameTab);
   document.getElementById('gamesGrid').innerHTML = games.map(g=>`
@@ -1020,7 +1022,35 @@ function renderGames(){
       </div>
     </div>
   `).join('') || `<p style="color:var(--muted-2)">لا توجد ألعاب في هذا القسم</p>`;
+  applyGamesRowLimit();
 }
+/* keeps only the first visual row visible unless the user expanded this category — works for any screen width */
+function applyGamesRowLimit(){
+  const grid = document.getElementById('gamesGrid');
+  const moreWrap = document.getElementById('gamesMoreWrap');
+  const cards = Array.from(grid.querySelectorAll('.game-card'));
+  if(!cards.length){ moreWrap.innerHTML = ''; return; }
+  cards.forEach(c=>{ c.style.display=''; });
+  const firstTop = cards[0].offsetTop;
+  const firstRowCount = cards.filter(c=>c.offsetTop === firstTop).length;
+  const expanded = gameExpanded[activeGameTab];
+  if(cards.length > firstRowCount){
+    if(!expanded){
+      cards.slice(firstRowCount).forEach(c=>{ c.style.display='none'; });
+    }
+    moreWrap.innerHTML = `<button class="btn btn-ghost" onclick="toggleGamesExpand()">${expanded ? 'عرض أقل ▲' : `عرض المزيد (${cards.length - firstRowCount}+) ▼`}</button>`;
+  } else {
+    moreWrap.innerHTML = '';
+  }
+}
+function toggleGamesExpand(){
+  gameExpanded[activeGameTab] = !gameExpanded[activeGameTab];
+  applyGamesRowLimit();
+}
+window.addEventListener('resize', ()=>{
+  clearTimeout(window._gamesResizeT);
+  window._gamesResizeT = setTimeout(applyGamesRowLimit, 200);
+});
 document.querySelectorAll('.game-tab').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     document.querySelectorAll('.game-tab').forEach(b=>b.classList.remove('active'));
