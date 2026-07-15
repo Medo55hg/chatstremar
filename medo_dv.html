@@ -118,7 +118,7 @@ section{padding:90px 0; position:relative;}
 #loader.hide{opacity:0; visibility:hidden;}
 .loader-mark{
   font-family:var(--font-display); font-weight:900; font-size:42px; letter-spacing:2px;
-  color:var(--white); position:relative;
+  color:var(--white); position:relative; direction:ltr; unicode-bidi:isolate;
 }
 .loader-mark span{color:var(--orange-2); text-shadow:0 0 30px var(--orange-glow);}
 .loader-bar{width:180px; height:3px; background:rgba(255,255,255,0.08); border-radius:99px; overflow:hidden;}
@@ -151,7 +151,7 @@ header{
   border-bottom:1px solid var(--line);
 }
 nav{display:flex; align-items:center; justify-content:space-between; padding:16px 24px; max-width:1180px; margin:0 auto;}
-.logo{font-family:var(--font-display); font-weight:900; font-size:22px; display:flex; align-items:center; gap:8px;}
+.logo{font-family:var(--font-display); font-weight:900; font-size:22px; display:flex; align-items:center; gap:8px; direction:ltr; unicode-bidi:isolate;}
 .logo b{color:var(--orange-2); text-shadow:0 0 20px var(--orange-glow);}
 .nav-links{display:flex; gap:28px; font-size:14px; font-weight:600;}
 .nav-links a{opacity:.8; transition:opacity .2s, color .2s;}
@@ -172,21 +172,36 @@ nav{display:flex; align-items:center; justify-content:space-between; padding:16p
    HERO
 ========================================================= */
 #hero{padding:70px 0 100px; position:relative;}
-.hero-grid{display:grid; grid-template-columns:1.1fr 0.9fr; gap:50px; align-items:center;}
-@media(max-width:900px){.hero-grid{grid-template-columns:1fr; text-align:center;} .hero-photo-wrap{order:-1; margin:0 auto;}}
+.hero-grid{}
+.hero-top-row{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:22px; margin-bottom:18px;}
+@media(max-width:900px){.hero-top-row{justify-content:center; text-align:center;}}
 .hero-name{
-  font-family:var(--font-display); font-weight:900; font-size:clamp(46px,7vw,84px);
-  line-height:0.95; letter-spacing:-2px; margin-bottom:20px;
+  font-family:var(--font-display); font-weight:900; font-size:clamp(38px,6vw,64px);
+  line-height:0.95; letter-spacing:-1px; margin:0;
   background:linear-gradient(180deg, #fff 30%, #ffd9b0 60%, var(--orange-2) 100%);
   -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
   position:relative; display:inline-block;
+  direction:ltr; unicode-bidi:isolate;
 }
-.hero-name .outline{
-  -webkit-text-stroke:1.5px var(--orange-2); -webkit-text-fill-color:transparent;
-  position:absolute; top:6px; right:-14px; z-index:-1; opacity:.5; background:none;
+.hero-name-row{display:flex; align-items:center; gap:18px;}
+@media(max-width:900px){.hero-name-row{justify-content:center;}}
+.hero-avatar{
+  width:64px; height:64px; border-radius:50%; overflow:hidden; flex:none; position:relative;
+  border:2px solid var(--orange-2); box-shadow:0 0 18px var(--orange-glow);
 }
-.hero-tagline{font-size:17px; color:var(--muted-2); max-width:460px; line-height:2; margin-bottom:30px;}
-@media(max-width:900px){.hero-tagline{margin-inline:auto;}}
+.hero-avatar img{width:100%; height:100%; object-fit:cover;}
+.hero-avatar i{
+  position:absolute; bottom:1px; left:1px; width:12px; height:12px; border-radius:50%;
+  background:var(--success); border:2px solid var(--black-2); box-shadow:0 0 8px var(--success); animation:blink 1.4s infinite;
+}
+@keyframes blink{50%{opacity:.3;}}
+.hero-badge-inline{
+  display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700; color:var(--success);
+  background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,.3); padding:5px 12px; border-radius:99px; margin-bottom:18px;
+}
+.hero-badge-inline i{width:7px; height:7px; border-radius:50%; background:var(--success); box-shadow:0 0 8px var(--success); animation:blink 1.4s infinite;}
+.hero-tagline{font-size:17px; color:var(--muted-2); max-width:640px; line-height:2; margin-bottom:34px;}
+@media(max-width:900px){.hero-tagline{margin-inline:auto; text-align:center;}}
 .socials{display:flex; gap:12px; flex-wrap:wrap;}
 @media(max-width:900px){.socials{justify-content:center;}}
 .social-btn{
@@ -195,36 +210,35 @@ nav{display:flex; align-items:center; justify-content:space-between; padding:16p
   background:rgba(255,255,255,0.04); border:1px solid var(--line); transition:.25s var(--ease); position:relative;
 }
 .social-btn:hover{transform:translateY(-4px); border-color:var(--orange-2); box-shadow:0 10px 24px -6px var(--orange-glow); color:var(--orange-2);}
-
-.hero-photo-wrap{position:relative; width:min(380px,80vw);}
-.hero-photo-glow{position:absolute; inset:-30px; background:radial-gradient(circle, var(--orange-glow), transparent 65%); filter:blur(10px); animation:pulse 4s ease-in-out infinite;}
-@keyframes pulse{0%,100%{opacity:.55; transform:scale(1);}50%{opacity:.9; transform:scale(1.06);}}
-.hero-photo{
-  position:relative; border-radius:24px; overflow:hidden; border:1px solid var(--line);
-  box-shadow:0 30px 60px -20px rgba(0,0,0,0.6);
-}
-.hero-photo img{width:100%; aspect-ratio:4/5; object-fit:cover;}
-.hero-badge{
-  position:absolute; bottom:-16px; right:-16px; background:var(--black-2); border:1px solid var(--line);
-  border-radius:14px; padding:10px 16px; display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700;
-  box-shadow:0 10px 24px -8px rgba(0,0,0,.5);
-}
-.hero-badge i{width:9px; height:9px; border-radius:50%; background:var(--success); box-shadow:0 0 10px var(--success); animation:blink 1.4s infinite;}
-@keyframes blink{50%{opacity:.3;}}
+.social-btn svg{width:20px; height:20px; fill:currentColor;}
 
 /* live ticker under hero: since-day counter */
-.since-strip{margin-top:34px; display:inline-flex; gap:22px; flex-wrap:wrap;}
+.since-strip{margin-top:16px; margin-bottom:18px; display:inline-flex; gap:22px; flex-wrap:wrap;}
 @media(max-width:900px){.since-strip{justify-content:center; width:100%;}}
 .since-item{text-align:center;}
 .since-num{font-family:var(--font-display); font-weight:900; font-size:26px; color:var(--orange-2);}
 .since-label{font-size:11px; color:var(--muted-2); letter-spacing:.5px;}
+
+/* follower block now lives inside the hero, right under the title */
+.hero-followers{margin-bottom:8px;}
+.hero-followers .followers-grid{margin-bottom:16px;}
+.hero-followers .total-strip{padding:20px;}
+.hero-followers .total-strip .num{font-size:clamp(30px,4.5vw,44px);}
 
 /* =========================================================
    NEXT STREAM CARD
 ========================================================= */
 .stream-card{padding:34px; display:grid; grid-template-columns:auto 1fr auto; gap:28px; align-items:center;}
 @media(max-width:760px){.stream-card{grid-template-columns:1fr; text-align:center;}}
+.stream-cover-wrap{position:relative; width:120px; height:120px; flex:none; margin:0 auto;}
 .stream-game-cover{width:120px; height:120px; border-radius:16px; object-fit:cover; border:1px solid var(--line);}
+.stream-platform-badge{
+  position:absolute; bottom:-10px; left:50%; transform:translateX(-50%);
+  display:flex; align-items:center; gap:5px; background:var(--card-2); border:1px solid var(--line);
+  border-radius:99px; padding:4px 10px; font-size:10px; font-weight:800; color:var(--orange-2);
+  white-space:nowrap; box-shadow:0 6px 14px -4px rgba(0,0,0,.5);
+}
+.stream-platform-badge svg{width:12px; height:12px; fill:currentColor;}
 .stream-status{
   display:inline-flex; align-items:center; gap:8px; font-family:var(--font-display); font-weight:800; font-size:12px;
   padding:6px 14px; border-radius:99px; margin-bottom:12px; width:fit-content;
@@ -253,11 +267,22 @@ thead th{
   padding:16px 20px; border-bottom:1px solid var(--line); white-space:nowrap;
 }
 tbody td{padding:16px 20px; border-bottom:1px solid rgba(255,255,255,0.04); font-size:14px;}
-tbody tr{transition:background .2s;}
-tbody tr:hover{background:rgba(255,122,26,0.05);}
+tbody tr.row-main{transition:background .2s; cursor:pointer;}
+tbody tr.row-main:hover{background:rgba(255,122,26,0.05);}
+.day-cell{display:flex; align-items:center; gap:8px;}
+.day-caret{display:inline-block; transition:transform .25s var(--ease); color:var(--orange-2); font-size:11px;}
+tr.row-main.open .day-caret{transform:rotate(90deg);}
+tr.row-details td{padding:0; border-bottom:1px solid rgba(255,255,255,0.04);}
+.row-details-inner{max-height:0; overflow:hidden; transition:max-height .35s var(--ease), padding .35s var(--ease);}
+tr.row-details.open .row-details-inner{max-height:220px;}
+.row-details-content{padding:6px 20px 20px; display:flex; flex-direction:column; gap:8px;}
+.rd-line{font-size:13px; color:var(--muted-2); display:flex; gap:8px;}
+.rd-line b{color:var(--white); font-weight:700;}
+.rd-side{display:flex; gap:8px; flex-wrap:wrap;}
+.rd-chip{background:rgba(255,122,26,.1); border:1px solid var(--line); color:var(--orange-2); font-size:12px; font-weight:600; padding:4px 10px; border-radius:99px;}
 .pill{padding:5px 12px; border-radius:99px; font-size:12px; font-weight:700; display:inline-block;}
 .pill.upcoming{background:rgba(255,122,26,.15); color:var(--orange-2);}
-.pill.completed{background:rgba(148,163,184,.15); color:#94a3b8;}
+.pill.ended{background:rgba(148,163,184,.15); color:#94a3b8;}
 .pill.live{background:rgba(74,222,128,.15); color:var(--success);}
 
 /* =========================================================
@@ -274,6 +299,7 @@ tbody tr:hover{background:rgba(255,122,26,0.05);}
 .progress-track{height:9px; background:rgba(255,255,255,0.06); border-radius:99px; overflow:hidden; margin-bottom:8px;}
 .progress-fill{height:100%; border-radius:99px; background:linear-gradient(90deg, var(--orange-deep), var(--orange-2)); width:0%; transition:width 1.4s var(--ease); box-shadow:0 0 10px var(--orange-glow);}
 .progress-pct{font-family:var(--font-display); font-weight:800; font-size:13px; color:var(--orange-2); text-align:left;}
+.goal-meta{display:flex; justify-content:space-between; font-size:11px; color:var(--muted-2); margin-top:6px;}
 
 /* =========================================================
    FOLLOWERS
@@ -306,12 +332,17 @@ tbody tr:hover{background:rgba(255,122,26,0.05);}
 /* =========================================================
    ACHIEVEMENTS TIMELINE
 ========================================================= */
-.timeline{position:relative; padding-right:30px; margin-top:20px;}
-.timeline::before{content:''; position:absolute; right:8px; top:6px; bottom:6px; width:2px; background:linear-gradient(var(--orange-2), transparent);}
-.tl-item{position:relative; padding-bottom:32px;}
-.tl-item::before{content:''; position:absolute; right:-30px; top:4px; width:14px; height:14px; border-radius:50%; background:var(--black); border:2px solid var(--orange-2); box-shadow:0 0 12px var(--orange-glow);}
-.tl-item:last-child{padding-bottom:0;}
-.tl-title{font-family:var(--font-display); font-weight:800; font-size:16px; margin-bottom:4px;}
+.timeline-box{padding:36px 30px 30px;}
+.timeline{display:flex; flex-wrap:wrap; align-items:flex-start; margin-top:0;}
+.tl-item{
+  position:relative; display:flex; flex-direction:column; align-items:center; text-align:center;
+  min-width:150px; max-width:190px; padding:0 22px 28px;
+}
+.tl-item::before{
+  content:''; width:14px; height:14px; border-radius:50%; background:var(--black);
+  border:2px solid var(--orange-2); box-shadow:0 0 12px var(--orange-glow); margin-bottom:14px; flex:none;
+}
+.tl-title{font-family:var(--font-display); font-weight:800; font-size:15px; margin-bottom:4px;}
 .tl-date{font-size:12px; color:var(--muted-2);}
 
 /* =========================================================
@@ -360,7 +391,7 @@ tbody tr:hover{background:rgba(255,122,26,0.05);}
    FOOTER
 ========================================================= */
 footer{padding:50px 0 30px; border-top:1px solid var(--line); text-align:center;}
-.footer-logo{font-family:var(--font-display); font-weight:900; font-size:20px; margin-bottom:14px;}
+.footer-logo{font-family:var(--font-display); font-weight:900; font-size:20px; margin-bottom:14px; direction:ltr; unicode-bidi:isolate;}
 .footer-copy{font-size:12px; color:var(--muted-2);}
 
 /* =========================================================
@@ -407,6 +438,13 @@ footer{padding:50px 0 30px; border-top:1px solid var(--line); text-align:center;
 .mini-btn{padding:6px 12px; font-size:12px; border-radius:8px; border:1px solid var(--line); background:transparent; color:var(--white);}
 .mini-btn.danger{color:#f87171; border-color:rgba(248,113,113,.3);}
 .mini-btn.primary{background:var(--orange-2); color:#1a0a00; border:none; font-weight:700;}
+.date-icon-btn{
+  display:inline-flex; align-items:center; gap:8px; width:auto; height:auto; border-radius:10px;
+  background:rgba(255,122,26,0.1); border:1px solid var(--line); color:var(--orange-2);
+  font-weight:700; font-size:13px; padding:10px 16px; margin-bottom:14px;
+}
+.date-icon-btn:hover{border-color:var(--orange-2);}
+.quick-add-panel{border:1px dashed var(--line); border-radius:12px; padding:16px; margin-bottom:18px;}
 .stat-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin-bottom:24px;}
 .stat-card{padding:18px; border:1px solid var(--line); border-radius:12px;}
 .stat-card .n{font-family:var(--font-display); font-weight:900; font-size:24px; color:var(--orange-2);}
@@ -448,19 +486,27 @@ footer{padding:50px 0 30px; border-top:1px solid var(--line); text-align:center;
 <!-- HERO -->
 <section id="hero">
   <div class="container hero-grid">
-    <div>
-      <div class="eyebrow reveal">صانع محتوى Gaming</div>
-      <h1 class="hero-name reveal" id="heroName">MEDO_DV</h1>
-      <p class="hero-tagline reveal" id="heroTag">في كلان ديب — ألعب، أبني، وأشارك المجتمع كل جديد أول بأول.</p>
-      <div class="socials reveal" id="socialLinks"></div>
-      <div class="since-strip reveal" id="sinceStrip"></div>
-    </div>
-    <div class="hero-photo-wrap reveal">
-      <div class="hero-photo-glow"></div>
-      <div class="hero-photo">
-        <img src="assets/hero-midodv.jpg" alt="MEDO_DV" id="heroPhoto">
+    <div class="eyebrow reveal">صانع محتوى Gaming</div>
+    <div class="hero-top-row reveal">
+      <div class="hero-name-row">
+        <div class="hero-avatar">
+          <img src="assets/hero-midodv.jpg" alt="MEDO_DV" id="heroPhoto">
+          <i></i>
+        </div>
+        <h1 class="hero-name" id="heroName">MEDO_DV</h1>
       </div>
-      <div class="hero-badge"><i></i> <span id="heroBadgeText">أونلاين الآن</span></div>
+      <div class="socials" id="socialLinks"></div>
+    </div>
+    <div class="since-strip reveal" id="sinceStrip"></div>
+    <div class="hero-badge-inline reveal"><i></i> <span id="heroBadgeText">أونلاين الآن</span></div>
+    <p class="hero-tagline reveal" id="heroTag">في كلان ديب — ألعب، أبني، وأشارك المجتمع كل جديد أول بأول.</p>
+
+    <div class="hero-followers reveal">
+      <div class="followers-grid" id="followersGrid"></div>
+      <div class="total-strip glass grad-border">
+        <div class="lbl">TOTAL FOLLOWERS</div>
+        <div class="num" id="totalFollowers">0</div>
+      </div>
     </div>
   </div>
 </section>
@@ -470,7 +516,7 @@ footer{padding:50px 0 30px; border-top:1px solid var(--line); text-align:center;
   <div class="container">
     <div class="eyebrow reveal">البث القادم</div>
     <h2 class="section-title reveal">إيش الجاي؟</h2>
-    <p class="section-sub reveal">تابع تفاصيل آخر بث أو البث القادم مباشرة.</p>
+    <p class="section-sub reveal">أقرب بث حسب الجدول الأسبوعي — يتحدث تلقائيًا.</p>
     <div class="stream-card glass grad-border reveal" id="streamCard"></div>
   </div>
 </section>
@@ -500,20 +546,6 @@ footer{padding:50px 0 30px; border-top:1px solid var(--line); text-align:center;
   </div>
 </section>
 
-<!-- FOLLOWERS -->
-<section id="followers">
-  <div class="container">
-    <div class="eyebrow reveal">المجتمع</div>
-    <h2 class="section-title reveal">عداد المتابعين</h2>
-    <p class="section-sub reveal">شكرًا لكل واحد فيكم — أنتم سبب الاستمرار.</p>
-    <div class="followers-grid" id="followersGrid"></div>
-    <div class="total-strip glass grad-border reveal">
-      <div class="lbl">TOTAL FOLLOWERS</div>
-      <div class="num" id="totalFollowers">0</div>
-    </div>
-  </div>
-</section>
-
 <!-- GAMES -->
 <section id="games">
   <div class="container">
@@ -535,7 +567,9 @@ footer{padding:50px 0 30px; border-top:1px solid var(--line); text-align:center;
     <div class="eyebrow reveal">مسيرة الإنجازات</div>
     <h2 class="section-title reveal">إنجازاتنا سوا</h2>
     <p class="section-sub reveal">كل محطة وصلنا لها بفضل دعمكم.</p>
-    <div class="timeline reveal" id="achievementsTimeline"></div>
+    <div class="timeline-box glass grad-border reveal">
+      <div class="timeline" id="achievementsTimeline"></div>
+    </div>
   </div>
 </section>
 
@@ -690,7 +724,7 @@ const DEFAULTS = {
   profile: {
     name:'MEDO_DV', tag:'في كلان ديب — ألعب، أبني، وأشارك المجتمع كل جديد أول بأول.',
     startDate:'2021-01-01', badge:'أونلاين الآن', footerText:'© 2026 MEDO_DV — جميع الحقوق محفوظة',
-    adminPass:'midodv2026'
+    avatar:'assets/hero-midodv.jpg', adminPass:'midodv2026'
   },
   socials: [
     {platform:'Twitch', url:'https://twitch.tv/', icon:'TW'},
@@ -701,18 +735,14 @@ const DEFAULTS = {
     {platform:'X', url:'https://x.com/', icon:'X'},
     {platform:'Discord', url:'https://discord.gg/', icon:'DC'}
   ],
-  nextStream: {
-    title:'بث الأحد الأسبوعي', game:'Dead by Daylight', date:'2026-07-20', time:'20:00',
-    cover:'', status:'upcoming'
-  },
   schedule: [
-    {day:'الأحد', time:'8:00 PM', game:'Dead by Daylight', type:'Ranked', status:'upcoming'},
-    {day:'الخميس', time:'9:30 PM', game:'Minecraft', type:'Community', status:'upcoming'}
+    {datetime:'2026-07-19T20:00', durationHours:4, game:'Dead by Daylight', type:'Ranked', platform:'Twitch', streamImage:'', sideGames:'Fortnite, Valorant', notes:'بث تنافسي مع مسابقات للمتابعين'},
+    {datetime:'2026-07-23T21:30', durationHours:3, game:'Minecraft', type:'Community', platform:'Kick', streamImage:'', sideGames:'Among Us', notes:'بث مجتمعي مفتوح'}
   ],
   goals: [
-    {title:'50,000 متابع', desc:'الوصول إلى 50 ألف متابع على جميع المنصات', pct:64, done:false},
-    {title:'1000 ساعة بث', desc:'إتمام 1000 ساعة بث مباشر', pct:40, done:false},
-    {title:'شراكة جديدة', desc:'الحصول على شراكة رسمية جديدة', pct:100, done:true}
+    {title:'50,000 متابع', desc:'الوصول إلى 50 ألف متابع على جميع المنصات', current:32000, target:50000, done:false},
+    {title:'10,000 متابع', desc:'الوصول إلى 10 آلاف متابع', current:5500, target:10000, done:false},
+    {title:'شراكة جديدة', desc:'الحصول على شراكة رسمية جديدة', current:1, target:1, done:true}
   ],
   followers: [
     {platform:'Twitch', count:12500},
@@ -763,6 +793,7 @@ function renderProfile(){
   document.getElementById('heroTag').textContent = p.tag;
   document.getElementById('heroBadgeText').textContent = p.badge;
   document.getElementById('footerCopy').textContent = p.footerText;
+  document.getElementById('heroPhoto').src = p.avatar || 'assets/hero-midodv.jpg';
   document.title = p.name + ' | DV';
 
   const days = Math.max(0, Math.floor((Date.now() - new Date(p.startDate).getTime())/86400000));
@@ -771,57 +802,106 @@ function renderProfile(){
   `;
 }
 
+/* small icon set for known platforms — falls back to the admin-entered letters for anything else */
+const SOCIAL_ICONS = {
+  twitch:'<svg viewBox="0 0 24 24"><path d="M4 2 2 6.5V20h6v2h3.5l2-2H18l4-4V2H4Zm16 12.5-2.5 2.5H14l-2 2v-2H8V4h12v10.5Z"/><path d="M15.5 6.5h2V12h-2zM10.5 6.5h2V12h-2z"/></svg>',
+  kick:'<svg viewBox="0 0 24 24"><path d="M3 3h5v5.5L13 3h6l-7.5 8L19 21h-6l-5-6.5V21H3V3Z"/></svg>',
+  tiktok:'<svg viewBox="0 0 24 24"><path d="M16.5 2c.4 2.3 2 4 4.5 4.2v3.2c-1.6 0-3.1-.5-4.5-1.4v6.6c0 3.6-3 6.4-6.7 6.4A6.7 6.7 0 0 1 3 14.4c0-3.6 3-6.4 6.7-6.4.5 0 1 0 1.4.1v3.4a3.3 3.3 0 0 0-1.4-.3 3.3 3.3 0 1 0 3.3 3.3V2h3.5Z"/></svg>',
+  instagram:'<svg viewBox="0 0 24 24"><path d="M8 3h8a5 5 0 0 1 5 5v8a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8a5 5 0 0 1 5-5Zm0 2a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H8Zm4 3.5A4.5 4.5 0 1 1 7.5 13 4.5 4.5 0 0 1 12 8.5Zm0 2A2.5 2.5 0 1 0 14.5 13 2.5 2.5 0 0 0 12 10.5ZM17.8 6.2a1.1 1.1 0 1 1-1.1 1.1 1.1 1.1 0 0 1 1.1-1.1Z"/></svg>',
+  youtube:'<svg viewBox="0 0 24 24"><path d="M21.6 7.2a2.7 2.7 0 0 0-1.9-1.9C18 4.8 12 4.8 12 4.8s-6 0-7.7.5A2.7 2.7 0 0 0 2.4 7.2 28 28 0 0 0 2 12a28 28 0 0 0 .4 4.8 2.7 2.7 0 0 0 1.9 1.9c1.7.5 7.7.5 7.7.5s6 0 7.7-.5a2.7 2.7 0 0 0 1.9-1.9A28 28 0 0 0 22 12a28 28 0 0 0-.4-4.8ZM10 15.3V8.7L15.8 12 10 15.3Z"/></svg>',
+  x:'<svg viewBox="0 0 24 24"><path d="M3 3h4.6l4 5.5L16.2 3H21l-6.9 8.8L21.4 21h-4.6l-4.4-6-5.7 6H2l7.4-9.5L3 3Z"/></svg>',
+  twitter:'<svg viewBox="0 0 24 24"><path d="M3 3h4.6l4 5.5L16.2 3H21l-6.9 8.8L21.4 21h-4.6l-4.4-6-5.7 6H2l7.4-9.5L3 3Z"/></svg>',
+  discord:'<svg viewBox="0 0 24 24"><path d="M18.9 5.7A16 16 0 0 0 15 4.5l-.2.4a12.3 12.3 0 0 1 3.4 1.3 13.6 13.6 0 0 0-12.4 0 12.3 12.3 0 0 1 3.4-1.3L9 4.5a16 16 0 0 0-3.9 1.2C2.6 9 1.9 12.2 2.1 15.4a16.4 16.4 0 0 0 4.9 2.4l.6-1a10.6 10.6 0 0 1-1.6-.8l.4-.3a12 12 0 0 0 10.2 0l.4.3a10.6 10.6 0 0 1-1.6.8l.6 1a16.4 16.4 0 0 0 4.9-2.4c.3-3.6-.6-6.7-2.1-9.7ZM9.7 14c-.7 0-1.3-.7-1.3-1.5S9 11 9.7 11s1.3.7 1.3 1.5S10.4 14 9.7 14Zm4.6 0c-.7 0-1.3-.7-1.3-1.5s.6-1.5 1.3-1.5 1.3.7 1.3 1.5-.6 1.5-1.3 1.5Z"/></svg>',
+  facebook:'<svg viewBox="0 0 24 24"><path d="M13.5 21v-7.6h2.6l.4-3H13.5V8.4c0-.9.2-1.5 1.5-1.5h1.6V4.2A21 21 0 0 0 14.3 4c-2.2 0-3.8 1.4-3.8 4v2.4H8v3h2.5V21h3Z"/></svg>',
+  snapchat:'<svg viewBox="0 0 24 24"><path d="M12 3c2.8 0 4.6 2 4.7 4.6l.1 2.1c.9.4 1.5.5 2 .6.3 0 .6.3.6.6a.7.7 0 0 1-.4.6c-.3.2-.8.4-1.6.7-.1.4-.3.9-.5 1.3.5.1 1 .3 1 .7 0 .5-.8.7-1.6.9-.1.3-.1.7-.4 1a5 5 0 0 1-2.4.4c-.6 0-1 .3-1.6.6-.6.3-1.3.7-2 .7s-1.4-.4-2-.7c-.6-.3-1-.6-1.6-.6a5 5 0 0 1-2.4-.4c-.3-.3-.3-.7-.4-1-.8-.2-1.6-.4-1.6-.9 0-.4.5-.6 1-.7-.2-.4-.4-.9-.5-1.3-.8-.3-1.3-.5-1.6-.7a.7.7 0 0 1-.4-.6c0-.3.3-.6.6-.6.5-.1 1.1-.2 2-.6l.1-2.1C7.4 5 9.2 3 12 3Z"/></svg>',
+  telegram:'<svg viewBox="0 0 24 24"><path d="m21 4-3 16.5-6-4.5-3 3-1-5.5L20 5l-11.5 7L4 10.5 21 4Z"/></svg>'
+};
+function socialIcon(s){
+  const key = (s.platform||'').toLowerCase().replace(/[^a-z]/g,'');
+  return SOCIAL_ICONS[key] || `<span>${esc(s.icon)}</span>`;
+}
 function renderSocials(){
   const list = DB.get('socials');
-  const html = list.map(s=>`<a class="social-btn" href="${esc(s.url)}" target="_blank" title="${esc(s.platform)}">${esc(s.icon)}</a>`).join('');
+  const html = list.map(s=>`<a class="social-btn" href="${esc(s.url)}" target="_blank" title="${esc(s.platform)}">${socialIcon(s)}</a>`).join('');
   document.getElementById('socialLinks').innerHTML = html;
   document.getElementById('footerSocials').innerHTML = html;
 }
 
-/* ============== RENDER: NEXT STREAM ============== */
+/* ============== RENDER: NEXT STREAM (auto-derived from the dated schedule) ============== */
 let cdInterval = null;
-function computeStatus(ns){
-  const start = new Date(ns.date+'T'+(ns.time||'00:00'));
-  const end = new Date(start.getTime() + 4*3600*1000); // assume 4h stream window
+const AR_WEEKDAYS = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+function dayNameFromDate(d){ return AR_WEEKDAYS[d.getDay()]; }
+function streamEnd(row, start){ return new Date(start.getTime() + (Number(row.durationHours)||4)*3600000); }
+/* automatically computed — upcoming / live / ended — based on real date+time+duration, never stored manually */
+function computeStreamStatus(row){
+  if(!row.datetime) return 'upcoming';
+  const start = new Date(row.datetime);
+  if(isNaN(start.getTime())) return 'upcoming';
+  const end = streamEnd(row, start);
   const now = new Date();
   if(now < start) return 'upcoming';
   if(now >= start && now <= end) return 'live';
   return 'ended';
 }
+function getNextStreamInfo(){
+  const rows = DB.get('schedule');
+  if(!rows || !rows.length) return null;
+  const upcoming = rows
+    .filter(r=>r.datetime && !isNaN(new Date(r.datetime).getTime()))
+    .map(r=>({row:r, start:new Date(r.datetime), status:computeStreamStatus(r)}))
+    .filter(x=>x.status !== 'ended')
+    .sort((a,b)=>a.start-b.start);
+  return upcoming[0] || null;
+}
 function renderNextStream(){
-  const ns = DB.get('nextStream');
-  const status = computeStatus(ns);
-  const statusLabel = {upcoming:'قادم', live:'مباشر الآن', ended:'انتهى'}[status];
   const card = document.getElementById('streamCard');
+  const info = getNextStreamInfo();
+  if(!info){
+    card.innerHTML = `<p style="color:var(--muted-2)">لا يوجد بث قادم حاليًا — أضف موعدًا جديدًا من لوحة التحكم.</p>`;
+    if(cdInterval) clearInterval(cdInterval);
+    return;
+  }
+  const { row, start, status } = info;
+  const statusLabel = {upcoming:'قادم', live:'مباشر الآن', ended:'انتهى'}[status];
+  const games = DB.get('games');
+  const matched = games.find(g=>(g.name||'').trim().toLowerCase() === (row.game||'').trim().toLowerCase());
+  const customImg = (row.streamImage||'').trim();
+  const platformLogo = row.platform ? platformLogoCover(row.platform) : null;
+  const cover = customImg || (matched && matched.cover) || platformLogo || fallbackCover(row.game);
+  const isPlatformLogo = !customImg && !(matched && matched.cover) && !!platformLogo; // avoid a redundant badge when the cover already IS the platform logo
+  const showBadge = row.platform && !isPlatformLogo;
   card.innerHTML = `
-    <img class="stream-game-cover" src="${ns.cover || fallbackCover(ns.game)}" alt="${esc(ns.game)}">
+    <div class="stream-cover-wrap">
+      <img class="stream-game-cover" src="${cover}" alt="${esc(row.game)}">
+      ${showBadge ? `<div class="stream-platform-badge">${socialIcon({platform:row.platform, icon:row.platform.slice(0,2).toUpperCase()})}<span>${esc(row.platform)}</span></div>` : ''}
+    </div>
     <div>
-      <div class="stream-status ${status}">${status==='live'?'<i></i> ':''}${status==='live'?'🔴 LIVE NOW':statusLabel}</div>
-      <div class="stream-title">${esc(ns.title)}</div>
+      <div class="stream-status ${status}">${status==='live'?'<i></i> 🔴 LIVE NOW':statusLabel}</div>
+      <div class="stream-title">بث ${esc(dayNameFromDate(start))}${row.type?' · '+esc(row.type):''}</div>
       <div class="stream-meta">
-        <span>🎮 ${esc(ns.game)}</span>
-        <span>📅 ${fmtDate(ns.date)}</span>
-        <span>⏰ ${esc(ns.time)}</span>
+        <span>🎮 ${esc(row.game)}</span>
+        <span>📅 ${fmtDate(row.datetime)}</span>
+        <span>⏰ ${start.toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'})}</span>
       </div>
     </div>
     <div class="countdown" id="countdownBox"></div>
   `;
   if(cdInterval) clearInterval(cdInterval);
   if(status === 'upcoming'){
-    updateCountdown(ns);
-    cdInterval = setInterval(()=>updateCountdown(ns), 1000);
-  } else {
-    document.getElementById('countdownBox').innerHTML = status==='live'
-      ? `<div class="cd-box"><div class="cd-num">🔴</div><div class="cd-lbl">جاري البث</div></div>`
-      : `<div class="cd-box"><div class="cd-num">✓</div><div class="cd-lbl">اكتمل</div></div>`;
+    updateCountdown(start);
+    cdInterval = setInterval(()=>updateCountdown(start), 1000);
+  } else if(status === 'live'){
+    const end = streamEnd(row, start);
+    updateCountdown(end); // counts down the remaining stream duration until it ends
+    cdInterval = setInterval(()=>updateCountdown(end), 1000);
   }
 }
-function updateCountdown(ns){
-  const target = new Date(ns.date+'T'+(ns.time||'00:00')).getTime();
-  const diff = target - Date.now();
+function updateCountdown(target){
+  const targetMs = target.getTime();
+  const diff = targetMs - Date.now();
   const box = document.getElementById('countdownBox');
   if(!box) return;
-  if(diff <= 0){ renderNextStream(); return; }
+  if(diff <= 0){ renderNextStream(); return; } // stream started, or stream ended → move to the next row automatically
   const d = Math.floor(diff/86400000), h=Math.floor(diff/3600000)%24, m=Math.floor(diff/60000)%60, s=Math.floor(diff/1000)%60;
   box.innerHTML = `
     <div class="cd-box"><div class="cd-num">${d}</div><div class="cd-lbl">يوم</div></div>
@@ -833,29 +913,75 @@ function updateCountdown(ns){
 function fallbackCover(text){
   return 'data:image/svg+xml,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><rect width="120" height="120" fill="#241a12"/><text x="50%" y="55%" font-size="40" text-anchor="middle" fill="#ff7a1a">🎮</text></svg>`);
 }
+/* builds a big platform-logo image (used as the stream cover when no custom image/game cover is set) */
+function platformLogoCover(platform){
+  const key = (platform||'').toLowerCase().replace(/[^a-z]/g,'');
+  const iconMarkup = SOCIAL_ICONS[key];
+  if(!iconMarkup) return null;
+  const paths = iconMarkup.replace(/^<svg[^>]*>/,'').replace(/<\/svg>$/,'');
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24"><rect x="-4" y="-4" width="32" height="32" fill="#241a12"/><g fill="#ff7a1a" transform="translate(4,4) scale(0.66)">${paths}</g></svg>`;
+  return 'data:image/svg+xml,'+encodeURIComponent(svg);
+}
 
 /* ============== RENDER: SCHEDULE ============== */
 function renderSchedule(){
-  const rows = DB.get('schedule');
-  document.getElementById('scheduleBody').innerHTML = rows.map(r=>`
-    <tr>
-      <td>${esc(r.day)}</td><td>${esc(r.time)}</td><td>${esc(r.game)}</td><td>${esc(r.type)}</td>
-      <td><span class="pill ${r.status}">${{upcoming:'قادم',completed:'انتهى',live:'مباشر'}[r.status]||r.status}</span></td>
+  const rows = DB.get('schedule').slice().sort((a,b)=>new Date(a.datetime||0)-new Date(b.datetime||0));
+  document.getElementById('scheduleBody').innerHTML = rows.map((r,i)=>{
+    const sideList = (r.sideGames||'').split(',').map(s=>s.trim()).filter(Boolean);
+    const start = r.datetime ? new Date(r.datetime) : null;
+    const validStart = start && !isNaN(start.getTime());
+    const status = computeStreamStatus(r);
+    const dayLabel = validStart ? `${dayNameFromDate(start)} · ${fmtDate(r.datetime)}` : '—';
+    const timeLabel = validStart ? start.toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'}) : '—';
+    return `
+    <tr class="row-main" onclick="toggleScheduleRow(${i})">
+      <td><div class="day-cell"><span class="day-caret">▶</span>${esc(dayLabel)}</div></td><td>${esc(timeLabel)}</td><td>${esc(r.game)}</td><td>${esc(r.type)}${r.platform?' · '+esc(r.platform):''}</td>
+      <td><span class="pill ${status}">${{upcoming:'قادم',ended:'انتهى البث',live:'مباشر'}[status]}</span></td>
     </tr>
-  `).join('') || `<tr><td colspan="5" style="text-align:center; color:var(--muted-2);">لا يوجد جدول حاليًا</td></tr>`;
+    <tr class="row-details" id="rowDetails${i}">
+      <td colspan="5">
+        <div class="row-details-inner"><div class="row-details-content">
+          <div class="rd-line"><b>اللعبة الرئيسية:</b> ${esc(r.game)}</div>
+          <div class="rd-line"><b>مدة البث المتوقعة:</b> ${esc(String(r.durationHours||4))} ساعة</div>
+          ${r.platform ? `<div class="rd-line"><b>المنصة:</b> ${esc(r.platform)}</div>` : ''}
+          ${sideList.length ? `<div class="rd-line"><b>ألعاب جانبية:</b></div><div class="rd-side">${sideList.map(g=>`<span class="rd-chip">${esc(g)}</span>`).join('')}</div>` : ''}
+          ${r.notes ? `<div class="rd-line"><b>تفاصيل:</b> ${esc(r.notes)}</div>` : ''}
+        </div></div>
+      </td>
+    </tr>
+  `;
+  }).join('') || `<tr><td colspan="5" style="text-align:center; color:var(--muted-2);">لا يوجد جدول حاليًا</td></tr>`;
+}
+function toggleScheduleRow(i){
+  const mainRow = document.querySelectorAll('#scheduleBody tr.row-main')[i];
+  const detailsRow = document.getElementById('rowDetails'+i);
+  if(!mainRow || !detailsRow) return;
+  const opening = !detailsRow.classList.contains('open');
+  mainRow.classList.toggle('open', opening);
+  detailsRow.classList.toggle('open', opening);
 }
 
 /* ============== RENDER: GOALS ============== */
+function goalPct(g){
+  const target = Number(g.target||0);
+  const current = Number(g.current||0);
+  if(!target) return 0;
+  return Math.max(0, Math.min(100, Math.round((current/target)*100)));
+}
 function renderGoals(){
   const goals = DB.get('goals');
-  document.getElementById('goalsGrid').innerHTML = goals.map(g=>`
-    <div class="goal-card glass grad-border ${g.done?'done':''}">
+  document.getElementById('goalsGrid').innerHTML = goals.map(g=>{
+    const pct = goalPct(g);
+    const isDone = g.done || pct>=100;
+    return `
+    <div class="goal-card glass grad-border ${isDone?'done':''}">
       <div class="goal-top"><div class="goal-title">${esc(g.title)}</div><div class="goal-check">✓</div></div>
       <div class="goal-desc">${esc(g.desc)}</div>
-      <div class="progress-track"><div class="progress-fill" style="width:${g.pct}%"></div></div>
-      <div class="progress-pct">${g.pct}%</div>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="progress-pct">${pct}%</div>
+      <div class="goal-meta"><span>${Number(g.current||0).toLocaleString('en-US')}</span><span>${Number(g.target||0).toLocaleString('en-US')}</span></div>
     </div>
-  `).join('') || `<p style="color:var(--muted-2)">لا توجد أهداف بعد</p>`;
+  `;}).join('') || `<p style="color:var(--muted-2)">لا توجد أهداف بعد</p>`;
 }
 
 /* ============== RENDER: FOLLOWERS ============== */
@@ -1010,7 +1136,6 @@ const ADMIN_TABS = [
   {id:'overview', label:'📊 نظرة عامة'},
   {id:'profile', label:'👤 الملف الشخصي'},
   {id:'socials', label:'🔗 السوشال ميديا'},
-  {id:'nextStream', label:'🎥 البث القادم'},
   {id:'schedule', label:'🗓️ الجدول'},
   {id:'goals', label:'🎯 الأهداف'},
   {id:'followers', label:'👥 المتابعين'},
@@ -1057,6 +1182,7 @@ const TAB_RENDERERS = {
       <h3>الملف الشخصي</h3>
       <div class="a-field"><label>الاسم</label><input id="f_name" value="${esc(p.name)}"></div>
       <div class="a-field"><label>العبارة التعريفية</label><textarea id="f_tag">${esc(p.tag)}</textarea></div>
+      <div class="a-field"><label>رابط الصورة المصغرة (Avatar)</label><input id="f_avatar" value="${esc(p.avatar||'')}" placeholder="https://..."></div>
       <div class="a-row">
         <div class="a-field"><label>تاريخ بداية صناعة المحتوى</label><input type="date" id="f_start" value="${p.startDate}"></div>
         <div class="a-field"><label>نص الشارة (Online/Offline)</label><input id="f_badge" value="${esc(p.badge)}"></div>
@@ -1070,6 +1196,7 @@ const TAB_RENDERERS = {
     const list = DB.get('socials');
     return `
       <h3>روابط السوشال ميديا</h3>
+      <p style="font-size:12px; color:var(--muted-2); margin-bottom:14px;">إذا كتبت اسم منصة معروفة (Twitch, Kick, TikTok, Instagram, YouTube, X, Discord...) بيظهر لها أيقونة تلقائيًا. أي منصة ثانية بتظهر بالحروف اللي تكتبها.</p>
       ${list.map((s,i)=>`
         <div class="a-list-item">
           <div class="grow a-row" style="grid-template-columns:60px 1fr 2fr;">
@@ -1084,45 +1211,49 @@ const TAB_RENDERERS = {
     `;
   },
 
-  nextStream(){
-    const ns = DB.get('nextStream');
-    return `
-      <h3>البث القادم</h3>
-      <div class="a-field"><label>اسم البث</label><input id="ns_title" value="${esc(ns.title)}"></div>
-      <div class="a-row">
-        <div class="a-field"><label>اللعبة</label><input id="ns_game" value="${esc(ns.game)}"></div>
-        <div class="a-field"><label>رابط صورة اللعبة</label><input id="ns_cover" value="${esc(ns.cover)}" placeholder="https://..."></div>
-      </div>
-      <div class="a-row">
-        <div class="a-field"><label>التاريخ</label><input type="date" id="ns_date" value="${ns.date}"></div>
-        <div class="a-field"><label>الوقت</label><input type="time" id="ns_time" value="${ns.time}"></div>
-      </div>
-      <p style="font-size:12px; color:var(--muted-2); margin-bottom:14px;">الحالة (قادم/مباشر/انتهى) تتحدث تلقائيًا حسب الوقت.</p>
-      <button class="mini-btn primary" onclick="saveNextStream()">حفظ</button>
-    `;
-  },
 
   schedule(){
-    const rows = DB.get('schedule');
+    const rows = DB.get('schedule').slice().sort((a,b)=>new Date(a.datetime||0)-new Date(b.datetime||0));
+    const origIdx = r => DB.get('schedule').indexOf(r);
     return `
       <h3>جدول البثوث</h3>
-      ${rows.map((r,i)=>`
-        <div class="a-list-item">
-          <div class="grow a-row" style="grid-template-columns:repeat(5,1fr);">
-            <input value="${esc(r.day)}" onchange="updateItem('schedule',${i},'day',this.value)" placeholder="اليوم" style="background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:8px; padding:8px; color:#fff;">
-            <input value="${esc(r.time)}" onchange="updateItem('schedule',${i},'time',this.value)" placeholder="الوقت" style="background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:8px; padding:8px; color:#fff;">
-            <input value="${esc(r.game)}" onchange="updateItem('schedule',${i},'game',this.value)" placeholder="اللعبة" style="background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:8px; padding:8px; color:#fff;">
-            <input value="${esc(r.type)}" onchange="updateItem('schedule',${i},'type',this.value)" placeholder="النوع" style="background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:8px; padding:8px; color:#fff;">
-            <select onchange="updateItem('schedule',${i},'status',this.value)" style="background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:8px; padding:8px; color:#fff;">
-              <option value="upcoming" ${r.status==='upcoming'?'selected':''}>قادم</option>
-              <option value="live" ${r.status==='live'?'selected':''}>مباشر</option>
-              <option value="completed" ${r.status==='completed'?'selected':''}>انتهى</option>
-            </select>
-          </div>
-          <div class="actions"><button class="mini-btn danger" onclick="removeItem('schedule',${i})">حذف</button></div>
+      <p style="font-size:12px; color:var(--muted-2); margin-bottom:14px;">قسم "إيش الجاي؟" في الصفحة الرئيسية يختار تلقائيًا أقرب موعد لم يبدأ أو موعد مباشر الآن. بعد انتهاء مدة البث، الجدول يعلّمه "انتهى البث" تلقائيًا وينتقل القسم للموعد اللي بعده.</p>
+
+      <button type="button" class="date-icon-btn" onclick="toggleQuickAdd()">📅 إضافة موعد بالتاريخ والوقت</button>
+      <div class="quick-add-panel" id="quickAddPanel" style="display:none;">
+        <div class="a-row">
+          <div class="a-field"><label>التاريخ والوقت</label><input type="datetime-local" id="qa_datetime"></div>
+          <div class="a-field"><label>مدة البث المتوقعة (ساعات)</label><input type="number" id="qa_duration" value="4" min="0.5" step="0.5"></div>
         </div>
-      `).join('')}
-      <button class="mini-btn primary" style="margin-top:10px;" onclick="addItem('schedule',{day:'يوم',time:'8:00 PM',game:'لعبة',type:'Community',status:'upcoming'})">+ إضافة صف</button>
+        <button class="mini-btn primary" onclick="quickAddSchedule()">إضافة الموعد</button>
+      </div>
+
+      ${rows.map(r=>{ const i = origIdx(r); return `
+        <div class="add-form">
+          <div class="a-row">
+            <div class="a-field"><label>📅 التاريخ والوقت</label><input type="datetime-local" value="${esc(r.datetime||'')}" onchange="updateItem('schedule',${i},'datetime',this.value)"></div>
+            <div class="a-field"><label>مدة البث المتوقعة (ساعات)</label><input type="number" min="0.5" step="0.5" value="${esc(String(r.durationHours||4))}" onchange="updateItem('schedule',${i},'durationHours',Number(this.value))"></div>
+          </div>
+          <div class="a-row">
+            <div class="a-field"><label>اللعبة الرئيسية</label><input value="${esc(r.game)}" onchange="updateItem('schedule',${i},'game',this.value)"></div>
+            <div class="a-field"><label>النوع</label><input value="${esc(r.type)}" onchange="updateItem('schedule',${i},'type',this.value)"></div>
+          </div>
+          <div class="a-row">
+            <div class="a-field"><label>المنصة</label>
+              <select onchange="updateItem('schedule',${i},'platform',this.value)">
+                ${['Twitch','Kick','YouTube','TikTok','Instagram','X','Discord','Facebook','Snapchat'].map(p=>`<option value="${p}" ${r.platform===p?'selected':''}>${p}</option>`).join('')}
+              </select>
+            </div>
+            <div class="a-field"><label>ألعاب جانبية (افصل بينها بفاصلة ,)</label><input value="${esc(r.sideGames||'')}" onchange="updateItem('schedule',${i},'sideGames',this.value)" placeholder="مثال: Fortnite, Valorant"></div>
+          </div>
+          <div class="a-field"><label>صورة البث (اختياري)</label><input value="${esc(r.streamImage||'')}" onchange="updateItem('schedule',${i},'streamImage',this.value)" placeholder="الصق رابط صورة — إذا تركته فارغًا يظهر شعار المنصة تلقائيًا"></div>
+          <div class="a-field"><label>تفاصيل إضافية (تظهر عند فتح الصف)</label><textarea onchange="updateItem('schedule',${i},'notes',this.value)">${esc(r.notes||'')}</textarea></div>
+          <div style="display:flex; justify-content:flex-end;">
+            <button class="mini-btn danger" onclick="removeItem('schedule',${i})">حذف الصف</button>
+          </div>
+        </div>
+      `; }).join('')}
+      <button class="mini-btn primary" style="margin-top:10px;" onclick="addItem('schedule',{datetime:'',durationHours:4,game:'لعبة',type:'Community',platform:'Twitch',streamImage:'',sideGames:'',notes:''})">+ إضافة صف يدويًا</button>
     `;
   },
 
@@ -1130,22 +1261,25 @@ const TAB_RENDERERS = {
     const list = DB.get('goals');
     return `
       <h3>أهداف السنة</h3>
+      <p style="font-size:12px; color:var(--muted-2); margin-bottom:14px;">اكتب الرقم الحالي والرقم المستهدف، والنسبة تتحسب تلقائيًا.</p>
       ${list.map((g,i)=>`
         <div class="add-form">
-          <div class="a-row">
-            <div class="a-field"><label>العنوان</label><input value="${esc(g.title)}" onchange="updateItem('goals',${i},'title',this.value)"></div>
-            <div class="a-field"><label>النسبة %</label><input type="number" min="0" max="100" value="${g.pct}" onchange="updateItem('goals',${i},'pct',Number(this.value))"></div>
-          </div>
+          <div class="a-field"><label>العنوان</label><input value="${esc(g.title)}" onchange="updateItem('goals',${i},'title',this.value)"></div>
           <div class="a-field"><label>الوصف</label><input value="${esc(g.desc)}" onchange="updateItem('goals',${i},'desc',this.value)"></div>
+          <div class="a-row">
+            <div class="a-field"><label>الرقم الحالي</label><input type="number" min="0" value="${g.current||0}" onchange="updateItem('goals',${i},'current',Number(this.value))"></div>
+            <div class="a-field"><label>الرقم المستهدف</label><input type="number" min="0" value="${g.target||0}" onchange="updateItem('goals',${i},'target',Number(this.value))"></div>
+          </div>
+          <div style="font-size:12px; color:var(--orange-2); font-weight:700; margin-bottom:8px;">النسبة الحالية: ${goalPct(g)}%</div>
           <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
             <label style="font-size:13px; display:flex; align-items:center; gap:8px;">
-              <input type="checkbox" ${g.done?'checked':''} onchange="updateItem('goals',${i},'done',this.checked)"> مكتمل
+              <input type="checkbox" ${g.done?'checked':''} onchange="updateItem('goals',${i},'done',this.checked)"> مكتمل يدويًا
             </label>
             <button class="mini-btn danger" onclick="removeItem('goals',${i})">حذف الهدف</button>
           </div>
         </div>
       `).join('')}
-      <button class="mini-btn primary" onclick="addItem('goals',{title:'هدف جديد',desc:'وصف الهدف',pct:0,done:false})">+ إضافة هدف</button>
+      <button class="mini-btn primary" onclick="addItem('goals',{title:'هدف جديد',desc:'وصف الهدف',current:0,target:100,done:false})">+ إضافة هدف</button>
     `;
   },
 
@@ -1303,6 +1437,17 @@ function removeItem(key, idx){
   const list = DB.get(key); list.splice(idx,1); DB.set(key, list); renderAll(); openAdminTab(document.querySelector('.admin-tab.active').dataset.tab); notice('تم الحذف');
 }
 function updateSocial(idx, field, value){ updateItem('socials', idx, field, value); }
+function toggleQuickAdd(){
+  const el = document.getElementById('quickAddPanel');
+  if(!el) return;
+  el.style.display = el.style.display==='none' ? 'block' : 'none';
+}
+function quickAddSchedule(){
+  const dt = document.getElementById('qa_datetime').value;
+  if(!dt){ notice('اختر التاريخ والوقت أولاً'); return; }
+  const dur = Number(document.getElementById('qa_duration').value) || 4;
+  addItem('schedule', {datetime:dt, durationHours:dur, game:'لعبة', type:'Community', platform:'Twitch', streamImage:'', sideGames:'', notes:''});
+}
 function removeSuggestion(id){
   const list = DB.get('suggestions').filter(s=>s.id!==id); DB.set('suggestions', list);
   openAdminTab('suggestions'); notice('تم الحذف');
@@ -1311,19 +1456,11 @@ function saveProfile(){
   const p = DB.get('profile');
   p.name = document.getElementById('f_name').value;
   p.tag = document.getElementById('f_tag').value;
+  p.avatar = document.getElementById('f_avatar').value;
   p.startDate = document.getElementById('f_start').value;
   p.badge = document.getElementById('f_badge').value;
   p.footerText = document.getElementById('f_footer').value;
   DB.set('profile', p); renderAll(); notice('تم حفظ الملف الشخصي');
-}
-function saveNextStream(){
-  const ns = DB.get('nextStream');
-  ns.title = document.getElementById('ns_title').value;
-  ns.game = document.getElementById('ns_game').value;
-  ns.cover = document.getElementById('ns_cover').value;
-  ns.date = document.getElementById('ns_date').value;
-  ns.time = document.getElementById('ns_time').value;
-  DB.set('nextStream', ns); renderAll(); notice('تم حفظ البث القادم');
 }
 function savePinned(){
   const p = DB.get('pinned');
