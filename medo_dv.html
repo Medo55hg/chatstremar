@@ -7,7 +7,7 @@
 <meta name="description" content="الصفحة الرسمية لصانع المحتوى MEDO_DV - بثوث، أهداف، ألعاب وإنجازات">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎮</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 /* =========================================================
    DESIGN TOKENS
@@ -28,7 +28,7 @@
   --muted-2:#c9b9a9;
   --success:#4ade80;
   --font-display:'Cairo', sans-serif;
-  --font-body:'Tajawal', sans-serif;
+  --font-body:'Cairo', sans-serif;
   --radius:18px;
   --radius-sm:10px;
   --ease: cubic-bezier(.16,.84,.44,1);
@@ -57,12 +57,17 @@ input,textarea,select{font-family:inherit;}
 ::-webkit-scrollbar-track{background:var(--black);}
 ::-webkit-scrollbar-thumb{background:var(--orange-deep); border-radius:10px;}
 
+/* visible keyboard focus */
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, [tabindex]:focus-visible{
+  outline:2px solid var(--orange-2); outline-offset:3px; border-radius:6px;
+}
+
 /* reduced motion */
 @media (prefers-reduced-motion: reduce){
   *{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; scroll-behavior:auto !important;}
 }
 
-.container{max-width:1180px; margin:0 auto; padding:0 24px;}
+.container{max-width:1440px; margin:0 auto; padding:0 32px;}
 .eyebrow{
   display:inline-flex; align-items:center; gap:8px;
   font-family:var(--font-display); font-weight:800; font-size:13px;
@@ -133,13 +138,15 @@ section{padding:90px 0; position:relative;}
   overflow:hidden; white-space:nowrap; position:relative; z-index:50;
 }
 #ticker-wrap::before, #ticker-wrap::after{
-  content:''; position:absolute; top:0; bottom:0; width:60px; z-index:2; pointer-events:none;
+  content:''; position:absolute; top:0; bottom:0; width:70px; z-index:2; pointer-events:none;
 }
 #ticker-wrap::before{right:0; background:linear-gradient(to left, var(--black-2), transparent);}
 #ticker-wrap::after{left:0; background:linear-gradient(to right, var(--black-2), transparent);}
-.ticker-track{display:inline-flex; gap:60px; padding:9px 0; animation:tick 28s linear infinite;}
-.ticker-track span{font-size:13px; color:var(--muted-2); font-weight:500;}
-.ticker-track span b{color:var(--orange-2); margin-left:6px;}
+.ticker-track{display:inline-flex; gap:0; padding:10px 0; animation:tick 30s linear infinite;}
+#ticker-wrap:hover .ticker-track{animation-play-state:paused;}
+.ticker-track span{font-size:13px; color:var(--muted-2); font-weight:500; display:inline-flex; align-items:center; gap:10px; padding:0 30px; position:relative;}
+.ticker-track span::after{content:'◆'; position:absolute; left:-4px; font-size:7px; color:var(--orange-deep);}
+.ticker-track span b{color:var(--orange-2); margin-left:2px; font-weight:700;}
 @keyframes tick{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
 
 /* =========================================================
@@ -150,12 +157,16 @@ header{
   background:rgba(10,8,6,0.72); backdrop-filter:blur(16px);
   border-bottom:1px solid var(--line);
 }
-nav{display:flex; align-items:center; justify-content:space-between; padding:16px 24px; max-width:1180px; margin:0 auto;}
+.scroll-progress{position:absolute; bottom:-1px; left:0; height:2px; width:0%; background:linear-gradient(90deg, var(--orange-deep), var(--orange-2)); transition:width .08s linear; z-index:2;}
+nav{display:flex; align-items:center; justify-content:space-between; padding:16px 32px; max-width:1440px; margin:0 auto;}
 .logo{font-family:var(--font-display); font-weight:900; font-size:22px; display:flex; align-items:center; gap:8px; direction:ltr; unicode-bidi:isolate;}
 .logo b{color:var(--orange-2); text-shadow:0 0 20px var(--orange-glow);}
 .nav-links{display:flex; gap:28px; font-size:14px; font-weight:600;}
-.nav-links a{opacity:.8; transition:opacity .2s, color .2s;}
+.nav-links a{opacity:.8; transition:opacity .2s, color .2s; position:relative; padding-bottom:4px;}
 .nav-links a:hover{opacity:1; color:var(--orange-2);}
+.nav-links a::after{content:''; position:absolute; right:0; left:0; bottom:-1px; height:2px; background:var(--orange-2); transform:scaleX(0); transition:transform .25s var(--ease); border-radius:2px;}
+.nav-links a.active{opacity:1; color:var(--orange-2);}
+.nav-links a.active::after{transform:scaleX(1);}
 .nav-right{display:flex; align-items:center; gap:14px;}
 #adminBtn{
   width:38px; height:38px; border-radius:50%; border:1px solid var(--line); background:rgba(255,255,255,0.03);
@@ -200,7 +211,7 @@ nav{display:flex; align-items:center; justify-content:space-between; padding:16p
   background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,.3); padding:5px 12px; border-radius:99px; margin-bottom:18px;
 }
 .hero-badge-inline i{width:7px; height:7px; border-radius:50%; background:var(--success); box-shadow:0 0 8px var(--success); animation:blink 1.4s infinite;}
-.hero-tagline{font-size:17px; color:var(--muted-2); max-width:640px; line-height:2; margin-bottom:34px;}
+.hero-tagline{font-size:17px; color:var(--muted-2); max-width:640px; line-height:2; margin-bottom:0;}
 @media(max-width:900px){.hero-tagline{margin-inline:auto; text-align:center;}}
 .socials{display:flex; gap:12px; flex-wrap:wrap;}
 @media(max-width:900px){.socials{justify-content:center;}}
@@ -219,24 +230,54 @@ nav{display:flex; align-items:center; justify-content:space-between; padding:16p
 .since-num{font-family:var(--font-display); font-weight:900; font-size:26px; color:var(--orange-2);}
 .since-label{font-size:11px; color:var(--muted-2); letter-spacing:.5px;}
 
-/* follower block now lives inside the hero, right under the title */
-.hero-followers{margin-bottom:8px;}
-.hero-followers .followers-grid{margin-bottom:16px;}
-.hero-followers .total-strip{padding:20px;}
-.hero-followers .total-strip .num{font-size:clamp(30px,4.5vw,44px);}
+/* two-column hero shell: intro content + a compact stats side panel */
+.hero-shell{display:grid; grid-template-columns:1fr 300px; gap:30px; align-items:start;}
+@media(max-width:960px){.hero-shell{grid-template-columns:1fr;}}
+.hero-side{padding:22px; display:flex; flex-direction:column; gap:16px;}
+.hero-side-label{font-family:var(--font-display); font-weight:800; font-size:11.5px; letter-spacing:1.5px; color:var(--muted-2); text-transform:uppercase;}
+
+/* =========================================================
+   FOLLOWERS (hero side panel)
+========================================================= */
+.followers-grid{display:flex; flex-direction:column; gap:8px;}
+.follow-card{
+  padding:10px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px;
+  transition:transform .25s var(--ease), border-color .25s;
+}
+.follow-card:hover{transform:translateX(-3px); border-color:var(--orange-2);}
+.follow-main{display:flex; align-items:center; gap:10px; min-width:0;}
+.follow-icon{width:30px; height:30px; border-radius:9px; flex:none; display:flex; align-items:center; justify-content:center; background:rgba(255,122,26,.12); color:var(--orange-2);}
+.follow-icon svg{width:15px; height:15px; fill:currentColor;}
+.follow-plat{font-family:var(--font-display); font-weight:700; font-size:12px; color:var(--muted-2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.follow-num{font-family:var(--font-display); font-weight:900; font-size:15px; color:var(--white); flex:none;}
+.total-strip{
+  padding:22px; text-align:center; position:relative; overflow:hidden;
+  background:linear-gradient(135deg, rgba(210,86,15,.18), rgba(124,45,10,.08));
+}
+.total-strip::before{
+  content:''; position:absolute; top:50%; left:50%; width:180px; height:180px; border-radius:50%;
+  background:radial-gradient(circle, var(--orange-glow), transparent 70%); transform:translate(-50%,-50%); opacity:.6; pointer-events:none;
+}
+.total-strip .lbl{position:relative; font-size:11.5px; letter-spacing:2px; color:var(--orange-2); font-family:var(--font-display); font-weight:800; margin-bottom:6px;}
+.total-strip .num{position:relative; font-family:var(--font-display); font-weight:900; font-size:clamp(30px,4vw,40px); color:var(--white); text-shadow:0 0 40px var(--orange-glow);}
 
 /* =========================================================
    NEXT STREAM CARD
 ========================================================= */
 .stream-card{padding:34px; display:grid; grid-template-columns:auto 1fr auto; gap:28px; align-items:center;}
 @media(max-width:760px){.stream-card{grid-template-columns:1fr; text-align:center;}}
-.stream-cover-wrap{position:relative; width:120px; height:120px; flex:none; margin:0 auto;}
-.stream-game-cover{width:120px; height:120px; border-radius:16px; object-fit:cover; border:1px solid var(--line);}
+.stream-cover-wrap{position:relative; width:130px; height:130px; flex:none; margin:0 auto; border-radius:18px; overflow:hidden;}
+.stream-game-cover{width:130px; height:130px; object-fit:cover;}
+.stream-live-ribbon{
+  position:absolute; top:14px; left:-34px; width:140px; transform:rotate(-45deg);
+  background:var(--success); color:#04150a; font-family:var(--font-display); font-weight:900; font-size:10px;
+  text-align:center; padding:4px 0; box-shadow:0 4px 10px rgba(0,0,0,.4); letter-spacing:1px;
+}
 .stream-platform-badge{
   position:absolute; bottom:-10px; left:50%; transform:translateX(-50%);
   display:flex; align-items:center; gap:5px; background:var(--card-2); border:1px solid var(--line);
   border-radius:99px; padding:4px 10px; font-size:10px; font-weight:800; color:var(--orange-2);
-  white-space:nowrap; box-shadow:0 6px 14px -4px rgba(0,0,0,.5);
+  white-space:nowrap; box-shadow:0 6px 14px -4px rgba(0,0,0,.5); z-index:2;
 }
 .stream-platform-badge svg{width:12px; height:12px; fill:currentColor;}
 .stream-status{
@@ -251,31 +292,50 @@ nav{display:flex; align-items:center; justify-content:space-between; padding:16p
 .stream-title{font-family:var(--font-display); font-weight:800; font-size:22px; margin-bottom:6px;}
 .stream-meta{color:var(--muted-2); font-size:14px; display:flex; gap:16px; flex-wrap:wrap;}
 @media(max-width:760px){.stream-meta{justify-content:center;}}
+.countdown-wrap{display:flex; flex-direction:column; gap:10px;}
+@media(max-width:760px){.countdown-wrap{align-items:center;}}
+.countdown-label{
+  font-family:var(--font-display); font-weight:800; font-size:12.5px; letter-spacing:.5px;
+  color:var(--orange-2); display:flex; align-items:center; gap:6px;
+}
+.countdown-label.is-live{color:var(--success);}
 .countdown{display:flex; gap:10px;}
 @media(max-width:760px){.countdown{justify-content:center;}}
-.cd-box{background:var(--card-2); border:1px solid var(--line); border-radius:12px; padding:12px 14px; min-width:62px; text-align:center;}
+.cd-box{
+  background:var(--card-2); border:1px solid var(--line); border-radius:12px;
+  padding:12px 20px; min-width:78px; text-align:center;
+}
 .cd-num{font-family:var(--font-display); font-weight:900; font-size:24px; color:var(--orange-2);}
 .cd-lbl{font-size:10px; color:var(--muted-2); margin-top:2px;}
 
 /* =========================================================
-   SCHEDULE TABLE
+   SCHEDULE — card list (each stream as an expandable row card)
 ========================================================= */
-.table-wrap{overflow-x:auto; border-radius:var(--radius);}
-table{width:100%; border-collapse:collapse; min-width:600px;}
-thead th{
-  text-align:right; font-family:var(--font-display); font-weight:700; font-size:13px; color:var(--orange-2);
-  padding:16px 20px; border-bottom:1px solid var(--line); white-space:nowrap;
+.schedule-list{display:flex; flex-direction:column; gap:12px;}
+.sched-item{overflow:hidden; cursor:pointer; transition:border-color .2s;}
+.sched-item:hover{border-color:var(--orange-2);}
+.sched-row{display:flex; align-items:center; gap:18px; padding:18px 22px; position:relative;}
+@media(max-width:640px){.sched-row{flex-wrap:wrap; gap:12px;}}
+.sched-date{flex:none; width:104px; text-align:center; padding:10px 6px; border-radius:12px; background:rgba(255,122,26,.08); border:1px solid var(--line);}
+.sched-date .dow{font-size:11px; color:var(--orange-2); font-weight:800; letter-spacing:.3px; white-space:nowrap;}
+.sched-date .dom{font-family:var(--font-display); font-weight:900; font-size:16px; color:var(--white); white-space:nowrap; margin-top:2px;}
+@media(max-width:640px){.sched-date{width:auto; padding:8px 12px;}}
+.sched-main{flex:1; min-width:0;}
+.sched-game{font-family:var(--font-display); font-weight:800; font-size:15px; margin-bottom:4px;}
+.sched-meta{font-size:12.5px; color:var(--muted-2); display:flex; gap:12px; flex-wrap:wrap;}
+.sched-right{display:flex; align-items:center; gap:12px; flex:none;}
+.sched-caret{display:inline-block; color:var(--orange-2); font-size:11px; transition:transform .25s var(--ease);}
+.sched-item.open .sched-caret{transform:rotate(90deg);}
+.sched-item.is-ended .sched-row{filter:blur(2.4px); opacity:.55; user-select:none;}
+.ended-stamp{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none;
+  font-family:var(--font-display); font-weight:900; font-size:15px; letter-spacing:1px; color:var(--white);
+  text-shadow:0 2px 10px rgba(0,0,0,.6); z-index:2;
 }
-tbody td{padding:16px 20px; border-bottom:1px solid rgba(255,255,255,0.04); font-size:14px;}
-tbody tr.row-main{transition:background .2s; cursor:pointer;}
-tbody tr.row-main:hover{background:rgba(255,122,26,0.05);}
-.day-cell{display:flex; align-items:center; gap:8px;}
-.day-caret{display:inline-block; transition:transform .25s var(--ease); color:var(--orange-2); font-size:11px;}
-tr.row-main.open .day-caret{transform:rotate(90deg);}
-tr.row-details td{padding:0; border-bottom:1px solid rgba(255,255,255,0.04);}
-.row-details-inner{max-height:0; overflow:hidden; transition:max-height .35s var(--ease), padding .35s var(--ease);}
-tr.row-details.open .row-details-inner{max-height:220px;}
-.row-details-content{padding:6px 20px 20px; display:flex; flex-direction:column; gap:8px;}
+.ended-stamp span{background:rgba(20,14,10,.55); border:1px solid rgba(255,255,255,.15); padding:6px 22px; border-radius:99px;}
+.sched-details{max-height:0; overflow:hidden; transition:max-height .35s var(--ease);}
+.sched-item.open .sched-details{max-height:260px;}
+.sched-details-inner{padding:2px 22px 20px; display:flex; flex-direction:column; gap:8px;}
 .rd-line{font-size:13px; color:var(--muted-2); display:flex; gap:8px;}
 .rd-line b{color:var(--white); font-weight:700;}
 .rd-side{display:flex; gap:8px; flex-wrap:wrap;}
@@ -289,30 +349,55 @@ tr.row-details.open .row-details-inner{max-height:220px;}
    GOALS
 ========================================================= */
 .goals-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px;}
-.goal-card{padding:24px; position:relative; overflow:hidden;}
-.goal-card.done{border-color:rgba(74,222,128,.4);}
-.goal-top{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;}
-.goal-title{font-family:var(--font-display); font-weight:800; font-size:16px;}
-.goal-check{color:var(--success); font-size:18px; opacity:0; transition:.3s;}
-.goal-card.done .goal-check{opacity:1;}
-.goal-desc{font-size:13px; color:var(--muted-2); margin-bottom:18px; line-height:1.8;}
-.progress-track{height:9px; background:rgba(255,255,255,0.06); border-radius:99px; overflow:hidden; margin-bottom:8px;}
-.progress-fill{height:100%; border-radius:99px; background:linear-gradient(90deg, var(--orange-deep), var(--orange-2)); width:0%; transition:width 1.4s var(--ease); box-shadow:0 0 10px var(--orange-glow);}
-.progress-pct{font-family:var(--font-display); font-weight:800; font-size:13px; color:var(--orange-2); text-align:left;}
-.goal-meta{display:flex; justify-content:space-between; font-size:11px; color:var(--muted-2); margin-top:6px;}
-
-/* =========================================================
-   FOLLOWERS
-========================================================= */
-.followers-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:16px; margin-bottom:28px;}
-.follow-card{padding:22px; text-align:center;}
-.follow-plat{font-family:var(--font-display); font-weight:700; font-size:12px; color:var(--muted-2); margin-bottom:10px;}
-.follow-num{font-family:var(--font-display); font-weight:900; font-size:28px; color:var(--white);}
-.total-strip{
-  padding:30px; text-align:center; background:linear-gradient(135deg, rgba(210,86,15,.18), rgba(124,45,10,.08));
+.goal-card{padding:22px; position:relative; overflow:hidden; display:flex; align-items:center; gap:18px;}
+.goal-ring{
+  flex:none; width:74px; height:74px; border-radius:50%; position:relative;
+  display:flex; align-items:center; justify-content:center;
+  background:conic-gradient(var(--orange-2) calc(var(--p,0)*1%), rgba(255,255,255,.07) 0);
 }
-.total-strip .lbl{font-size:13px; letter-spacing:2px; color:var(--orange-2); font-family:var(--font-display); font-weight:800; margin-bottom:8px;}
-.total-strip .num{font-family:var(--font-display); font-weight:900; font-size:clamp(38px,6vw,58px); color:var(--white); text-shadow:0 0 40px var(--orange-glow);}
+.goal-ring::before{content:''; position:absolute; inset:6px; border-radius:50%; background:var(--card);}
+.goal-ring span{position:relative; font-family:var(--font-display); font-weight:900; font-size:13px; color:var(--orange-2);}
+.goal-body{flex:1; min-width:0;}
+.goal-title{font-family:var(--font-display); font-weight:800; font-size:15px; margin-bottom:5px;}
+.goal-desc{font-size:12.5px; color:var(--muted-2); margin-bottom:10px; line-height:1.7;}
+.goal-meta{display:flex; justify-content:space-between; font-size:11px; color:var(--muted-2);}
+
+/* ---- completed goals drop below the active goals into a small chip row ---- */
+.goals-done-wrap{margin-top:26px; padding-top:22px; border-top:1px dashed var(--line);}
+.goals-done-title{
+  font-family:var(--font-display); font-weight:800; font-size:14px; color:var(--success);
+  margin-bottom:14px; letter-spacing:.3px;
+}
+.goals-done-row{display:flex; flex-wrap:wrap; gap:10px;}
+.goal-chip{
+  display:flex; align-items:center; gap:8px; padding:9px 16px; border-radius:99px; cursor:pointer;
+  background:rgba(74,222,128,.08); border:1px solid rgba(74,222,128,.3);
+  transition:transform .2s var(--ease), background .2s, border-color .2s;
+  animation:goalDrop .5s var(--ease);
+}
+.goal-chip:hover{transform:translateY(-3px); background:rgba(74,222,128,.16); border-color:var(--success);}
+.goal-chip .tick{color:var(--success); font-size:13px;}
+.goal-chip .t{font-family:var(--font-display); font-weight:700; font-size:12.5px; color:var(--white); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:180px;}
+@keyframes goalDrop{
+  0%{opacity:0; transform:translateY(-16px) scale(.9);}
+  100%{opacity:1; transform:translateY(0) scale(1);}
+}
+
+/* ---- goal detail modal ---- */
+.goal-modal-overlay{
+  position:fixed; inset:0; z-index:1200; background:rgba(8,6,4,.72); backdrop-filter:blur(4px);
+  display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity .25s var(--ease);
+}
+.goal-modal-overlay.open{opacity:1; pointer-events:auto;}
+.goal-modal{max-width:420px; width:100%; padding:28px; position:relative; transform:translateY(14px); transition:transform .25s var(--ease);}
+.goal-modal-overlay.open .goal-modal{transform:translateY(0);}
+.goal-modal-close{
+  position:absolute; top:14px; left:14px; width:30px; height:30px; border-radius:50%; background:rgba(255,255,255,.06);
+  border:1px solid var(--line); color:var(--white); display:flex; align-items:center; justify-content:center; cursor:pointer;
+}
+.goal-modal-badge{color:var(--success); font-weight:800; font-size:12px; margin-bottom:10px;}
+.goal-modal-title{font-family:var(--font-display); font-weight:800; font-size:20px; margin-bottom:10px;}
+.goal-modal-desc{font-size:14px; color:var(--muted-2); line-height:1.8; margin-bottom:18px;}
 
 /* =========================================================
    GAMES
@@ -320,44 +405,97 @@ tr.row-details.open .row-details-inner{max-height:220px;}
 .games-tabs{display:flex; gap:10px; margin-bottom:28px; flex-wrap:wrap;}
 .game-tab{padding:10px 20px; border-radius:99px; border:1px solid var(--line); font-size:13px; font-weight:700; font-family:var(--font-display); background:transparent; color:var(--muted-2); transition:.2s;}
 .game-tab.active{background:linear-gradient(135deg, var(--orange-2), var(--orange)); color:#1a0a00; border-color:transparent;}
-.games-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:18px;}
-.game-card{overflow:hidden; transition:transform .3s var(--ease), box-shadow .3s;}
+.games-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(156px,1fr)); gap:14px; transition:opacity .28s var(--ease), transform .28s var(--ease);}
+.games-grid.switching{opacity:0; transform:translateX(14px) scale(.98);}
+.game-card{position:relative; overflow:hidden; aspect-ratio:1/1; transition:transform .3s var(--ease), box-shadow .3s; animation:gameCardIn .45s var(--ease) backwards;}
+@keyframes gameCardIn{
+  0%{opacity:0; transform:translateY(10px) scale(.94);}
+  100%{opacity:1; transform:translateY(0) scale(1);}
+}
 .game-card:hover{transform:translateY(-6px); box-shadow:0 20px 40px -14px rgba(0,0,0,.5);}
-.game-cover{width:100%; aspect-ratio:3/4; object-fit:cover;}
-.game-info{padding:14px;}
-.game-name{font-family:var(--font-display); font-weight:700; font-size:14px; margin-bottom:6px;}
-.game-hours{font-size:12px; color:var(--orange-2); font-weight:700;}
-.game-dates{font-size:11px; color:var(--muted-2); margin-top:4px;}
+.game-cover{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform .5s var(--ease);}
+.game-card:hover .game-cover{transform:scale(1.1);}
+.game-scrim{
+  position:absolute; inset:0; display:flex; flex-direction:column; justify-content:flex-end; padding:10px;
+  background:linear-gradient(to top, rgba(10,8,6,.92) 0%, rgba(10,8,6,.4) 55%, transparent 100%);
+}
+.game-name{font-family:var(--font-display); font-weight:700; font-size:12px; color:var(--white); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.game-hours{font-size:10px; color:var(--orange-2); font-weight:700; margin-top:1px;}
 
 /* =========================================================
-   ACHIEVEMENTS TIMELINE
+   ACHIEVEMENTS — horizontal scrollable row
 ========================================================= */
-.timeline-box{padding:36px 30px 30px;}
-.timeline{display:flex; flex-wrap:wrap; align-items:flex-start; margin-top:0;}
+.timeline-box{padding:32px 8px 26px;}
+.timeline{
+  position:relative; display:flex; gap:0; margin-top:0; overflow-x:auto; overflow-y:visible;
+  padding:8px 26px 10px; scroll-snap-type:x proximity;
+}
+.timeline::-webkit-scrollbar{height:6px;}
+.timeline::-webkit-scrollbar-thumb{background:var(--orange-deep); border-radius:10px;}
+.timeline::before{
+  content:''; position:absolute; top:47px; left:26px; right:26px; height:2px;
+  background:linear-gradient(90deg, var(--orange-2), var(--orange-deep) 60%, transparent);
+  opacity:.4;
+}
 .tl-item{
-  position:relative; display:flex; flex-direction:column; align-items:center; text-align:center;
-  min-width:150px; max-width:190px; padding:0 22px 28px;
+  position:relative; flex:none; width:190px; display:flex; flex-direction:column; align-items:center; text-align:center;
+  padding:0 14px; scroll-snap-align:start;
 }
-.tl-item::before{
-  content:''; width:14px; height:14px; border-radius:50%; background:var(--black);
-  border:2px solid var(--orange-2); box-shadow:0 0 12px var(--orange-glow); margin-bottom:14px; flex:none;
+.tl-dot{
+  position:relative; flex:none; width:48px; height:48px; border-radius:50%; margin-bottom:14px;
+  display:flex; align-items:center; justify-content:center; font-size:19px;
+  background:radial-gradient(circle at 35% 30%, var(--orange-2), var(--orange-deep));
+  box-shadow:0 0 0 4px var(--card), 0 0 18px var(--orange-glow);
 }
-.tl-title{font-family:var(--font-display); font-weight:800; font-size:15px; margin-bottom:4px;}
-.tl-date{font-size:12px; color:var(--muted-2);}
+.tl-body{
+  width:100%; padding:14px 16px; border-radius:var(--radius-sm); background:rgba(255,255,255,0.03);
+  border:1px solid var(--line); transition:.25s var(--ease);
+}
+.tl-item:hover .tl-body{border-color:var(--orange-2); background:rgba(255,122,26,.05); transform:translateY(-4px);}
+.tl-title{font-family:var(--font-display); font-weight:800; font-size:14px; margin-bottom:4px;}
+.tl-date{font-size:11.5px; color:var(--muted-2);}
 
 /* =========================================================
    CLIPS + NEWS
 ========================================================= */
 .clips-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:18px;}
 .clip-card{overflow:hidden;}
-.clip-thumb{width:100%; aspect-ratio:16/9; object-fit:cover; position:relative;}
+.clip-thumb-wrap{position:relative; overflow:hidden;}
+.clip-thumb{width:100%; aspect-ratio:16/9; object-fit:cover; transition:transform .5s var(--ease);}
+.clip-card:hover .clip-thumb{transform:scale(1.08);}
+.clip-src-badge{
+  position:absolute; top:8px; left:8px; background:rgba(10,8,6,.68); backdrop-filter:blur(4px);
+  color:var(--orange-2); font-size:10px; font-weight:800; padding:3px 10px; border-radius:99px; border:1px solid var(--line);
+}
+.clip-play{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  background:rgba(10,8,6,.32); opacity:0; transition:opacity .25s var(--ease);
+}
+.clip-card:hover .clip-play, .featured-clip:hover .clip-play{opacity:1;}
+.clip-play span{
+  width:46px; height:46px; border-radius:50%; background:var(--orange-2); color:#1a0a00;
+  display:flex; align-items:center; justify-content:center; font-size:15px; transform:scale(.8);
+  box-shadow:0 8px 22px -6px var(--orange-glow); transition:transform .25s var(--ease);
+}
+.clip-card:hover .clip-play span, .featured-clip:hover .clip-play span{transform:scale(1);}
 .clip-info{padding:14px;}
-.clip-title{font-size:13px; font-weight:700; margin-bottom:4px;}
-.clip-src{font-size:11px; color:var(--orange-2);}
+.clip-title{font-size:13px; font-weight:700;}
 
-.news-list{display:flex; flex-direction:column; gap:14px;}
-.news-item{padding:18px 22px; display:flex; gap:14px; align-items:flex-start;}
-.news-dot{width:8px; height:8px; border-radius:50%; background:var(--orange-2); margin-top:7px; flex:none; box-shadow:0 0 8px var(--orange-glow);}
+.news-list{position:relative; display:flex; flex-direction:column;}
+.news-list::before{
+  content:''; position:absolute; top:6px; bottom:6px; right:19px; width:2px;
+  background:linear-gradient(var(--orange-2), var(--orange-deep) 60%, transparent); opacity:.35;
+}
+.news-item{position:relative; display:flex; align-items:flex-start; gap:18px; padding:0 0 20px;}
+.news-item:last-child{padding-bottom:0;}
+.news-dot{
+  position:relative; flex:none; width:40px; height:40px; border-radius:50%; font-size:15px;
+  display:flex; align-items:center; justify-content:center;
+  background:radial-gradient(circle at 35% 30%, var(--orange-2), var(--orange-deep));
+  box-shadow:0 0 0 4px var(--black), 0 0 14px var(--orange-glow);
+}
+.news-body{flex:1; padding:14px 18px; border-radius:var(--radius-sm); background:rgba(255,255,255,0.03); border:1px solid var(--line); transition:.25s var(--ease);}
+.news-item:hover .news-body{border-color:var(--orange-2); background:rgba(255,122,26,.05);}
 .news-text{font-size:14px; line-height:1.8;}
 .news-date{font-size:11px; color:var(--muted-2); margin-top:4px;}
 
@@ -367,16 +505,27 @@ tr.row-details.open .row-details-inner{max-height:220px;}
 #pinned{display:none;}
 #pinned.show{display:block;}
 .pinned-bar{
-  margin:0 auto 0; max-width:1180px; padding:14px 24px; margin-top:20px;
+  margin:0 auto 0; max-width:1440px; padding:14px 32px; margin-top:20px;
   display:flex; align-items:center; gap:12px; font-size:14px;
 }
 
 /* =========================================================
-   SUGGESTIONS FORM
+   SUGGESTIONS FORM — two-column shell
 ========================================================= */
-.form-grid{padding:34px; display:grid; gap:16px; max-width:640px; margin:0 auto;}
+.suggest-shell{display:grid; grid-template-columns:260px 1fr; overflow:hidden; max-width:900px; margin:0 auto;}
+@media(max-width:760px){.suggest-shell{grid-template-columns:1fr;}}
+.suggest-aside{
+  padding:34px; background:linear-gradient(160deg, rgba(255,122,26,.14), rgba(124,45,10,.06));
+  display:flex; flex-direction:column; justify-content:center; gap:10px; border-left:1px solid var(--line);
+}
+@media(max-width:760px){.suggest-aside{border-left:none; border-bottom:1px solid var(--line);}}
+.suggest-icon{font-size:34px;}
+.suggest-aside h3{font-family:var(--font-display); font-weight:800; font-size:19px;}
+.suggest-aside p{font-size:13px; color:var(--muted-2); line-height:1.8;}
+.suggest-form{padding:34px; display:grid; gap:16px;}
 .form-row{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
 @media(max-width:600px){.form-row{grid-template-columns:1fr;}}
+.field{position:relative;}
 .field label{display:block; font-size:12px; color:var(--muted-2); margin-bottom:6px; font-weight:600;}
 .field input, .field textarea{
   width:100%; background:rgba(255,255,255,0.04); border:1px solid var(--line); border-radius:10px;
@@ -390,9 +539,21 @@ tr.row-details.open .row-details-inner{max-height:220px;}
 /* =========================================================
    FOOTER
 ========================================================= */
-footer{padding:50px 0 30px; border-top:1px solid var(--line); text-align:center;}
-.footer-logo{font-family:var(--font-display); font-weight:900; font-size:20px; margin-bottom:14px; direction:ltr; unicode-bidi:isolate;}
-.footer-copy{font-size:12px; color:var(--muted-2);}
+footer{padding:56px 0 32px; border-top:1px solid var(--line); text-align:center; position:relative; overflow:hidden;}
+footer::before{
+  content:''; position:absolute; top:0; left:50%; width:280px; height:1px; transform:translateX(-50%);
+  background:linear-gradient(90deg, transparent, var(--orange-2), transparent);
+}
+.footer-logo{font-family:var(--font-display); font-weight:900; font-size:22px; margin-bottom:18px; direction:ltr; unicode-bidi:isolate;}
+.footer-nav{display:flex; justify-content:center; gap:22px; flex-wrap:wrap; font-size:13px; font-weight:600; margin-bottom:20px;}
+.footer-nav a{opacity:.75; transition:.2s;}
+.footer-nav a:hover{opacity:1; color:var(--orange-2);}
+.footer-copy{font-size:12px; color:var(--muted-2); letter-spacing:.3px; margin-top:20px;}
+.back-to-top{
+  display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:50%;
+  border:1px solid var(--line); background:rgba(255,255,255,0.03); color:var(--muted-2); margin-top:22px; transition:.2s;
+}
+.back-to-top:hover{border-color:var(--orange-2); color:var(--orange-2); transform:translateY(-3px);}
 
 /* =========================================================
    ADMIN OVERLAY
@@ -453,6 +614,109 @@ footer{padding:50px 0 30px; border-top:1px solid var(--line); text-align:center;
 .err{color:#f87171; font-size:13px; margin-top:8px; display:none;}
 .notice{position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--orange-2); color:#1a0a00; padding:12px 24px; border-radius:99px; font-weight:700; font-size:13px; z-index:2000; opacity:0; pointer-events:none; transition:.3s;}
 .notice.show{opacity:1; transform:translate(-50%,-8px);}
+/* =========================================================
+   LIGHT THEME (toggle)
+========================================================= */
+html[data-theme="light"]{
+  --black:#f7f2ea; --black-2:#efe6d8; --charcoal:#e9dfd0; --card:#ffffff; --card-2:#f6efe4;
+  --line:rgba(124,45,10,0.16); --white:#251c12; --muted-2:#6d5c48; --muted:#6d5c4866;
+}
+html[data-theme="light"] body{
+  background:
+    radial-gradient(ellipse 900px 500px at 15% -5%, rgba(255,166,94,0.20), transparent 60%),
+    radial-gradient(ellipse 700px 500px at 100% 10%, rgba(210,86,15,0.12), transparent 55%),
+    var(--black);
+}
+html[data-theme="light"] .hero-name{background:linear-gradient(180deg, #2a1c0e 20%, #a4460f 70%, var(--orange) 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;}
+#themeToggle{
+  width:38px; height:38px; border-radius:50%; border:1px solid var(--line); background:rgba(255,255,255,0.03);
+  display:flex; align-items:center; justify-content:center; font-size:15px; transition:.2s;
+}
+#themeToggle:hover{border-color:var(--orange-2); box-shadow:0 0 14px var(--orange-glow);}
+
+/* =========================================================
+   CARD SHINE
+========================================================= */
+.stream-card{position:relative; overflow:hidden;}
+.stream-card::after{
+  content:''; position:absolute; top:0; bottom:0; width:60px; left:-120px;
+  background:linear-gradient(100deg, transparent, rgba(255,255,255,0.14), transparent);
+  animation:heroShine 7s ease-in-out infinite; pointer-events:none;
+}
+@keyframes heroShine{0%{left:-120px;} 12%{left:120%;} 100%{left:120%;}}
+.game-card, .goal-card, .follow-card, .clip-card{position:relative; overflow:hidden;}
+.game-card::before, .goal-card::before, .follow-card::before, .clip-card::before{
+  content:''; position:absolute; top:0; bottom:0; width:50px; left:-100px; z-index:2;
+  background:linear-gradient(100deg, transparent, rgba(255,255,255,0.16), transparent);
+  transition:left .7s var(--ease); pointer-events:none;
+}
+.game-card:hover::before, .goal-card:hover::before, .follow-card:hover::before, .clip-card:hover::before{left:120%;}
+
+/* =========================================================
+   HERO BACKGROUND BLOBS
+========================================================= */
+.hero-blobs{position:absolute; inset:0; overflow:hidden; z-index:0; pointer-events:none;}
+.hero-blob{position:absolute; border-radius:50%; filter:blur(60px); opacity:.35;}
+.hero-blob.b1{width:380px; height:380px; background:var(--orange-2); top:-120px; right:-80px; animation:blobFloat1 16s ease-in-out infinite;}
+.hero-blob.b2{width:300px; height:300px; background:var(--orange-deep); bottom:-100px; left:-60px; animation:blobFloat2 20s ease-in-out infinite;}
+@keyframes blobFloat1{0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(-40px,30px) scale(1.15);}}
+@keyframes blobFloat2{0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(30px,-30px) scale(1.1);}}
+.hero-grid{position:relative; z-index:1;}
+
+/* =========================================================
+   SKELETON LOADING PLACEHOLDERS
+========================================================= */
+.skel{background:linear-gradient(100deg, var(--card) 30%, var(--card-2) 50%, var(--card) 70%); background-size:200% 100%; animation:skelShine 1.4s ease-in-out infinite; border-radius:var(--radius);}
+@keyframes skelShine{0%{background-position:200% 0;} 100%{background-position:-200% 0;}}
+.skel-card{height:230px; border:1px solid var(--line);}
+.skel-row{height:52px; border:1px solid var(--line); margin-bottom:8px;}
+
+/* =========================================================
+   GOAL "ALMOST THERE" PULSE
+========================================================= */
+.goal-card.hot{animation:goalPulse 1.8s ease-in-out infinite;}
+@keyframes goalPulse{0%,100%{box-shadow:0 0 0 rgba(255,122,26,0);} 50%{box-shadow:0 0 22px var(--orange-glow);}}
+.goal-hot-badge{
+  position:absolute; top:14px; left:14px; font-size:11px; font-weight:800; color:var(--orange-2);
+  background:rgba(255,122,26,.14); border:1px solid var(--line); padding:3px 9px; border-radius:99px;
+}
+
+/* =========================================================
+   STREAM CARD ACTIONS (reminder / share / visit) — icon toolbar
+========================================================= */
+.stream-actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:16px;}
+@media(max-width:760px){.stream-actions{justify-content:center;}}
+.stream-action-btn{
+  display:flex; flex-direction:column; align-items:center; gap:3px; min-width:76px;
+  font-family:var(--font-display); font-weight:700; font-size:10.5px; padding:10px 12px; border-radius:14px;
+  border:1px solid var(--line); background:rgba(255,255,255,0.04); color:var(--white); transition:.2s;
+}
+.stream-action-btn .ic{font-size:17px;}
+.stream-action-btn:hover{border-color:var(--orange-2); color:var(--orange-2); transform:translateY(-2px);}
+.stream-action-btn.primary{
+  background:linear-gradient(135deg, var(--orange-2), var(--orange-deep)); border-color:transparent; color:#1a0a00;
+  box-shadow:0 8px 20px -8px var(--orange-glow);
+}
+.stream-action-btn.primary:hover{color:#1a0a00; opacity:.92;}
+
+/* =========================================================
+   PINNED / FEATURED CLIP
+========================================================= */
+.featured-clip{
+  display:grid; grid-template-columns:1.1fr 1fr; gap:0; overflow:hidden; margin-bottom:22px;
+}
+@media(max-width:760px){.featured-clip{grid-template-columns:1fr;}}
+.featured-clip-thumb-wrap{position:relative; overflow:hidden; min-height:220px;}
+.featured-clip-thumb{width:100%; height:100%; object-fit:cover; transition:transform .5s var(--ease);}
+.featured-clip:hover .featured-clip-thumb{transform:scale(1.06);}
+.featured-clip-info{padding:28px; display:flex; flex-direction:column; justify-content:center; gap:10px;}
+.featured-clip-tag{
+  display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:800; color:var(--orange-2);
+  background:rgba(255,122,26,.12); border:1px solid var(--line); padding:4px 12px; border-radius:99px; width:fit-content;
+}
+.featured-clip-title{font-family:var(--font-display); font-weight:800; font-size:22px;}
+.featured-clip-src{color:var(--muted-2); font-size:13px;}
+
 </style>
 </head>
 <body>
@@ -476,36 +740,43 @@ footer{padding:50px 0 30px; border-top:1px solid var(--line); text-align:center;
       <li><a href="#suggest">اقترح</a></li>
     </ul>
     <div class="nav-right">
+      <button id="themeToggle" title="تبديل الوضع الفاتح/الغامق">🌙</button>
       <button id="adminBtn" title="لوحة التحكم">🔒</button>
     </div>
   </nav>
+  <div class="scroll-progress" id="scrollProgress"></div>
 </header>
 
 <div id="pinned"><div class="pinned-bar glass grad-border reveal" id="pinnedBar"></div></div>
 
 <!-- HERO -->
 <section id="hero">
+  <div class="hero-blobs"><div class="hero-blob b1"></div><div class="hero-blob b2"></div></div>
   <div class="container hero-grid">
     <div class="eyebrow reveal">صانع محتوى Gaming</div>
-    <div class="hero-top-row reveal">
-      <div class="hero-name-row">
-        <div class="hero-avatar">
-          <img src="assets/hero-midodv.jpg" alt="MEDO_DV" id="heroPhoto">
-          <i></i>
+    <div class="hero-shell reveal">
+      <div class="hero-main">
+        <div class="hero-top-row">
+          <div class="hero-name-row">
+            <div class="hero-avatar">
+              <img src="assets/hero-midodv.jpg" alt="MEDO_DV" id="heroPhoto">
+              <i></i>
+            </div>
+            <h1 class="hero-name" id="heroName">MEDO_DV</h1>
+          </div>
+          <div class="socials" id="socialLinks"></div>
         </div>
-        <h1 class="hero-name" id="heroName">MEDO_DV</h1>
+        <div class="since-strip" id="sinceStrip"></div>
+        <div class="hero-badge-inline"><i></i> <span id="heroBadgeText">أونلاين الآن</span></div>
+        <p class="hero-tagline" id="heroTag">في كلان ديب — ألعب، أبني، وأشارك المجتمع كل جديد أول بأول.</p>
       </div>
-      <div class="socials" id="socialLinks"></div>
-    </div>
-    <div class="since-strip reveal" id="sinceStrip"></div>
-    <div class="hero-badge-inline reveal"><i></i> <span id="heroBadgeText">أونلاين الآن</span></div>
-    <p class="hero-tagline reveal" id="heroTag">في كلان ديب — ألعب، أبني، وأشارك المجتمع كل جديد أول بأول.</p>
-
-    <div class="hero-followers reveal">
-      <div class="followers-grid" id="followersGrid"></div>
-      <div class="total-strip glass grad-border">
-        <div class="lbl">TOTAL FOLLOWERS</div>
-        <div class="num" id="totalFollowers">0</div>
+      <div class="hero-side glass grad-border">
+        <div class="hero-side-label">المتابعين حسب المنصة</div>
+        <div class="followers-grid" id="followersGrid"><div class="skel skel-row"></div><div class="skel skel-row"></div><div class="skel skel-row"></div></div>
+        <div class="total-strip glass grad-border">
+          <div class="lbl">TOTAL FOLLOWERS</div>
+          <div class="num" id="totalFollowers">0</div>
+        </div>
       </div>
     </div>
   </div>
@@ -527,12 +798,7 @@ footer{padding:50px 0 30px; border-top:1px solid var(--line); text-align:center;
     <div class="eyebrow reveal">الجدول الأسبوعي</div>
     <h2 class="section-title reveal">جدول البثوث</h2>
     <p class="section-sub reveal">مواعيد البث الأسبوعية — يتحدث أول بأول من لوحة التحكم.</p>
-    <div class="table-wrap glass grad-border reveal">
-      <table>
-        <thead><tr><th>اليوم</th><th>الوقت</th><th>اللعبة</th><th>نوع البث</th><th>الحالة</th></tr></thead>
-        <tbody id="scheduleBody"></tbody>
-      </table>
-    </div>
+    <div class="schedule-list reveal" id="scheduleBody"></div>
   </div>
 </section>
 
@@ -542,7 +808,11 @@ footer{padding:50px 0 30px; border-top:1px solid var(--line); text-align:center;
     <div class="eyebrow reveal">أهداف السنة</div>
     <h2 class="section-title reveal">وين وصلنا؟</h2>
     <p class="section-sub reveal">أهداف طموحة نتابعها سوا خطوة بخطوة.</p>
-    <div class="goals-grid" id="goalsGrid"></div>
+    <div class="goals-grid" id="goalsGrid"><div class="skel skel-card"></div><div class="skel skel-card"></div></div>
+    <div class="goals-done-wrap" id="goalsDoneWrap" style="display:none;">
+      <div class="goals-done-title">✅ أهداف مكتملة</div>
+      <div class="goals-done-row" id="goalsDoneRow"></div>
+    </div>
   </div>
 </section>
 
@@ -557,7 +827,7 @@ footer{padding:50px 0 30px; border-top:1px solid var(--line); text-align:center;
       <button class="game-tab" data-tab="planned">⌛ قادمة</button>
       <button class="game-tab" data-tab="completed">✅ منتهية</button>
     </div>
-    <div class="games-grid reveal" id="gamesGrid"></div>
+    <div class="games-grid reveal" id="gamesGrid"><div class="skel skel-card"></div><div class="skel skel-card"></div><div class="skel skel-card"></div></div>
     <div class="games-more-wrap" id="gamesMoreWrap" style="text-align:center; margin-top:20px;"></div>
   </div>
 </section>
@@ -580,6 +850,7 @@ footer{padding:50px 0 30px; border-top:1px solid var(--line); text-align:center;
     <div class="eyebrow reveal">آخر المحتوى</div>
     <h2 class="section-title reveal">آخر المقاطع</h2>
     <p class="section-sub reveal">أحدث الفيديوهات والكليبات من المنصات.</p>
+    <div id="featuredClipBox"></div>
     <div class="clips-grid reveal" id="clipsGrid"></div>
   </div>
 </section>
@@ -599,24 +870,40 @@ footer{padding:50px 0 30px; border-top:1px solid var(--line); text-align:center;
     <div class="eyebrow reveal">صوتك يوصل</div>
     <h2 class="section-title reveal">عندك اقتراح؟</h2>
     <p class="section-sub reveal">شاركني أي فكرة أو ملاحظة — أقرأ كل رسالة.</p>
-    <form class="form-grid glass grad-border reveal" id="suggestForm">
-      <div class="form-row">
-        <div class="field"><label>الاسم (اختياري)</label><input type="text" id="sName" placeholder="اسمك"></div>
-        <div class="field"><label>البريد (اختياري)</label><input type="email" id="sEmail" placeholder="you@email.com"></div>
+    <div class="suggest-shell glass grad-border reveal">
+      <div class="suggest-aside">
+        <div class="suggest-icon">💬</div>
+        <h3>رأيك يوصلني</h3>
+        <p>أي فكرة، ملاحظة، أو اقتراح لعبة للبث الجاي — أقرأ كل رسالة توصل.</p>
       </div>
-      <div class="field"><label>عنوان الاقتراح</label><input type="text" id="sTitle" required placeholder="عنوان قصير"></div>
-      <div class="field"><label>الرسالة</label><textarea id="sMsg" required placeholder="اكتب رسالتك هنا..."></textarea></div>
-      <button type="submit" class="btn btn-primary" style="justify-self:start;">إرسال الاقتراح</button>
-      <div class="form-msg ok" id="sMsgOk">✓ وصلت رسالتك، شكرًا لك!</div>
-    </form>
+      <form class="suggest-form" id="suggestForm">
+        <div class="form-row">
+          <div class="field"><label>الاسم (اختياري)</label><input type="text" id="sName" placeholder="اسمك"></div>
+          <div class="field"><label>البريد (اختياري)</label><input type="email" id="sEmail" placeholder="you@email.com"></div>
+        </div>
+        <div class="field"><label>عنوان الاقتراح</label><input type="text" id="sTitle" required placeholder="عنوان قصير"></div>
+        <div class="field"><label>الرسالة</label><textarea id="sMsg" required placeholder="اكتب رسالتك هنا..."></textarea></div>
+        <button type="submit" class="btn btn-primary" style="justify-self:start;">📨 إرسال الاقتراح</button>
+        <div class="form-msg ok" id="sMsgOk">✓ وصلت رسالتك، شكرًا لك!</div>
+      </form>
+    </div>
   </div>
 </section>
 
 <footer>
   <div class="container">
     <div class="footer-logo">MEDO<span style="color:var(--orange-2)">_DV</span></div>
+    <ul class="footer-nav">
+      <li><a href="#next-stream">البث القادم</a></li>
+      <li><a href="#schedule">الجدول</a></li>
+      <li><a href="#goals">الأهداف</a></li>
+      <li><a href="#games">الألعاب</a></li>
+      <li><a href="#achievements">الإنجازات</a></li>
+      <li><a href="#suggest">اقترح</a></li>
+    </ul>
     <div class="socials" id="footerSocials" style="justify-content:center; margin-bottom:18px;"></div>
     <div class="footer-copy" id="footerCopy">© 2026 MEDO_DV — جميع الحقوق محفوظة</div>
+    <a href="#hero" class="back-to-top" title="العودة للأعلى">↑</a>
   </div>
 </footer>
 
@@ -644,6 +931,7 @@ footer{padding:50px 0 30px; border-top:1px solid var(--line); text-align:center;
 </div>
 
 <div class="notice" id="notice"></div>
+<div class="goal-modal-overlay" id="goalModalOverlay" onclick="if(event.target===this) closeGoalDetail()"></div>
 
 <!-- Firebase (اختياري) — عبّي البيانات في firebaseConfig داخل السكربت تحت عشان تفعّل المزامنة المباشرة لكل الزوار -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -764,8 +1052,8 @@ const DEFAULTS = {
     {title:'حققنا 100 مشاهد متزامن', date:'2025-08-10'}
   ],
   clips: [
-    {title:'لحظة أسطورية!', source:'YouTube', url:'#', thumb:''},
-    {title:'كليب مضحك', source:'TikTok', url:'#', thumb:''}
+    {title:'لحظة أسطورية!', source:'YouTube', url:'#', thumb:'', pinned:true},
+    {title:'كليب مضحك', source:'TikTok', url:'#', thumb:'', pinned:false}
   ],
   news: [
     {text:'بدأنا التحضير لبث خاص نهاية الشهر 🎉', date:'2026-07-10'},
@@ -860,6 +1148,7 @@ function renderNextStream(){
   if(!info){
     card.innerHTML = `<p style="color:var(--muted-2)">لا يوجد بث قادم حاليًا — أضف موعدًا جديدًا من لوحة التحكم.</p>`;
     if(cdInterval) clearInterval(cdInterval);
+    setLiveTitle(false);
     return;
   }
   const { row, start, status } = info;
@@ -871,9 +1160,11 @@ function renderNextStream(){
   const cover = customImg || (matched && matched.cover) || platformLogo || fallbackCover(row.game);
   const isPlatformLogo = !customImg && !(matched && matched.cover) && !!platformLogo; // avoid a redundant badge when the cover already IS the platform logo
   const showBadge = row.platform && !isPlatformLogo;
+  setLiveTitle(status === 'live');
   card.innerHTML = `
     <div class="stream-cover-wrap">
       <img class="stream-game-cover" src="${cover}" alt="${esc(row.game)}">
+      ${status==='live' ? `<div class="stream-live-ribbon">LIVE</div>` : ''}
       ${showBadge ? `<div class="stream-platform-badge">${socialIcon({platform:row.platform, icon:row.platform.slice(0,2).toUpperCase()})}<span>${esc(row.platform)}</span></div>` : ''}
     </div>
     <div>
@@ -884,8 +1175,18 @@ function renderNextStream(){
         <span>📅 ${fmtDate(row.datetime)}</span>
         <span>⏰ ${start.toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'})}</span>
       </div>
+      <div class="stream-actions">
+        ${status==='upcoming' ? `<button class="stream-action-btn" onclick="downloadStreamReminder()"><span class="ic">🔔</span>ذكّرني</button>` : ''}
+        <button class="stream-action-btn" onclick="shareStream()"><span class="ic">📤</span>شارك</button>
+        <button class="stream-action-btn primary" onclick="visitChannel()"><span class="ic">📺</span>زيارة القناة</button>
+      </div>
     </div>
-    <div class="countdown" id="countdownBox"></div>
+    <div class="countdown-wrap">
+      ${status==='live'
+        ? `<div class="countdown-label is-live">⏳ باقي على انتهاء البث</div>`
+        : `<div class="countdown-label">📡 البث القادم</div>`}
+      <div class="countdown" id="countdownBox"></div>
+    </div>
   `;
   if(cdInterval) clearInterval(cdInterval);
   if(status === 'upcoming'){
@@ -914,6 +1215,60 @@ function updateCountdown(target){
 function fallbackCover(text){
   return 'data:image/svg+xml,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><rect width="120" height="120" fill="#241a12"/><text x="50%" y="55%" font-size="40" text-anchor="middle" fill="#ff7a1a">🎮</text></svg>`);
 }
+/* ---- tab title flashes 🔴 while a stream is live ---- */
+const BASE_TITLE = document.title;
+function setLiveTitle(isLive){
+  document.title = isLive ? `🔴 مباشر الآن | ${BASE_TITLE}` : BASE_TITLE;
+}
+/* ---- "remind me" → downloads a .ics calendar file for the next stream (works with any calendar app, no permissions needed) ---- */
+function downloadStreamReminder(){
+  const info = getNextStreamInfo();
+  if(!info){ notice('ما فيه بث قادم حاليًا'); return; }
+  const { row, start } = info;
+  const end = streamEnd(row, start);
+  const toICSDate = d => d.toISOString().replace(/[-:]/g,'').split('.')[0]+'Z';
+  const ics = [
+    'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//MEDO_DV//Stream Reminder//AR','BEGIN:VEVENT',
+    `UID:${uid()}@medo-dv`,
+    `DTSTAMP:${toICSDate(new Date())}`,
+    `DTSTART:${toICSDate(start)}`,
+    `DTEND:${toICSDate(end)}`,
+    `SUMMARY:بث ${(row.game||'').replace(/[\r\n]/g,' ')} - MEDO_DV`,
+    `DESCRIPTION:${(row.platform?'على '+row.platform+' - ':'')}لا تفوت البث!`,
+    'END:VEVENT','END:VCALENDAR'
+  ].join('\r\n');
+  const blob = new Blob([ics], {type:'text/calendar'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'medo-dv-stream.ics';
+  document.body.appendChild(a); a.click(); a.remove();
+  notice('تم تحميل التذكير — أضفه لتقويمك ✅');
+}
+/* ---- quick share for the next stream ---- */
+function shareStream(){
+  const info = getNextStreamInfo();
+  if(!info){ notice('ما فيه بث قادم حاليًا'); return; }
+  const { row, start } = info;
+  const text = `بث ${row.game} يوم ${dayNameFromDate(start)} الساعة ${start.toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'})}${row.platform?' على '+row.platform:''} — تابعوني! 🎮`;
+  if(navigator.share){
+    navigator.share({title:'MEDO_DV', text, url:location.href}).catch(()=>{});
+  } else if(navigator.clipboard){
+    navigator.clipboard.writeText(text+' '+location.href).then(()=>notice('تم نسخ نص المشاركة 📋'));
+  } else {
+    notice(text);
+  }
+}
+/* ---- opens the channel link (matches the next stream's platform, falls back to Twitch then the first social link) ---- */
+function visitChannel(){
+  const info = getNextStreamInfo();
+  const socials = DB.get('socials') || [];
+  const norm = s => (s||'').toLowerCase().replace(/[^a-z]/g,'');
+  let target = info && info.row.platform ? socials.find(s=>norm(s.platform)===norm(info.row.platform)) : null;
+  if(!target) target = socials.find(s=>norm(s.platform)==='twitch');
+  if(!target) target = socials[0];
+  if(!target || !target.url){ notice('ما فيه رابط قناة محدد حاليًا'); return; }
+  window.open(target.url, '_blank');
+}
 /* builds a big platform-logo image (used as the stream cover when no custom image/game cover is set) */
 function platformLogoCover(platform){
   const key = (platform||'').toLowerCase().replace(/[^a-z]/g,'');
@@ -932,34 +1287,41 @@ function renderSchedule(){
     const start = r.datetime ? new Date(r.datetime) : null;
     const validStart = start && !isNaN(start.getTime());
     const status = computeStreamStatus(r);
-    const dayLabel = validStart ? `${dayNameFromDate(start)} · ${fmtDate(r.datetime)}` : '—';
+    const isEnded = status === 'ended';
+    const dow = validStart ? dayNameFromDate(start) : '—';
+    const dom = validStart ? start.toLocaleDateString('ar-EG',{day:'numeric',month:'short'}) : '-';
     const timeLabel = validStart ? start.toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'}) : '—';
     return `
-    <tr class="row-main" onclick="toggleScheduleRow(${i})">
-      <td><div class="day-cell"><span class="day-caret">▶</span>${esc(dayLabel)}</div></td><td>${esc(timeLabel)}</td><td>${esc(r.game)}</td><td>${esc(r.type)}${r.platform?' · '+esc(r.platform):''}</td>
-      <td><span class="pill ${status}">${{upcoming:'قادم',ended:'انتهى البث',live:'مباشر'}[status]}</span></td>
-    </tr>
-    <tr class="row-details" id="rowDetails${i}">
-      <td colspan="5">
-        <div class="row-details-inner"><div class="row-details-content">
+    <div class="sched-item glass grad-border ${isEnded?'is-ended':''}" onclick="toggleScheduleRow(${i})">
+      <div class="sched-row">
+        <div class="sched-date"><div class="dow">${esc(dow)}</div><div class="dom">${dom}</div></div>
+        <div class="sched-main">
+          <div class="sched-game">🎮 ${esc(r.game)}</div>
+          <div class="sched-meta"><span>⏰ ${esc(timeLabel)}</span><span>${esc(r.type)}${r.platform?' · '+esc(r.platform):''}</span></div>
+        </div>
+        <div class="sched-right">
+          <span class="pill ${status}">${{upcoming:'قادم',ended:'انتهى البث',live:'مباشر'}[status]}</span>
+          <span class="sched-caret">▶</span>
+        </div>
+        ${isEnded?'<div class="ended-stamp"><span>انتهى البث</span></div>':''}
+      </div>
+      <div class="sched-details" id="rowDetails${i}">
+        <div class="sched-details-inner">
           <div class="rd-line"><b>اللعبة الرئيسية:</b> ${esc(r.game)}</div>
           <div class="rd-line"><b>مدة البث المتوقعة:</b> ${esc(String(r.durationHours||4))} ساعة</div>
           ${r.platform ? `<div class="rd-line"><b>المنصة:</b> ${esc(r.platform)}</div>` : ''}
           ${sideList.length ? `<div class="rd-line"><b>ألعاب جانبية:</b></div><div class="rd-side">${sideList.map(g=>`<span class="rd-chip">${esc(g)}</span>`).join('')}</div>` : ''}
           ${r.notes ? `<div class="rd-line"><b>تفاصيل:</b> ${esc(r.notes)}</div>` : ''}
-        </div></div>
-      </td>
-    </tr>
+        </div>
+      </div>
+    </div>
   `;
-  }).join('') || `<tr><td colspan="5" style="text-align:center; color:var(--muted-2);">لا يوجد جدول حاليًا</td></tr>`;
+  }).join('') || `<p style="text-align:center; color:var(--muted-2);">لا يوجد جدول حاليًا</p>`;
 }
 function toggleScheduleRow(i){
-  const mainRow = document.querySelectorAll('#scheduleBody tr.row-main')[i];
-  const detailsRow = document.getElementById('rowDetails'+i);
-  if(!mainRow || !detailsRow) return;
-  const opening = !detailsRow.classList.contains('open');
-  mainRow.classList.toggle('open', opening);
-  detailsRow.classList.toggle('open', opening);
+  const item = document.querySelectorAll('#scheduleBody .sched-item')[i];
+  if(!item) return;
+  item.classList.toggle('open');
 }
 
 /* ============== RENDER: GOALS ============== */
@@ -971,18 +1333,56 @@ function goalPct(g){
 }
 function renderGoals(){
   const goals = DB.get('goals');
-  document.getElementById('goalsGrid').innerHTML = goals.map(g=>{
+  const active = [], done = [];
+  goals.forEach((g,i)=>{
     const pct = goalPct(g);
-    const isDone = g.done || pct>=100;
+    (g.done || pct>=100) ? done.push({g,i,pct}) : active.push({g,i,pct});
+  });
+  document.getElementById('goalsGrid').innerHTML = active.map(({g,i,pct})=>{
+    const isHot = pct>=90;
     return `
-    <div class="goal-card glass grad-border ${isDone?'done':''}">
-      <div class="goal-top"><div class="goal-title">${esc(g.title)}</div><div class="goal-check">✓</div></div>
-      <div class="goal-desc">${esc(g.desc)}</div>
-      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
-      <div class="progress-pct">${pct}%</div>
+    <div class="goal-card glass grad-border ${isHot?'hot':''}">
+      ${isHot?'<div class="goal-hot-badge">🔥 قريب!</div>':''}
+      <div class="goal-ring" style="--p:${pct}"><span>${pct}%</span></div>
+      <div class="goal-body">
+        <div class="goal-title">🎯 ${esc(g.title)}</div>
+        <div class="goal-desc">${esc(g.desc)}</div>
+        <div class="goal-meta"><span>${Number(g.current||0).toLocaleString('en-US')}</span><span>${Number(g.target||0).toLocaleString('en-US')}</span></div>
+      </div>
+    </div>
+  `;}).join('') || `<p style="color:var(--muted-2)">لا توجد أهداف حالية</p>`;
+
+  const doneWrap = document.getElementById('goalsDoneWrap');
+  if(done.length){
+    doneWrap.style.display = '';
+    document.getElementById('goalsDoneRow').innerHTML = done.map(({g,i})=>`
+      <div class="goal-chip" onclick="openGoalDetail(${i})" title="عرض التفاصيل">
+        <span class="tick">✅</span><span class="t">${esc(g.title)}</span>
+      </div>
+    `).join('');
+  } else {
+    doneWrap.style.display = 'none';
+    document.getElementById('goalsDoneRow').innerHTML = '';
+  }
+}
+/* ---- completed-goal detail modal ---- */
+function openGoalDetail(i){
+  const g = DB.get('goals')[i];
+  if(!g) return;
+  const overlay = document.getElementById('goalModalOverlay');
+  overlay.innerHTML = `
+    <div class="goal-modal glass grad-border">
+      <button class="goal-modal-close" onclick="closeGoalDetail()">✕</button>
+      <div class="goal-modal-badge">✅ تم الإنجاز</div>
+      <div class="goal-modal-title">${esc(g.title)}</div>
+      <div class="goal-modal-desc">${esc(g.desc)}</div>
       <div class="goal-meta"><span>${Number(g.current||0).toLocaleString('en-US')}</span><span>${Number(g.target||0).toLocaleString('en-US')}</span></div>
     </div>
-  `;}).join('') || `<p style="color:var(--muted-2)">لا توجد أهداف بعد</p>`;
+  `;
+  overlay.classList.add('open');
+}
+function closeGoalDetail(){
+  document.getElementById('goalModalOverlay').classList.remove('open');
 }
 
 /* ============== RENDER: FOLLOWERS ============== */
@@ -990,7 +1390,10 @@ function renderFollowers(){
   const f = DB.get('followers');
   document.getElementById('followersGrid').innerHTML = f.map(x=>`
     <div class="follow-card glass grad-border">
-      <div class="follow-plat">${esc(x.platform)}</div>
+      <div class="follow-main">
+        <div class="follow-icon">${socialIcon({platform:x.platform, icon:(x.platform||'?').slice(0,2).toUpperCase()})}</div>
+        <div class="follow-plat">${esc(x.platform)}</div>
+      </div>
       <div class="follow-num" data-target="${x.count}">0</div>
     </div>
   `).join('');
@@ -1012,13 +1415,12 @@ let activeGameTab = 'current';
 let gameExpanded = {current:false, planned:false, completed:false};
 function renderGames(){
   const games = DB.get('games').filter(g=>g.status===activeGameTab);
-  document.getElementById('gamesGrid').innerHTML = games.map(g=>`
-    <div class="game-card glass grad-border">
+  document.getElementById('gamesGrid').innerHTML = games.map((g,idx)=>`
+    <div class="game-card glass grad-border" style="animation-delay:${Math.min(idx,10)*35}ms">
       <img class="game-cover" src="${g.cover || fallbackCover(g.name)}" alt="${esc(g.name)}">
-      <div class="game-info">
+      <div class="game-scrim">
         <div class="game-name">${esc(g.name)}</div>
         ${g.hours ? `<div class="game-hours">${g.hours} ساعة</div>` : ''}
-        <div class="game-dates">${g.start?fmtDate(g.start):''} ${g.end?'— '+fmtDate(g.end):''}</div>
       </div>
     </div>
   `).join('') || `<p style="color:var(--muted-2)">لا توجد ألعاب في هذا القسم</p>`;
@@ -1053,18 +1455,29 @@ window.addEventListener('resize', ()=>{
 });
 document.querySelectorAll('.game-tab').forEach(btn=>{
   btn.addEventListener('click', ()=>{
+    if(btn.classList.contains('active')) return;
     document.querySelectorAll('.game-tab').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active'); activeGameTab = btn.dataset.tab; renderGames();
+    btn.classList.add('active');
+    const grid = document.getElementById('gamesGrid');
+    grid.classList.add('switching');
+    setTimeout(()=>{
+      activeGameTab = btn.dataset.tab;
+      renderGames();
+      grid.classList.remove('switching');
+    }, 220);
   });
 });
 
 /* ============== RENDER: ACHIEVEMENTS ============== */
 function renderAchievements(){
   const list = DB.get('achievements').slice().sort((a,b)=>new Date(b.date)-new Date(a.date));
-  document.getElementById('achievementsTimeline').innerHTML = list.map(a=>`
+  document.getElementById('achievementsTimeline').innerHTML = list.map((a,i)=>`
     <div class="tl-item">
-      <div class="tl-title">${esc(a.title)}</div>
-      <div class="tl-date">${fmtDate(a.date)}</div>
+      <div class="tl-dot">🏆</div>
+      <div class="tl-body">
+        <div class="tl-title">${esc(a.title)}</div>
+        <div class="tl-date">${fmtDate(a.date)}</div>
+      </div>
     </div>
   `).join('') || `<p style="color:var(--muted-2)">لا توجد إنجازات مسجلة بعد</p>`;
 }
@@ -1072,24 +1485,53 @@ function renderAchievements(){
 /* ============== RENDER: CLIPS ============== */
 function renderClips(){
   const clips = DB.get('clips');
-  document.getElementById('clipsGrid').innerHTML = clips.map(c=>`
+  const pinned = clips.find(c=>c.pinned);
+  const rest = clips.filter(c=>c!==pinned);
+  const box = document.getElementById('featuredClipBox');
+  if(box){
+    box.innerHTML = pinned ? `
+      <a class="featured-clip glass grad-border" href="${esc(pinned.url)}" target="_blank">
+        <div class="featured-clip-thumb-wrap">
+          <img class="featured-clip-thumb" src="${pinned.thumb || fallbackCover(pinned.title)}" alt="${esc(pinned.title)}">
+          <div class="clip-play"><span>▶</span></div>
+        </div>
+        <div class="featured-clip-info">
+          <div class="featured-clip-tag">🔥 أبرز لحظة</div>
+          <div class="featured-clip-title">${esc(pinned.title)}</div>
+          <div class="featured-clip-src">${esc(pinned.source)}</div>
+        </div>
+      </a>
+    ` : '';
+  }
+  document.getElementById('clipsGrid').innerHTML = rest.map(c=>`
     <a class="clip-card glass grad-border" href="${esc(c.url)}" target="_blank">
-      <img class="clip-thumb" src="${c.thumb || fallbackCover(c.title)}" alt="${esc(c.title)}">
+      <div class="clip-thumb-wrap">
+        <img class="clip-thumb" src="${c.thumb || fallbackCover(c.title)}" alt="${esc(c.title)}">
+        <div class="clip-src-badge">${esc(c.source)}</div>
+        <div class="clip-play"><span>▶</span></div>
+      </div>
       <div class="clip-info">
         <div class="clip-title">${esc(c.title)}</div>
-        <div class="clip-src">${esc(c.source)}</div>
       </div>
     </a>
-  `).join('') || `<p style="color:var(--muted-2)">لا توجد مقاطع بعد</p>`;
+  `).join('') || (pinned ? '' : `<p style="color:var(--muted-2)">لا توجد مقاطع بعد</p>`);
+}
+function togglePinClip(i){
+  const list = DB.get('clips');
+  const wasPinned = list[i].pinned;
+  list.forEach(c=>c.pinned=false);
+  list[i].pinned = !wasPinned;
+  DB.set('clips', list); renderAll(); openAdminTab('clips');
+  notice(list[i].pinned ? 'تم التثبيت كأبرز لحظة' : 'تم إلغاء التثبيت');
 }
 
 /* ============== RENDER: NEWS + TICKER ============== */
 function renderNews(){
   const news = DB.get('news').slice().sort((a,b)=>new Date(b.date)-new Date(a.date));
   document.getElementById('newsList').innerHTML = news.map(n=>`
-    <div class="news-item glass grad-border">
-      <div class="news-dot"></div>
-      <div><div class="news-text">${esc(n.text)}</div><div class="news-date">${fmtDate(n.date)}</div></div>
+    <div class="news-item">
+      <div class="news-dot">📢</div>
+      <div class="news-body"><div class="news-text">${esc(n.text)}</div><div class="news-date">${fmtDate(n.date)}</div></div>
     </div>
   `).join('') || `<p style="color:var(--muted-2)">لا توجد أخبار حاليًا</p>`;
 
@@ -1380,6 +1822,7 @@ const TAB_RENDERERS = {
     const list = DB.get('clips');
     return `
       <h3>آخر المقاطع</h3>
+      <p style="font-size:12px; color:var(--muted-2); margin-bottom:14px;">ثبّت مقطع واحد ليظهر بشكل أكبر ومميز فوق قائمة المقاطع كـ"أبرز لحظة".</p>
       ${list.map((c,i)=>`
         <div class="add-form">
           <div class="a-row">
@@ -1390,10 +1833,13 @@ const TAB_RENDERERS = {
             <div class="a-field"><label>رابط الفيديو</label><input value="${esc(c.url)}" onchange="updateItem('clips',${i},'url',this.value)"></div>
             <div class="a-field"><label>رابط الصورة المصغرة</label><input value="${esc(c.thumb)}" onchange="updateItem('clips',${i},'thumb',this.value)"></div>
           </div>
-          <button class="mini-btn danger" onclick="removeItem('clips',${i})">حذف</button>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <button class="mini-btn ${c.pinned?'primary':''}" onclick="togglePinClip(${i})">${c.pinned ? '⭐ مثبت الآن (اضغط للإلغاء)' : '📌 ثبّت كأبرز لحظة'}</button>
+            <button class="mini-btn danger" onclick="removeItem('clips',${i})">حذف</button>
+          </div>
         </div>
       `).join('')}
-      <button class="mini-btn primary" onclick="addItem('clips',{title:'مقطع جديد',source:'YouTube',url:'#',thumb:''})">+ إضافة مقطع</button>
+      <button class="mini-btn primary" onclick="addItem('clips',{title:'مقطع جديد',source:'YouTube',url:'#',thumb:'',pinned:false})">+ إضافة مقطع</button>
     `;
   },
 
@@ -1467,6 +1913,7 @@ function removeItem(key, idx){
   const list = DB.get(key); list.splice(idx,1); DB.set(key, list); renderAll(); openAdminTab(document.querySelector('.admin-tab.active').dataset.tab); notice('تم الحذف');
 }
 function updateSocial(idx, field, value){ updateItem('socials', idx, field, value); }
+
 function toggleQuickAdd(){
   const el = document.getElementById('quickAddPanel');
   if(!el) return;
@@ -1506,6 +1953,25 @@ function changePass(){
 }
 
 /* =========================================================
+   THEME TOGGLE (dark/light, saved locally per visitor)
+========================================================= */
+function applyTheme(theme){
+  document.documentElement.setAttribute('data-theme', theme);
+  document.getElementById('themeToggle').textContent = theme === 'light' ? '☀️' : '🌙';
+}
+function initTheme(){
+  let saved = 'dark';
+  try{ saved = localStorage.getItem('mdv_theme') || 'dark'; }catch(e){}
+  applyTheme(saved);
+}
+document.getElementById('themeToggle').addEventListener('click', ()=>{
+  const current = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+  const next = current === 'light' ? 'dark' : 'light';
+  applyTheme(next);
+  try{ localStorage.setItem('mdv_theme', next); }catch(e){}
+});
+
+/* =========================================================
    INIT
 ========================================================= */
 function hideLoader(){ const l=document.getElementById('loader'); if(l) l.classList.add('hide'); }
@@ -1513,11 +1979,28 @@ window.addEventListener('load', ()=> setTimeout(hideLoader, 400));
 setTimeout(hideLoader, 2500); // safety net: never let the loader hang, even if 'load' is delayed/blocked
 renderAll();
 initFirebase(); // ما يسوي شي إذا firebaseConfig فاضي — الموقع يفضل يشتغل محليًا بـ localStorage
+initTheme();
 
 const io = new IntersectionObserver((entries)=>{
   entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
 },{threshold:.1});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* ---- scroll progress bar + active nav link ---- */
+const navLinks = Array.from(document.querySelectorAll('.nav-links a'));
+const navSections = navLinks.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+function onScrollUpdate(){
+  const doc = document.documentElement;
+  const scrolled = doc.scrollTop / Math.max(1, (doc.scrollHeight - doc.clientHeight));
+  const bar = document.getElementById('scrollProgress');
+  if(bar) bar.style.width = (scrolled*100)+'%';
+  let current = null;
+  navSections.forEach(sec=>{ if(sec.getBoundingClientRect().top <= 140) current = sec; });
+  navLinks.forEach(a=>a.classList.toggle('active', current && a.getAttribute('href')==='#'+current.id));
+}
+document.addEventListener('scroll', onScrollUpdate, {passive:true});
+onScrollUpdate();
+
 </script>
 </body>
 </html>
