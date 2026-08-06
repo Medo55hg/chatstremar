@@ -525,7 +525,13 @@ nav{display:flex; align-items:center; justify-content:space-between; padding:16p
    GOALS
 ========================================================= */
 .goals-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px;}
-.goal-card{padding:22px; position:relative; overflow:hidden; display:flex; align-items:center; gap:18px;}
+.goal-card{padding:22px; position:relative; overflow:hidden; display:flex; align-items:center; gap:18px; cursor:pointer;}
+.goal-hold-bar{
+  position:absolute; left:0; bottom:0; height:3px; width:0%;
+  background:linear-gradient(90deg, var(--orange-2), var(--gold));
+  box-shadow:0 0 12px var(--orange-glow); border-radius:0 0 0 3px;
+}
+.goal-card.holding .goal-hold-bar{width:100%; transition:width 1.2s linear;}
 .goal-ring{
   flex:none; width:74px; height:74px; border-radius:50%; position:relative;
   display:flex; align-items:center; justify-content:center;
@@ -620,7 +626,35 @@ nav{display:flex; align-items:center; justify-content:space-between; padding:16p
 /* =========================================================
    ACHIEVEMENTS — horizontal scrollable row
 ========================================================= */
-.timeline-box{padding:32px 8px 26px;}
+.timeline-box{padding:32px 8px 26px; position:relative; min-height:180px;}
+.ach-play-center{
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:4;
+  display:flex; flex-direction:column; align-items:center; gap:10px; padding:22px 30px; border-radius:18px;
+  background:linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.015));
+  border:1px solid var(--line); color:#fff; cursor:pointer; font-family:var(--font-display); font-weight:800; font-size:14px;
+  transition:.3s var(--ease);
+}
+.ach-play-center:hover{border-color:var(--orange-2); box-shadow:0 0 30px -6px var(--orange-glow); transform:translate(-50%,-50%) translateY(-3px);}
+.ach-play-center-icon{
+  width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px;
+  background:linear-gradient(135deg, var(--orange-2), var(--orange)); color:#1a0a00; box-shadow:0 8px 26px -6px var(--orange-glow);
+}
+.ach-play-center.hide{display:none;}
+.ach-player{
+  position:absolute; inset:0; z-index:5; display:flex; align-items:center; justify-content:center; flex-direction:column;
+  text-align:center; padding:30px; opacity:0; pointer-events:none; transition:opacity .35s var(--ease);
+  background:radial-gradient(circle at 50% 50%, rgba(22,11,4,.94), rgba(8,6,4,.98)); border-radius:var(--radius);
+}
+.ach-player.active{opacity:1; pointer-events:auto;}
+.ach-player-item{opacity:0; transform:translateY(16px) scale(.95); transition:opacity .5s var(--ease), transform .5s var(--ease);}
+.ach-player-item.show{opacity:1; transform:translateY(0) scale(1);}
+.ach-player-icon{font-size:44px; margin-bottom:14px; filter:drop-shadow(0 0 20px var(--orange-glow));}
+.ach-player-title{font-family:var(--font-display); font-weight:900; font-size:clamp(20px,3vw,30px); margin-bottom:8px; background:linear-gradient(180deg,#fff,var(--gold)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;}
+.ach-player-date{color:var(--muted-2); font-size:13px;}
+.ach-player-progress{position:absolute; bottom:16px; left:50%; transform:translateX(-50%); display:flex; gap:6px;}
+.ach-dot{width:6px; height:6px; border-radius:50%; background:var(--line); transition:.3s;}
+.ach-dot.on{background:var(--orange-2); box-shadow:0 0 8px var(--orange-glow); width:16px; border-radius:4px;}
+.ach-player-skip{position:absolute; top:12px; left:12px; width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,.06); border:1px solid var(--line); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center;}
 .timeline{
   position:relative; display:flex; gap:0; margin-top:0; overflow-x:auto; overflow-y:visible;
   padding:8px 26px 10px; scroll-snap-type:x proximity;
@@ -964,6 +998,18 @@ html[data-theme="light"] .hero-name{background:linear-gradient(180deg, #2a1c0e 2
 .cal-hours small{display:block; font-size:8.5px; font-weight:700;}
 .cal-cell.is-today{box-shadow:0 0 0 2px var(--success) inset;}
 .cal-cell.is-today .cal-daynum{color:var(--success); font-weight:800;}
+.cal-cell.is-admin-cell{cursor:pointer;}
+.cal-cell.is-admin-cell:not(.empty):hover{box-shadow:0 0 0 2px var(--orange-2) inset;}
+.cal-add-hint{font-size:15px; color:var(--muted-2); opacity:.5; transition:.2s;}
+.cal-cell.is-admin-cell:hover .cal-add-hint{opacity:1; color:var(--orange-2);}
+.day-entries-list{margin-bottom:6px;}
+.day-entry-row{display:flex; align-items:center; gap:8px; margin-bottom:10px; flex-wrap:wrap;}
+.day-entry-row input[type="time"], .day-entry-row input[type="number"], .day-entry-row input[type="text"]{
+  background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:8px; padding:8px; color:#fff; font-family:var(--font-body);
+}
+.day-entry-row input[type="number"]{width:64px;}
+.day-entry-row .day-entry-game{flex:1; min-width:100px;}
+.day-entry-unit{font-size:12px; color:var(--muted-2);}
 @media(max-width:460px){.cal-grid,.cal-weekdays{padding:0 14px; gap:6px;} .cal-wd{font-size:10px;} .cal-daynum{font-size:10px;} .cal-hours{font-size:15px;} .cal-title{font-size:19px; min-width:0;} .cal-head{gap:12px; padding:16px;}}
 
 /* Community wall — brick background + hanging notes */
@@ -1143,7 +1189,20 @@ html[data-theme="light"] .hero-name{background:linear-gradient(180deg, #2a1c0e 2
     <h2 class="section-title reveal">إنجازاتنا سوا</h2>
     <p class="section-sub reveal">كل محطة وصلنا لها بفضل دعمكم.</p>
     <div class="timeline-box glass grad-border reveal">
-      <div class="timeline" id="achievementsTimeline"></div>
+      <div class="timeline" id="achievementsTimeline" style="display:none;"></div>
+      <button type="button" class="ach-play-center" id="playAchievementsBtn" onclick="playAchievements()">
+        <span class="ach-play-center-icon">▶</span>
+        <span>عرض الإنجازات</span>
+      </button>
+      <div class="ach-player" id="achPlayer">
+        <button type="button" class="ach-player-skip" onclick="stopAchievementsPlayer()">✕</button>
+        <div class="ach-player-item" id="achPlayerItem">
+          <div class="ach-player-icon">🏆</div>
+          <div class="ach-player-title" id="achPlayerTitle"></div>
+          <div class="ach-player-date" id="achPlayerDate"></div>
+        </div>
+        <div class="ach-player-progress" id="achPlayerProgress"></div>
+      </div>
     </div>
   </div>
 </section>
@@ -1831,9 +1890,13 @@ function platformLogoCover(platform){
 /* ============== RENDER: SCHEDULE CALENDAR ============== */
 const AR_MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 let calViewDate = new Date();
-function renderScheduleCalendar(){
+let adminCalViewDate = new Date();
+function renderScheduleCalendar(containerId, isAdmin){
+  containerId = containerId || 'scheduleCalendar';
+  isAdmin = !!isAdmin;
+  const viewDate = isAdmin ? adminCalViewDate : calViewDate;
   const rows = DB.get('schedule');
-  const y = calViewDate.getFullYear(), m = calViewDate.getMonth();
+  const y = viewDate.getFullYear(), m = viewDate.getMonth();
   const firstDay = new Date(y, m, 1);
   const startOffset = firstDay.getDay(); // 0=Sunday
   const daysInMonth = new Date(y, m+1, 0).getDate();
@@ -1857,19 +1920,21 @@ function renderScheduleCalendar(){
     const entries = byDay[day];
     const isToday = cellDate.toDateString() === todayStr;
     const totalHours = entries ? entries.reduce((a,r)=>a+(Number(r.durationHours)||0),0) : 0;
+    const clickAttr = isAdmin ? `onclick="openDayModal(${y},${m},${day})" role="button" tabindex="0"` : '';
     cells += `
-      <div class="cal-cell ${entries?'has-stream':''} ${isToday?'is-today':''}" title="${entries?esc(entries.map(r=>r.game).join(', ')):''}">
+      <div class="cal-cell ${entries?'has-stream':''} ${isToday?'is-today':''} ${isAdmin?'is-admin-cell':''}" ${clickAttr} title="${entries?esc(entries.map(r=>r.game).join(', ')):(isAdmin?'إضافة بث':'')}">
         <span class="cal-daynum">${day}</span>
-        ${entries ? `<div class="cal-hours-badge"><span class="cal-hours">${totalHours}<small>ساعة</small></span></div>` : ''}
+        ${entries ? `<div class="cal-hours-badge"><span class="cal-hours">${totalHours}<small>ساعة</small></span></div>` : (isAdmin?`<span class="cal-add-hint">+</span>`:'')}
       </div>`;
   }
 
-  const box = document.getElementById('scheduleCalendar');
+  const box = document.getElementById(containerId);
+  if(!box) return;
   box.innerHTML = `
     <div class="cal-head">
-      <button type="button" class="cal-nav" onclick="calNav(-1)">›</button>
+      <button type="button" class="cal-nav" onclick="${isAdmin?'adminCalNav(-1)':'calNav(-1)'}">›</button>
       <div class="cal-title"><b>${AR_MONTHS[m]}</b> ${y}</div>
-      <button type="button" class="cal-nav" onclick="calNav(1)">‹</button>
+      <button type="button" class="cal-nav" onclick="${isAdmin?'adminCalNav(1)':'calNav(1)'}">‹</button>
     </div>
     <div class="cal-grid cal-weekdays">
       ${AR_WEEKDAYS.map(d=>`<div class="cal-wd">${d}</div>`).join('')}
@@ -1879,7 +1944,74 @@ function renderScheduleCalendar(){
 }
 function calNav(dir){
   calViewDate = new Date(calViewDate.getFullYear(), calViewDate.getMonth()+dir, 1);
-  renderScheduleCalendar();
+  renderScheduleCalendar('scheduleCalendar', false);
+}
+function adminCalNav(dir){
+  adminCalViewDate = new Date(adminCalViewDate.getFullYear(), adminCalViewDate.getMonth()+dir, 1);
+  renderScheduleCalendar('adminScheduleCalendar', true);
+}
+
+/* ---- admin: click a calendar day to add/edit its stream time ---- */
+function pad2(n){ return String(n).padStart(2,'0'); }
+function openDayModal(y, m, day){
+  const dateObj = new Date(y,m,day);
+  const dayLabel = `${AR_WEEKDAYS[dateObj.getDay()]} ${day} ${AR_MONTHS[m]} ${y}`;
+  const rows = DB.get('schedule');
+  const entries = rows.map((r,idx)=>({r,idx})).filter(({r})=>{
+    if(!r.datetime) return false;
+    const d = new Date(r.datetime);
+    return d.getFullYear()===y && d.getMonth()===m && d.getDate()===day;
+  });
+  const overlay = document.getElementById('goalModalOverlay');
+  overlay.innerHTML = `
+    <div class="goal-modal glass grad-border">
+      <button class="goal-modal-close" onclick="closeGoalDetail()">✕</button>
+      <div class="goal-modal-badge">🗓️ ${dayLabel}</div>
+      <div class="goal-modal-title">إدارة بث هذا اليوم</div>
+      <div class="day-entries-list">
+        ${entries.length ? entries.map(({r,idx})=>{
+          const d = new Date(r.datetime);
+          const timeVal = `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+          return `
+          <div class="day-entry-row">
+            <input type="time" value="${timeVal}" onchange="setDayEntryTime(${idx},${y},${m},${day},this.value)">
+            <input type="text" class="day-entry-game" placeholder="اللعبة الرئيسية" value="${esc(r.game||'')}" onchange="setDayEntryGame(${idx},${y},${m},${day},this.value)">
+            <input type="number" min="0.5" step="0.5" value="${r.durationHours||4}" onchange="setDayEntryDuration(${idx},${y},${m},${day},this.value)">
+            <span class="day-entry-unit">ساعة</span>
+            <button class="mini-btn danger" onclick="removeItem('schedule',${idx}); closeGoalDetail();">حذف</button>
+          </div>`;
+        }).join('') : `<p style="color:var(--muted-2); font-size:13px; margin-bottom:10px;">ما فيه بث مسجل بهذا اليوم بعد.</p>`}
+      </div>
+      <button class="mini-btn primary" style="margin-top:10px;" onclick="addDayEntry(${y},${m},${day})">+ إضافة بث لهذا اليوم</button>
+    </div>
+  `;
+  overlay.classList.add('open');
+}
+function setDayEntryTime(idx, y, m, day, timeVal){
+  const [hh,mm] = timeVal.split(':');
+  const dt = `${y}-${pad2(m+1)}-${pad2(day)}T${pad2(hh)}:${pad2(mm)}`;
+  updateItem('schedule', idx, 'datetime', dt);
+  renderScheduleCalendar('adminScheduleCalendar', true);
+  openDayModal(y,m,day);
+}
+function setDayEntryGame(idx, y, m, day, val){
+  updateItem('schedule', idx, 'game', val);
+  renderScheduleCalendar('adminScheduleCalendar', true);
+  openDayModal(y,m,day);
+}
+function setDayEntryDuration(idx, y, m, day, val){
+  updateItem('schedule', idx, 'durationHours', Number(val));
+  renderScheduleCalendar('adminScheduleCalendar', true);
+  openDayModal(y,m,day);
+}
+function addDayEntry(y, m, day){
+  const dt = `${y}-${pad2(m+1)}-${pad2(day)}T20:00`;
+  const list = DB.get('schedule');
+  list.push({datetime:dt, durationHours:4, game:'', type:'Community', platform:'Twitch', streamImage:'', sideGames:'', notes:''});
+  DB.set('schedule', list); renderAll();
+  renderScheduleCalendar('adminScheduleCalendar', true);
+  openDayModal(y,m,day);
+  notice('تمت الإضافة');
 }
 
 /* ============== RENDER: GOALS ============== */
@@ -1899,7 +2031,7 @@ function renderGoals(){
   document.getElementById('goalsGrid').innerHTML = active.map(({g,i,pct})=>{
     const isHot = pct>=90;
     return `
-    <div class="goal-card glass grad-border tilt ${isHot?'hot':''}">
+    <div class="goal-card glass grad-border tilt ${isHot?'hot':''}" data-goal-idx="${i}" onclick="openGoalDetail(${i})">
       ${isHot?'<div class="goal-hot-badge">🔥 قريب!</div>':''}
       <div class="goal-ring" style="--p:${pct}"><span>${pct}%</span></div>
       <div class="goal-body">
@@ -1907,6 +2039,7 @@ function renderGoals(){
         <div class="goal-desc">${esc(g.desc)}</div>
         <div class="goal-meta"><span>${Number(g.current||0).toLocaleString('en-US')}</span><span>${Number(g.target||0).toLocaleString('en-US')}</span></div>
       </div>
+      <div class="goal-hold-bar"></div>
     </div>
   `;}).join('') || `<p style="color:var(--muted-2)">لا توجد أهداف حالية</p>`;
 
@@ -1923,17 +2056,19 @@ function renderGoals(){
     document.getElementById('goalsDoneRow').innerHTML = '';
   }
 }
-/* ---- completed-goal detail modal ---- */
+/* ---- goal detail modal (works for active + completed goals) ---- */
 function openGoalDetail(i){
   const g = DB.get('goals')[i];
   if(!g) return;
+  const pct = goalPct(g);
+  const isDone = g.done || pct>=100;
   const overlay = document.getElementById('goalModalOverlay');
   overlay.innerHTML = `
     <div class="goal-modal glass grad-border">
       <button class="goal-modal-close" onclick="closeGoalDetail()">✕</button>
-      <div class="goal-modal-badge">✅ تم الإنجاز</div>
+      <div class="goal-modal-badge" style="${isDone?'':'color:var(--orange-2);'}">${isDone?'✅ تم الإنجاز':'🎯 قيد التقدم — '+pct+'%'}</div>
       <div class="goal-modal-title">${esc(g.title)}</div>
-      <div class="goal-modal-desc">${esc(g.desc)}</div>
+      <div class="goal-modal-desc">${esc(g.details||g.desc||'')}</div>
       <div class="goal-meta"><span>${Number(g.current||0).toLocaleString('en-US')}</span><span>${Number(g.target||0).toLocaleString('en-US')}</span></div>
     </div>
   `;
@@ -1942,6 +2077,34 @@ function openGoalDetail(i){
 function closeGoalDetail(){
   document.getElementById('goalModalOverlay').classList.remove('open');
 }
+
+/* ---- hover-and-hold: hovering a goal card ~1.2s previews it, like the click-open modal ---- */
+(function goalHoldToOpen(){
+  const HOLD_MS = 1200;
+  let timer=null, activeCard=null;
+  function clear(){
+    if(timer) clearTimeout(timer);
+    timer=null;
+    if(activeCard) activeCard.classList.remove('holding');
+    activeCard=null;
+  }
+  document.addEventListener('mouseenter', (e)=>{
+    const card = e.target.closest && e.target.closest('.goal-card');
+    if(!card || window.matchMedia('(pointer:coarse)').matches) return;
+    clear();
+    activeCard = card;
+    card.classList.add('holding');
+    timer = setTimeout(()=>{
+      const idx = Number(card.dataset.goalIdx);
+      openGoalDetail(idx);
+      clear();
+    }, HOLD_MS);
+  }, true);
+  document.addEventListener('mouseleave', (e)=>{
+    const card = e.target.closest && e.target.closest('.goal-card');
+    if(card && card===activeCard) clear();
+  }, true);
+})();
 
 /* ============== RENDER: FOLLOWERS ============== */
 function renderFollowers(){
@@ -2027,6 +2190,7 @@ document.querySelectorAll('.game-tab').forEach(btn=>{
 });
 
 /* ============== RENDER: ACHIEVEMENTS ============== */
+let achievementsRevealed = false;
 function renderAchievements(){
   const list = DB.get('achievements').slice().sort((a,b)=>new Date(b.date)-new Date(a.date));
   document.getElementById('achievementsTimeline').innerHTML = list.map((a,i)=>`
@@ -2038,6 +2202,56 @@ function renderAchievements(){
       </div>
     </div>
   `).join('') || `<p style="color:var(--muted-2)">لا توجد إنجازات مسجلة بعد</p>`;
+  applyAchievementsVisibility();
+}
+function applyAchievementsVisibility(){
+  const timeline = document.getElementById('achievementsTimeline');
+  const btn = document.getElementById('playAchievementsBtn');
+  if(!timeline || !btn) return;
+  timeline.style.display = achievementsRevealed ? '' : 'none';
+  btn.classList.toggle('hide', achievementsRevealed);
+}
+
+/* ---- cinematic one-by-one achievements playback ---- */
+let achPlayerTimer = null;
+function stopAchievementsPlayer(){
+  if(achPlayerTimer){ clearTimeout(achPlayerTimer); achPlayerTimer=null; }
+  const player = document.getElementById('achPlayer');
+  if(player) player.classList.remove('active');
+}
+function playAchievements(){
+  const list = DB.get('achievements').slice().sort((a,b)=>new Date(a.date)-new Date(b.date)); // تصاعديًا: الأقدم أولًا
+  if(!list.length) return;
+  const player = document.getElementById('achPlayer');
+  const itemEl = document.getElementById('achPlayerItem');
+  const titleEl = document.getElementById('achPlayerTitle');
+  const dateEl = document.getElementById('achPlayerDate');
+  const progEl = document.getElementById('achPlayerProgress');
+  progEl.innerHTML = list.map(()=>`<span class="ach-dot"></span>`).join('');
+  const dots = progEl.querySelectorAll('.ach-dot');
+  player.classList.add('active');
+  let i = 0;
+  const HOLD = 1500, FADE = 500;
+  function showNext(){
+    if(i >= list.length){
+      stopAchievementsPlayer();
+      achievementsRevealed = true;
+      applyAchievementsVisibility();
+      return;
+    }
+    itemEl.classList.remove('show');
+    dots.forEach((d,di)=>d.classList.toggle('on', di===i));
+    achPlayerTimer = setTimeout(()=>{
+      titleEl.textContent = list[i].title;
+      dateEl.textContent = fmtDate(list[i].date);
+      itemEl.classList.add('show');
+      achPlayerTimer = setTimeout(()=>{
+        i++;
+        showNext();
+      }, HOLD);
+    }, FADE);
+  }
+  showNext();
 }
 
 /* ============== RENDER: PROJECTS ("مواقع سويناها") ============== */
@@ -2275,7 +2489,7 @@ function initMiniGames(){
 
 /* ============== RENDER ALL ============== */
 function renderAll(){
-  renderProfile(); renderSocials(); renderNextStream(); renderScheduleCalendar();
+  renderProfile(); renderSocials(); renderNextStream(); renderScheduleCalendar('scheduleCalendar', false);
   renderGoals(); renderFollowers(); renderGames(); renderAchievements(); renderProjects();
   renderClips(); renderNews(); renderPinned();
   renderViewerOfMonth(); renderWall();
@@ -2373,6 +2587,7 @@ function openAdminTab(id){
   document.querySelectorAll('.admin-tab').forEach(b=>b.classList.toggle('active', b.dataset.tab===id));
   const content = document.getElementById('adminContent');
   content.innerHTML = TAB_RENDERERS[id] ? TAB_RENDERERS[id]() : '';
+  if(id==='schedule') renderScheduleCalendar('adminScheduleCalendar', true);
 }
 
 const TAB_RENDERERS = {
@@ -2431,47 +2646,12 @@ const TAB_RENDERERS = {
 
 
   schedule(){
-    const rows = DB.get('schedule').slice().sort((a,b)=>new Date(a.datetime||0)-new Date(b.datetime||0));
-    const origIdx = r => DB.get('schedule').indexOf(r);
     return `
       <h3>جدول البثوث</h3>
-      <p style="font-size:12px; color:var(--muted-2); margin-bottom:14px;">قسم "إيش الجاي؟" في الصفحة الرئيسية يختار تلقائيًا أقرب موعد لم يبدأ أو موعد مباشر الآن. بعد انتهاء مدة البث، الجدول يعلّمه "انتهى البث" تلقائيًا وينتقل القسم للموعد اللي بعده.</p>
+      <p style="font-size:12px; color:var(--muted-2); margin-bottom:14px;">قسم "إيش الجاي؟" في الصفحة الرئيسية يختار تلقائيًا أقرب موعد لم يبدأ أو موعد مباشر الآن — ومرتبط مباشرة ببيانات هذا التقويم. بعد انتهاء مدة البث، الجدول يعلّمه "انتهى البث" تلقائيًا وينتقل القسم للموعد اللي بعده.</p>
 
-      <button type="button" class="date-icon-btn" onclick="toggleQuickAdd()">📅 إضافة موعد بالتاريخ والوقت</button>
-      <div class="quick-add-panel" id="quickAddPanel" style="display:none;">
-        <div class="a-row">
-          <div class="a-field"><label>التاريخ والوقت</label><input type="datetime-local" id="qa_datetime"></div>
-          <div class="a-field"><label>مدة البث المتوقعة (ساعات)</label><input type="number" id="qa_duration" value="4" min="0.5" step="0.5"></div>
-        </div>
-        <button class="mini-btn primary" onclick="quickAddSchedule()">إضافة الموعد</button>
-      </div>
-
-      ${rows.map(r=>{ const i = origIdx(r); return `
-        <div class="add-form">
-          <div class="a-row">
-            <div class="a-field"><label>📅 التاريخ والوقت</label><input type="datetime-local" value="${esc(r.datetime||'')}" onchange="updateItem('schedule',${i},'datetime',this.value)"></div>
-            <div class="a-field"><label>مدة البث المتوقعة (ساعات)</label><input type="number" min="0.5" step="0.5" value="${esc(String(r.durationHours||4))}" onchange="updateItem('schedule',${i},'durationHours',Number(this.value))"></div>
-          </div>
-          <div class="a-row">
-            <div class="a-field"><label>اللعبة الرئيسية</label><input value="${esc(r.game)}" onchange="updateItem('schedule',${i},'game',this.value)"></div>
-            <div class="a-field"><label>النوع</label><input value="${esc(r.type)}" onchange="updateItem('schedule',${i},'type',this.value)"></div>
-          </div>
-          <div class="a-row">
-            <div class="a-field"><label>المنصة</label>
-              <select onchange="updateItem('schedule',${i},'platform',this.value)">
-                ${['Twitch','Kick','YouTube','TikTok','Instagram','X','Discord','Facebook','Snapchat'].map(p=>`<option value="${p}" ${r.platform===p?'selected':''}>${p}</option>`).join('')}
-              </select>
-            </div>
-            <div class="a-field"><label>ألعاب جانبية (افصل بينها بفاصلة ,)</label><input value="${esc(r.sideGames||'')}" onchange="updateItem('schedule',${i},'sideGames',this.value)" placeholder="مثال: Fortnite, Valorant"></div>
-          </div>
-          <div class="a-field"><label>صورة البث (اختياري)</label><input value="${esc(r.streamImage||'')}" onchange="updateItem('schedule',${i},'streamImage',this.value)" placeholder="الصق رابط صورة — إذا تركته فارغًا يظهر شعار المنصة تلقائيًا"></div>
-          <div class="a-field"><label>تفاصيل إضافية (تظهر عند فتح الصف)</label><textarea onchange="updateItem('schedule',${i},'notes',this.value)">${esc(r.notes||'')}</textarea></div>
-          <div style="display:flex; justify-content:flex-end;">
-            <button class="mini-btn danger" onclick="removeItem('schedule',${i})">حذف الصف</button>
-          </div>
-        </div>
-      `; }).join('')}
-      <button class="mini-btn primary" style="margin-top:10px;" onclick="addItem('schedule',{datetime:'',durationHours:4,game:'لعبة',type:'Community',platform:'Twitch',streamImage:'',sideGames:'',notes:''})">+ إضافة صف يدويًا</button>
+      <p style="font-size:12px; color:var(--orange-2); font-weight:700; margin-bottom:8px;">اضغط على أي يوم بالتقويم لإضافة أو تعديل بث ذلك اليوم — الساعة، اللعبة الرئيسية، وعدد الساعات</p>
+      <div class="cal-box glass grad-border" id="adminScheduleCalendar"></div>
     `;
   },
 
@@ -2483,7 +2663,8 @@ const TAB_RENDERERS = {
       ${list.map((g,i)=>`
         <div class="add-form">
           <div class="a-field"><label>العنوان</label><input value="${esc(g.title)}" onchange="updateItem('goals',${i},'title',this.value)"></div>
-          <div class="a-field"><label>الوصف</label><input value="${esc(g.desc)}" onchange="updateItem('goals',${i},'desc',this.value)"></div>
+          <div class="a-field"><label>الوصف (يظهر تحت العنوان بالبطاقة)</label><input value="${esc(g.desc)}" onchange="updateItem('goals',${i},'desc',this.value)"></div>
+          <div class="a-field"><label>تفاصيل إضافية (تظهر بالنافذة المنبثقة عند التمرير/الضغط على الهدف)</label><textarea onchange="updateItem('goals',${i},'details',this.value)">${esc(g.details||'')}</textarea></div>
           <div class="a-row">
             <div class="a-field"><label>الرقم الحالي</label><input type="number" min="0" value="${g.current||0}" onchange="updateItem('goals',${i},'current',Number(this.value))"></div>
             <div class="a-field"><label>الرقم المستهدف</label><input type="number" min="0" value="${g.target||0}" onchange="updateItem('goals',${i},'target',Number(this.value))"></div>
@@ -2497,7 +2678,7 @@ const TAB_RENDERERS = {
           </div>
         </div>
       `).join('')}
-      <button class="mini-btn primary" onclick="addItem('goals',{title:'هدف جديد',desc:'وصف الهدف',current:0,target:100,done:false})">+ إضافة هدف</button>
+      <button class="mini-btn primary" onclick="addItem('goals',{title:'هدف جديد',desc:'وصف الهدف',details:'',current:0,target:100,done:false})">+ إضافة هدف</button>
     `;
   },
 
