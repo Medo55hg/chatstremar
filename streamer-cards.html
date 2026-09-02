@@ -1,0 +1,2274 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>بطاقات الستريمر | Streamer Cards</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --bg-base: #090a10;
+      --bg-surface: #111422;
+      --bg-surface-elevated: #1a1e32;
+      --bg-glass: rgba(17, 20, 34, 0.75);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-hover: rgba(255, 255, 255, 0.2);
+      
+      --accent-st: #f59e0b;
+      --accent-st-glow: rgba(245, 158, 11, 0.35);
+      --accent-primary: #6366f1;
+      --accent-cyan: #06b6d4;
+
+      /* Rarities */
+      --rarity-common: #94a3b8;
+      --rarity-uncommon: #10b981;
+      --rarity-rare: #3b82f6;
+      --rarity-epic: #a855f7;
+      --rarity-legendary: #f59e0b;
+      --rarity-mythic: #ec4899;
+
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      font-family: 'Cairo', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(236, 72, 153, 0.06) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.04) 0%, transparent 60%);
+      background-attachment: fixed;
+    }
+
+    .font-num {
+      font-family: 'Rajdhani', 'Cairo', sans-serif;
+      letter-spacing: 0.5px;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-base); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-surface-elevated); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+    /* Top Navigation */
+    header.game-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--bg-glass);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-color);
+      height: 72px;
+      display: flex;
+      align-items: center;
+      padding: 0 2rem;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, #6366f1, #ec4899);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 16px rgba(99, 102, 241, 0.4);
+    }
+    .brand-text h1 {
+      font-size: 1.25rem;
+      font-weight: 900;
+      line-height: 1.1;
+      background: linear-gradient(to left, #fff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .brand-text span {
+      font-size: 0.7rem;
+      color: var(--accent-cyan);
+      letter-spacing: 1px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    nav.desktop-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition);
+    }
+    .nav-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .nav-btn.active {
+      color: #fff;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(236, 72, 153, 0.25));
+      border: 1px solid rgba(99, 102, 241, 0.4);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* ST Coin Badge */
+    .st-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      padding: 6px 14px;
+      border-radius: 999px;
+      box-shadow: 0 0 12px var(--accent-st-glow);
+    }
+    .st-coin-icon {
+      width: 24px;
+      height: 24px;
+      background: radial-gradient(circle at 35% 35%, #fde68a, #d97706);
+      border: 1.5px solid #fff;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-weight: 900;
+      color: #78350f;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+    }
+    .st-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fbbf24;
+    }
+    .st-unit {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #f59e0b;
+    }
+
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      padding: 4px 12px 4px 4px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .user-pill:hover {
+      border-color: var(--border-hover);
+      background: var(--bg-surface-elevated);
+    }
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #334155;
+    }
+
+    /* Main Container */
+    main.game-container {
+      flex: 1;
+      max-width: 1440px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    /* Views */
+    .view-section {
+      display: none;
+      animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .view-section.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Mobile Bottom Navigation */
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg-glass);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border-color);
+      z-index: 50;
+      height: 64px;
+      padding: 0 0.5rem;
+      justify-content: space-around;
+      align-items: center;
+    }
+    .mobile-nav-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 0.7rem;
+      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .mobile-nav-btn.active {
+      color: var(--accent-cyan);
+    }
+
+    /* HERO BANNER */
+    .hero-banner {
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, rgba(30, 27, 75, 0.8), rgba(88, 28, 135, 0.4)), url('https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1600&q=80') center/cover;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      padding: 3rem;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+    .hero-banner::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(9, 10, 16, 0.95) 0%, rgba(9, 10, 16, 0.4) 60%, transparent 100%);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 600px;
+    }
+    .hero-content h2 {
+      font-size: 2.4rem;
+      font-weight: 900;
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+    }
+    .hero-content p {
+      color: var(--text-muted);
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* BUTTONS */
+    .btn {
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #4f46e5, #4338ca);
+      transform: translateY(-2px);
+    }
+    .btn-st {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
+    }
+    .btn-st:hover {
+      background: linear-gradient(135deg, #d97706, #b45309);
+      transform: translateY(-2px);
+    }
+    .btn-secondary {
+      background: var(--bg-surface-elevated);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--border-hover);
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    /* SECTION HEADERS */
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 1.5rem;
+    }
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title::before {
+      content: '';
+      width: 4px;
+      height: 24px;
+      background: linear-gradient(to bottom, #6366f1, #ec4899);
+      border-radius: 2px;
+      display: inline-block;
+    }
+
+    /* 9. STREAMER COLLECTIONS: RECTANGULAR, 4 PER ROW ON DESKTOP */
+    .streamer-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+    }
+    .streamer-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      height: 125px;
+      position: relative;
+      transition: var(--transition);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    }
+    .streamer-panel:hover {
+      transform: translateY(-4px);
+      border-color: rgba(99, 102, 241, 0.5);
+      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.2);
+    }
+    /* LEFT SIDE: Streamer Image */
+    .streamer-panel-left {
+      width: 100px;
+      min-width: 100px;
+      position: relative;
+      background: #1e293b;
+      overflow: hidden;
+    }
+    .streamer-panel-left img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+    .streamer-panel:hover .streamer-panel-left img {
+      transform: scale(1.08);
+    }
+    /* RIGHT / CENTER SIDE */
+    .streamer-panel-right {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-width: 0;
+      background: linear-gradient(270deg, var(--bg-surface) 0%, rgba(17, 20, 34, 0.95) 100%);
+    }
+    .streamer-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+    .streamer-name {
+      font-size: 1rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #fff;
+    }
+    .streamer-progress-badge {
+      font-size: 0.75rem;
+      color: var(--accent-cyan);
+      background: rgba(6, 182, 212, 0.1);
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    /* Small card previews */
+    .streamer-previews {
+      display: flex;
+      gap: 6px;
+      margin-top: 4px;
+      align-items: center;
+    }
+    .mini-card-preview {
+      width: 38px;
+      height: 52px;
+      border-radius: 4px;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .mini-card-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .mini-card-preview.locked {
+      filter: grayscale(1) brightness(0.5);
+    }
+
+    /* CARD SYSTEM & RARITY STYLING */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1.25rem;
+    }
+    .game-card {
+      position: relative;
+      border-radius: var(--radius-md);
+      background: var(--bg-surface);
+      border: 2px solid var(--border-color);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      aspect-ratio: 3/4.4;
+    }
+    .game-card:hover {
+      transform: translateY(-6px) scale(1.02);
+      z-index: 5;
+    }
+
+    /* Rarities Borders & Glows */
+    .game-card.rarity-COMMON { border-color: var(--rarity-common); }
+    .game-card.rarity-UNCOMMON { border-color: var(--rarity-uncommon); box-shadow: 0 0 15px rgba(16, 185, 129, 0.15); }
+    .game-card.rarity-RARE { border-color: var(--rarity-rare); box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); }
+    .game-card.rarity-EPIC { border-color: var(--rarity-epic); box-shadow: 0 0 20px rgba(168, 85, 247, 0.25); }
+    .game-card.rarity-LEGENDARY { border-color: var(--rarity-legendary); box-shadow: 0 0 25px rgba(245, 158, 11, 0.35); }
+    .game-card.rarity-MYTHIC { 
+      border-color: var(--rarity-mythic); 
+      box-shadow: 0 0 30px rgba(236, 72, 153, 0.45);
+      animation: mythicGlow 3s infinite alternate;
+    }
+    @keyframes mythicGlow {
+      0% { border-color: #ec4899; box-shadow: 0 0 20px rgba(236, 72, 153, 0.4); }
+      100% { border-color: #06b6d4; box-shadow: 0 0 30px rgba(6, 182, 212, 0.5); }
+    }
+
+    .card-thumb {
+      flex: 1;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      background: #0f172a;
+    }
+    .card-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+    .game-card:hover .card-thumb img {
+      transform: scale(1.05);
+    }
+    .card-badge-rarity {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      backdrop-filter: blur(8px);
+      background: rgba(0, 0, 0, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .card-badge-num {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #fff;
+      background: rgba(0,0,0,0.65);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .card-meta {
+      padding: 0.75rem;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .card-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card-sub {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Locked card style */
+    .game-card.locked {
+      border-color: rgba(255, 255, 255, 0.05);
+      opacity: 0.45;
+      filter: grayscale(0.9);
+      cursor: default;
+    }
+    .locked-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(9, 10, 16, 0.75);
+      gap: 6px;
+      z-index: 3;
+    }
+
+    /* 14. PACKS SYSTEM */
+    .packs-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .pack-card {
+      background: var(--bg-surface);
+      border-radius: var(--radius-lg);
+      border: 2px solid var(--border-color);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+    .pack-card:hover {
+      transform: translateY(-8px);
+    }
+    .pack-COMMON { border-color: rgba(148, 163, 184, 0.4); }
+    .pack-RARE { border-color: rgba(59, 130, 246, 0.5); box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15); }
+    .pack-EPIC { border-color: rgba(168, 85, 247, 0.5); box-shadow: 0 4px 25px rgba(168, 85, 247, 0.2); }
+    .pack-LEGENDARY { border-color: rgba(245, 158, 11, 0.6); box-shadow: 0 4px 30px rgba(245, 158, 11, 0.25); }
+
+    .pack-art {
+      width: 120px;
+      height: 160px;
+      margin-bottom: 1rem;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+    }
+    .pack-art i {
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+    }
+    .pack-name {
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .pack-rates {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin: 8px 0 16px 0;
+      line-height: 1.4;
+      min-height: 38px;
+    }
+    .pack-price {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #fbbf24;
+      margin-bottom: 1rem;
+    }
+
+    /* MODALS & OVERLAYS */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal-backdrop.active {
+      display: flex;
+    }
+    .modal-container {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      max-width: 520px;
+      width: 100%;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+      animation: modalPop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes modalPop {
+      from { transform: scale(0.92); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .modal-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    /* 12. CARD ENLARGEMENT MODAL */
+    .card-detail-layout {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    .card-large-view {
+      width: 250px;
+      height: 360px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      position: relative;
+      border: 3px solid #fff;
+      box-shadow: 0 0 35px rgba(99, 102, 241, 0.4);
+      perspective: 1000px;
+      transition: transform 0.2s ease;
+    }
+    .card-large-view img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .card-detail-info {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding-bottom: 6px;
+      font-size: 0.9rem;
+    }
+    .detail-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    /* 17. PACK OPENING ANIMATION */
+    .pack-open-ceremony {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+      padding: 2rem;
+      text-align: center;
+    }
+    .unopened-pack-visual {
+      width: 180px;
+      height: 260px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #4f46e5, #ec4899);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 0 40px rgba(99, 102, 241, 0.6);
+      animation: packFloat 3s infinite ease-in-out;
+    }
+    @keyframes packFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(1deg); }
+    }
+    .pack-exploding {
+      animation: explode 0.7s forwards cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes explode {
+      0% { transform: scale(1); filter: brightness(1); }
+      50% { transform: scale(1.2); filter: brightness(3); }
+      100% { transform: scale(0); opacity: 0; }
+    }
+
+    /* LEADERBOARD TABLE */
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg-surface);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+    .leaderboard-table th, .leaderboard-table td {
+      padding: 14px 18px;
+      text-align: right;
+    }
+    .leaderboard-table th {
+      background: var(--bg-surface-elevated);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+    .leaderboard-table tr {
+      border-bottom: 1px solid var(--border-color);
+      transition: var(--transition);
+    }
+    .leaderboard-table tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .rank-badge {
+      display: inline-flex;
+      width: 28px;
+      height: 28px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      font-weight: 800;
+      font-size: 0.85rem;
+    }
+    .rank-1 { background: #f59e0b; color: #78350f; }
+    .rank-2 { background: #94a3b8; color: #1e293b; }
+    .rank-3 { background: #b45309; color: #fff; }
+
+    /* PROFILE EDITABLE SECTIONS */
+    .profile-hero {
+      position: relative;
+      border-radius: var(--radius-lg);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+    .profile-cover {
+      height: 180px;
+      background: linear-gradient(135deg, #1e1b4b, #312e81);
+      position: relative;
+    }
+    .profile-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .profile-info-row {
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: flex-end;
+      gap: 1.5rem;
+      margin-top: -60px;
+      position: relative;
+      flex-wrap: wrap;
+    }
+    .profile-avatar-large {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 4px solid var(--bg-surface);
+      background: #1e293b;
+      object-fit: cover;
+    }
+    .profile-texts {
+      flex: 1;
+      min-width: 240px;
+    }
+
+    /* TOAST NOTIFICATION */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 1000;
+      pointer-events: none;
+    }
+    .toast {
+      background: var(--bg-surface-elevated);
+      color: #fff;
+      border: 1px solid var(--border-color);
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: auto;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(-100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    .toast.success { border-color: #10b981; }
+    .toast.error { border-color: #ef4444; }
+
+    /* FILTERS & SEARCH */
+    .filter-bar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .input-field {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+      transition: var(--transition);
+    }
+    .input-field:focus {
+      border-color: var(--accent-primary);
+    }
+
+    /* RESPONSIVE DESIGN */
+    @media (max-width: 1200px) {
+      .streamer-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .packs-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 900px) {
+      .streamer-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      desktop-nav { display: none; }
+      header.game-header { padding: 0 1rem; }
+    }
+    @media (max-width: 640px) {
+      .streamer-grid {
+        grid-template-columns: 1fr;
+      }
+      .packs-grid {
+        grid-template-columns: 1fr;
+      }
+      .mobile-nav { display: flex; }
+      body { padding-bottom: 70px; }
+      main.game-container { padding: 1rem; gap: 1.5rem; }
+      .hero-banner { padding: 1.5rem; }
+      .hero-content h2 { font-size: 1.6rem; }
+      .detail-actions { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="game-header">
+    <div class="brand" onclick="switchView('home')">
+      <div class="brand-logo">
+        <i data-lucide="sparkles" style="color:#fff;"></i>
+      </div>
+      <div class="brand-text">
+        <h1>بطاقات الستريمر</h1>
+        <span>STREAMER CARDS</span>
+      </div>
+    </div>
+
+    <nav class="desktop-nav">
+      <button class="nav-btn active" data-view="home" onclick="switchView('home')">
+        <i data-lucide="home" size="18"></i> الرئيسية
+      </button>
+      <button class="nav-btn" data-view="streamers" onclick="switchView('streamers')">
+        <i data-lucide="layers" size="18"></i> المجموعات
+      </button>
+      <button class="nav-btn" data-view="inventory" onclick="switchView('inventory')">
+        <i data-lucide="album" size="18"></i> بطاقاتي
+      </button>
+      <button class="nav-btn" data-view="market" onclick="switchView('market')">
+        <i data-lucide="shopping-bag" size="18"></i> السوق
+      </button>
+      <button class="nav-btn" data-view="leaderboard" onclick="switchView('leaderboard')">
+        <i data-lucide="trophy" size="18"></i> المتصدرين
+      </button>
+      <button class="nav-btn" data-view="profile" onclick="switchView('profile')">
+        <i data-lucide="user" size="18"></i> الملف الشخصي
+      </button>
+    </nav>
+
+    <div class="header-actions">
+      <div class="st-pill" title="رصيد عملات ST">
+        <div class="st-coin-icon">ST</div>
+        <span class="st-value font-num" id="headerStBalance">0</span>
+        <span class="st-unit">ST</span>
+      </div>
+
+      <div id="authContainer">
+        <button class="btn btn-primary" onclick="openAuthModal()">تسجيل الدخول</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="game-container">
+
+    <section id="view-home" class="view-section active">
+      <div class="hero-banner">
+        <div class="hero-content">
+          <h2>اجمع أندر بطاقات الستريمرز في الشرق الأوسط</h2>
+          <p>افتح بكجات حصرية، وتداول بطاقاتك النادرة، ونافس على قمة المتصدرين واكتشف مجموعات جديدة تتجدد في الوقت الفعلي.</p>
+          <div class="hero-actions">
+            <button class="btn btn-st" onclick="switchView('market')">
+              <i data-lucide="package-open"></i> فتح بكج
+            </button>
+            <button class="btn btn-secondary" onclick="switchView('streamers')">
+              <i data-lucide="layers"></i> عرض المجموعات
+            </button>
+            <button class="btn btn-secondary" onclick="switchView('inventory')">
+              <i data-lucide="album"></i> بطاقاتي
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-head">
+          <h2 class="section-title">مجموعات الستريمرز المميزة</h2>
+          <button class="btn btn-secondary" onclick="switchView('streamers')">عرض الكل</button>
+        </div>
+        <div class="streamer-grid" id="homeStreamersGrid">
+          </div>
+      </div>
+    </section>
+
+    <section id="view-streamers" class="view-section">
+      <div class="section-head">
+        <h2 class="section-title">جميع مجموعات الستريمرز</h2>
+      </div>
+      <div class="streamer-grid" id="allStreamersGrid">
+        </div>
+    </section>
+
+    <section id="view-streamer-detail" class="view-section">
+      <div style="margin-bottom: 1.5rem;">
+        <button class="btn btn-secondary" onclick="switchView('streamers')">
+          <i data-lucide="arrow-right"></i> العودة للمجموعات
+        </button>
+      </div>
+      
+      <div class="profile-hero" id="streamerDetailHero">
+        </div>
+
+      <div class="section-head">
+        <h3 class="section-title">بطاقات المجموعة</h3>
+        <span id="collectionProgressStats" class="font-num" style="color: var(--accent-cyan);"></span>
+      </div>
+
+      <div class="cards-grid" id="streamerCardsGrid">
+        </div>
+    </section>
+
+    <section id="view-inventory" class="view-section">
+      <div class="section-head">
+        <h2 class="section-title">بطاقاتي المملوكة</h2>
+        <span id="totalOwnedCardsLabel" class="font-num" style="color: var(--text-muted);">0 بطاقة</span>
+      </div>
+
+      <div class="filter-bar">
+        <input type="text" id="invSearch" class="input-field" placeholder="ابحث عن بطاقة..." oninput="filterInventory()" style="width: 200px;">
+        <select id="invRarityFilter" class="input-field" onchange="filterInventory()">
+          <option value="ALL">جميع الندرات</option>
+          <option value="COMMON">COMMON</option>
+          <option value="UNCOMMON">UNCOMMON</option>
+          <option value="RARE">RARE</option>
+          <option value="EPIC">EPIC</option>
+          <option value="LEGENDARY">LEGENDARY</option>
+          <option value="MYTHIC">MYTHIC</option>
+        </select>
+        <button class="btn btn-secondary" id="favFilterBtn" onclick="toggleFavFilter()">
+          <i data-lucide="heart" size="16"></i> المفضلة فقط
+        </button>
+      </div>
+
+      <div class="cards-grid" id="myCardsGrid">
+        </div>
+    </section>
+
+    <section id="view-market" class="view-section">
+      <div class="section-head">
+        <h2 class="section-title">بكجات البطاقات الرسمية</h2>
+      </div>
+
+      <div class="packs-grid" id="packsContainer">
+        </div>
+
+      <div class="section-head">
+        <h2 class="section-title">سوق اللاعبين</h2>
+        <button class="btn btn-secondary" onclick="openCreateListingModal()">+ بيع بطاقة في السوق</button>
+      </div>
+      
+      <div class="cards-grid" id="marketCardsGrid">
+        </div>
+    </section>
+
+    <section id="view-leaderboard" class="view-section">
+      <div class="section-head">
+        <h2 class="section-title">قائمة المتصدرين</h2>
+      </div>
+      <table class="leaderboard-table">
+        <thead>
+          <tr>
+            <th>الترتيب</th>
+            <th>اللاعب</th>
+            <th>المستوى</th>
+            <th>البطاقات</th>
+            <th>الرصيد ST</th>
+            <th>الملف</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboardBody">
+          </tbody>
+      </table>
+    </section>
+
+    <section id="view-profile" class="view-section">
+      <div class="profile-hero">
+        <div class="profile-cover">
+          <img id="profBannerImg" src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=1200&q=80" alt="Banner">
+        </div>
+        <div class="profile-info-row">
+          <img id="profAvatarImg" class="profile-avatar-large" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80" alt="Avatar">
+          <div class="profile-texts">
+            <h2 id="profUsername" style="font-size: 1.6rem; font-weight:900;">لاعب مجهول</h2>
+            <p id="profBio" style="color:var(--text-muted); font-size:0.9rem;">هاوي جمع بطاقات الستريمرز</p>
+          </div>
+          <div>
+            <button class="btn btn-secondary" onclick="openEditProfileModal()">
+              <i data-lucide="edit-3" size="16"></i> تعديل الملف
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="profileSectionsContainer" style="display: flex; flex-direction: column; gap: 2rem;">
+        <div class="profile-orderable-block" data-section-id="stats">
+          <h3 class="section-title" style="margin-bottom: 1rem;">إحصائيات اللاعب</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <div style="background:var(--bg-surface); padding: 1.25rem; border-radius:var(--radius-sm); border:1px solid var(--border-color);">
+              <span style="color:var(--text-muted); font-size:0.85rem;">المستوى</span>
+              <h3 id="profLevel" class="font-num" style="font-size:1.8rem; color:var(--accent-cyan);">1</h3>
+            </div>
+            <div style="background:var(--bg-surface); padding: 1.25rem; border-radius:var(--radius-sm); border:1px solid var(--border-color);">
+              <span style="color:var(--text-muted); font-size:0.85rem;">إجمالي البطاقات</span>
+              <h3 id="profCardCount" class="font-num" style="font-size:1.8rem; color:#fff;">0</h3>
+            </div>
+            <div style="background:var(--bg-surface); padding: 1.25rem; border-radius:var(--radius-sm); border:1px solid var(--border-color);">
+              <span style="color:var(--text-muted); font-size:0.85rem;">الرصيد</span>
+              <h3 id="profStTotal" class="font-num" style="font-size:1.8rem; color:#fbbf24;">0 ST</h3>
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-orderable-block" data-section-id="favorites">
+          <h3 class="section-title" style="margin-bottom: 1rem;">البطاقات المفضلة</h3>
+          <div class="cards-grid" id="profFavoritesGrid">
+            </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="mobile-nav">
+    <button class="mobile-nav-btn active" data-view="home" onclick="switchView('home')">
+      <i data-lucide="home" size="18"></i>
+      <span>الرئيسية</span>
+    </button>
+    <button class="mobile-nav-btn" data-view="streamers" onclick="switchView('streamers')">
+      <i data-lucide="layers" size="18"></i>
+      <span>المجموعات</span>
+    </button>
+    <button class="mobile-nav-btn" data-view="inventory" onclick="switchView('inventory')">
+      <i data-lucide="album" size="18"></i>
+      <span>بطاقاتي</span>
+    </button>
+    <button class="mobile-nav-btn" data-view="market" onclick="switchView('market')">
+      <i data-lucide="shopping-bag" size="18"></i>
+      <span>السوق</span>
+    </button>
+    <button class="mobile-nav-btn" data-view="profile" onclick="switchView('profile')">
+      <i data-lucide="user" size="18"></i>
+      <span>ملفي</span>
+    </button>
+  </div>
+
+  <div class="modal-backdrop" id="authModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 id="authModalTitle">تسجيل الدخول</h3>
+        <i data-lucide="x" style="cursor:pointer;" onclick="closeModal('authModal')"></i>
+      </div>
+      <div class="modal-body">
+        <form id="authForm" onsubmit="handleAuthSubmit(event)" style="display:flex; flex-direction:column; gap:1rem;">
+          <div>
+            <label style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:6px;">اسم المستخدم</label>
+            <input type="text" id="authUsername" class="input-field" style="width:100%;" required placeholder="مثال: Gamer99">
+          </div>
+          <div>
+            <label style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:6px;">كلمة المرور</label>
+            <input type="password" id="authPassword" class="input-field" style="width:100%;" required placeholder="••••••••">
+          </div>
+          <div id="confirmPasswordGroup" style="display:none;">
+            <label style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:6px;">تأكيد كلمة المرور</label>
+            <input type="password" id="authConfirmPassword" class="input-field" style="width:100%;" placeholder="••••••••">
+          </div>
+          <button type="submit" class="btn btn-primary" id="authSubmitBtn" style="justify-content:center;">دخول</button>
+        </form>
+        <div style="margin-top:1rem; text-align:center; font-size:0.85rem; color:var(--text-muted);">
+          <span id="authToggleQuestion">ليس لديك حساب؟</span>
+          <a href="javascript:void(0)" onclick="toggleAuthMode()" id="authToggleLink" style="color:var(--accent-cyan); font-weight:700; margin-right:4px;">إنشاء حساب جديد</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="cardDetailModal">
+    <div class="modal-container" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 id="detailCardTitle">معاينة البطاقة</h3>
+        <i data-lucide="x" style="cursor:pointer;" onclick="closeModal('cardDetailModal')"></i>
+      </div>
+      <div class="modal-body card-detail-layout">
+        <div class="card-large-view" id="largeCardFrame">
+          <img id="detailCardImg" src="" alt="Card Art">
+        </div>
+        <div class="card-detail-info">
+          <div class="detail-row">
+            <span style="color:var(--text-muted);">الستريمر</span>
+            <strong id="detailCardStreamer"></strong>
+          </div>
+          <div class="detail-row">
+            <span style="color:var(--text-muted);">الندرة</span>
+            <strong id="detailCardRarity"></strong>
+          </div>
+          <div class="detail-row">
+            <span style="color:var(--text-muted);">رقم البطاقة</span>
+            <strong class="font-num" id="detailCardNum"></strong>
+          </div>
+          <div class="detail-row">
+            <span style="color:var(--text-muted);">قيمة البيع الرسمية</span>
+            <strong class="font-num" style="color:#fbbf24;" id="detailCardSellVal"></strong>
+          </div>
+          <div class="detail-row">
+            <span style="color:var(--text-muted);">الكمية المملوكة لك</span>
+            <strong class="font-num" id="detailCardQty"></strong>
+          </div>
+          <p id="detailCardDesc" style="font-size:0.85rem; color:var(--text-muted); line-height:1.5; margin-top:6px;"></p>
+          
+          <div class="detail-actions" id="detailCardActions">
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="packOpeningModal">
+    <div class="modal-container" style="background:transparent; border:none; box-shadow:none; max-width:400px;">
+      <div class="pack-open-ceremony" id="packCeremonyStage">
+        </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="sellModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>تأكيد بيع البطاقة</h3>
+        <i data-lucide="x" style="cursor:pointer;" onclick="closeModal('sellModal')"></i>
+      </div>
+      <div class="modal-body" style="text-align:center;">
+        <p style="margin-bottom:1rem;">هل أنت متأكد من رغبتك في بيع هذه البطاقة للنظام؟</p>
+        <div style="background:var(--bg-surface-elevated); padding:1rem; border-radius:var(--radius-sm); margin-bottom:1.5rem;">
+          <span>ستحصل فوريًا على:</span>
+          <h2 style="color:#fbbf24; margin-top:4px;" class="font-num" id="sellPayoutAmount">0 ST</h2>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button class="btn btn-st" style="flex:1; justify-content:center;" onclick="confirmSellCard()">تأكيد البيع</button>
+          <button class="btn btn-secondary" style="flex:1; justify-content:center;" onclick="closeModal('sellModal')">إلغاء</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="editProfileModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>تعديل الملف الشخصي</h3>
+        <i data-lucide="x" style="cursor:pointer;" onclick="closeModal('editProfileModal')"></i>
+      </div>
+      <div class="modal-body">
+        <form onsubmit="saveProfileChanges(event)" style="display:flex; flex-direction:column; gap:1rem;">
+          <div>
+            <label style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:4px;">رابط الصورة الرمزية (Avatar URL)</label>
+            <input type="url" id="editAvatarUrl" class="input-field" style="width:100%;" placeholder="https://...">
+          </div>
+          <div>
+            <label style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:4px;">رابط صورة الغلاف (Banner URL)</label>
+            <input type="url" id="editBannerUrl" class="input-field" style="width:100%;" placeholder="https://...">
+          </div>
+          <div>
+            <label style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:4px;">النبذة الشخصية (Bio)</label>
+            <textarea id="editBio" class="input-field" style="width:100%; height:80px; resize:none;"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="justify-content:center;">حفظ التغييرات</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { 
+      getAuth, 
+      signInWithEmailAndPassword, 
+      createUserWithEmailAndPassword, 
+      signOut, 
+      onAuthStateChanged 
+    } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+    import { 
+      getFirestore, 
+      doc, 
+      getDoc, 
+      setDoc, 
+      updateDoc, 
+      collection, 
+      query, 
+      where, 
+      getDocs, 
+      onSnapshot, 
+      runTransaction, 
+      serverTimestamp, 
+      increment,
+      limit,
+      orderBy 
+    } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+
+    /* ========================================================
+       29. FIREBASE CONFIGURATION (Compatible with Admin Dashboard)
+       ======================================================== */
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    // Initialize Firebase
+    let app, auth, db;
+    let isFirebaseReady = false;
+
+    try {
+      app = initializeApp(firebaseConfig);
+      auth = getAuth(app);
+      db = getFirestore(app);
+      isFirebaseReady = true;
+    } catch (e) {
+      console.warn("Firebase configuration incomplete. Running in preview/fallback mode.", e);
+    }
+
+    /* GLOBAL APPLICATION STATE */
+    window.AppState = {
+      currentUser: null,       // Loaded from users/{uid}
+      authUid: null,
+      streamers: [],           // from streamers collection
+      cards: [],               // from cards collection
+      myCards: [],             // from playerCards where uid == current
+      marketListings: [],      // from marketListings
+      gameSettings: {
+        packs: {
+          common: { price: 10, name: "بكج شائع", rarity: "COMMON", rates: { COMMON: 80, UNCOMMON: 18, RARE: 2, EPIC: 0, LEGENDARY: 0, MYTHIC: 0 } },
+          rare: { price: 50, name: "بكج نادر", rarity: "RARE", rates: { COMMON: 40, UNCOMMON: 40, RARE: 17, EPIC: 3, LEGENDARY: 0, MYTHIC: 0 } },
+          epic: { price: 150, name: "بكج أسطوري مصغر", rarity: "EPIC", rates: { COMMON: 15, UNCOMMON: 35, RARE: 35, EPIC: 13, LEGENDARY: 2, MYTHIC: 0 } },
+          legendary: { price: 500, name: "بكج خرافي", rarity: "LEGENDARY", rates: { COMMON: 5, UNCOMMON: 15, RARE: 35, EPIC: 30, LEGENDARY: 13, MYTHIC: 2 } }
+        }
+      },
+      currentOpenedCard: null,
+      selectedCardForAction: null,
+      activeView: 'home',
+      favFilterActive: false
+    };
+
+    /* FALLBACK SAMPLE DATA FOR IMMEDIATE VISUAL EXPERIENCE */
+    const sampleStreamers = [
+      { id: "s1", name: "AboFlah", imageUrl: "https://images.unsplash.com/photo-1566492031773-4f4e44671857?auto=format&fit=crop&w=300&q=80", description: "صانع محتوى وبثوث الألعاب الخيرية والترفيهية" },
+      { id: "s2", name: "BanderitaX", imageUrl: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&q=80", description: "ملك الحماس وتحديات ألعاب الرعب والمغامرات" },
+      { id: "s3", name: "SHoNgxBoNg", imageUrl: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=300&q=80", description: "أسطورة الشوتر وتحديات الباتل رويال" },
+      { id: "s4", name: "Rakan", imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80", description: "بثوث روقان وألعاب التختيم والآربيجي" }
+    ];
+
+    const sampleCards = [
+      { id: "c1", streamerId: "s1", name: "الدرع الذهبي", rarity: "LEGENDARY", cardNumber: 101, sellValue: 250, imageUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=400&q=80", description: "درع الذكريات الأسطوري للمليونية" },
+      { id: "c2", streamerId: "s1", name: "ضحكة النصر", rarity: "RARE", cardNumber: 102, sellValue: 45, imageUrl: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=400&q=80", description: "البطاقة الحصرية للاحتفال بالفوز" },
+      { id: "c3", streamerId: "s2", name: "الفخ المباغت", rarity: "EPIC", cardNumber: 201, sellValue: 120, imageUrl: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=400&q=80", description: "صدمة الرعب في اللحظة الأخيرة" },
+      { id: "c4", streamerId: "s2", name: "بطاطس البداية", rarity: "COMMON", cardNumber: 202, sellValue: 5, imageUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=400&q=80", description: "بداية الرحلة الخفيفة" },
+      { id: "c5", streamerId: "s3", name: "طلقة في الرأس", rarity: "MYTHIC", cardNumber: 301, sellValue: 600, imageUrl: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=400&q=80", description: "قناصة مستحيلة من آخر الخريطة" },
+      { id: "c6", streamerId: "s4", name: "سيف الظلال", rarity: "UNCOMMON", cardNumber: 401, sellValue: 20, imageUrl: "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=400&q=80", description: "سلاح التخفي الخاص" }
+    ];
+
+    /* ========================================================
+       REAL-TIME FIRESTORE LISTENERS & INITIALIZATION
+       ======================================================== */
+    window.initGame = function() {
+      lucide.createIcons();
+      renderPacks();
+
+      if (!isFirebaseReady) {
+        // Fallback offline preview mode
+        window.AppState.streamers = sampleStreamers;
+        window.AppState.cards = sampleCards;
+        window.AppState.currentUser = {
+          uid: "guest_1",
+          username: "بطل_التحدي",
+          st: 1250,
+          level: 5,
+          bio: "لاعب محترف في بطاقات الستريمرز",
+          avatarUrl: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80",
+          bannerUrl: "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=1200&q=80"
+        };
+        window.AppState.myCards = [
+          { cardId: "c1", quantity: 1, favorite: true },
+          { cardId: "c2", quantity: 2, favorite: false },
+          { cardId: "c4", quantity: 4, favorite: false }
+        ];
+        updatePlayerUI();
+        renderStreamersList();
+        renderMyCards();
+        renderLeaderboardMock();
+        return;
+      }
+
+      // 1. Real-time Game Settings Listener
+      onSnapshot(doc(db, "gameSettings", "global"), (snap) => {
+        if (snap.exists()) {
+          window.AppState.gameSettings = snap.data();
+          renderPacks();
+        }
+      });
+
+      // 2. Real-time Streamers Listener
+      onSnapshot(collection(db, "streamers"), (snap) => {
+        const list = [];
+        snap.forEach(d => list.push({ id: d.id, ...d.data() }));
+        window.AppState.streamers = list.length ? list : sampleStreamers;
+        renderStreamersList();
+      });
+
+      // 3. Real-time Cards Listener
+      onSnapshot(collection(db, "cards"), (snap) => {
+        const list = [];
+        snap.forEach(d => list.push({ id: d.id, ...d.data() }));
+        window.AppState.cards = list.length ? list : sampleCards;
+        renderMyCards();
+      });
+
+      // 4. Auth State Tracking
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          window.AppState.authUid = user.uid;
+          listenToUserData(user.uid);
+          listenToPlayerCards(user.uid);
+        } else {
+          window.AppState.currentUser = null;
+          window.AppState.myCards = [];
+          updatePlayerUI();
+        }
+      });
+    };
+
+    function listenToUserData(uid) {
+      onSnapshot(doc(db, "users", uid), (snap) => {
+        if (snap.exists()) {
+          window.AppState.currentUser = { uid: snap.id, ...snap.data() };
+          updatePlayerUI();
+        }
+      });
+    }
+
+    function listenToPlayerCards(uid) {
+      const q = query(collection(db, "playerCards"), where("uid", "==", uid));
+      onSnapshot(q, (snap) => {
+        const list = [];
+        snap.forEach(d => list.push({ id: d.id, ...d.data() }));
+        window.AppState.myCards = list;
+        renderMyCards();
+      });
+    }
+
+    /* ========================================================
+       AUTH SYSTEM: Username + Password (No Email exposed to player)
+       ======================================================== */
+    let isRegisterMode = false;
+    window.openAuthModal = () => {
+      document.getElementById("authModal").classList.add("active");
+    };
+
+    window.toggleAuthMode = () => {
+      isRegisterMode = !isRegisterMode;
+      document.getElementById("authModalTitle").innerText = isRegisterMode ? "إنشاء حساب جديد" : "تسجيل الدخول";
+      document.getElementById("authSubmitBtn").innerText = isRegisterMode ? "إنشاء الحساب" : "دخول";
+      document.getElementById("confirmPasswordGroup").style.display = isRegisterMode ? "block" : "none";
+      document.getElementById("authToggleQuestion").innerText = isRegisterMode ? "لديك حساب بالفعل؟" : "ليس لديك حساب؟";
+      document.getElementById("authToggleLink").innerText = isRegisterMode ? "تسجيل الدخول" : "إنشاء حساب جديد";
+    };
+
+    window.handleAuthSubmit = async (e) => {
+      e.preventDefault();
+      const username = document.getElementById("authUsername").value.trim().toLowerCase();
+      const pass = document.getElementById("authPassword").value;
+      const confirmPass = document.getElementById("authConfirmPassword").value;
+
+      if (!username || !pass) {
+        showToast("يرجى ملء جميع الحقول المطلوبة", "error");
+        return;
+      }
+
+      if (!isFirebaseReady) {
+        // Fallback demo auth
+        window.AppState.currentUser = {
+          uid: "demo_user",
+          username: username,
+          st: 1000,
+          level: 1,
+          avatarUrl: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80",
+          bannerUrl: "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=1200&q=80"
+        };
+        updatePlayerUI();
+        closeModal("authModal");
+        showToast("تم تسجيل الدخول بنجاح");
+        return;
+      }
+
+      // We use internal synthetic email identifier for Firebase Auth
+      const internalEmail = `${username}@streamercards.game`;
+
+      try {
+        if (isRegisterMode) {
+          if (pass !== confirmPass) {
+            showToast("كلمتا المرور غير متطابقتين", "error");
+            return;
+          }
+          if (pass.length < 6) {
+            showToast("كلمة المرور يجب ألا تقل عن 6 خانات", "error");
+            return;
+          }
+
+          // Check unique username in Firestore
+          const usernameQuery = query(collection(db, "users"), where("username", "==", username));
+          const existing = await getDocs(usernameQuery);
+          if (!existing.empty) {
+            showToast("اسم المستخدم مسجل مسبقاً، اختر اسماً آخر", "error");
+            return;
+          }
+
+          const cred = await createUserWithEmailAndPassword(auth, internalEmail, pass);
+          // Create initial user document in 'users' collection
+          await setDoc(doc(db, "users", cred.user.uid), {
+            uid: cred.user.uid,
+            username: username,
+            displayName: username,
+            st: 100, // Welcome Gift ST
+            level: 1,
+            xp: 0,
+            avatarUrl: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80",
+            bannerUrl: "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=1200&q=80",
+            bio: "لاعب جديد في بطاقات الستريمرز",
+            profileTheme: "default",
+            profileLayout: ["stats", "favorites"],
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+          });
+          showToast("تم إنشاء الحساب بنجاح! تم منحك 100 ST كهدية");
+        } else {
+          await signInWithEmailAndPassword(auth, internalEmail, pass);
+          showToast("تم تسجيل الدخول بنجاح");
+        }
+        closeModal("authModal");
+      } catch (err) {
+        console.error(err);
+        showToast("خطأ في المصادقة: تأكد من صحة البيانات", "error");
+      }
+    };
+
+    window.logoutPlayer = async () => {
+      if (isFirebaseReady) await signOut(auth);
+      window.AppState.currentUser = null;
+      updatePlayerUI();
+      showToast("تم تسجيل الخروج");
+    };
+
+    /* UI UPDATE FOR CURRENT USER */
+    function updatePlayerUI() {
+      const user = window.AppState.currentUser;
+      const authContainer = document.getElementById("authContainer");
+      const headerSt = document.getElementById("headerStBalance");
+
+      if (user) {
+        headerSt.innerText = Number(user.st || 0).toLocaleString();
+        authContainer.innerHTML = `
+          <div class="user-pill" onclick="switchView('profile')">
+            <img class="user-avatar" src="${user.avatarUrl || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80'}" alt="Avatar">
+            <span style="font-weight:700; font-size:0.85rem;">${user.username}</span>
+            <i data-lucide="log-out" size="16" style="margin-right:6px; color:var(--text-dim);" onclick="event.stopPropagation(); logoutPlayer();" title="تسجيل الخروج"></i>
+          </div>
+        `;
+        // Update profile tab contents
+        document.getElementById("profUsername").innerText = user.username;
+        document.getElementById("profBio").innerText = user.bio || "لا توجد نبذة حالياً";
+        document.getElementById("profAvatarImg").src = user.avatarUrl;
+        document.getElementById("profBannerImg").src = user.bannerUrl;
+        document.getElementById("profLevel").innerText = user.level || 1;
+        document.getElementById("profStTotal").innerText = `${Number(user.st || 0).toLocaleString()} ST`;
+      } else {
+        headerSt.innerText = "0";
+        authContainer.innerHTML = `<button class="btn btn-primary" onclick="openAuthModal()">تسجيل الدخول</button>`;
+      }
+      lucide.createIcons();
+    }
+
+    /* ========================================================
+       9. STREAMER COLLECTIONS RENDERING
+       Layout: Horizontal Rectangular panels, EXACTLY 4 per row
+       Left: Streamer Image | Right: Name, Card Previews, Progress
+       ======================================================== */
+    function renderStreamersList() {
+      const streamers = window.AppState.streamers;
+      const cards = window.AppState.cards;
+      const myCards = window.AppState.myCards;
+
+      const makeCardHTML = (s) => {
+        const streamerCards = cards.filter(c => c.streamerId === s.id);
+        const ownedFromStreamer = streamerCards.filter(c => myCards.some(mc => mc.cardId === c.id));
+        
+        // Render 3 small card previews under streamer name
+        const previewsHTML = streamerCards.slice(0, 3).map(c => {
+          const isOwned = myCards.some(mc => mc.cardId === c.id);
+          return `
+            <div class="mini-card-preview ${isOwned ? '' : 'locked'}">
+              <img src="${c.imageUrl}" alt="${c.name}">
+            </div>
+          `;
+        }).join('');
+
+        return `
+          <div class="streamer-panel" onclick="openStreamerDetail('${s.id}')">
+            <div class="streamer-panel-left">
+              <img src="${s.imageUrl}" alt="${s.name}">
+            </div>
+            <div class="streamer-panel-right">
+              <div class="streamer-panel-header">
+                <span class="streamer-name">${s.name}</span>
+                <span class="streamer-progress-badge font-num">${ownedFromStreamer.length}/${streamerCards.length} بطاقة</span>
+              </div>
+              <div class="streamer-previews">
+                ${previewsHTML || '<span style="font-size:0.7rem; color:var(--text-dim);">لا توجد بطاقات مضافة</span>'}
+              </div>
+            </div>
+          </div>
+        `;
+      };
+
+      const homeGrid = document.getElementById("homeStreamersGrid");
+      const allGrid = document.getElementById("allStreamersGrid");
+      if (homeGrid) homeGrid.innerHTML = streamers.slice(0, 8).map(makeCardHTML).join('');
+      if (allGrid) allGrid.innerHTML = streamers.map(makeCardHTML).join('');
+    }
+
+    /* 10. STREAMER COLLECTION DETAIL VIEW */
+    window.openStreamerDetail = (streamerId) => {
+      const streamer = window.AppState.streamers.find(s => s.id === streamerId);
+      if (!streamer) return;
+
+      const streamerCards = window.AppState.cards.filter(c => c.streamerId === streamerId);
+      const myCards = window.AppState.myCards;
+      const ownedCards = streamerCards.filter(c => myCards.some(mc => mc.cardId === c.id));
+
+      const hero = document.getElementById("streamerDetailHero");
+      hero.innerHTML = `
+        <div class="profile-cover">
+          <img src="${streamer.coverImageUrl || streamer.imageUrl}" alt="Cover">
+        </div>
+        <div class="profile-info-row">
+          <img class="profile-avatar-large" src="${streamer.imageUrl}" alt="${streamer.name}">
+          <div class="profile-texts">
+            <h2 style="font-size: 1.6rem; font-weight:900;">مجموعة: ${streamer.name}</h2>
+            <p style="color:var(--text-muted); font-size:0.9rem;">${streamer.description || ''}</p>
+          </div>
+          <div style="background:var(--bg-surface-elevated); padding:8px 16px; border-radius:var(--radius-sm); border:1px solid var(--border-color);">
+            <span style="font-size:0.75rem; color:var(--text-dim); display:block;">نسبة الإكمال</span>
+            <span class="font-num" style="color:var(--accent-cyan); font-weight:800; font-size:1.1rem;">
+              ${ownedCards.length} / ${streamerCards.length} بطاقة
+            </span>
+          </div>
+        </div>
+      `;
+
+      const grid = document.getElementById("streamerCardsGrid");
+      grid.innerHTML = streamerCards.map(c => {
+        const owned = myCards.some(mc => mc.cardId === c.id);
+        return createCardElementHTML(c, owned);
+      }).join('');
+
+      switchView('streamer-detail');
+      lucide.createIcons();
+    };
+
+    /* 11 & 12. CARD COMPONENT BUILDER & ENLARGEMENT MODAL */
+    function createCardElementHTML(card, isOwned = true, quantity = 1) {
+      return `
+        <div class="game-card rarity-${card.rarity} ${isOwned ? '' : 'locked'}" onclick="handleCardClick('${card.id}', ${isOwned})">
+          ${!isOwned ? `
+            <div class="locked-overlay">
+              <i data-lucide="lock" size="22" style="color:#fff;"></i>
+              <span style="font-size:0.75rem; font-weight:700;">غير مملوكة</span>
+            </div>
+          ` : ''}
+          <div class="card-thumb">
+            <span class="card-badge-num font-num">#${card.cardNumber || '00'}</span>
+            <span class="card-badge-rarity">${card.rarity}</span>
+            <img src="${card.imageUrl}" alt="${card.name}">
+          </div>
+          <div class="card-meta">
+            <span class="card-title">${card.name}</span>
+            <div class="card-sub">
+              <span>${card.sellValue || 10} ST</span>
+              ${isOwned && quantity > 1 ? `<span class="font-num" style="color:var(--accent-cyan);">x${quantity}</span>` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    window.handleCardClick = (cardId, isOwned) => {
+      const card = window.AppState.cards.find(c => c.id === cardId);
+      if (!card) return;
+
+      const streamer = window.AppState.streamers.find(s => s.id === card.streamerId);
+      const inventoryItem = window.AppState.myCards.find(mc => mc.cardId === card.id);
+      const quantity = inventoryItem ? (inventoryItem.quantity || 1) : 0;
+
+      window.AppState.selectedCardForAction = { ...card, ownedQuantity: quantity };
+
+      // Populate Enlarged Modal
+      document.getElementById("detailCardTitle").innerText = card.name;
+      document.getElementById("detailCardImg").src = card.imageUrl;
+      document.getElementById("detailCardStreamer").innerText = streamer ? streamer.name : "الستريمر الرسمي";
+      document.getElementById("detailCardRarity").innerText = card.rarity;
+      document.getElementById("detailCardNum").innerText = `#${card.cardNumber || '00'}`;
+      document.getElementById("detailCardSellVal").innerText = `${card.sellValue || 10} ST`;
+      document.getElementById("detailCardQty").innerText = isOwned ? `${quantity} قطعة` : "غير مملوكة";
+      document.getElementById("detailCardDesc").innerText = card.description || "بطاقة رقمية حصرية تابعة لمجموعة الستريمر الرسمية.";
+
+      // 3D tilt effect on the enlarged card frame
+      const frame = document.getElementById("largeCardFrame");
+      frame.className = `card-large-view rarity-${card.rarity}`;
+
+      const actionsDiv = document.getElementById("detailCardActions");
+      if (isOwned && quantity > 0) {
+        actionsDiv.innerHTML = `
+          <button class="btn btn-st" onclick="openSellModal('${card.id}')">
+            <i data-lucide="coins"></i> بيع (${card.sellValue || 10} ST)
+          </button>
+          <button class="btn btn-secondary" onclick="toggleFavoriteCard('${card.id}')">
+            <i data-lucide="heart" style="${inventoryItem?.favorite ? 'fill:#ef4444; color:#ef4444;' : ''}"></i> 
+            ${inventoryItem?.favorite ? 'إزالة المفضلة' : 'تفضيل'}
+          </button>
+        `;
+      } else {
+        actionsDiv.innerHTML = `
+          <button class="btn btn-primary" style="grid-column: span 2;" onclick="switchView('market'); closeModal('cardDetailModal');">
+            البحث عنها في السوق
+          </button>
+        `;
+      }
+
+      document.getElementById("cardDetailModal").classList.add("active");
+      lucide.createIcons();
+    };
+
+    /* 13. MY CARDS (INVENTORY) LOGIC */
+    function renderMyCards() {
+      const myCards = window.AppState.myCards;
+      const allCards = window.AppState.cards;
+      const grid = document.getElementById("myCardsGrid");
+      const profFavGrid = document.getElementById("profFavoritesGrid");
+      const totalLabel = document.getElementById("totalOwnedCardsLabel");
+      const profCount = document.getElementById("profCardCount");
+
+      let totalCardsCount = 0;
+      const cardsToRender = [];
+      const favCards = [];
+
+      myCards.forEach(item => {
+        const cardData = allCards.find(c => c.id === item.cardId);
+        if (cardData) {
+          totalCardsCount += (item.quantity || 1);
+          cardsToRender.push({ ...cardData, ...item });
+          if (item.favorite) favCards.push({ ...cardData, ...item });
+        }
+      });
+
+      if (totalLabel) totalLabel.innerText = `${totalCardsCount} بطاقة`;
+      if (profCount) profCount.innerText = totalCardsCount;
+
+      if (!cardsToRender.length) {
+        grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:3rem; color:var(--text-muted);">لا توجد لديك بطاقات بعد. توجه إلى السوق وافتح أول بكج لك!</div>`;
+      } else {
+        grid.innerHTML = cardsToRender.map(c => createCardElementHTML(c, true, c.quantity)).join('');
+      }
+
+      if (profFavGrid) {
+        profFavGrid.innerHTML = favCards.length 
+          ? favCards.map(c => createCardElementHTML(c, true, c.quantity)).join('')
+          : `<span style="color:var(--text-dim); font-size:0.85rem;">لم تقم بتفضيل أي بطاقة حتى الآن.</span>`;
+      }
+      lucide.createIcons();
+    }
+
+    window.filterInventory = () => {
+      const search = document.getElementById("invSearch").value.toLowerCase();
+      const rarity = document.getElementById("invRarityFilter").value;
+      const allCards = window.AppState.cards;
+      const myCards = window.AppState.myCards;
+
+      const filtered = myCards.filter(mc => {
+        const card = allCards.find(c => c.id === mc.cardId);
+        if (!card) return false;
+        const matchesName = card.name.toLowerCase().includes(search);
+        const matchesRarity = rarity === "ALL" || card.rarity === rarity;
+        const matchesFav = !window.AppState.favFilterActive || mc.favorite;
+        return matchesName && matchesRarity && matchesFav;
+      });
+
+      const grid = document.getElementById("myCardsGrid");
+      if (!filtered.length) {
+        grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:2rem; color:var(--text-muted);">لا توجد بطاقات مطابقة لخيارات الفلترة</div>`;
+      } else {
+        grid.innerHTML = filtered.map(mc => {
+          const card = allCards.find(c => c.id === mc.cardId);
+          return createCardElementHTML(card, true, mc.quantity);
+        }).join('');
+      }
+      lucide.createIcons();
+    };
+
+    window.toggleFavFilter = () => {
+      window.AppState.favFilterActive = !window.AppState.favFilterActive;
+      const btn = document.getElementById("favFilterBtn");
+      btn.style.borderColor = window.AppState.favFilterActive ? "var(--accent-cyan)" : "var(--border-color)";
+      btn.style.color = window.AppState.favFilterActive ? "var(--accent-cyan)" : "var(--text-main)";
+      filterInventory();
+    };
+
+    window.toggleFavoriteCard = async (cardId) => {
+      if (!window.AppState.currentUser) return;
+      const item = window.AppState.myCards.find(mc => mc.cardId === cardId);
+      if (!item) return;
+
+      const newFav = !item.favorite;
+
+      if (!isFirebaseReady) {
+        item.favorite = newFav;
+        renderMyCards();
+        closeModal("cardDetailModal");
+        showToast(newFav ? "تمت إضافة البطاقة إلى المفضلة" : "تمت إزالة البطاقة من المفضلة");
+        return;
+      }
+
+      try {
+        const q = query(
+          collection(db, "playerCards"), 
+          where("uid", "==", window.AppState.currentUser.uid),
+          where("cardId", "==", cardId)
+        );
+        const snap = await getDocs(q);
+        if (!snap.empty) {
+          await updateDoc(snap.docs[0].ref, { favorite: newFav });
+          showToast(newFav ? "تمت إضافة البطاقة إلى المفضلة" : "تمت إزالة البطاقة من المفضلة");
+          closeModal("cardDetailModal");
+        }
+      } catch (e) {
+        showToast("فشل تحديث المفضلة", "error");
+      }
+    };
+
+    /* ========================================================
+       14, 15, 16 & 17. OFFICIAL PACK SYSTEM & ATOMIC OPENING
+       Prices loaded dynamically from gameSettings
+       Client balance verified securely via Firestore Transaction
+       ======================================================== */
+    function renderPacks() {
+      const packs = window.AppState.gameSettings.packs;
+      const container = document.getElementById("packsContainer");
+      if (!container) return;
+
+      const packKeys = ["common", "rare", "epic", "legendary"];
+      container.innerHTML = packKeys.map(key => {
+        const p = packs[key] || {};
+        const rates = p.rates || {};
+        const rateDesc = Object.entries(rates)
+          .filter(([_, rate]) => rate > 0)
+          .map(([rar, rate]) => `${rar}: ${rate}%`)
+          .join(' | ');
+
+        return `
+          <div class="pack-card pack-${p.rarity}">
+            <div class="pack-art">
+              <i data-lucide="box" size="48" style="color:var(--accent-st);"></i>
+            </div>
+            <h3 class="pack-name">${p.name}</h3>
+            <div class="pack-price">
+              <span class="font-num">${p.price}</span>
+              <span class="st-unit">ST</span>
+            </div>
+            <p class="pack-rates">${rateDesc}</p>
+            <button class="btn btn-st" style="width:100%; justify-content:center;" onclick="initiatePackOpening('${key}')">
+              فتح الآن
+            </button>
+          </div>
+        `;
+      }).join('');
+      lucide.createIcons();
+    }
+
+    window.initiatePackOpening = async (packKey) => {
+      const user = window.AppState.currentUser;
+      if (!user) {
+        openAuthModal();
+        return;
+      }
+
+      const pack = window.AppState.gameSettings.packs[packKey];
+      if (!pack) return;
+
+      // 16. VERY IMPORTANT — PLAYER MUST HAVE ENOUGH ST
+      if ((user.st || 0) < pack.price) {
+        showToast("رصيدك من ST غير كافٍ لفتح هذا البكج.", "error");
+        return;
+      }
+
+      // Open ceremony modal in Stage 1: Tap to Open
+      const stage = document.getElementById("packCeremonyStage");
+      stage.innerHTML = `
+        <div class="unopened-pack-visual" id="packBoxElement" onclick="executePackReward('${packKey}')">
+          <i data-lucide="gift" size="64" style="color:#fff;"></i>
+        </div>
+        <h3 style="color:#fff; font-weight:800;">انقر على البكج لفتحه!</h3>
+      `;
+      document.getElementById("packOpeningModal").classList.add("active");
+      lucide.createIcons();
+    };
+
+    /* 17. REWARD GENERATION & SECURE ATOMIC FIRESTORE TRANSACTION */
+    window.executePackReward = async (packKey) => {
+      const packBox = document.getElementById("packBoxElement");
+      if (packBox) packBox.classList.add("pack-exploding");
+
+      const pack = window.AppState.gameSettings.packs[packKey];
+      const availableCards = window.AppState.cards;
+      if (!availableCards.length) {
+        showToast("لا توجد بطاقات متاحة في النظام حالياً", "error");
+        closeModal("packOpeningModal");
+        return;
+      }
+
+      // Calculate Rarity by drop rate
+      const selectedRarity = determineRarityFromDropRates(pack.rates);
+      let matchingCards = availableCards.filter(c => c.rarity === selectedRarity);
+      if (!matchingCards.length) matchingCards = availableCards; // fallback
+      const wonCard = matchingCards[Math.floor(Math.random() * matchingCards.length)];
+
+      if (!isFirebaseReady) {
+        // Mock deduction
+        window.AppState.currentUser.st -= pack.price;
+        const existing = window.AppState.myCards.find(mc => mc.cardId === wonCard.id);
+        if (existing) existing.quantity = (existing.quantity || 1) + 1;
+        else window.AppState.myCards.push({ cardId: wonCard.id, quantity: 1, favorite: false });
+        
+        finalizePackOpeningCeremony(wonCard);
+        updatePlayerUI();
+        renderMyCards();
+        return;
+      }
+
+      // ATOMIC TRANSACTION: Verify ST, deduct, update inventory
+      try {
+        await runTransaction(db, async (transaction) => {
+          const userRef = doc(db, "users", window.AppState.currentUser.uid);
+          const userDoc = await transaction.get(userRef);
+
+          if (!userDoc.exists()) throw new Error("المستخدم غير موجود");
+          const currentST = userDoc.data().st || 0;
+
+          if (currentST < pack.price) {
+            throw new Error("رصيدك من ST غير كافٍ لفتح هذا البكج.");
+          }
+
+          // 1. Deduct currency atomically
+          transaction.update(userRef, {
+            st: currentST - pack.price,
+            updatedAt: serverTimestamp()
+          });
+
+          // 2. Add or increment in playerCards collection
+          const playerCardDocId = `${window.AppState.currentUser.uid}_${wonCard.id}`;
+          const playerCardRef = doc(db, "playerCards", playerCardDocId);
+          const cardDoc = await transaction.get(playerCardRef);
+
+          if (cardDoc.exists()) {
+            transaction.update(playerCardRef, {
+              quantity: increment(1),
+              updatedAt: serverTimestamp()
+            });
+          } else {
+            transaction.set(playerCardRef, {
+              uid: window.AppState.currentUser.uid,
+              cardId: wonCard.id,
+              quantity: 1,
+              favorite: false,
+              obtainedAt: serverTimestamp()
+            });
+          }
+        });
+
+        finalizePackOpeningCeremony(wonCard);
+      } catch (err) {
+        console.error(err);
+        showToast(err.message || "حدث خطأ أثناء فتح البكج", "error");
+        closeModal("packOpeningModal");
+      }
+    };
+
+    function determineRarityFromDropRates(rates) {
+      const rand = Math.random() * 100;
+      let cumulative = 0;
+      for (const [rarity, rate] of Object.entries(rates)) {
+        cumulative += rate;
+        if (rand <= cumulative) return rarity;
+      }
+      return "COMMON";
+    }
+
+    function finalizePackOpeningCeremony(wonCard) {
+      confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+      const stage = document.getElementById("packCeremonyStage");
+      stage.innerHTML = `
+        <div style="animation: modalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
+          <div class="card-large-view rarity-${wonCard.rarity}" style="margin: 0 auto 1.5rem auto;">
+            <img src="${wonCard.imageUrl}" alt="${wonCard.name}">
+          </div>
+          <h2 style="color:#fff; font-weight:900;">تهانينا! حصلت على بطاقة</h2>
+          <h3 style="color:var(--accent-cyan); margin-bottom:1rem;">${wonCard.name} (${wonCard.rarity})</h3>
+          <button class="btn btn-primary" onclick="closeModal('packOpeningModal');">
+            إضافة إلى مجموعتي
+          </button>
+        </div>
+      `;
+      showToast("تمت إضافة البطاقة إلى مجموعتك بنجاح!");
+    }
+
+    /* ========================================================
+       19. SELLING CARDS FOR OFFICIAL ST CURRENCY
+       ======================================================== */
+    window.openSellModal = (cardId) => {
+      const card = window.AppState.cards.find(c => c.id === cardId);
+      if (!card) return;
+      window.AppState.selectedCardForAction = card;
+      document.getElementById("sellPayoutAmount").innerText = `${card.sellValue || 10} ST`;
+      closeModal("cardDetailModal");
+      document.getElementById("sellModal").classList.add("active");
+    };
+
+    window.confirmSellCard = async () => {
+      const card = window.AppState.selectedCardForAction;
+      const user = window.AppState.currentUser;
+      if (!card || !user) return;
+
+      const payout = card.sellValue || 10;
+
+      if (!isFirebaseReady) {
+        user.st += payout;
+        const item = window.AppState.myCards.find(mc => mc.cardId === card.id);
+        if (item) {
+          item.quantity -= 1;
+          if (item.quantity <= 0) {
+            window.AppState.myCards = window.AppState.myCards.filter(mc => mc.cardId !== card.id);
+          }
+        }
+        updatePlayerUI();
+        renderMyCards();
+        closeModal("sellModal");
+        showToast(`تم بيع البطاقة بنجاح! حصلت على ${payout} ST`);
+        return;
+      }
+
+      try {
+        await runTransaction(db, async (transaction) => {
+          const userRef = doc(db, "users", user.uid);
+          const playerCardDocId = `${user.uid}_${card.id}`;
+          const playerCardRef = doc(db, "playerCards", playerCardDocId);
+
+          const cardDoc = await transaction.get(playerCardRef);
+          if (!cardDoc.exists() || cardDoc.data().quantity <= 0) {
+            throw new Error("لا تملك هذه البطاقة للبيع.");
+          }
+
+          const currentQty = cardDoc.data().quantity;
+          if (currentQty > 1) {
+            transaction.update(playerCardRef, { quantity: increment(-1) });
+          } else {
+            transaction.delete(playerCardRef);
+          }
+
+          transaction.update(userRef, {
+            st: increment(payout),
+            updatedAt: serverTimestamp()
+          });
+        });
+
+        closeModal("sellModal");
+        showToast(`تم بيع البطاقة بنجاح! وحصلت على ${payout} ST`);
+      } catch (e) {
+        showToast(e.message || "حدث خطأ أثناء إتمام عملية البيع", "error");
+      }
+    };
+
+    /* ========================================================
+       21. LEADERBOARD SYSTEM
+       ======================================================== */
+    function renderLeaderboardMock() {
+      const tbody = document.getElementById("leaderboardBody");
+      const dummyLeaders = [
+        { rank: 1, name: "Legend_Killer", level: 24, cards: 84, st: 4500 },
+        { rank: 2, name: "Falcon_Eye", level: 20, cards: 72, st: 3200 },
+        { rank: 3, name: "AboFlahFan", level: 18, cards: 65, st: 2150 },
+        { rank: 4, name: "GamerDZ", level: 15, cards: 45, st: 1800 }
+      ];
+
+      tbody.innerHTML = dummyLeaders.map(l => `
+        <tr>
+          <td><span class="rank-badge rank-${l.rank}">${l.rank}</span></td>
+          <td><strong>${l.name}</strong></td>
+          <td class="font-num">${l.level}</td>
+          <td class="font-num">${l.cards}</td>
+          <td class="font-num" style="color:#fbbf24;">${l.st} ST</td>
+          <td>
+            <button class="btn btn-secondary" style="padding:4px 10px; font-size:0.75rem;" onclick="showToast('عرض الملف الشخصي العام قريبًا')">
+              عرض الملف
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    /* ========================================================
+       22 & 23. PROFILE EDITING & CUSTOMIZATION
+       ======================================================== */
+    window.openEditProfileModal = () => {
+      const user = window.AppState.currentUser;
+      if (!user) {
+        openAuthModal();
+        return;
+      }
+      document.getElementById("editAvatarUrl").value = user.avatarUrl || "";
+      document.getElementById("editBannerUrl").value = user.bannerUrl || "";
+      document.getElementById("editBio").value = user.bio || "";
+      document.getElementById("editProfileModal").classList.add("active");
+    };
+
+    window.saveProfileChanges = async (e) => {
+      e.preventDefault();
+      const user = window.AppState.currentUser;
+      if (!user) return;
+
+      const avatarUrl = document.getElementById("editAvatarUrl").value.trim();
+      const bannerUrl = document.getElementById("editBannerUrl").value.trim();
+      const bio = document.getElementById("editBio").value.trim();
+
+      if (!isFirebaseReady) {
+        if (avatarUrl) user.avatarUrl = avatarUrl;
+        if (bannerUrl) user.bannerUrl = bannerUrl;
+        user.bio = bio;
+        updatePlayerUI();
+        closeModal("editProfileModal");
+        showToast("تم حفظ التغييرات بنجاح");
+        return;
+      }
+
+      try {
+        await updateDoc(doc(db, "users", user.uid), {
+          avatarUrl: avatarUrl || user.avatarUrl,
+          bannerUrl: bannerUrl || user.bannerUrl,
+          bio: bio,
+          updatedAt: serverTimestamp()
+        });
+        closeModal("editProfileModal");
+        showToast("تم حفظ التغييرات بنجاح");
+      } catch (err) {
+        showToast("فشل حفظ التعديلات", "error");
+      }
+    };
+
+    /* VIEW SWITCHING HELPER */
+    window.switchView = (viewName) => {
+      document.querySelectorAll(".view-section").forEach(sec => sec.classList.remove("active"));
+      document.querySelectorAll(".nav-btn, .mobile-nav-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.getAttribute("data-view") === viewName);
+      });
+
+      const target = document.getElementById(`view-${viewName}`);
+      if (target) {
+        target.classList.add("active");
+        window.AppState.activeView = viewName;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    };
+
+    /* MODAL CLOSE HELPER */
+    window.closeModal = (modalId) => {
+      const el = document.getElementById(modalId);
+      if (el) el.classList.remove("active");
+    };
+
+    /* TOAST HELPER */
+    window.showToast = (msg, type = "success") => {
+      const c = document.getElementById("toastContainer");
+      const t = document.createElement("div");
+      t.className = `toast ${type}`;
+      t.innerHTML = `
+        <i data-lucide="${type === 'success' ? 'check-circle-2' : 'alert-circle'}" size="18" style="color:${type === 'success' ? '#10b981' : '#ef4444'}"></i>
+        <span>${msg}</span>
+      `;
+      c.appendChild(t);
+      lucide.createIcons();
+      setTimeout(() => {
+        t.style.opacity = '0';
+        t.style.transform = 'translateX(-20px)';
+        t.style.transition = '0.3s ease';
+        setTimeout(() => t.remove(), 300);
+      }, 3500);
+    };
+
+    // Initialize Game Engine on DOM load
+    window.addEventListener("DOMContentLoaded", () => {
+      window.initGame();
+    });
+  </script>
+</body>
+</html>

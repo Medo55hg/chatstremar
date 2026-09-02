@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة التحكم | Streamer Cards</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Chakra+Petch:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-dark: #09090b;
+      --bg-surface: #121216;
+      --bg-elevated: #1a1a22;
+      --border-color: #272732;
+      --primary: #e11d48;
+      --primary-hover: #be123c;
+      --primary-glow: rgba(225, 29, 72, 0.25);
+      --text-main: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --danger: #ef4444;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Auth Screens */
+    .auth-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      background: radial-gradient(circle at center, rgba(225, 29, 72, 0.08) 0%, #09090b 70%);
+    }
+
+    .auth-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 40px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      position: relative;
+    }
+
+    .auth-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--primary), transparent);
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .auth-header h2 {
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--text-main);
+    }
+
+    .auth-header p {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* App Layout */
+    .app-container {
+      display: none;
+      min-height: 100vh;
+      flex-direction: row;
+    }
+
+    .sidebar {
+      width: 260px;
+      background: var(--bg-surface);
+      border-left: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .brand {
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .brand i {
+      font-size: 24px;
+      color: var(--primary);
+    }
+
+    .brand h1 {
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-links {
+      list-style: none;
+      padding: 16px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 16px;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: var(--radius);
+      transition: 0.2s;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .nav-item:hover {
+      background: var(--bg-elevated);
+      color: var(--text-main);
+    }
+
+    .nav-item.active {
+      background: var(--primary-glow);
+      color: var(--primary);
+      border: 1px solid rgba(225, 29, 72, 0.3);
+    }
+
+    .main-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .top-header {
+      height: 70px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .admin-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .admin-badge {
+      background: rgba(225, 29, 72, 0.15);
+      color: var(--primary);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .content-area {
+      padding: 32px;
+      flex: 1;
+    }
+
+    /* Standard Elements */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .form-control {
+      width: 100%;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-color);
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 8px;
+      outline: none;
+      font-size: 14px;
+      transition: border 0.2s;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+    }
+
+    .btn {
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      box-shadow: 0 0 15px var(--primary-glow);
+    }
+
+    .btn-secondary {
+      background: var(--bg-elevated);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .btn-block { width: 100%; }
+
+    /* Dashboard Widgets */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 20px;
+      position: relative;
+    }
+
+    .stat-card .label {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .stat-card .value {
+      font-size: 28px;
+      font-weight: 900;
+      font-family: 'Chakra Petch', sans-serif;
+      color: var(--text-main);
+    }
+
+    /* Tables */
+    .table-container {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: right;
+    }
+
+    th, td {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 14px;
+    }
+
+    th {
+      background: rgba(255,255,255,0.02);
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Modal System */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 550px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    /* Rarity Badges */
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .badge-COMMON { background: #52525b; color: #fff; }
+    .badge-UNCOMMON { background: #16a34a; color: #fff; }
+    .badge-RARE { background: #2563eb; color: #fff; }
+    .badge-EPIC { background: #9333ea; color: #fff; }
+    .badge-LEGENDARY { background: #ea580c; color: #fff; }
+    .badge-MYTHIC { background: #e11d48; color: #fff; }
+
+    /* Toast */
+    #toast-container {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .toast {
+      padding: 12px 20px;
+      border-radius: 8px;
+      background: var(--bg-elevated);
+      color: #fff;
+      border-right: 4px solid var(--primary);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      animation: fadeIn 0.3s forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="toast-container"></div>
+
+  <div id="auth-section" class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-header">
+        <i class="fa-solid fa-shield-halved" style="font-size: 40px; color: var(--primary); margin-bottom: 12px;"></i>
+        <h2>لوحة إدارة Streamer Cards</h2>
+        <p>قم بتسجيل الدخول كمسؤول للمتابعة</p>
+      </div>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label>اسم المستخدم</label>
+          <input type="text" id="login-username" class="form-control" placeholder="admin" required autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label>كلمة المرور</label>
+          <input type="password" id="login-password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" id="btn-login">تسجيل الدخول</button>
+      </form>
+
+      <div style="text-align: center; margin-top: 16px;">
+        <a href="#" id="toggle-setup-link" style="color: var(--text-muted); font-size: 12px; text-decoration: none;">إعداد المسؤول الأول لأول مرة؟</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="setup-section" class="auth-wrapper" style="display: none;">
+    <div class="auth-card">
+      <div class="auth-header">
+        <i class="fa-solid fa-user-plus" style="font-size: 40px; color: var(--primary); margin-bottom: 12px;"></i>
+        <h2>تأسيس المسؤول الأول</h2>
+        <p>يتم هذا الإجراء مرة واحدة لإنشاء حساب المدير الأساسي</p>
+      </div>
+
+      <form id="setup-form">
+        <div class="form-group">
+          <label>اسم مستخدم المسؤول</label>
+          <input type="text" id="setup-username" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label>كلمة المرور</label>
+          <input type="password" id="setup-password" class="form-control" required minlength="6">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" id="btn-setup">إنشاء حساب المدير</button>
+      </form>
+
+      <div style="text-align: center; margin-top: 16px;">
+        <a href="#" id="toggle-login-link" style="color: var(--text-muted); font-size: 12px; text-decoration: none;">العودة لتسجيل الدخول</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="dashboard-app" class="app-container">
+    <aside class="sidebar">
+      <div class="brand">
+        <i class="fa-solid fa-gamepad"></i>
+        <h1>لوحة التحكم</h1>
+      </div>
+      <ul class="nav-links">
+        <li class="nav-item active" data-target="view-home"><i class="fa-solid fa-chart-pie"></i> الرئيسية</li>
+        <li class="nav-item" data-target="view-streamers"><i class="fa-solid fa-video"></i> الستريمرز</li>
+        <li class="nav-item" data-target="view-cards"><i class="fa-solid fa-clone"></i> البطاقات</li>
+        <li class="nav-item" data-target="view-collections"><i class="fa-solid fa-layer-group"></i> المجموعات</li>
+        <li class="nav-item" data-target="view-players"><i class="fa-solid fa-users"></i> اللاعبين</li>
+        <li class="nav-item" data-target="view-inventory"><i class="fa-solid fa-box-archive"></i> المخزون</li>
+        <li class="nav-item" data-target="view-market"><i class="fa-solid fa-shop"></i> السوق</li>
+        <li class="nav-item" data-target="view-packs"><i class="fa-solid fa-box-open"></i> البكجات</li>
+        <li class="nav-item" data-target="view-economy"><i class="fa-solid fa-coins"></i> اقتصاد اللعبة</li>
+        <li class="nav-item" data-target="view-settings"><i class="fa-solid fa-gear"></i> الإعدادات</li>
+      </ul>
+      <div style="padding: 16px;">
+        <button id="btn-logout" class="btn btn-secondary btn-block"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</button>
+      </div>
+    </aside>
+
+    <div class="main-wrapper">
+      <header class="top-header">
+        <div id="section-title" style="font-weight: 700; font-size: 18px;">الرئيسية</div>
+        <div class="admin-profile">
+          <span class="admin-badge">مسؤول معتمد</span>
+          <span id="current-admin-name" style="font-weight: 600;">Admin</span>
+        </div>
+      </header>
+
+      <main class="content-area">
+        <section id="view-home" class="dashboard-view">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="label">إجمالي اللاعبين</div>
+              <div class="value" id="stat-total-players">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="label">إجمالي الستريمرز</div>
+              <div class="value" id="stat-total-streamers">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="label">إجمالي البطاقات</div>
+              <div class="value" id="stat-total-cards">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="label">البطاقات المملوكة</div>
+              <div class="value" id="stat-total-owned-cards">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="label">إجمالي ST في الاقتصاد</div>
+              <div class="value" id="stat-total-st">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="label">عروض السوق النشطة</div>
+              <div class="value" id="stat-active-market">0</div>
+            </div>
+          </div>
+        </section>
+
+        <section id="view-streamers" class="dashboard-view" style="display: none;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+            <input type="text" id="streamers-search" class="form-control" style="width: 300px;" placeholder="بحث عن ستريمر...">
+            <button class="btn btn-primary" id="btn-add-streamer"><i class="fa-solid fa-plus"></i> إضافة ستريمر</button>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>الصورة</th>
+                  <th>الاسم</th>
+                  <th>اسم المستخدم</th>
+                  <th>الحالة</th>
+                  <th>إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="streamers-tbody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="view-cards" class="dashboard-view" style="display: none;">
+          <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+            <input type="text" id="cards-search" class="form-control" style="width: 260px;" placeholder="بحث عن بطاقة...">
+            <select id="cards-filter-rarity" class="form-control" style="width: 180px;">
+              <option value="">جميع الندرات</option>
+              <option value="COMMON">COMMON</option>
+              <option value="UNCOMMON">UNCOMMON</option>
+              <option value="RARE">RARE</option>
+              <option value="EPIC">EPIC</option>
+              <option value="LEGENDARY">LEGENDARY</option>
+              <option value="MYTHIC">MYTHIC</option>
+            </select>
+            <button class="btn btn-primary" style="margin-right: auto;" id="btn-add-card"><i class="fa-solid fa-plus"></i> إضافة بطاقة</button>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>البطاقة</th>
+                  <th>الاسم</th>
+                  <th>الستريمر</th>
+                  <th>الندرة</th>
+                  <th>قيمة البيع</th>
+                  <th>الحالة</th>
+                  <th>إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="cards-tbody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="view-collections" class="dashboard-view" style="display: none;">
+          <div class="form-group" style="max-width: 300px;">
+            <label>اختر الستريمر لعرض وإدارة بطاقاته:</label>
+            <select id="collections-streamer-select" class="form-control"></select>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>الصورة</th>
+                  <th>رقم البطاقة</th>
+                  <th>الاسم</th>
+                  <th>الندرة</th>
+                  <th>حالة التداول</th>
+                  <th>حالة السوق</th>
+                </tr>
+              </thead>
+              <tbody id="collection-cards-tbody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="view-players" class="dashboard-view" style="display: none;">
+          <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+            <input type="text" id="players-search" class="form-control" style="width: 300px;" placeholder="بحث باسم المستخدم...">
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>المستخدم</th>
+                  <th>الاسم المعروض</th>
+                  <th>المستوى</th>
+                  <th>رصيد ST</th>
+                  <th>الدور</th>
+                  <th>تاريخ الإنشاء</th>
+                  <th>إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="players-tbody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="view-inventory" class="dashboard-view" style="display: none;">
+          <div class="form-group" style="max-width: 400px; display: flex; gap: 10px;">
+            <input type="text" id="inventory-player-uid" class="form-control" placeholder="أدخل معرف اللاعب (UID)">
+            <button id="btn-load-inventory" class="btn btn-primary">جلب</button>
+          </div>
+          <div style="margin-bottom: 16px;">
+            <button id="btn-grant-card" class="btn btn-secondary"><i class="fa-solid fa-gift"></i> منح بطاقة للاعب</button>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>معرف البطاقة</th>
+                  <th>الكمية</th>
+                  <th>مفضلة؟</th>
+                  <th>تاريخ الحصول</th>
+                  <th>إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="inventory-tbody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="view-market" class="dashboard-view" style="display: none;">
+          <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+            <select id="market-filter-status" class="form-control" style="width: 200px;">
+              <option value="">جميع الحالات</option>
+              <option value="active">نشط</option>
+              <option value="sold">مباع</option>
+              <option value="cancelled">ملغي</option>
+            </select>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>البائع</th>
+                  <th>معرف البطاقة</th>
+                  <th>الكمية</th>
+                  <th>السعر (ST)</th>
+                  <th>الحالة</th>
+                  <th>إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="market-tbody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="view-packs" class="dashboard-view" style="display: none;">
+          <div class="auth-card" style="max-width: 600px; margin: 0 auto;">
+            <h3 style="margin-bottom: 20px;">أسعار البكجات (ST)</h3>
+            <form id="packs-form">
+              <div class="form-group">
+                <label>COMMON Pack</label>
+                <input type="number" id="pack-price-common" class="form-control" min="0" required>
+              </div>
+              <div class="form-group">
+                <label>RARE Pack</label>
+                <input type="number" id="pack-price-rare" class="form-control" min="0" required>
+              </div>
+              <div class="form-group">
+                <label>EPIC Pack</label>
+                <input type="number" id="pack-price-epic" class="form-control" min="0" required>
+              </div>
+              <div class="form-group">
+                <label>LEGENDARY Pack</label>
+                <input type="number" id="pack-price-legendary" class="form-control" min="0" required>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">حفظ الأسعار</button>
+            </form>
+          </div>
+        </section>
+
+        <section id="view-economy" class="dashboard-view" style="display: none;">
+          <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 24px;">
+            <div class="auth-card" style="max-width: 100%;">
+              <h3 style="margin-bottom: 20px;">الرصيد الافتتاحي</h3>
+              <form id="starting-st-form">
+                <div class="form-group">
+                  <label>Starting ST للّاعبين الجدد</label>
+                  <input type="number" id="input-starting-st" class="form-control" min="0" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">تحديث Starting ST</button>
+              </form>
+            </div>
+
+            <div class="auth-card" style="max-width: 100%;">
+              <h3 style="margin-bottom: 20px;">نسب السقوط (%) - المجموع يجب أن يساوي 100%</h3>
+              <form id="droprates-form">
+                <div id="drop-rates-inputs-container"></div>
+                <button type="submit" class="btn btn-primary btn-block" style="margin-top: 16px;">تحديث نسب السقوط</button>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <section id="view-settings" class="dashboard-view" style="display: none;">
+          <div class="auth-card" style="max-width: 500px;">
+            <h3>معلومات النظام</h3>
+            <p style="color: var(--text-muted); margin-top: 10px; font-size: 14px;">
+              Streamer Cards Engine v1.0.0<br>
+              Cloud Firestore Schema Synchronized.
+            </p>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div id="modal-streamer" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modal-streamer-title">إضافة ستريمر</h3>
+        <button class="close-btn" onclick="closeModal('modal-streamer')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="form-streamer">
+        <input type="hidden" id="streamer-id">
+        <div class="form-group">
+          <label>الاسم</label>
+          <input type="text" id="streamer-name" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label>اسم المستخدم</label>
+          <input type="text" id="streamer-username" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label>الوصف</label>
+          <textarea id="streamer-desc" class="form-control" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label>الصورة الشخصية (Storage)</label>
+          <input type="file" id="streamer-img-file" class="form-control" accept="image/*">
+        </div>
+        <div class="form-group">
+          <label>صورة الغلاف (Storage)</label>
+          <input type="file" id="streamer-cover-file" class="form-control" accept="image/*">
+        </div>
+        <div class="form-group">
+          <label>الحالة</label>
+          <select id="streamer-status" class="form-control">
+            <option value="active">نشط</option>
+            <option value="inactive">معطل</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">حفظ البيانات</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="modal-card" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modal-card-title">إضافة بطاقة</h3>
+        <button class="close-btn" onclick="closeModal('modal-card')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="form-card">
+        <input type="hidden" id="card-id">
+        <div class="form-group">
+          <label>الستريمر</label>
+          <select id="card-streamer-select" class="form-control" required></select>
+        </div>
+        <div class="form-group">
+          <label>اسم البطاقة</label>
+          <input type="text" id="card-name" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label>رقم البطاقة</label>
+          <input type="number" id="card-number" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label>الندرة</label>
+          <select id="card-rarity" class="form-control" required>
+            <option value="COMMON">COMMON</option>
+            <option value="UNCOMMON">UNCOMMON</option>
+            <option value="RARE">RARE</option>
+            <option value="EPIC">EPIC</option>
+            <option value="LEGENDARY">LEGENDARY</option>
+            <option value="MYTHIC">MYTHIC</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>قيمة البيع (ST)</label>
+          <input type="number" id="card-sell-value" class="form-control" min="0" required>
+        </div>
+        <div class="form-group">
+          <label>صورة البطاقة (Storage)</label>
+          <input type="file" id="card-img-file" class="form-control" accept="image/*">
+        </div>
+        <div class="form-group">
+          <label>إصدار محدود؟</label>
+          <input type="checkbox" id="card-limited">
+        </div>
+        <div class="form-group">
+          <label>اسم الإصدار (إذا كان محدوداً)</label>
+          <input type="text" id="card-edition-name" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>خيارات التوفر</label>
+          <div style="display: flex; gap: 20px;">
+            <label><input type="checkbox" id="card-tradable" checked> قابل للتداول</label>
+            <label><input type="checkbox" id="card-marketable" checked> معروض بالسوق</label>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">حفظ البطاقة</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="modal-st" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>تعديل رصيد ST للّاعب</h3>
+        <button class="close-btn" onclick="closeModal('modal-st')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="form-adjust-st">
+        <input type="hidden" id="adjust-st-uid">
+        <div class="form-group">
+          <label>الكمية (أدخل رقماً موجباً للإضافة أو سالباً للخصم)</label>
+          <input type="number" id="adjust-st-amount" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">تطبيق التعديل</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-functions-compat.js"></script>
+
+  <script>
+    /* ==========================================================
+       FIREBASE CONFIGURATION
+       ========================================================== */
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+    const functions = firebase.functions();
+
+    // Cache State
+    let streamersCache = [];
+    let cardsCache = [];
+
+    /* ==========================================================
+       UTILITIES & TOASTS
+       ========================================================== */
+    function showToast(message, isError = false) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      if (isError) toast.style.borderRightColor = 'var(--danger)';
+      toast.innerText = message;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 4000);
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    function openModal(id) {
+      document.getElementById(id).style.display = 'flex';
+    }
+
+    /* ==========================================================
+       AUTHENTICATION & ROLE VALIDATION
+       ========================================================== */
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        // Force refresh the token to obtain fresh claims
+        const idTokenResult = await user.getIdTokenResult(true);
+        if (idTokenResult.claims && idTokenResult.claims.role === 'admin') {
+          // Authorized Admin
+          document.getElementById('auth-section').style.display = 'none';
+          document.getElementById('setup-section').style.display = 'none';
+          document.getElementById('dashboard-app').style.display = 'flex';
+          document.getElementById('current-admin-name').innerText = user.displayName || 'المدير';
+          initRealtimeDashboard();
+        } else {
+          // Not an Admin: Kick out
+          await auth.signOut();
+          showToast('ليس لديك صلاحية لتنفيذ هذا الإجراء.', true);
+          document.getElementById('auth-section').style.display = 'flex';
+          document.getElementById('dashboard-app').style.display = 'none';
+        }
+      } else {
+        document.getElementById('auth-section').style.display = 'flex';
+        document.getElementById('setup-section').style.display = 'none';
+        document.getElementById('dashboard-app').style.display = 'none';
+      }
+    });
+
+    // Username -> internal auth email mapping
+    const getInternalEmail = (username) => `${username.trim().toLowerCase()}@streamercards.internal`;
+
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const u = document.getElementById('login-username').value;
+      const p = document.getElementById('login-password').value;
+      try {
+        await auth.signInWithEmailAndPassword(getInternalEmail(u), p);
+      } catch (err) {
+        showToast('فشل تسجيل الدخول: تحقق من اسم المستخدم وكلمة المرور', true);
+      }
+    });
+
+    document.getElementById('btn-logout').addEventListener('click', () => auth.signOut());
+
+    // Switch between Login and First Admin Setup
+    document.getElementById('toggle-setup-link').addEventListener('click', () => {
+      document.getElementById('auth-section').style.display = 'none';
+      document.getElementById('setup-section').style.display = 'flex';
+    });
+    document.getElementById('toggle-login-link').addEventListener('click', () => {
+      document.getElementById('setup-section').style.display = 'none';
+      document.getElementById('auth-section').style.display = 'flex';
+    });
+
+    // Run First Admin Setup Cloud Function
+    document.getElementById('setup-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const u = document.getElementById('setup-username').value;
+      const p = document.getElementById('setup-password').value;
+      const setupFn = functions.httpsCallable('setupFirstAdmin');
+      try {
+        await setupFn({ username: u, password: p });
+        showToast('تم تأسيس المسؤول بنجاح! جاري تسجيل الدخول...');
+        await auth.signInWithEmailAndPassword(getInternalEmail(u), p);
+      } catch (err) {
+        showToast(err.message || 'حدث خطأ أثناء التأسيس', true);
+      }
+    });
+
+    /* ==========================================================
+       ROUTING / SIDEBAR NAVIGATION
+       ========================================================== */
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        item.classList.add('active');
+        const target = item.getAttribute('data-target');
+        document.querySelectorAll('.dashboard-view').forEach(v => v.style.display = 'none');
+        document.getElementById(target).style.display = 'block';
+        document.getElementById('section-title').innerText = item.innerText;
+      });
+    });
+
+    /* ==========================================================
+       REALTIME DATA LISTENERS & DASHBOARD WIDGETS
+       ========================================================== */
+    function initRealtimeDashboard() {
+      // 1. Streamers
+      db.collection('streamers').onSnapshot(snap => {
+        streamersCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        document.getElementById('stat-total-streamers').innerText = streamersCache.length;
+        renderStreamersTable(streamersCache);
+        populateStreamerSelects();
+      });
+
+      // 2. Cards
+      db.collection('cards').onSnapshot(snap => {
+        cardsCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        document.getElementById('stat-total-cards').innerText = cardsCache.length;
+        renderCardsTable(cardsCache);
+      });
+
+      // 3. Players
+      db.collection('users').onSnapshot(snap => {
+        const users = snap.docs.map(d => d.data());
+        document.getElementById('stat-total-players').innerText = users.length;
+        const totalST = users.reduce((acc, u) => acc + (u.st || 0), 0);
+        document.getElementById('stat-total-st').innerText = totalST.toLocaleString();
+        renderPlayersTable(users);
+      });
+
+      // 4. Inventory counts
+      db.collection('playerCards').onSnapshot(snap => {
+        let totalCards = 0;
+        snap.forEach(doc => totalCards += (doc.data().quantity || 0));
+        document.getElementById('stat-total-owned-cards').innerText = totalCards;
+      });
+
+      // 5. Market Listings
+      db.collection('marketListings').where('status', '==', 'active').onSnapshot(snap => {
+        document.getElementById('stat-active-market').innerText = snap.size;
+      });
+
+      // 6. Settings Realtime Loading
+      db.collection('gameSettings').doc('global').onSnapshot(doc => {
+        if (doc.exists) {
+          const data = doc.data();
+          if (data.startingST !== undefined) {
+            document.getElementById('input-starting-st').value = data.startingST;
+          }
+          if (data.packs) {
+            document.getElementById('pack-price-common').value = data.packs.COMMON?.price || 10;
+            document.getElementById('pack-price-rare').value = data.packs.RARE?.price || 50;
+            document.getElementById('pack-price-epic').value = data.packs.EPIC?.price || 150;
+            document.getElementById('pack-price-legendary').value = data.packs.LEGENDARY?.price || 500;
+          }
+          if (data.dropRates) {
+            buildDropRatesForm(data.dropRates);
+          }
+        }
+      });
+    }
+
+    /* ==========================================================
+       SECTION: STREAMERS
+       ========================================================== */
+    function renderStreamersTable(list) {
+      const tbody = document.getElementById('streamers-tbody');
+      tbody.innerHTML = '';
+      list.forEach(s => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><img src="${s.imageUrl || 'https://via.placeholder.com/40'}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;"></td>
+          <td>${s.name}</td>
+          <td>@${s.username}</td>
+          <td><span class="badge ${s.status === 'active' ? 'badge-UNCOMMON' : 'badge-COMMON'}">${s.status}</span></td>
+          <td>
+            <button class="btn btn-secondary" onclick="editStreamer('${s.id}')"><i class="fa-solid fa-pen"></i></button>
+            <button class="btn btn-danger" onclick="deleteStreamer('${s.id}')"><i class="fa-solid fa-trash"></i></button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    document.getElementById('btn-add-streamer').addEventListener('click', () => {
+      document.getElementById('form-streamer').reset();
+      document.getElementById('streamer-id').value = '';
+      document.getElementById('modal-streamer-title').innerText = 'إضافة ستريمر';
+      openModal('modal-streamer');
+    });
+
+    window.editStreamer = (id) => {
+      const s = streamersCache.find(x => x.id === id);
+      if (!s) return;
+      document.getElementById('streamer-id').value = s.id;
+      document.getElementById('streamer-name').value = s.name;
+      document.getElementById('streamer-username').value = s.username;
+      document.getElementById('streamer-desc').value = s.description || '';
+      document.getElementById('streamer-status').value = s.status || 'active';
+      document.getElementById('modal-streamer-title').innerText = 'تعديل ستريمر';
+      openModal('modal-streamer');
+    };
+
+    window.deleteStreamer = async (id) => {
+      if (!confirm('هل أنت متأكد تماماً من رغبتك في حذف هذا الستريمر؟')) return;
+      try {
+        await db.collection('streamers').doc(id).delete();
+        showToast('تم حذف العنصر بنجاح.');
+      } catch (err) {
+        showToast('حدث خطأ، حاول مرة أخرى.', true);
+      }
+    };
+
+    document.getElementById('form-streamer').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('streamer-id').value;
+      const name = document.getElementById('streamer-name').value;
+      const username = document.getElementById('streamer-username').value;
+      const desc = document.getElementById('streamer-desc').value;
+      const status = document.getElementById('streamer-status').value;
+      const imgFile = document.getElementById('streamer-img-file').files[0];
+      const coverFile = document.getElementById('streamer-cover-file').files[0];
+
+      try {
+        let imageUrl = '';
+        let coverImageUrl = '';
+
+        if (imgFile) {
+          const sRef = storage.ref(`streamers/${Date.now()}_img_${imgFile.name}`);
+          await sRef.put(imgFile);
+          imageUrl = await sRef.getDownloadURL();
+        }
+        if (coverFile) {
+          const cRef = storage.ref(`streamers/${Date.now()}_cov_${coverFile.name}`);
+          await cRef.put(coverFile);
+          coverImageUrl = await cRef.getDownloadURL();
+        }
+
+        const docData = {
+          name,
+          username,
+          description: desc,
+          status,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        if (imageUrl) docData.imageUrl = imageUrl;
+        if (coverImageUrl) docData.coverImageUrl = coverImageUrl;
+
+        if (id) {
+          await db.collection('streamers').doc(id).update(docData);
+        } else {
+          docData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+          await db.collection('streamers').add(docData);
+        }
+        closeModal('modal-streamer');
+        showToast('تم الحفظ بنجاح.');
+      } catch (err) {
+        showToast('حدث خطأ، حاول مرة أخرى.', true);
+      }
+    });
+
+    /* ==========================================================
+       SECTION: CARDS
+       ========================================================== */
+    function populateStreamerSelects() {
+      const cSel = document.getElementById('card-streamer-select');
+      const collSel = document.getElementById('collections-streamer-select');
+      cSel.innerHTML = '';
+      collSel.innerHTML = '';
+      streamersCache.forEach(s => {
+        cSel.innerHTML += `<option value="${s.id}">${s.name}</option>`;
+        collSel.innerHTML += `<option value="${s.id}">${s.name}</option>`;
+      });
+      renderCollectionsTable();
+    }
+
+    function renderCardsTable(cards) {
+      const tbody = document.getElementById('cards-tbody');
+      tbody.innerHTML = '';
+      cards.forEach(c => {
+        const streamer = streamersCache.find(s => s.id === c.streamerId)?.name || 'غير معروف';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><img src="${c.imageUrl || 'https://via.placeholder.com/40'}" style="width:35px;height:45px;border-radius:4px;object-fit:cover;"></td>
+          <td>${c.name} (#${c.cardNumber})</td>
+          <td>${streamer}</td>
+          <td><span class="badge badge-${c.rarity}">${c.rarity}</span></td>
+          <td>${c.sellValue} ST</td>
+          <td><span class="badge ${c.status === 'active' ? 'badge-UNCOMMON' : 'badge-COMMON'}">${c.status}</span></td>
+          <td>
+            <button class="btn btn-secondary" onclick="editCard('${c.id}')"><i class="fa-solid fa-pen"></i></button>
+            <button class="btn btn-danger" onclick="deleteCard('${c.id}')"><i class="fa-solid fa-trash"></i></button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    document.getElementById('btn-add-card').addEventListener('click', () => {
+      document.getElementById('form-card').reset();
+      document.getElementById('card-id').value = '';
+      document.getElementById('modal-card-title').innerText = 'إضافة بطاقة';
+      openModal('modal-card');
+    });
+
+    window.editCard = (id) => {
+      const c = cardsCache.find(x => x.id === id);
+      if (!c) return;
+      document.getElementById('card-id').value = c.id;
+      document.getElementById('card-streamer-select').value = c.streamerId;
+      document.getElementById('card-name').value = c.name;
+      document.getElementById('card-number').value = c.cardNumber;
+      document.getElementById('card-rarity').value = c.rarity;
+      document.getElementById('card-sell-value').value = c.sellValue;
+      document.getElementById('card-limited').checked = c.limitedEdition || false;
+      document.getElementById('card-edition-name').value = c.editionName || '';
+      document.getElementById('card-tradable').checked = c.tradable !== false;
+      document.getElementById('card-marketable').checked = c.marketable !== false;
+      document.getElementById('modal-card-title').innerText = 'تعديل بطاقة';
+      openModal('modal-card');
+    };
+
+    window.deleteCard = async (id) => {
+      if (!confirm('هل أنت متأكد من حذف هذه البطاقة بشكل دائم؟')) return;
+      try {
+        await db.collection('cards').doc(id).delete();
+        showToast('تم حذف العنصر بنجاح.');
+      } catch (err) {
+        showToast('حدث خطأ، حاول مرة أخرى.', true);
+      }
+    };
+
+    document.getElementById('form-card').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('card-id').value;
+      const streamerId = document.getElementById('card-streamer-select').value;
+      const name = document.getElementById('card-name').value;
+      const cardNumber = Number(document.getElementById('card-number').value);
+      const rarity = document.getElementById('card-rarity').value;
+      const sellValue = Number(document.getElementById('card-sell-value').value);
+      const limitedEdition = document.getElementById('card-limited').checked;
+      const editionName = document.getElementById('card-edition-name').value;
+      const tradable = document.getElementById('card-tradable').checked;
+      const marketable = document.getElementById('card-marketable').checked;
+      const imgFile = document.getElementById('card-img-file').files[0];
+
+      try {
+        let imageUrl = '';
+        if (imgFile) {
+          const r = storage.ref(`cards/${Date.now()}_${imgFile.name}`);
+          await r.put(imgFile);
+          imageUrl = await r.getDownloadURL();
+        }
+
+        const cardData = {
+          streamerId,
+          name,
+          cardNumber,
+          rarity,
+          sellValue,
+          tradable,
+          marketable,
+          limitedEdition,
+          editionName,
+          status: 'active',
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        if (imageUrl) cardData.imageUrl = imageUrl;
+
+        if (id) {
+          await db.collection('cards').doc(id).update(cardData);
+        } else {
+          cardData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+          await db.collection('cards').add(cardData);
+        }
+
+        closeModal('modal-card');
+        showToast('تم الحفظ بنجاح.');
+      } catch (err) {
+        showToast('حدث خطأ، حاول مرة أخرى.', true);
+      }
+    });
+
+    /* ==========================================================
+       SECTION: COLLECTIONS (Grouped by Streamer)
+       ========================================================== */
+    document.getElementById('collections-streamer-select').addEventListener('change', renderCollectionsTable);
+
+    function renderCollectionsTable() {
+      const selStreamerId = document.getElementById('collections-streamer-select').value;
+      const tbody = document.getElementById('collection-cards-tbody');
+      tbody.innerHTML = '';
+      const matched = cardsCache.filter(c => c.streamerId === selStreamerId).sort((a,b) => a.cardNumber - b.cardNumber);
+
+      matched.forEach(c => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><img src="${c.imageUrl || 'https://via.placeholder.com/35'}" style="width:35px;height:45px;border-radius:4px;"></td>
+          <td>#${c.cardNumber}</td>
+          <td>${c.name}</td>
+          <td><span class="badge badge-${c.rarity}">${c.rarity}</span></td>
+          <td>${c.tradable ? 'مسموح' : 'معطل'}</td>
+          <td>${c.marketable ? 'مسموح' : 'معطل'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    /* ==========================================================
+       SECTION: PLAYERS & ST OPERATIONS
+       ========================================================== */
+    function renderPlayersTable(players) {
+      const tbody = document.getElementById('players-tbody');
+      tbody.innerHTML = '';
+      players.forEach(p => {
+        const tr = document.createElement('tr');
+        const createdDate = p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString('ar-SA') : 'N/A';
+        tr.innerHTML = `
+          <td>@${p.username || 'unknown'}</td>
+          <td>${p.displayName || 'لاعب'}</td>
+          <td>${p.level || 1}</td>
+          <td><strong style="color:var(--primary)">${p.st || 0} ST</strong></td>
+          <td><span class="badge ${p.role === 'admin' ? 'badge-MYTHIC' : 'badge-COMMON'}">${p.role || 'player'}</span></td>
+          <td>${createdDate}</td>
+          <td>
+            <button class="btn btn-secondary" onclick="openAdjustSTModal('${p.uid}')" title="تعديل ST"><i class="fa-solid fa-coins"></i></button>
+            <button class="btn btn-danger" onclick="toggleBan('${p.uid}', ${!p.disabled})" title="تعطيل/تفعيل"><i class="fa-solid fa-ban"></i></button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    window.openAdjustSTModal = (uid) => {
+      document.getElementById('adjust-st-uid').value = uid;
+      document.getElementById('adjust-st-amount').value = '';
+      openModal('modal-st');
+    };
+
+    document.getElementById('form-adjust-st').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const uid = document.getElementById('adjust-st-uid').value;
+      const amount = Number(document.getElementById('adjust-st-amount').value);
+
+      if (confirm(`هل أنت متأكد من رغبتك بتعديل الرصيد بمقدار ${amount} ST؟`)) {
+        try {
+          const fn = functions.httpsCallable('adjustPlayerST');
+          await fn({ uid, amount });
+          closeModal('modal-st');
+          showToast('تم تعديل رصيد ST بنجاح.');
+        } catch (err) {
+          showToast(err.message || 'حدث خطأ أثناء تعديل الرصيد', true);
+        }
+      }
+    });
+
+    window.toggleBan = async (uid, disabled) => {
+      if (!confirm(`هل أنت متأكد من تغيير حالة الحساب إلى ${disabled ? 'معطل' : 'نشط'}؟`)) return;
+      try {
+        const fn = functions.httpsCallable('toggleUserDisabled');
+        await fn({ uid, disabled });
+        showToast('تم تحديث حالة الحساب.');
+      } catch (err) {
+        showToast('حدث خطأ، حاول مرة أخرى.', true);
+      }
+    };
+
+    /* ==========================================================
+       SECTION: INVENTORY & PLAYER CARDS
+       ========================================================== */
+    document.getElementById('btn-load-inventory').addEventListener('click', async () => {
+      const uid = document.getElementById('inventory-player-uid').value.trim();
+      if (!uid) return showToast('يرجى كتابة UID الخاص باللاعب', true);
+
+      const snap = await db.collection('playerCards').where('uid', '==', uid).get();
+      const tbody = document.getElementById('inventory-tbody');
+      tbody.innerHTML = '';
+
+      snap.forEach(doc => {
+        const item = doc.data();
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${item.cardId}</td>
+          <td>${item.quantity}</td>
+          <td>${item.favorite ? 'نعم' : 'لا'}</td>
+          <td>${item.obtainedAt ? new Date(item.obtainedAt.toDate()).toLocaleDateString('ar-SA') : 'N/A'}</td>
+          <td>
+            <button class="btn btn-danger" onclick="removeCardFromPlayer('${doc.id}')"><i class="fa-solid fa-minus"></i> سحب</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    });
+
+    window.removeCardFromPlayer = async (docId) => {
+      if (!confirm('هل تريد حذف هذه البطاقة من مخزون اللاعب نهائياً؟')) return;
+      try {
+        await db.collection('playerCards').doc(docId).delete();
+        showToast('تم حذف العنصر بنجاح.');
+        document.getElementById('btn-load-inventory').click();
+      } catch (err) {
+        showToast('حدث خطأ، حاول مرة أخرى.', true);
+      }
+    };
+
+    /* ==========================================================
+       SECTION: MARKETPLACE
+       ========================================================== */
+    document.getElementById('market-filter-status').addEventListener('change', (e) => {
+      loadMarketListings(e.target.value);
+    });
+
+    async function loadMarketListings(statusFilter = '') {
+      let query = db.collection('marketListings');
+      if (statusFilter) {
+        query = query.where('status', '==', statusFilter);
+      }
+      const snap = await query.limit(50).get();
+      const tbody = document.getElementById('market-tbody');
+      tbody.innerHTML = '';
+
+      snap.forEach(doc => {
+        const m = doc.data();
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${m.sellerUid}</td>
+          <td>${m.cardId}</td>
+          <td>${m.quantity}</td>
+          <td>${m.price} ST</td>
+          <td><span class="badge ${m.status === 'active' ? 'badge-UNCOMMON' : 'badge-COMMON'}">${m.status}</span></td>
+          <td>
+            ${m.status === 'active' ? `<button class="btn btn-danger" onclick="cancelListing('${doc.id}')">إلغاء العرض</button>` : '-'}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    window.cancelListing = async (listingId) => {
+      if (!confirm('هل تريد إلغاء هذا العرض المشبوه وإزالته؟')) return;
+      try {
+        await db.collection('marketListings').doc(listingId).update({
+          status: 'cancelled',
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        showToast('تم إلغاء العرض بنجاح.');
+        loadMarketListings();
+      } catch (err) {
+        showToast('حدث خطأ، حاول مرة أخرى.', true);
+      }
+    };
+
+    /* ==========================================================
+       SECTION: PACKS & DROP RATES
+       ========================================================== */
+    document.getElementById('packs-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const packsData = {
+        COMMON: { price: Number(document.getElementById('pack-price-common').value) },
+        RARE: { price: Number(document.getElementById('pack-price-rare').value) },
+        EPIC: { price: Number(document.getElementById('pack-price-epic').value) },
+        LEGENDARY: { price: Number(document.getElementById('pack-price-legendary').value) }
+      };
+
+      try {
+        await db.collection('gameSettings').doc('global').set({
+          packs: packsData,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+        showToast('تم حفظ أسعار البكجات بنجاح.');
+      } catch (err) {
+        showToast('حدث خطأ، حاول مرة أخرى.', true);
+      }
+    });
+
+    document.getElementById('starting-st-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const startingST = Number(document.getElementById('input-starting-st').value);
+      try {
+        await db.collection('gameSettings').doc('global').set({
+          startingST,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+        showToast('تم تحديث Starting ST بنجاح.');
+      } catch (err) {
+        showToast('حدث خطأ، حاول مرة أخرى.', true);
+      }
+    });
+
+    const rarities = ['COMMON', 'UNCOMMON', 'RARE', 'EPIC', 'LEGENDARY', 'MYTHIC'];
+    const packNames = ['COMMON', 'RARE', 'EPIC', 'LEGENDARY'];
+
+    function buildDropRatesForm(rates) {
+      const container = document.getElementById('drop-rates-inputs-container');
+      container.innerHTML = '';
+      packNames.forEach(pack => {
+        let block = `<div style="margin-bottom:16px; border:1px solid var(--border-color); padding:12px; border-radius:8px;">
+          <h4 style="color:var(--primary); margin-bottom:8px;">${pack} Pack</h4>
+          <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">`;
+        rarities.forEach(r => {
+          const val = rates[pack] ? rates[pack][r] || 0 : 0;
+          block += `<div>
+            <label style="font-size:11px;">${r} (%)</label>
+            <input type="number" step="0.1" min="0" max="100" class="form-control drop-rate-input" data-pack="${pack}" data-rarity="${r}" value="${val}">
+          </div>`;
+        });
+        block += `</div></div>`;
+        container.innerHTML += block;
+      });
+    }
+
+    document.getElementById('droprates-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const updatedRates = {};
+      let hasError = false;
+
+      packNames.forEach(pack => {
+        updatedRates[pack] = {};
+        let total = 0;
+        rarities.forEach(r => {
+          const input = document.querySelector(`.drop-rate-input[data-pack="${pack}"][data-rarity="${r}"]`);
+          const val = parseFloat(input.value) || 0;
+          updatedRates[pack][r] = val;
+          total += val;
+        });
+
+        // Float accuracy tolerance check
+        if (Math.abs(total - 100) > 0.01) {
+          hasError = true;
+          showToast(`مجموع نسب بكج ${pack} هو ${total}%. يجب أن يكون 100% تماماً.`, true);
+        }
+      });
+
+      if (hasError) return;
+
+      try {
+        await db.collection('gameSettings').doc('global').set({
+          dropRates: updatedRates,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+        showToast('تم تحديث نسب السقوط بنجاح.');
+      } catch (err) {
+        showToast('حدث خطأ، حاول مرة أخرى.', true);
+      }
+    });
+  </script>
+</body>
+</html>
