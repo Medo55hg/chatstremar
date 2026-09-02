@@ -16,7 +16,7 @@
   <!-- Canvas Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-  <!-- GLOBAL PLACEHOLDERS (Must load before HTML elements evaluate onerror) -->
+  <!-- GLOBAL PLACEHOLDERS -->
   <script>
     window.getCardPlaceholder = function(title) {
       var safeTitle = (title && typeof title === 'string') ? title : "CARD";
@@ -138,13 +138,11 @@
       letter-spacing: 0.5px;
     }
 
-    /* Scrollbar */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: var(--bg-base); }
     ::-webkit-scrollbar-thumb { background: var(--bg-surface-elevated); border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
 
-    /* Top Navigation */
     header.game-header {
       position: sticky;
       top: 0;
@@ -227,7 +225,6 @@
       gap: 16px;
     }
 
-    /* ST Coin Badge */
     .st-pill {
       display: flex;
       align-items: center;
@@ -287,7 +284,6 @@
       background: #334155;
     }
 
-    /* Main Container */
     main.game-container {
       flex: 1;
       max-width: 1440px;
@@ -299,7 +295,6 @@
       gap: 2.5rem;
     }
 
-    /* Views */
     .view-section {
       display: none;
       animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -312,7 +307,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Mobile Bottom Navigation */
     .mobile-nav {
       display: none;
       position: fixed;
@@ -347,7 +341,6 @@
       color: var(--accent-cyan);
     }
 
-    /* HERO BANNER */
     .hero-banner {
       border-radius: var(--radius-lg);
       background: linear-gradient(135deg, rgba(30, 27, 75, 0.8), rgba(88, 28, 135, 0.4)), url('https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1600&q=80') center/cover;
@@ -389,7 +382,6 @@
       flex-wrap: wrap;
     }
 
-    /* BUTTONS */
     .btn {
       font-family: inherit;
       font-size: 0.95rem;
@@ -438,7 +430,6 @@
       box-shadow: none !important;
     }
 
-    /* SECTION HEADERS */
     .section-head {
       display: flex;
       justify-content: space-between;
@@ -461,7 +452,6 @@
       display: inline-block;
     }
 
-    /* STREAMER COLLECTIONS: 4 PER ROW ON DESKTOP */
     .streamer-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -559,7 +549,6 @@
       filter: grayscale(1) brightness(0.5);
     }
 
-    /* CARD SYSTEM & RARITY STYLING */
     .cards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -678,7 +667,6 @@
       z-index: 3;
     }
 
-    /* PACKS SECTION */
     .packs-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -740,7 +728,6 @@
       margin-bottom: 1rem;
     }
 
-    /* MODALS & OVERLAYS */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -780,7 +767,6 @@
       padding: 1.5rem;
     }
 
-    /* CARD ENLARGEMENT MODAL */
     .card-detail-layout {
       display: flex;
       flex-direction: column;
@@ -823,7 +809,6 @@
       margin-top: 10px;
     }
 
-    /* PACK OPENING ANIMATION */
     .pack-open-ceremony {
       display: flex;
       flex-direction: column;
@@ -857,7 +842,6 @@
       100% { transform: scale(0); opacity: 0; }
     }
 
-    /* LEADERBOARD TABLE */
     .leaderboard-table {
       width: 100%;
       border-collapse: collapse;
@@ -897,7 +881,6 @@
     .rank-2 { background: #94a3b8; color: #1e293b; }
     .rank-3 { background: #b45309; color: #fff; }
 
-    /* PROFILE */
     .profile-hero {
       position: relative;
       border-radius: var(--radius-lg);
@@ -938,7 +921,6 @@
       min-width: 240px;
     }
 
-    /* TOAST */
     .toast-container {
       position: fixed;
       bottom: 24px;
@@ -971,7 +953,6 @@
     .toast.success { border-color: #10b981; }
     .toast.error { border-color: #ef4444; }
 
-    /* FILTERS & SEARCH */
     .filter-bar {
       display: flex;
       gap: 12px;
@@ -993,7 +974,6 @@
       border-color: var(--accent-primary);
     }
 
-    /* RESPONSIVE DESIGN */
     @media (max-width: 1200px) {
       .streamer-grid { grid-template-columns: repeat(3, 1fr); }
       .packs-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1151,7 +1131,6 @@
         <h2 class="section-title">بكجات البطاقات الرسمية</h2>
       </div>
 
-      <!-- Exactly 4 Official Packs -->
       <div class="packs-grid" id="packsContainer"></div>
 
       <div class="section-head">
@@ -1382,7 +1361,7 @@
   <!-- TOAST CONTAINER -->
   <div class="toast-container" id="toastContainer"></div>
 
-  <!-- FIREBASE CLIENT SDK (AUTH + FIRESTORE ONLY - NO STORAGE) -->
+  <!-- FIREBASE CLIENT SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
     import { 
@@ -1547,10 +1526,6 @@
     };
 
     window.handleAuthSubmit = async (e) => {
-      console.log("AUTH SUBMIT STARTED", {
-        isRegisterMode,
-        firebaseReady: isFirebaseReady
-      });
       e.preventDefault();
       const username = document.getElementById("authUsername").value.trim().toLowerCase();
       const pass = document.getElementById("authPassword").value;
@@ -1600,10 +1575,6 @@
           const allUsersSnap = await getDocs(query(collection(db, "users"), limit(1)));
           const isFirstUser = allUsersSnap.empty;
 
-          console.log("CALLING FIREBASE CREATE USER", {
-            internalEmail,
-            isFirstUser
-          });
           const cred = await createUserWithEmailAndPassword(auth, internalEmail, pass);
           await setDoc(doc(db, "users", cred.user.uid), {
             uid: cred.user.uid,
@@ -1629,10 +1600,7 @@
         }
         closeModal("authModal");
       } catch (error) {
-        console.log("AUTH CATCH REACHED");
-        console.error(error);
-        console.error("Firebase error code:", error.code);
-        console.error("Firebase error message:", error.message);
+        console.error("Firebase error:", error);
         showToast("خطأ في تسجيل الدخول أو كلمة المرور", "error");
       }
     };
@@ -1644,9 +1612,7 @@
         updatePlayerUI();
         showToast("تم تسجيل الخروج");
       } catch (error) {
-        console.error(error);
-        console.error("Firebase error code:", error.code);
-        console.error("Firebase error message:", error.message);
+        console.error("Logout error:", error);
         showToast("فشل تسجيل الخروج", "error");
       }
     };
@@ -1679,7 +1645,6 @@
       lucide.createIcons();
     }
 
-    /* STREAMER PANELS: EXACTLY 4 PER ROW ON DESKTOP */
     function renderStreamersList() {
       const streamers = window.AppState.streamers;
       const cards = window.AppState.cards;
@@ -1724,7 +1689,6 @@
       if (allGrid) allGrid.innerHTML = streamers.map(makeCardHTML).join('');
     }
 
-    /* STREAMER DETAIL VIEW */
     window.openStreamerDetail = (streamerId) => {
       const streamer = window.AppState.streamers.find(s => s.id === streamerId);
       if (!streamer) return;
@@ -1765,7 +1729,6 @@
       lucide.createIcons();
     };
 
-    /* CARD HTML CREATION */
     function createCardElementHTML(card, isOwned = true, quantity = 1) {
       const cardImg = isValidImageUrl(card.imageUrl) ? card.imageUrl : getCardPlaceholder(card.name);
       return `
@@ -1836,7 +1799,6 @@
       lucide.createIcons();
     };
 
-    /* INVENTORY RENDERING & SEARCH */
     function renderMyCards() {
       const myCards = window.AppState.myCards;
       const allCards = window.AppState.cards;
@@ -1939,13 +1901,10 @@
         }
       } catch (error) {
         console.error(error);
-        console.error("Firebase error code:", error.code);
-        console.error("Firebase error message:", error.message);
         showToast("فشل تحديث المفضلة", "error");
       }
     };
 
-    /* OFFICIAL PACKS RENDERING WITH DIRECT URLS & LOCAL PLACEHOLDERS */
     function renderPacks() {
       const packs = window.AppState.gameSettings?.packs || {};
       const container = document.getElementById("packsContainer");
@@ -1988,7 +1947,6 @@
       lucide.createIcons();
     }
 
-    /* PACK OPENING WITH ST BALANCE VERIFICATION */
     window.initiatePackOpening = async (packType) => {
       const user = window.AppState.currentUser;
       if (!user) {
@@ -2015,7 +1973,7 @@
       lucide.createIcons();
     };
 
-window.executePackReward = async (packType) => {
+    window.executePackReward = async (packType) => {
       const packBox = document.getElementById("packBoxElement");
       if (packBox) packBox.classList.add("pack-exploding");
 
@@ -2049,7 +2007,7 @@ window.executePackReward = async (packType) => {
           const playerCardDocId = `${window.AppState.currentUser.uid}_${wonCard.id}`;
           const playerCardRef = doc(db, "playerCards", playerCardDocId);
 
-          // 1. كل عمليات القراءة أولاً (Reads)
+          // 1. كل عمليات القراءة أولاً (Reads First)
           const userDoc = await transaction.get(userRef);
           if (!userDoc.exists()) throw new Error("المستخدم غير موجود");
 
@@ -2060,7 +2018,7 @@ window.executePackReward = async (packType) => {
 
           const cardDoc = await transaction.get(playerCardRef);
 
-          // 2. كل عمليات الكتابة بعد الانتهاء من القراءة (Writes)
+          // 2. كل عمليات الكتابة ثانياً (Writes Second)
           transaction.update(userRef, {
             st: currentST - pack.price,
             updatedAt: serverTimestamp()
@@ -2109,61 +2067,6 @@ window.executePackReward = async (packType) => {
       showToast("تمت إضافة البطاقة إلى مجموعتك بنجاح!");
     }
 
-          transaction.update(userRef, {
-            st: currentST - pack.price,
-            updatedAt: serverTimestamp()
-          });
-
-          const playerCardDocId = `${window.AppState.currentUser.uid}_${wonCard.id}`;
-          const playerCardRef = doc(db, "playerCards", playerCardDocId);
-          const cardDoc = await transaction.get(playerCardRef);
-
-          if (cardDoc.exists()) {
-            transaction.update(playerCardRef, {
-              quantity: increment(1),
-              updatedAt: serverTimestamp()
-            });
-          } else {
-            transaction.set(playerCardRef, {
-              uid: window.AppState.currentUser.uid,
-              cardId: wonCard.id,
-              quantity: 1,
-              favorite: false,
-              obtainedAt: serverTimestamp()
-            });
-          }
-        });
-
-        finalizePackOpeningCeremony(wonCard);
-      } catch (err) {
-        console.error(err);
-        console.error("Firebase error code:", err.code);
-        console.error("Firebase error message:", err.message);
-        showToast(err.message || "حدث خطأ أثناء فتح البكج", "error");
-        closeModal("packOpeningModal");
-      }
-    };
-
-    function finalizePackOpeningCeremony(wonCard) {
-      confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
-      const cImg = isValidImageUrl(wonCard.imageUrl) ? wonCard.imageUrl : getCardPlaceholder(wonCard.name);
-      const stage = document.getElementById("packCeremonyStage");
-      stage.innerHTML = `
-        <div style="animation: modalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
-          <div class="card-large-view rarity-${wonCard.rarity}" style="margin: 0 auto 1.5rem auto;">
-            <img src="${cImg}" alt="${wonCard.name}" onerror="this.onerror=null; this.src=getCardPlaceholder('بطاقة');">
-          </div>
-          <h2 style="color:#fff; font-weight:900;">تهانينا! حصلت على بطاقة</h2>
-          <h3 style="color:var(--accent-cyan); margin-bottom:1rem;">${wonCard.name} (${wonCard.rarity})</h3>
-          <button class="btn btn-primary" onclick="closeModal('packOpeningModal');">
-            إضافة إلى مجموعتي
-          </button>
-        </div>
-      `;
-      showToast("تمت إضافة البطاقة إلى مجموعتك بنجاح!");
-    }
-
-    /* SELLING CARDS */
     window.openSellModal = (cardId) => {
       const card = window.AppState.cards.find(c => c.id === cardId);
       if (!card) return;
@@ -2224,13 +2127,10 @@ window.executePackReward = async (packType) => {
         showToast(`تم بيع البطاقة بنجاح! وحصلت على ${payout} ST`);
       } catch (e) {
         console.error(e);
-        console.error("Firebase error code:", e.code);
-        console.error("Firebase error message:", e.message);
         showToast(e.message || "حدث خطأ أثناء البيع", "error");
       }
     };
 
-    /* LEADERBOARD */
     function renderLeaderboardMock() {
       const tbody = document.getElementById("leaderboardBody");
       const dummyLeaders = [
@@ -2256,7 +2156,6 @@ window.executePackReward = async (packType) => {
       `).join('');
     }
 
-    /* PROFILE EDIT (DIRECT HTTPS URLS ONLY) */
     window.openEditProfileModal = () => {
       const user = window.AppState.currentUser;
       if (!user) {
@@ -2310,13 +2209,10 @@ window.executePackReward = async (packType) => {
         showToast("تم حفظ التغييرات بنجاح");
       } catch (err) {
         console.error(err);
-        console.error("Firebase error code:", err.code);
-        console.error("Firebase error message:", err.message);
         showToast("فشل حفظ التعديلات", "error");
       }
     };
 
-    /* UTILITIES */
     window.switchView = (viewName) => {
       document.querySelectorAll(".view-section").forEach(sec => sec.classList.remove("active"));
       document.querySelectorAll(".nav-btn, .mobile-nav-btn").forEach(btn => {
