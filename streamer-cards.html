@@ -1423,14 +1423,14 @@
     let app, auth, db;
     let isFirebaseReady = false;
 
-    try {
-      app = initializeApp(firebaseConfig);
-      auth = getAuth(app);
-      db = getFirestore(app);
-      isFirebaseReady = true;
-   } catch (e) {
+try {
+  app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  db = getFirestore(app);
+  isFirebaseReady = true;
+  console.log("🔥 FIREBASE READY =", isFirebaseReady);
+} catch (e) {
   console.error("🔥 FIREBASE INIT ERROR:", e);
-  alert("Firebase Error: " + e.message);
 }
 
     /* APPLICATION STATE */
