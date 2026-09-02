@@ -1547,6 +1547,10 @@
     };
 
     window.handleAuthSubmit = async (e) => {
+      console.log("AUTH SUBMIT STARTED", {
+        isRegisterMode,
+        firebaseReady: isFirebaseReady
+      });
       e.preventDefault();
       const username = document.getElementById("authUsername").value.trim().toLowerCase();
       const pass = document.getElementById("authPassword").value;
@@ -1596,6 +1600,10 @@
           const allUsersSnap = await getDocs(query(collection(db, "users"), limit(1)));
           const isFirstUser = allUsersSnap.empty;
 
+          console.log("CALLING FIREBASE CREATE USER", {
+            internalEmail,
+            isFirstUser
+          });
           const cred = await createUserWithEmailAndPassword(auth, internalEmail, pass);
           await setDoc(doc(db, "users", cred.user.uid), {
             uid: cred.user.uid,
@@ -1621,6 +1629,7 @@
         }
         closeModal("authModal");
       } catch (error) {
+        console.log("AUTH CATCH REACHED");
         console.error(error);
         console.error("Firebase error code:", error.code);
         console.error("Firebase error message:", error.message);
