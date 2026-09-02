@@ -5,16 +5,75 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>بطاقات الستريمر | Streamer Cards</title>
 
-  <!-- Google Fonts: Cairo (Arabic) & Rajdhani (Gaming Digits) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
 
-  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- Canvas Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    window.getCardPlaceholder = function(title) {
+      var safeTitle = (title && typeof title === 'string') ? title : "CARD";
+      var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280" width="100%" height="100%">' +
+        '<rect width="200" height="280" fill="#111422" stroke="#334155" stroke-width="3" rx="10"/>' +
+        '<circle cx="100" cy="120" r="32" fill="#1e293b"/>' +
+        '<text x="100" y="195" text-anchor="middle" fill="#64748b" font-family="sans-serif" font-weight="bold" font-size="14">' + safeTitle + '</text>' +
+        '</svg>';
+      return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+    };
+
+    window.getLocalPackPlaceholder = function(packType) {
+      var colors = {
+        COMMON: { bg: '#1e293b', border: '#94a3b8', text: '#f8fafc' },
+        RARE: { bg: '#172554', border: '#3b82f6', text: '#93c5fd' },
+        EPIC: { bg: '#2e1065', border: '#a855f7', text: '#d8b4fe' },
+        LEGENDARY: { bg: '#451a03', border: '#f59e0b', text: '#fde68a' }
+      };
+      var c = colors[packType] || colors.COMMON;
+      var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280" width="100%" height="100%">' +
+        '<rect width="200" height="280" rx="16" fill="' + c.bg + '" stroke="' + c.border + '" stroke-width="4"/>' +
+        '<circle cx="100" cy="110" r="44" fill="' + c.border + '" opacity="0.15"/>' +
+        '<path d="M75 95 L125 95 L100 135 Z" fill="' + c.border + '"/>' +
+        '<text x="100" y="185" text-anchor="middle" fill="' + c.text + '" font-family="sans-serif" font-weight="bold" font-size="16">' + packType + '</text>' +
+        '<text x="100" y="210" text-anchor="middle" fill="' + c.border + '" font-family="sans-serif" font-size="12">PACK</text>' +
+        '</svg>';
+      return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+    };
+
+    window.getAvatarPlaceholder = function() {
+      var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">' +
+        '<rect width="100" height="100" fill="#1e293b"/>' +
+        '<circle cx="50" cy="38" r="20" fill="#64748b"/>' +
+        '<path d="M20 90 A30 30 0 0 1 80 90 Z" fill="#64748b"/>' +
+        '</svg>';
+      return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+    };
+
+    window.getBannerPlaceholder = function() {
+      var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200" width="100%" height="100%">' +
+        '<defs>' +
+        '<linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">' +
+        '<stop offset="0%" stop-color="#1e1b4b"/>' +
+        '<stop offset="100%" stop-color="#312e81"/>' +
+        '</linearGradient>' +
+        '</defs>' +
+        '<rect width="800" height="200" fill="url(#g)"/>' +
+        '</svg>';
+      return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+    };
+
+    window.isValidImageUrl = function(url) {
+      if (!url || typeof url !== 'string') return false;
+      try {
+        var parsed = new URL(url.trim());
+        return parsed.protocol === "https:";
+      } catch (e) {
+        return false;
+      }
+    };
+  </script>
 
   <style>
     :root {
@@ -954,7 +1013,6 @@
 </head>
 <body>
 
-  <!-- TOP GAME BAR -->
   <header class="game-header">
     <div class="brand" onclick="switchView('home')">
       <div class="brand-logo">
@@ -966,7 +1024,6 @@
       </div>
     </div>
 
-    <!-- Desktop Navigation -->
     <nav class="desktop-nav">
       <button class="nav-btn active" data-view="home" onclick="switchView('home')">
         <i data-lucide="home" size="18"></i> الرئيسية
@@ -988,7 +1045,6 @@
       </button>
     </nav>
 
-    <!-- Header Actions (ST Balance + User Button) -->
     <div class="header-actions">
       <div class="st-pill" title="رصيد عملات ST">
         <div class="st-coin-icon">ST</div>
@@ -1001,10 +1057,8 @@
     </div>
   </header>
 
-  <!-- MAIN CONTAINER -->
   <main class="game-container">
 
-    <!-- 1. HOME VIEW -->
     <section id="view-home" class="view-section active">
       <div class="hero-banner">
         <div class="hero-content">
@@ -1033,7 +1087,6 @@
       </div>
     </section>
 
-    <!-- 2. STREAMERS VIEW -->
     <section id="view-streamers" class="view-section">
       <div class="section-head">
         <h2 class="section-title">جميع مجموعات الستريمرز</h2>
@@ -1041,7 +1094,6 @@
       <div class="streamer-grid" id="allStreamersGrid"></div>
     </section>
 
-    <!-- 3. STREAMER DETAIL COLLECTION VIEW -->
     <section id="view-streamer-detail" class="view-section">
       <div style="margin-bottom: 1.5rem;">
         <button class="btn btn-secondary" onclick="switchView('streamers')">
@@ -1056,7 +1108,6 @@
       <div class="cards-grid" id="streamerCardsGrid"></div>
     </section>
 
-    <!-- 4. MY CARDS (INVENTORY) -->
     <section id="view-inventory" class="view-section">
       <div class="section-head">
         <h2 class="section-title">بطاقاتي المملوكة</h2>
@@ -1082,13 +1133,11 @@
       <div class="cards-grid" id="myCardsGrid"></div>
     </section>
 
-    <!-- 5. MARKET & PACKS -->
     <section id="view-market" class="view-section">
       <div class="section-head">
         <h2 class="section-title">بكجات البطاقات الرسمية</h2>
       </div>
 
-      <!-- Exactly 4 Official Packs -->
       <div class="packs-grid" id="packsContainer"></div>
 
       <div class="section-head">
@@ -1098,7 +1147,6 @@
       <div class="cards-grid" id="marketCardsGrid"></div>
     </section>
 
-    <!-- 6. LEADERBOARD -->
     <section id="view-leaderboard" class="view-section">
       <div class="section-head">
         <h2 class="section-title">قائمة المتصدرين</h2>
@@ -1118,7 +1166,6 @@
       </table>
     </section>
 
-    <!-- 7. PLAYER PROFILE -->
     <section id="view-profile" class="view-section">
       <div class="profile-hero">
         <div class="profile-cover">
@@ -1166,7 +1213,6 @@
 
   </main>
 
-  <!-- MOBILE BOTTOM NAVIGATION -->
   <div class="mobile-nav">
     <button class="mobile-nav-btn active" data-view="home" onclick="switchView('home')">
       <i data-lucide="home" size="18"></i>
@@ -1190,7 +1236,6 @@
     </button>
   </div>
 
-  <!-- AUTH MODAL -->
   <div class="modal-backdrop" id="authModal">
     <div class="modal-container">
       <div class="modal-header">
@@ -1221,7 +1266,6 @@
     </div>
   </div>
 
-  <!-- CARD ENLARGEMENT MODAL -->
   <div class="modal-backdrop" id="cardDetailModal">
     <div class="modal-container" style="max-width: 480px;">
       <div class="modal-header">
@@ -1261,14 +1305,12 @@
     </div>
   </div>
 
-  <!-- PACK OPENING MODAL -->
   <div class="modal-backdrop" id="packOpeningModal">
     <div class="modal-container" style="background:transparent; border:none; box-shadow:none; max-width:400px;">
       <div class="pack-open-ceremony" id="packCeremonyStage"></div>
     </div>
   </div>
 
-  <!-- SELL MODAL -->
   <div class="modal-backdrop" id="sellModal">
     <div class="modal-container">
       <div class="modal-header">
@@ -1289,7 +1331,6 @@
     </div>
   </div>
 
-  <!-- PROFILE EDIT MODAL -->
   <div class="modal-backdrop" id="editProfileModal">
     <div class="modal-container">
       <div class="modal-header">
@@ -1316,10 +1357,8 @@
     </div>
   </div>
 
-  <!-- TOAST CONTAINER -->
   <div class="toast-container" id="toastContainer"></div>
 
-  <!-- FIREBASE CLIENT SDK (AUTH + FIRESTORE ONLY - NO STORAGE) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
     import { 
@@ -1347,15 +1386,15 @@
     } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 
     /* FIREBASE CONFIGURATION */
-   const firebaseConfig = {
-  apiKey: "AIzaSyB7gc9F2AZ2C9ND7BnzTbEy6VaEt3egLkc",
-  authDomain: "streamer-cards.firebaseapp.com",
-  projectId: "streamer-cards",
-  storageBucket: "streamer-cards.firebasestorage.app",
-  messagingSenderId: "957546482121",
-  appId: "1:957546482121:web:41407767b21bef8c63c018",
-  measurementId: "G-YP97DQ4ZL9"
-};
+    const firebaseConfig = {
+      apiKey: "AIzaSyB7gc9F2AZ2C9ND7BnzTbEy6VaEt3egLkc",
+      authDomain: "streamer-cards.firebaseapp.com",
+      projectId: "streamer-cards",
+      storageBucket: "streamer-cards.firebasestorage.app",
+      messagingSenderId: "957546482121",
+      appId: "1:957546482121:web:41407767b21bef8c63c018",
+      measurementId: "G-YP97DQ4ZL9"
+    };
 
     let app, auth, db;
     let isFirebaseReady = false;
@@ -1368,67 +1407,6 @@
     } catch (e) {
       console.warn("Firebase not configured. Running with mock preview data.", e);
     }
-
-    /* GLOBAL HELPER: URL VALIDATION (HTTPS ONLY) */
-    window.isValidImageUrl = function(url) {
-      if (!url || typeof url !== 'string') return false;
-      try {
-        const parsed = new URL(url.trim());
-        return parsed.protocol === "https:";
-      } catch {
-        return false;
-      }
-    };
-
-    /* LOCAL SVG PLACEHOLDERS */
-    window.getLocalPackPlaceholder = function(packType) {
-      const colors = {
-        COMMON: { bg: '#1e293b', border: '#94a3b8', text: '#f8fafc' },
-        RARE: { bg: '#172554', border: '#3b82f6', text: '#93c5fd' },
-        EPIC: { bg: '#2e1065', border: '#a855f7', text: '#d8b4fe' },
-        LEGENDARY: { bg: '#451a03', border: '#f59e0b', text: '#fde68a' }
-      };
-      const c = colors[packType] || colors.COMMON;
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280" width="100%" height="100%">
-        <rect width="200" height="280" rx="16" fill="${c.bg}" stroke="${c.border}" stroke-width="4"/>
-        <circle cx="100" cy="110" r="44" fill="${c.border}" opacity="0.15"/>
-        <path d="M75 95 L125 95 L100 135 Z" fill="${c.border}"/>
-        <text x="100" y="185" text-anchor="middle" fill="${c.text}" font-family="sans-serif" font-weight="bold" font-size="16">${packType}</text>
-        <text x="100" y="210" text-anchor="middle" fill="${c.border}" font-family="sans-serif" font-size="12">PACK</text>
-      </svg>`;
-      return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
-    };
-
-    window.getCardPlaceholder = function(title = "CARD") {
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280" width="100%" height="100%">
-        <rect width="200" height="280" fill="#111422" stroke="#334155" stroke-width="3" rx="10"/>
-        <circle cx="100" cy="120" r="32" fill="#1e293b"/>
-        <text x="100" y="195" text-anchor="middle" fill="#64748b" font-family="sans-serif" font-weight="bold" font-size="14">${title}</text>
-      </svg>`;
-      return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
-    };
-
-    window.getAvatarPlaceholder = function() {
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
-        <rect width="100" height="100" fill="#1e293b"/>
-        <circle cx="50" cy="38" r="20" fill="#64748b"/>
-        <path d="M20 90 A30 30 0 0 1 80 90 Z" fill="#64748b"/>
-      </svg>`;
-      return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
-    };
-
-    window.getBannerPlaceholder = function() {
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200" width="100%" height="100%">
-        <defs>
-          <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#1e1b4b"/>
-            <stop offset="100%" stop-color="#312e81"/>
-          </linearGradient>
-        </defs>
-        <rect width="800" height="200" fill="url(#g)"/>
-      </svg>`;
-      return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
-    };
 
     /* APPLICATION STATE */
     window.AppState = {
@@ -1456,7 +1434,6 @@
       renderPacks();
 
       if (!isFirebaseReady) {
-        // Fallback local demo preview
         window.AppState.currentUser = {
           uid: "demo_admin",
           username: "اللاعب_الأول",
@@ -1532,7 +1509,7 @@
       });
     }
 
-    /* AUTHENTICATION (USERNAME + PASSWORD WITH .INTERNAL FORMAT) */
+    /* AUTHENTICATION */
     let isRegisterMode = false;
     window.openAuthModal = () => document.getElementById("authModal").classList.add("active");
 
@@ -1572,7 +1549,6 @@
         return;
       }
 
-      // Internal username-based email
       const internalEmail = `${username}@streamercards.internal`;
 
       try {
@@ -1586,7 +1562,6 @@
             return;
           }
 
-          // Check if username is already taken
           const uQuery = query(collection(db, "users"), where("username", "==", username));
           const uDocs = await getDocs(uQuery);
           if (!uDocs.empty) {
@@ -1594,7 +1569,6 @@
             return;
           }
 
-          // Rule 9: Check if this is the very first registered user (first = admin, rest = player)
           const allUsersSnap = await getDocs(query(collection(db, "users"), limit(1)));
           const isFirstUser = allUsersSnap.empty;
 
@@ -1603,8 +1577,8 @@
             uid: cred.user.uid,
             username: username,
             displayName: username,
-            st: 50, // Rule 9: Start with 50 ST
-            role: isFirstUser ? "admin" : "player", // Rule 9: First = Admin
+            st: 50,
+            role: isFirstUser ? "admin" : "player",
             level: 1,
             xp: 0,
             avatarUrl: "",
@@ -1687,7 +1661,7 @@
         return `
           <div class="streamer-panel" onclick="openStreamerDetail('${s.id}')">
             <div class="streamer-panel-left">
-              <img src="${streamerImg}" alt="${s.name}" onerror="this.onerror=null; this.src=getCardPlaceholder('${s.name}');">
+              <img src="${streamerImg}" alt="${s.name}" onerror="this.onerror=null; this.src=getCardPlaceholder('ستريمر');">
             </div>
             <div class="streamer-panel-right">
               <div class="streamer-panel-header">
@@ -2008,7 +1982,6 @@
         return;
       }
 
-      // Pick card
       let matchingCards = availableCards.filter(c => c.rarity === packType);
       if (!matchingCards.length) matchingCards = availableCards;
       const wonCard = matchingCards[Math.floor(Math.random() * matchingCards.length)];
