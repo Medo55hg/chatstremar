@@ -1428,9 +1428,10 @@
       auth = getAuth(app);
       db = getFirestore(app);
       isFirebaseReady = true;
-    } catch (e) {
-      console.warn("Firebase not configured. Running with mock preview data.", e);
-    }
+   } catch (e) {
+  console.error("🔥 FIREBASE INIT ERROR:", e);
+  alert("Firebase Error: " + e.message);
+}
 
     /* APPLICATION STATE */
     window.AppState = {
