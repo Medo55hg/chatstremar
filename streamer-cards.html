@@ -2015,7 +2015,7 @@
       lucide.createIcons();
     };
 
-    window.executePackReward = async (packType) => {
+window.executePackReward = async (packType) => {
       const packBox = document.getElementById("packBoxElement");
       if (packBox) packBox.classList.add("pack-exploding");
 
@@ -2046,14 +2046,68 @@
       try {
         await runTransaction(db, async (transaction) => {
           const userRef = doc(db, "users", window.AppState.currentUser.uid);
+          const playerCardDocId = `${window.AppState.currentUser.uid}_${wonCard.id}`;
+          const playerCardRef = doc(db, "playerCards", playerCardDocId);
+
+          // 1. كل عمليات القراءة أولاً (Reads)
           const userDoc = await transaction.get(userRef);
-
           if (!userDoc.exists()) throw new Error("المستخدم غير موجود");
-          const currentST = userDoc.data().st || 0;
 
+          const currentST = userDoc.data().st || 0;
           if (currentST < pack.price) {
             throw new Error("رصيدك من ST غير كافٍ لفتح هذا البكج.");
           }
+
+          const cardDoc = await transaction.get(playerCardRef);
+
+          // 2. كل عمليات الكتابة بعد الانتهاء من القراءة (Writes)
+          transaction.update(userRef, {
+            st: currentST - pack.price,
+            updatedAt: serverTimestamp()
+          });
+
+          if (cardDoc.exists()) {
+            transaction.update(playerCardRef, {
+              quantity: increment(1),
+              updatedAt: serverTimestamp()
+            });
+          } else {
+            transaction.set(playerCardRef, {
+              uid: window.AppState.currentUser.uid,
+              cardId: wonCard.id,
+              quantity: 1,
+              favorite: false,
+              obtainedAt: serverTimestamp()
+            });
+          }
+        });
+
+        finalizePackOpeningCeremony(wonCard);
+      } catch (err) {
+        console.error("PACK REWARD ERROR:", err);
+        showToast(err.message || "حدث خطأ أثناء فتح البكج", "error");
+        closeModal("packOpeningModal");
+      }
+    };
+
+    function finalizePackOpeningCeremony(wonCard) {
+      confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+      const cImg = isValidImageUrl(wonCard.imageUrl) ? wonCard.imageUrl : getCardPlaceholder(wonCard.name);
+      const stage = document.getElementById("packCeremonyStage");
+      stage.innerHTML = `
+        <div style="animation: modalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
+          <div class="card-large-view rarity-${wonCard.rarity}" style="margin: 0 auto 1.5rem auto;">
+            <img src="${cImg}" alt="${wonCard.name}" onerror="this.onerror=null; this.src=getCardPlaceholder('بطاقة');">
+          </div>
+          <h2 style="color:#fff; font-weight:900;">تهانينا! حصلت على بطاقة</h2>
+          <h3 style="color:var(--accent-cyan); margin-bottom:1rem;">${wonCard.name} (${wonCard.rarity})</h3>
+          <button class="btn btn-primary" onclick="closeModal('packOpeningModal');">
+            إضافة إلى مجموعتي
+          </button>
+        </div>
+      `;
+      showToast("تمت إضافة البطاقة إلى مجموعتك بنجاح!");
+    }
 
           transaction.update(userRef, {
             st: currentST - pack.price,
