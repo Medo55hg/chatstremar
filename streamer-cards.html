@@ -5,14 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>بطاقات الستريمر | Streamer Cards</title>
 
+  <!-- Google Fonts: Cairo (Arabic) & Rajdhani (Gaming Digits) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
 
+  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
+  <!-- Canvas Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
+  <!-- GLOBAL PLACEHOLDERS (Must load before HTML elements evaluate onerror) -->
   <script>
     window.getCardPlaceholder = function(title) {
       var safeTitle = (title && typeof title === 'string') ? title : "CARD";
@@ -1013,6 +1017,7 @@
 </head>
 <body>
 
+  <!-- TOP GAME BAR -->
   <header class="game-header">
     <div class="brand" onclick="switchView('home')">
       <div class="brand-logo">
@@ -1024,6 +1029,7 @@
       </div>
     </div>
 
+    <!-- Desktop Navigation -->
     <nav class="desktop-nav">
       <button class="nav-btn active" data-view="home" onclick="switchView('home')">
         <i data-lucide="home" size="18"></i> الرئيسية
@@ -1045,6 +1051,7 @@
       </button>
     </nav>
 
+    <!-- Header Actions (ST Balance + User Button) -->
     <div class="header-actions">
       <div class="st-pill" title="رصيد عملات ST">
         <div class="st-coin-icon">ST</div>
@@ -1057,8 +1064,10 @@
     </div>
   </header>
 
+  <!-- MAIN CONTAINER -->
   <main class="game-container">
 
+    <!-- 1. HOME VIEW -->
     <section id="view-home" class="view-section active">
       <div class="hero-banner">
         <div class="hero-content">
@@ -1087,6 +1096,7 @@
       </div>
     </section>
 
+    <!-- 2. STREAMERS VIEW -->
     <section id="view-streamers" class="view-section">
       <div class="section-head">
         <h2 class="section-title">جميع مجموعات الستريمرز</h2>
@@ -1094,6 +1104,7 @@
       <div class="streamer-grid" id="allStreamersGrid"></div>
     </section>
 
+    <!-- 3. STREAMER DETAIL COLLECTION VIEW -->
     <section id="view-streamer-detail" class="view-section">
       <div style="margin-bottom: 1.5rem;">
         <button class="btn btn-secondary" onclick="switchView('streamers')">
@@ -1108,6 +1119,7 @@
       <div class="cards-grid" id="streamerCardsGrid"></div>
     </section>
 
+    <!-- 4. MY CARDS (INVENTORY) -->
     <section id="view-inventory" class="view-section">
       <div class="section-head">
         <h2 class="section-title">بطاقاتي المملوكة</h2>
@@ -1133,11 +1145,13 @@
       <div class="cards-grid" id="myCardsGrid"></div>
     </section>
 
+    <!-- 5. MARKET & PACKS -->
     <section id="view-market" class="view-section">
       <div class="section-head">
         <h2 class="section-title">بكجات البطاقات الرسمية</h2>
       </div>
 
+      <!-- Exactly 4 Official Packs -->
       <div class="packs-grid" id="packsContainer"></div>
 
       <div class="section-head">
@@ -1147,6 +1161,7 @@
       <div class="cards-grid" id="marketCardsGrid"></div>
     </section>
 
+    <!-- 6. LEADERBOARD -->
     <section id="view-leaderboard" class="view-section">
       <div class="section-head">
         <h2 class="section-title">قائمة المتصدرين</h2>
@@ -1166,6 +1181,7 @@
       </table>
     </section>
 
+    <!-- 7. PLAYER PROFILE -->
     <section id="view-profile" class="view-section">
       <div class="profile-hero">
         <div class="profile-cover">
@@ -1213,6 +1229,7 @@
 
   </main>
 
+  <!-- MOBILE BOTTOM NAVIGATION -->
   <div class="mobile-nav">
     <button class="mobile-nav-btn active" data-view="home" onclick="switchView('home')">
       <i data-lucide="home" size="18"></i>
@@ -1236,6 +1253,7 @@
     </button>
   </div>
 
+  <!-- AUTH MODAL -->
   <div class="modal-backdrop" id="authModal">
     <div class="modal-container">
       <div class="modal-header">
@@ -1266,6 +1284,7 @@
     </div>
   </div>
 
+  <!-- CARD ENLARGEMENT MODAL -->
   <div class="modal-backdrop" id="cardDetailModal">
     <div class="modal-container" style="max-width: 480px;">
       <div class="modal-header">
@@ -1305,12 +1324,14 @@
     </div>
   </div>
 
+  <!-- PACK OPENING MODAL -->
   <div class="modal-backdrop" id="packOpeningModal">
     <div class="modal-container" style="background:transparent; border:none; box-shadow:none; max-width:400px;">
       <div class="pack-open-ceremony" id="packCeremonyStage"></div>
     </div>
   </div>
 
+  <!-- SELL MODAL -->
   <div class="modal-backdrop" id="sellModal">
     <div class="modal-container">
       <div class="modal-header">
@@ -1331,6 +1352,7 @@
     </div>
   </div>
 
+  <!-- PROFILE EDIT MODAL -->
   <div class="modal-backdrop" id="editProfileModal">
     <div class="modal-container">
       <div class="modal-header">
@@ -1357,8 +1379,10 @@
     </div>
   </div>
 
+  <!-- TOAST CONTAINER -->
   <div class="toast-container" id="toastContainer"></div>
 
+  <!-- FIREBASE CLIENT SDK (AUTH + FIRESTORE ONLY - NO STORAGE) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
     import { 
@@ -1596,17 +1620,26 @@
           showToast("تم تسجيل الدخول بنجاح");
         }
         closeModal("authModal");
-      } catch (err) {
-        console.error(err);
+      } catch (error) {
+        console.error(error);
+        console.error("Firebase error code:", error.code);
+        console.error("Firebase error message:", error.message);
         showToast("خطأ في تسجيل الدخول أو كلمة المرور", "error");
       }
     };
 
     window.logoutPlayer = async () => {
-      if (isFirebaseReady) await signOut(auth);
-      window.AppState.currentUser = null;
-      updatePlayerUI();
-      showToast("تم تسجيل الخروج");
+      try {
+        if (isFirebaseReady) await signOut(auth);
+        window.AppState.currentUser = null;
+        updatePlayerUI();
+        showToast("تم تسجيل الخروج");
+      } catch (error) {
+        console.error(error);
+        console.error("Firebase error code:", error.code);
+        console.error("Firebase error message:", error.message);
+        showToast("فشل تسجيل الخروج", "error");
+      }
     };
 
     function updatePlayerUI() {
@@ -1895,7 +1928,10 @@
           showToast(newFav ? "تمت إضافة البطاقة للمفضلة" : "تمت الإزالة من المفضلة");
           closeModal("cardDetailModal");
         }
-      } catch (e) {
+      } catch (error) {
+        console.error(error);
+        console.error("Firebase error code:", error.code);
+        console.error("Firebase error message:", error.message);
         showToast("فشل تحديث المفضلة", "error");
       }
     };
@@ -2038,6 +2074,8 @@
         finalizePackOpeningCeremony(wonCard);
       } catch (err) {
         console.error(err);
+        console.error("Firebase error code:", err.code);
+        console.error("Firebase error message:", err.message);
         showToast(err.message || "حدث خطأ أثناء فتح البكج", "error");
         closeModal("packOpeningModal");
       }
@@ -2122,6 +2160,9 @@
         closeModal("sellModal");
         showToast(`تم بيع البطاقة بنجاح! وحصلت على ${payout} ST`);
       } catch (e) {
+        console.error(e);
+        console.error("Firebase error code:", e.code);
+        console.error("Firebase error message:", e.message);
         showToast(e.message || "حدث خطأ أثناء البيع", "error");
       }
     };
@@ -2206,6 +2247,8 @@
         showToast("تم حفظ التغييرات بنجاح");
       } catch (err) {
         console.error(err);
+        console.error("Firebase error code:", err.code);
+        console.error("Firebase error message:", err.message);
         showToast("فشل حفظ التعديلات", "error");
       }
     };
