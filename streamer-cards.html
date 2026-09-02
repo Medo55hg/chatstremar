@@ -5,12 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>بطاقات الستريمر | Streamer Cards</title>
 
+  <!-- Google Fonts: Cairo (Arabic) & Rajdhani (Gaming Digits) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
 
+  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
+  <!-- Canvas Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
@@ -395,7 +398,7 @@
       display: inline-block;
     }
 
-    /* 9. STREAMER COLLECTIONS: RECTANGULAR, 4 PER ROW ON DESKTOP */
+    /* STREAMER COLLECTIONS: 4 PER ROW ON DESKTOP */
     .streamer-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -420,7 +423,6 @@
       border-color: rgba(99, 102, 241, 0.5);
       box-shadow: 0 8px 25px rgba(99, 102, 241, 0.2);
     }
-    /* LEFT SIDE: Streamer Image */
     .streamer-panel-left {
       width: 100px;
       min-width: 100px;
@@ -437,7 +439,6 @@
     .streamer-panel:hover .streamer-panel-left img {
       transform: scale(1.08);
     }
-    /* RIGHT / CENTER SIDE */
     .streamer-panel-right {
       flex: 1;
       padding: 0.75rem 1rem;
@@ -470,7 +471,6 @@
       font-weight: 600;
       white-space: nowrap;
     }
-    /* Small card previews */
     .streamer-previews {
       display: flex;
       gap: 6px;
@@ -519,7 +519,6 @@
       z-index: 5;
     }
 
-    /* Rarities Borders & Glows */
     .game-card.rarity-COMMON { border-color: var(--rarity-common); }
     .game-card.rarity-UNCOMMON { border-color: var(--rarity-uncommon); box-shadow: 0 0 15px rgba(16, 185, 129, 0.15); }
     .game-card.rarity-RARE { border-color: var(--rarity-rare); box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); }
@@ -598,7 +597,6 @@
       color: var(--text-muted);
     }
 
-    /* Locked card style */
     .game-card.locked {
       border-color: rgba(255, 255, 255, 0.05);
       opacity: 0.45;
@@ -617,7 +615,7 @@
       z-index: 3;
     }
 
-    /* 14. PACKS SYSTEM */
+    /* PACKS SECTION */
     .packs-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -656,9 +654,6 @@
       position: relative;
       background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
       box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
-    }
-    .pack-art i {
-      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
     }
     .pack-name {
       font-size: 1.2rem;
@@ -722,7 +717,7 @@
       padding: 1.5rem;
     }
 
-    /* 12. CARD ENLARGEMENT MODAL */
+    /* CARD ENLARGEMENT MODAL */
     .card-detail-layout {
       display: flex;
       flex-direction: column;
@@ -765,7 +760,7 @@
       margin-top: 10px;
     }
 
-    /* 17. PACK OPENING ANIMATION */
+    /* PACK OPENING ANIMATION */
     .pack-open-ceremony {
       display: flex;
       flex-direction: column;
@@ -839,7 +834,7 @@
     .rank-2 { background: #94a3b8; color: #1e293b; }
     .rank-3 { background: #b45309; color: #fff; }
 
-    /* PROFILE EDITABLE SECTIONS */
+    /* PROFILE */
     .profile-hero {
       position: relative;
       border-radius: var(--radius-lg);
@@ -880,7 +875,7 @@
       min-width: 240px;
     }
 
-    /* TOAST NOTIFICATION */
+    /* TOAST */
     .toast-container {
       position: fixed;
       bottom: 24px;
@@ -937,27 +932,17 @@
 
     /* RESPONSIVE DESIGN */
     @media (max-width: 1200px) {
-      .streamer-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-      .packs-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
+      .streamer-grid { grid-template-columns: repeat(3, 1fr); }
+      .packs-grid { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 900px) {
-      .streamer-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      desktop-nav { display: none; }
+      .streamer-grid { grid-template-columns: repeat(2, 1fr); }
+      .desktop-nav { display: none; }
       header.game-header { padding: 0 1rem; }
     }
     @media (max-width: 640px) {
-      .streamer-grid {
-        grid-template-columns: 1fr;
-      }
-      .packs-grid {
-        grid-template-columns: 1fr;
-      }
+      .streamer-grid { grid-template-columns: 1fr; }
+      .packs-grid { grid-template-columns: 1fr; }
       .mobile-nav { display: flex; }
       body { padding-bottom: 70px; }
       main.game-container { padding: 1rem; gap: 1.5rem; }
@@ -969,6 +954,7 @@
 </head>
 <body>
 
+  <!-- TOP GAME BAR -->
   <header class="game-header">
     <div class="brand" onclick="switchView('home')">
       <div class="brand-logo">
@@ -980,6 +966,7 @@
       </div>
     </div>
 
+    <!-- Desktop Navigation -->
     <nav class="desktop-nav">
       <button class="nav-btn active" data-view="home" onclick="switchView('home')">
         <i data-lucide="home" size="18"></i> الرئيسية
@@ -1001,21 +988,23 @@
       </button>
     </nav>
 
+    <!-- Header Actions (ST Balance + User Button) -->
     <div class="header-actions">
       <div class="st-pill" title="رصيد عملات ST">
         <div class="st-coin-icon">ST</div>
         <span class="st-value font-num" id="headerStBalance">0</span>
         <span class="st-unit">ST</span>
       </div>
-
       <div id="authContainer">
         <button class="btn btn-primary" onclick="openAuthModal()">تسجيل الدخول</button>
       </div>
     </div>
   </header>
 
+  <!-- MAIN CONTAINER -->
   <main class="game-container">
 
+    <!-- 1. HOME VIEW -->
     <section id="view-home" class="view-section active">
       <div class="hero-banner">
         <div class="hero-content">
@@ -1040,38 +1029,34 @@
           <h2 class="section-title">مجموعات الستريمرز المميزة</h2>
           <button class="btn btn-secondary" onclick="switchView('streamers')">عرض الكل</button>
         </div>
-        <div class="streamer-grid" id="homeStreamersGrid">
-          </div>
+        <div class="streamer-grid" id="homeStreamersGrid"></div>
       </div>
     </section>
 
+    <!-- 2. STREAMERS VIEW -->
     <section id="view-streamers" class="view-section">
       <div class="section-head">
         <h2 class="section-title">جميع مجموعات الستريمرز</h2>
       </div>
-      <div class="streamer-grid" id="allStreamersGrid">
-        </div>
+      <div class="streamer-grid" id="allStreamersGrid"></div>
     </section>
 
+    <!-- 3. STREAMER DETAIL COLLECTION VIEW -->
     <section id="view-streamer-detail" class="view-section">
       <div style="margin-bottom: 1.5rem;">
         <button class="btn btn-secondary" onclick="switchView('streamers')">
           <i data-lucide="arrow-right"></i> العودة للمجموعات
         </button>
       </div>
-      
-      <div class="profile-hero" id="streamerDetailHero">
-        </div>
-
+      <div class="profile-hero" id="streamerDetailHero"></div>
       <div class="section-head">
         <h3 class="section-title">بطاقات المجموعة</h3>
         <span id="collectionProgressStats" class="font-num" style="color: var(--accent-cyan);"></span>
       </div>
-
-      <div class="cards-grid" id="streamerCardsGrid">
-        </div>
+      <div class="cards-grid" id="streamerCardsGrid"></div>
     </section>
 
+    <!-- 4. MY CARDS (INVENTORY) -->
     <section id="view-inventory" class="view-section">
       <div class="section-head">
         <h2 class="section-title">بطاقاتي المملوكة</h2>
@@ -1094,27 +1079,26 @@
         </button>
       </div>
 
-      <div class="cards-grid" id="myCardsGrid">
-        </div>
+      <div class="cards-grid" id="myCardsGrid"></div>
     </section>
 
+    <!-- 5. MARKET & PACKS -->
     <section id="view-market" class="view-section">
       <div class="section-head">
         <h2 class="section-title">بكجات البطاقات الرسمية</h2>
       </div>
 
-      <div class="packs-grid" id="packsContainer">
-        </div>
+      <!-- Exactly 4 Official Packs -->
+      <div class="packs-grid" id="packsContainer"></div>
 
       <div class="section-head">
         <h2 class="section-title">سوق اللاعبين</h2>
-        <button class="btn btn-secondary" onclick="openCreateListingModal()">+ بيع بطاقة في السوق</button>
+        <button class="btn btn-secondary" onclick="showToast('السوق بين اللاعبين متاح قريباً')">+ عرض بطاقة للبيع</button>
       </div>
-      
-      <div class="cards-grid" id="marketCardsGrid">
-        </div>
+      <div class="cards-grid" id="marketCardsGrid"></div>
     </section>
 
+    <!-- 6. LEADERBOARD -->
     <section id="view-leaderboard" class="view-section">
       <div class="section-head">
         <h2 class="section-title">قائمة المتصدرين</h2>
@@ -1130,20 +1114,20 @@
             <th>الملف</th>
           </tr>
         </thead>
-        <tbody id="leaderboardBody">
-          </tbody>
+        <tbody id="leaderboardBody"></tbody>
       </table>
     </section>
 
+    <!-- 7. PLAYER PROFILE -->
     <section id="view-profile" class="view-section">
       <div class="profile-hero">
         <div class="profile-cover">
-          <img id="profBannerImg" src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=1200&q=80" alt="Banner">
+          <img id="profBannerImg" src="" alt="Banner" onerror="this.onerror=null; this.src=getBannerPlaceholder();">
         </div>
         <div class="profile-info-row">
-          <img id="profAvatarImg" class="profile-avatar-large" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80" alt="Avatar">
+          <img id="profAvatarImg" class="profile-avatar-large" src="" alt="Avatar" onerror="this.onerror=null; this.src=getAvatarPlaceholder();">
           <div class="profile-texts">
-            <h2 id="profUsername" style="font-size: 1.6rem; font-weight:900;">لاعب مجهول</h2>
+            <h2 id="profUsername" style="font-size: 1.6rem; font-weight:900;">لاعب</h2>
             <p id="profBio" style="color:var(--text-muted); font-size:0.9rem;">هاوي جمع بطاقات الستريمرز</p>
           </div>
           <div>
@@ -1175,14 +1159,14 @@
 
         <div class="profile-orderable-block" data-section-id="favorites">
           <h3 class="section-title" style="margin-bottom: 1rem;">البطاقات المفضلة</h3>
-          <div class="cards-grid" id="profFavoritesGrid">
-            </div>
+          <div class="cards-grid" id="profFavoritesGrid"></div>
         </div>
       </div>
     </section>
 
   </main>
 
+  <!-- MOBILE BOTTOM NAVIGATION -->
   <div class="mobile-nav">
     <button class="mobile-nav-btn active" data-view="home" onclick="switchView('home')">
       <i data-lucide="home" size="18"></i>
@@ -1206,6 +1190,7 @@
     </button>
   </div>
 
+  <!-- AUTH MODAL -->
   <div class="modal-backdrop" id="authModal">
     <div class="modal-container">
       <div class="modal-header">
@@ -1236,6 +1221,7 @@
     </div>
   </div>
 
+  <!-- CARD ENLARGEMENT MODAL -->
   <div class="modal-backdrop" id="cardDetailModal">
     <div class="modal-container" style="max-width: 480px;">
       <div class="modal-header">
@@ -1244,7 +1230,7 @@
       </div>
       <div class="modal-body card-detail-layout">
         <div class="card-large-view" id="largeCardFrame">
-          <img id="detailCardImg" src="" alt="Card Art">
+          <img id="detailCardImg" src="" alt="Card Art" onerror="this.onerror=null; this.src=getCardPlaceholder('بطاقة');">
         </div>
         <div class="card-detail-info">
           <div class="detail-row">
@@ -1269,20 +1255,20 @@
           </div>
           <p id="detailCardDesc" style="font-size:0.85rem; color:var(--text-muted); line-height:1.5; margin-top:6px;"></p>
           
-          <div class="detail-actions" id="detailCardActions">
-            </div>
+          <div class="detail-actions" id="detailCardActions"></div>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- PACK OPENING MODAL -->
   <div class="modal-backdrop" id="packOpeningModal">
     <div class="modal-container" style="background:transparent; border:none; box-shadow:none; max-width:400px;">
-      <div class="pack-open-ceremony" id="packCeremonyStage">
-        </div>
+      <div class="pack-open-ceremony" id="packCeremonyStage"></div>
     </div>
   </div>
 
+  <!-- SELL MODAL -->
   <div class="modal-backdrop" id="sellModal">
     <div class="modal-container">
       <div class="modal-header">
@@ -1303,6 +1289,7 @@
     </div>
   </div>
 
+  <!-- PROFILE EDIT MODAL -->
   <div class="modal-backdrop" id="editProfileModal">
     <div class="modal-container">
       <div class="modal-header">
@@ -1312,12 +1299,12 @@
       <div class="modal-body">
         <form onsubmit="saveProfileChanges(event)" style="display:flex; flex-direction:column; gap:1rem;">
           <div>
-            <label style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:4px;">رابط الصورة الرمزية (Avatar URL)</label>
-            <input type="url" id="editAvatarUrl" class="input-field" style="width:100%;" placeholder="https://...">
+            <label style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:4px;">رابط الصورة الشخصية المباشر (Direct HTTPS URL)</label>
+            <input type="url" id="editAvatarUrl" class="input-field" style="width:100%;" placeholder="https://example.com/avatar.webp">
           </div>
           <div>
-            <label style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:4px;">رابط صورة الغلاف (Banner URL)</label>
-            <input type="url" id="editBannerUrl" class="input-field" style="width:100%;" placeholder="https://...">
+            <label style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:4px;">رابط صورة الغلاف المباشر (Direct HTTPS URL)</label>
+            <input type="url" id="editBannerUrl" class="input-field" style="width:100%;" placeholder="https://example.com/banner.webp">
           </div>
           <div>
             <label style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:4px;">النبذة الشخصية (Bio)</label>
@@ -1329,8 +1316,10 @@
     </div>
   </div>
 
+  <!-- TOAST CONTAINER -->
   <div class="toast-container" id="toastContainer"></div>
 
+  <!-- FIREBASE CLIENT SDK (AUTH + FIRESTORE ONLY - NO STORAGE) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
     import { 
@@ -1354,13 +1343,10 @@
       runTransaction, 
       serverTimestamp, 
       increment,
-      limit,
-      orderBy 
+      limit
     } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 
-    /* ========================================================
-       29. FIREBASE CONFIGURATION (Compatible with Admin Dashboard)
-       ======================================================== */
+    /* FIREBASE CONFIGURATION */
     const firebaseConfig = {
       apiKey: "YOUR_API_KEY",
       authDomain: "YOUR_PROJECT.firebaseapp.com",
@@ -1370,7 +1356,6 @@
       appId: "YOUR_APP_ID"
     };
 
-    // Initialize Firebase
     let app, auth, db;
     let isFirebaseReady = false;
 
@@ -1380,73 +1365,107 @@
       db = getFirestore(app);
       isFirebaseReady = true;
     } catch (e) {
-      console.warn("Firebase configuration incomplete. Running in preview/fallback mode.", e);
+      console.warn("Firebase not configured. Running with mock preview data.", e);
     }
 
-    /* GLOBAL APPLICATION STATE */
+    /* GLOBAL HELPER: URL VALIDATION (HTTPS ONLY) */
+    window.isValidImageUrl = function(url) {
+      if (!url || typeof url !== 'string') return false;
+      try {
+        const parsed = new URL(url.trim());
+        return parsed.protocol === "https:";
+      } catch {
+        return false;
+      }
+    };
+
+    /* LOCAL SVG PLACEHOLDERS */
+    window.getLocalPackPlaceholder = function(packType) {
+      const colors = {
+        COMMON: { bg: '#1e293b', border: '#94a3b8', text: '#f8fafc' },
+        RARE: { bg: '#172554', border: '#3b82f6', text: '#93c5fd' },
+        EPIC: { bg: '#2e1065', border: '#a855f7', text: '#d8b4fe' },
+        LEGENDARY: { bg: '#451a03', border: '#f59e0b', text: '#fde68a' }
+      };
+      const c = colors[packType] || colors.COMMON;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280" width="100%" height="100%">
+        <rect width="200" height="280" rx="16" fill="${c.bg}" stroke="${c.border}" stroke-width="4"/>
+        <circle cx="100" cy="110" r="44" fill="${c.border}" opacity="0.15"/>
+        <path d="M75 95 L125 95 L100 135 Z" fill="${c.border}"/>
+        <text x="100" y="185" text-anchor="middle" fill="${c.text}" font-family="sans-serif" font-weight="bold" font-size="16">${packType}</text>
+        <text x="100" y="210" text-anchor="middle" fill="${c.border}" font-family="sans-serif" font-size="12">PACK</text>
+      </svg>`;
+      return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+    };
+
+    window.getCardPlaceholder = function(title = "CARD") {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280" width="100%" height="100%">
+        <rect width="200" height="280" fill="#111422" stroke="#334155" stroke-width="3" rx="10"/>
+        <circle cx="100" cy="120" r="32" fill="#1e293b"/>
+        <text x="100" y="195" text-anchor="middle" fill="#64748b" font-family="sans-serif" font-weight="bold" font-size="14">${title}</text>
+      </svg>`;
+      return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+    };
+
+    window.getAvatarPlaceholder = function() {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+        <rect width="100" height="100" fill="#1e293b"/>
+        <circle cx="50" cy="38" r="20" fill="#64748b"/>
+        <path d="M20 90 A30 30 0 0 1 80 90 Z" fill="#64748b"/>
+      </svg>`;
+      return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+    };
+
+    window.getBannerPlaceholder = function() {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200" width="100%" height="100%">
+        <defs>
+          <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#1e1b4b"/>
+            <stop offset="100%" stop-color="#312e81"/>
+          </linearGradient>
+        </defs>
+        <rect width="800" height="200" fill="url(#g)"/>
+      </svg>`;
+      return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+    };
+
+    /* APPLICATION STATE */
     window.AppState = {
-      currentUser: null,       // Loaded from users/{uid}
+      currentUser: null,
       authUid: null,
-      streamers: [],           // from streamers collection
-      cards: [],               // from cards collection
-      myCards: [],             // from playerCards where uid == current
-      marketListings: [],      // from marketListings
+      streamers: [],
+      cards: [],
+      myCards: [],
       gameSettings: {
         packs: {
-          common: { price: 10, name: "بكج شائع", rarity: "COMMON", rates: { COMMON: 80, UNCOMMON: 18, RARE: 2, EPIC: 0, LEGENDARY: 0, MYTHIC: 0 } },
-          rare: { price: 50, name: "بكج نادر", rarity: "RARE", rates: { COMMON: 40, UNCOMMON: 40, RARE: 17, EPIC: 3, LEGENDARY: 0, MYTHIC: 0 } },
-          epic: { price: 150, name: "بكج أسطوري مصغر", rarity: "EPIC", rates: { COMMON: 15, UNCOMMON: 35, RARE: 35, EPIC: 13, LEGENDARY: 2, MYTHIC: 0 } },
-          legendary: { price: 500, name: "بكج خرافي", rarity: "LEGENDARY", rates: { COMMON: 5, UNCOMMON: 15, RARE: 35, EPIC: 30, LEGENDARY: 13, MYTHIC: 2 } }
+          COMMON: { price: 10, imageUrl: "", enabled: true },
+          RARE: { price: 50, imageUrl: "", enabled: true },
+          EPIC: { price: 150, imageUrl: "", enabled: true },
+          LEGENDARY: { price: 500, imageUrl: "", enabled: true }
         }
       },
-      currentOpenedCard: null,
       selectedCardForAction: null,
       activeView: 'home',
       favFilterActive: false
     };
 
-    /* FALLBACK SAMPLE DATA FOR IMMEDIATE VISUAL EXPERIENCE */
-    const sampleStreamers = [
-      { id: "s1", name: "AboFlah", imageUrl: "https://images.unsplash.com/photo-1566492031773-4f4e44671857?auto=format&fit=crop&w=300&q=80", description: "صانع محتوى وبثوث الألعاب الخيرية والترفيهية" },
-      { id: "s2", name: "BanderitaX", imageUrl: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&q=80", description: "ملك الحماس وتحديات ألعاب الرعب والمغامرات" },
-      { id: "s3", name: "SHoNgxBoNg", imageUrl: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=300&q=80", description: "أسطورة الشوتر وتحديات الباتل رويال" },
-      { id: "s4", name: "Rakan", imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80", description: "بثوث روقان وألعاب التختيم والآربيجي" }
-    ];
-
-    const sampleCards = [
-      { id: "c1", streamerId: "s1", name: "الدرع الذهبي", rarity: "LEGENDARY", cardNumber: 101, sellValue: 250, imageUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=400&q=80", description: "درع الذكريات الأسطوري للمليونية" },
-      { id: "c2", streamerId: "s1", name: "ضحكة النصر", rarity: "RARE", cardNumber: 102, sellValue: 45, imageUrl: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=400&q=80", description: "البطاقة الحصرية للاحتفال بالفوز" },
-      { id: "c3", streamerId: "s2", name: "الفخ المباغت", rarity: "EPIC", cardNumber: 201, sellValue: 120, imageUrl: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=400&q=80", description: "صدمة الرعب في اللحظة الأخيرة" },
-      { id: "c4", streamerId: "s2", name: "بطاطس البداية", rarity: "COMMON", cardNumber: 202, sellValue: 5, imageUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=400&q=80", description: "بداية الرحلة الخفيفة" },
-      { id: "c5", streamerId: "s3", name: "طلقة في الرأس", rarity: "MYTHIC", cardNumber: 301, sellValue: 600, imageUrl: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=400&q=80", description: "قناصة مستحيلة من آخر الخريطة" },
-      { id: "c6", streamerId: "s4", name: "سيف الظلال", rarity: "UNCOMMON", cardNumber: 401, sellValue: 20, imageUrl: "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=400&q=80", description: "سلاح التخفي الخاص" }
-    ];
-
-    /* ========================================================
-       REAL-TIME FIRESTORE LISTENERS & INITIALIZATION
-       ======================================================== */
+    /* INITIALIZATION & LISTENERS */
     window.initGame = function() {
       lucide.createIcons();
       renderPacks();
 
       if (!isFirebaseReady) {
-        // Fallback offline preview mode
-        window.AppState.streamers = sampleStreamers;
-        window.AppState.cards = sampleCards;
+        // Fallback local demo preview
         window.AppState.currentUser = {
-          uid: "guest_1",
-          username: "بطل_التحدي",
-          st: 1250,
-          level: 5,
-          bio: "لاعب محترف في بطاقات الستريمرز",
-          avatarUrl: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80",
-          bannerUrl: "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=1200&q=80"
+          uid: "demo_admin",
+          username: "اللاعب_الأول",
+          role: "admin",
+          st: 50,
+          level: 1,
+          avatarUrl: "",
+          bannerUrl: "",
+          bio: "لاعب جديد في بطاقات الستريمرز"
         };
-        window.AppState.myCards = [
-          { cardId: "c1", quantity: 1, favorite: true },
-          { cardId: "c2", quantity: 2, favorite: false },
-          { cardId: "c4", quantity: 4, favorite: false }
-        ];
         updatePlayerUI();
         renderStreamersList();
         renderMyCards();
@@ -1454,31 +1473,32 @@
         return;
       }
 
-      // 1. Real-time Game Settings Listener
+      // Realtime Settings
       onSnapshot(doc(db, "gameSettings", "global"), (snap) => {
         if (snap.exists()) {
-          window.AppState.gameSettings = snap.data();
+          const data = snap.data();
+          if (data.packs) window.AppState.gameSettings.packs = data.packs;
           renderPacks();
         }
       });
 
-      // 2. Real-time Streamers Listener
+      // Realtime Streamers
       onSnapshot(collection(db, "streamers"), (snap) => {
         const list = [];
         snap.forEach(d => list.push({ id: d.id, ...d.data() }));
-        window.AppState.streamers = list.length ? list : sampleStreamers;
+        window.AppState.streamers = list;
         renderStreamersList();
       });
 
-      // 3. Real-time Cards Listener
+      // Realtime Cards
       onSnapshot(collection(db, "cards"), (snap) => {
         const list = [];
         snap.forEach(d => list.push({ id: d.id, ...d.data() }));
-        window.AppState.cards = list.length ? list : sampleCards;
+        window.AppState.cards = list;
         renderMyCards();
       });
 
-      // 4. Auth State Tracking
+      // Auth Listener
       onAuthStateChanged(auth, (user) => {
         if (user) {
           window.AppState.authUid = user.uid;
@@ -1511,13 +1531,9 @@
       });
     }
 
-    /* ========================================================
-       AUTH SYSTEM: Username + Password (No Email exposed to player)
-       ======================================================== */
+    /* AUTHENTICATION (USERNAME + PASSWORD WITH .INTERNAL FORMAT) */
     let isRegisterMode = false;
-    window.openAuthModal = () => {
-      document.getElementById("authModal").classList.add("active");
-    };
+    window.openAuthModal = () => document.getElementById("authModal").classList.add("active");
 
     window.toggleAuthMode = () => {
       isRegisterMode = !isRegisterMode;
@@ -1535,19 +1551,19 @@
       const confirmPass = document.getElementById("authConfirmPassword").value;
 
       if (!username || !pass) {
-        showToast("يرجى ملء جميع الحقول المطلوبة", "error");
+        showToast("يرجى ملء جميع الحقول", "error");
         return;
       }
 
       if (!isFirebaseReady) {
-        // Fallback demo auth
         window.AppState.currentUser = {
-          uid: "demo_user",
+          uid: "demo_" + username,
           username: username,
-          st: 1000,
+          st: 50,
           level: 1,
-          avatarUrl: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80",
-          bannerUrl: "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=1200&q=80"
+          role: "player",
+          avatarUrl: "",
+          bannerUrl: ""
         };
         updatePlayerUI();
         closeModal("authModal");
@@ -1555,8 +1571,8 @@
         return;
       }
 
-      // We use internal synthetic email identifier for Firebase Auth
-      const internalEmail = `${username}@streamercards.game`;
+      // Internal username-based email
+      const internalEmail = `${username}@streamercards.internal`;
 
       try {
         if (isRegisterMode) {
@@ -1565,36 +1581,41 @@
             return;
           }
           if (pass.length < 6) {
-            showToast("كلمة المرور يجب ألا تقل عن 6 خانات", "error");
+            showToast("كلمة المرور يجب ألا تقل عن 6 أحرف", "error");
             return;
           }
 
-          // Check unique username in Firestore
-          const usernameQuery = query(collection(db, "users"), where("username", "==", username));
-          const existing = await getDocs(usernameQuery);
-          if (!existing.empty) {
-            showToast("اسم المستخدم مسجل مسبقاً، اختر اسماً آخر", "error");
+          // Check if username is already taken
+          const uQuery = query(collection(db, "users"), where("username", "==", username));
+          const uDocs = await getDocs(uQuery);
+          if (!uDocs.empty) {
+            showToast("اسم المستخدم مستخدم بالفعل", "error");
             return;
           }
+
+          // Rule 9: Check if this is the very first registered user (first = admin, rest = player)
+          const allUsersSnap = await getDocs(query(collection(db, "users"), limit(1)));
+          const isFirstUser = allUsersSnap.empty;
 
           const cred = await createUserWithEmailAndPassword(auth, internalEmail, pass);
-          // Create initial user document in 'users' collection
           await setDoc(doc(db, "users", cred.user.uid), {
             uid: cred.user.uid,
             username: username,
             displayName: username,
-            st: 100, // Welcome Gift ST
+            st: 50, // Rule 9: Start with 50 ST
+            role: isFirstUser ? "admin" : "player", // Rule 9: First = Admin
             level: 1,
             xp: 0,
-            avatarUrl: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80",
-            bannerUrl: "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=1200&q=80",
+            avatarUrl: "",
+            bannerUrl: "",
             bio: "لاعب جديد في بطاقات الستريمرز",
             profileTheme: "default",
             profileLayout: ["stats", "favorites"],
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp()
           });
-          showToast("تم إنشاء الحساب بنجاح! تم منحك 100 ST كهدية");
+
+          showToast(isFirstUser ? "تم إنشاء حساب الأدمن الأول بنجاح! رصيدك 50 ST" : "تم إنشاء حسابك بنجاح! رصيدك 50 ST");
         } else {
           await signInWithEmailAndPassword(auth, internalEmail, pass);
           showToast("تم تسجيل الدخول بنجاح");
@@ -1602,7 +1623,7 @@
         closeModal("authModal");
       } catch (err) {
         console.error(err);
-        showToast("خطأ في المصادقة: تأكد من صحة البيانات", "error");
+        showToast("خطأ في تسجيل الدخول أو كلمة المرور", "error");
       }
     };
 
@@ -1613,7 +1634,6 @@
       showToast("تم تسجيل الخروج");
     };
 
-    /* UI UPDATE FOR CURRENT USER */
     function updatePlayerUI() {
       const user = window.AppState.currentUser;
       const authContainer = document.getElementById("authContainer");
@@ -1621,18 +1641,18 @@
 
       if (user) {
         headerSt.innerText = Number(user.st || 0).toLocaleString();
+        const avatarSrc = isValidImageUrl(user.avatarUrl) ? user.avatarUrl : getAvatarPlaceholder();
         authContainer.innerHTML = `
           <div class="user-pill" onclick="switchView('profile')">
-            <img class="user-avatar" src="${user.avatarUrl || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80'}" alt="Avatar">
+            <img class="user-avatar" src="${avatarSrc}" alt="Avatar" onerror="this.onerror=null; this.src=getAvatarPlaceholder();">
             <span style="font-weight:700; font-size:0.85rem;">${user.username}</span>
             <i data-lucide="log-out" size="16" style="margin-right:6px; color:var(--text-dim);" onclick="event.stopPropagation(); logoutPlayer();" title="تسجيل الخروج"></i>
           </div>
         `;
-        // Update profile tab contents
         document.getElementById("profUsername").innerText = user.username;
         document.getElementById("profBio").innerText = user.bio || "لا توجد نبذة حالياً";
-        document.getElementById("profAvatarImg").src = user.avatarUrl;
-        document.getElementById("profBannerImg").src = user.bannerUrl;
+        document.getElementById("profAvatarImg").src = avatarSrc;
+        document.getElementById("profBannerImg").src = isValidImageUrl(user.bannerUrl) ? user.bannerUrl : getBannerPlaceholder();
         document.getElementById("profLevel").innerText = user.level || 1;
         document.getElementById("profStTotal").innerText = `${Number(user.st || 0).toLocaleString()} ST`;
       } else {
@@ -1642,11 +1662,7 @@
       lucide.createIcons();
     }
 
-    /* ========================================================
-       9. STREAMER COLLECTIONS RENDERING
-       Layout: Horizontal Rectangular panels, EXACTLY 4 per row
-       Left: Streamer Image | Right: Name, Card Previews, Progress
-       ======================================================== */
+    /* STREAMER PANELS: EXACTLY 4 PER ROW ON DESKTOP */
     function renderStreamersList() {
       const streamers = window.AppState.streamers;
       const cards = window.AppState.cards;
@@ -1655,13 +1671,14 @@
       const makeCardHTML = (s) => {
         const streamerCards = cards.filter(c => c.streamerId === s.id);
         const ownedFromStreamer = streamerCards.filter(c => myCards.some(mc => mc.cardId === c.id));
-        
-        // Render 3 small card previews under streamer name
+        const streamerImg = isValidImageUrl(s.imageUrl) ? s.imageUrl : getCardPlaceholder(s.name);
+
         const previewsHTML = streamerCards.slice(0, 3).map(c => {
           const isOwned = myCards.some(mc => mc.cardId === c.id);
+          const cImg = isValidImageUrl(c.imageUrl) ? c.imageUrl : getCardPlaceholder('بطاقة');
           return `
             <div class="mini-card-preview ${isOwned ? '' : 'locked'}">
-              <img src="${c.imageUrl}" alt="${c.name}">
+              <img src="${cImg}" alt="${c.name}" onerror="this.onerror=null; this.src=getCardPlaceholder('بطاقة');">
             </div>
           `;
         }).join('');
@@ -1669,7 +1686,7 @@
         return `
           <div class="streamer-panel" onclick="openStreamerDetail('${s.id}')">
             <div class="streamer-panel-left">
-              <img src="${s.imageUrl}" alt="${s.name}">
+              <img src="${streamerImg}" alt="${s.name}" onerror="this.onerror=null; this.src=getCardPlaceholder('${s.name}');">
             </div>
             <div class="streamer-panel-right">
               <div class="streamer-panel-header">
@@ -1677,7 +1694,7 @@
                 <span class="streamer-progress-badge font-num">${ownedFromStreamer.length}/${streamerCards.length} بطاقة</span>
               </div>
               <div class="streamer-previews">
-                ${previewsHTML || '<span style="font-size:0.7rem; color:var(--text-dim);">لا توجد بطاقات مضافة</span>'}
+                ${previewsHTML || '<span style="font-size:0.7rem; color:var(--text-dim);">لا توجد بطاقات</span>'}
               </div>
             </div>
           </div>
@@ -1690,7 +1707,7 @@
       if (allGrid) allGrid.innerHTML = streamers.map(makeCardHTML).join('');
     }
 
-    /* 10. STREAMER COLLECTION DETAIL VIEW */
+    /* STREAMER DETAIL VIEW */
     window.openStreamerDetail = (streamerId) => {
       const streamer = window.AppState.streamers.find(s => s.id === streamerId);
       if (!streamer) return;
@@ -1698,14 +1715,16 @@
       const streamerCards = window.AppState.cards.filter(c => c.streamerId === streamerId);
       const myCards = window.AppState.myCards;
       const ownedCards = streamerCards.filter(c => myCards.some(mc => mc.cardId === c.id));
+      const sCover = isValidImageUrl(streamer.coverImageUrl) ? streamer.coverImageUrl : getBannerPlaceholder();
+      const sAvatar = isValidImageUrl(streamer.imageUrl) ? streamer.imageUrl : getCardPlaceholder(streamer.name);
 
       const hero = document.getElementById("streamerDetailHero");
       hero.innerHTML = `
         <div class="profile-cover">
-          <img src="${streamer.coverImageUrl || streamer.imageUrl}" alt="Cover">
+          <img src="${sCover}" alt="Cover" onerror="this.onerror=null; this.src=getBannerPlaceholder();">
         </div>
         <div class="profile-info-row">
-          <img class="profile-avatar-large" src="${streamer.imageUrl}" alt="${streamer.name}">
+          <img class="profile-avatar-large" src="${sAvatar}" alt="${streamer.name}" onerror="this.onerror=null; this.src=getCardPlaceholder('${streamer.name}');">
           <div class="profile-texts">
             <h2 style="font-size: 1.6rem; font-weight:900;">مجموعة: ${streamer.name}</h2>
             <p style="color:var(--text-muted); font-size:0.9rem;">${streamer.description || ''}</p>
@@ -1729,8 +1748,9 @@
       lucide.createIcons();
     };
 
-    /* 11 & 12. CARD COMPONENT BUILDER & ENLARGEMENT MODAL */
+    /* CARD HTML CREATION */
     function createCardElementHTML(card, isOwned = true, quantity = 1) {
+      const cardImg = isValidImageUrl(card.imageUrl) ? card.imageUrl : getCardPlaceholder(card.name);
       return `
         <div class="game-card rarity-${card.rarity} ${isOwned ? '' : 'locked'}" onclick="handleCardClick('${card.id}', ${isOwned})">
           ${!isOwned ? `
@@ -1742,7 +1762,7 @@
           <div class="card-thumb">
             <span class="card-badge-num font-num">#${card.cardNumber || '00'}</span>
             <span class="card-badge-rarity">${card.rarity}</span>
-            <img src="${card.imageUrl}" alt="${card.name}">
+            <img src="${cardImg}" alt="${card.name}" onerror="this.onerror=null; this.src=getCardPlaceholder('بطاقة');">
           </div>
           <div class="card-meta">
             <span class="card-title">${card.name}</span>
@@ -1765,19 +1785,16 @@
 
       window.AppState.selectedCardForAction = { ...card, ownedQuantity: quantity };
 
-      // Populate Enlarged Modal
       document.getElementById("detailCardTitle").innerText = card.name;
-      document.getElementById("detailCardImg").src = card.imageUrl;
+      document.getElementById("detailCardImg").src = isValidImageUrl(card.imageUrl) ? card.imageUrl : getCardPlaceholder(card.name);
       document.getElementById("detailCardStreamer").innerText = streamer ? streamer.name : "الستريمر الرسمي";
       document.getElementById("detailCardRarity").innerText = card.rarity;
       document.getElementById("detailCardNum").innerText = `#${card.cardNumber || '00'}`;
       document.getElementById("detailCardSellVal").innerText = `${card.sellValue || 10} ST`;
       document.getElementById("detailCardQty").innerText = isOwned ? `${quantity} قطعة` : "غير مملوكة";
-      document.getElementById("detailCardDesc").innerText = card.description || "بطاقة رقمية حصرية تابعة لمجموعة الستريمر الرسمية.";
+      document.getElementById("detailCardDesc").innerText = card.description || "بطاقة رقمية حصرية.";
 
-      // 3D tilt effect on the enlarged card frame
-      const frame = document.getElementById("largeCardFrame");
-      frame.className = `card-large-view rarity-${card.rarity}`;
+      document.getElementById("largeCardFrame").className = `card-large-view rarity-${card.rarity}`;
 
       const actionsDiv = document.getElementById("detailCardActions");
       if (isOwned && quantity > 0) {
@@ -1802,7 +1819,7 @@
       lucide.createIcons();
     };
 
-    /* 13. MY CARDS (INVENTORY) LOGIC */
+    /* INVENTORY RENDERING & SEARCH */
     function renderMyCards() {
       const myCards = window.AppState.myCards;
       const allCards = window.AppState.cards;
@@ -1811,21 +1828,21 @@
       const totalLabel = document.getElementById("totalOwnedCardsLabel");
       const profCount = document.getElementById("profCardCount");
 
-      let totalCardsCount = 0;
+      let totalCount = 0;
       const cardsToRender = [];
       const favCards = [];
 
       myCards.forEach(item => {
         const cardData = allCards.find(c => c.id === item.cardId);
         if (cardData) {
-          totalCardsCount += (item.quantity || 1);
+          totalCount += (item.quantity || 1);
           cardsToRender.push({ ...cardData, ...item });
           if (item.favorite) favCards.push({ ...cardData, ...item });
         }
       });
 
-      if (totalLabel) totalLabel.innerText = `${totalCardsCount} بطاقة`;
-      if (profCount) profCount.innerText = totalCardsCount;
+      if (totalLabel) totalLabel.innerText = `${totalCount} بطاقة`;
+      if (profCount) profCount.innerText = totalCount;
 
       if (!cardsToRender.length) {
         grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:3rem; color:var(--text-muted);">لا توجد لديك بطاقات بعد. توجه إلى السوق وافتح أول بكج لك!</div>`;
@@ -1836,7 +1853,7 @@
       if (profFavGrid) {
         profFavGrid.innerHTML = favCards.length 
           ? favCards.map(c => createCardElementHTML(c, true, c.quantity)).join('')
-          : `<span style="color:var(--text-dim); font-size:0.85rem;">لم تقم بتفضيل أي بطاقة حتى الآن.</span>`;
+          : `<span style="color:var(--text-dim); font-size:0.85rem;">لم تقم بتفضيل أي بطاقة بعد.</span>`;
       }
       lucide.createIcons();
     }
@@ -1858,7 +1875,7 @@
 
       const grid = document.getElementById("myCardsGrid");
       if (!filtered.length) {
-        grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:2rem; color:var(--text-muted);">لا توجد بطاقات مطابقة لخيارات الفلترة</div>`;
+        grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:2rem; color:var(--text-muted);">لا توجد بطاقات مطابقة للبحث</div>`;
       } else {
         grid.innerHTML = filtered.map(mc => {
           const card = allCards.find(c => c.id === mc.cardId);
@@ -1887,7 +1904,7 @@
         item.favorite = newFav;
         renderMyCards();
         closeModal("cardDetailModal");
-        showToast(newFav ? "تمت إضافة البطاقة إلى المفضلة" : "تمت إزالة البطاقة من المفضلة");
+        showToast(newFav ? "تمت إضافة البطاقة للمفضلة" : "تمت الإزالة من المفضلة");
         return;
       }
 
@@ -1900,7 +1917,7 @@
         const snap = await getDocs(q);
         if (!snap.empty) {
           await updateDoc(snap.docs[0].ref, { favorite: newFav });
-          showToast(newFav ? "تمت إضافة البطاقة إلى المفضلة" : "تمت إزالة البطاقة من المفضلة");
+          showToast(newFav ? "تمت إضافة البطاقة للمفضلة" : "تمت الإزالة من المفضلة");
           closeModal("cardDetailModal");
         }
       } catch (e) {
@@ -1908,65 +1925,68 @@
       }
     };
 
-    /* ========================================================
-       14, 15, 16 & 17. OFFICIAL PACK SYSTEM & ATOMIC OPENING
-       Prices loaded dynamically from gameSettings
-       Client balance verified securely via Firestore Transaction
-       ======================================================== */
+    /* OFFICIAL PACKS RENDERING WITH DIRECT URLS & LOCAL PLACEHOLDERS */
     function renderPacks() {
-      const packs = window.AppState.gameSettings.packs;
+      const packs = window.AppState.gameSettings?.packs || {};
       const container = document.getElementById("packsContainer");
       if (!container) return;
 
-      const packKeys = ["common", "rare", "epic", "legendary"];
-      container.innerHTML = packKeys.map(key => {
-        const p = packs[key] || {};
-        const rates = p.rates || {};
-        const rateDesc = Object.entries(rates)
-          .filter(([_, rate]) => rate > 0)
-          .map(([rar, rate]) => `${rar}: ${rate}%`)
-          .join(' | ');
+      const packTiers = ["COMMON", "RARE", "EPIC", "LEGENDARY"];
+      
+      container.innerHTML = packTiers.map(tier => {
+        const p = packs[tier] || {
+          price: tier === 'COMMON' ? 10 : tier === 'RARE' ? 50 : tier === 'EPIC' ? 150 : 500,
+          imageUrl: "",
+          enabled: true
+        };
+
+        if (p.enabled === false) return '';
+
+        const directSrc = isValidImageUrl(p.imageUrl) ? p.imageUrl : getLocalPackPlaceholder(tier);
+        const fallbackSrc = getLocalPackPlaceholder(tier);
 
         return `
-          <div class="pack-card pack-${p.rarity}">
-            <div class="pack-art">
-              <i data-lucide="box" size="48" style="color:var(--accent-st);"></i>
+          <div class="pack-card pack-${tier}">
+            <div class="pack-art" style="overflow:hidden; border-radius:8px;">
+              <img src="${directSrc}" 
+                   alt="${tier} PACK" 
+                   style="width:100%; height:100%; object-fit:cover;" 
+                   onerror="this.onerror=null; this.src='${fallbackSrc}';" />
             </div>
-            <h3 class="pack-name">${p.name}</h3>
+            <h3 class="pack-name">بكج ${tier}</h3>
             <div class="pack-price">
               <span class="font-num">${p.price}</span>
               <span class="st-unit">ST</span>
             </div>
-            <p class="pack-rates">${rateDesc}</p>
-            <button class="btn btn-st" style="width:100%; justify-content:center;" onclick="initiatePackOpening('${key}')">
+            <button class="btn btn-st" style="width:100%; justify-content:center;" onclick="initiatePackOpening('${tier}')">
               فتح الآن
             </button>
           </div>
         `;
       }).join('');
+
       lucide.createIcons();
     }
 
-    window.initiatePackOpening = async (packKey) => {
+    /* PACK OPENING WITH ST BALANCE VERIFICATION */
+    window.initiatePackOpening = async (packType) => {
       const user = window.AppState.currentUser;
       if (!user) {
         openAuthModal();
         return;
       }
 
-      const pack = window.AppState.gameSettings.packs[packKey];
+      const pack = window.AppState.gameSettings.packs[packType];
       if (!pack) return;
 
-      // 16. VERY IMPORTANT — PLAYER MUST HAVE ENOUGH ST
       if ((user.st || 0) < pack.price) {
         showToast("رصيدك من ST غير كافٍ لفتح هذا البكج.", "error");
         return;
       }
 
-      // Open ceremony modal in Stage 1: Tap to Open
       const stage = document.getElementById("packCeremonyStage");
       stage.innerHTML = `
-        <div class="unopened-pack-visual" id="packBoxElement" onclick="executePackReward('${packKey}')">
+        <div class="unopened-pack-visual" id="packBoxElement" onclick="executePackReward('${packType}')">
           <i data-lucide="gift" size="64" style="color:#fff;"></i>
         </div>
         <h3 style="color:#fff; font-weight:800;">انقر على البكج لفتحه!</h3>
@@ -1975,12 +1995,11 @@
       lucide.createIcons();
     };
 
-    /* 17. REWARD GENERATION & SECURE ATOMIC FIRESTORE TRANSACTION */
-    window.executePackReward = async (packKey) => {
+    window.executePackReward = async (packType) => {
       const packBox = document.getElementById("packBoxElement");
       if (packBox) packBox.classList.add("pack-exploding");
 
-      const pack = window.AppState.gameSettings.packs[packKey];
+      const pack = window.AppState.gameSettings.packs[packType];
       const availableCards = window.AppState.cards;
       if (!availableCards.length) {
         showToast("لا توجد بطاقات متاحة في النظام حالياً", "error");
@@ -1988,14 +2007,12 @@
         return;
       }
 
-      // Calculate Rarity by drop rate
-      const selectedRarity = determineRarityFromDropRates(pack.rates);
-      let matchingCards = availableCards.filter(c => c.rarity === selectedRarity);
-      if (!matchingCards.length) matchingCards = availableCards; // fallback
+      // Pick card
+      let matchingCards = availableCards.filter(c => c.rarity === packType);
+      if (!matchingCards.length) matchingCards = availableCards;
       const wonCard = matchingCards[Math.floor(Math.random() * matchingCards.length)];
 
       if (!isFirebaseReady) {
-        // Mock deduction
         window.AppState.currentUser.st -= pack.price;
         const existing = window.AppState.myCards.find(mc => mc.cardId === wonCard.id);
         if (existing) existing.quantity = (existing.quantity || 1) + 1;
@@ -2007,7 +2024,6 @@
         return;
       }
 
-      // ATOMIC TRANSACTION: Verify ST, deduct, update inventory
       try {
         await runTransaction(db, async (transaction) => {
           const userRef = doc(db, "users", window.AppState.currentUser.uid);
@@ -2020,13 +2036,11 @@
             throw new Error("رصيدك من ST غير كافٍ لفتح هذا البكج.");
           }
 
-          // 1. Deduct currency atomically
           transaction.update(userRef, {
             st: currentST - pack.price,
             updatedAt: serverTimestamp()
           });
 
-          // 2. Add or increment in playerCards collection
           const playerCardDocId = `${window.AppState.currentUser.uid}_${wonCard.id}`;
           const playerCardRef = doc(db, "playerCards", playerCardDocId);
           const cardDoc = await transaction.get(playerCardRef);
@@ -2055,23 +2069,14 @@
       }
     };
 
-    function determineRarityFromDropRates(rates) {
-      const rand = Math.random() * 100;
-      let cumulative = 0;
-      for (const [rarity, rate] of Object.entries(rates)) {
-        cumulative += rate;
-        if (rand <= cumulative) return rarity;
-      }
-      return "COMMON";
-    }
-
     function finalizePackOpeningCeremony(wonCard) {
       confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+      const cImg = isValidImageUrl(wonCard.imageUrl) ? wonCard.imageUrl : getCardPlaceholder(wonCard.name);
       const stage = document.getElementById("packCeremonyStage");
       stage.innerHTML = `
         <div style="animation: modalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
           <div class="card-large-view rarity-${wonCard.rarity}" style="margin: 0 auto 1.5rem auto;">
-            <img src="${wonCard.imageUrl}" alt="${wonCard.name}">
+            <img src="${cImg}" alt="${wonCard.name}" onerror="this.onerror=null; this.src=getCardPlaceholder('بطاقة');">
           </div>
           <h2 style="color:#fff; font-weight:900;">تهانينا! حصلت على بطاقة</h2>
           <h3 style="color:var(--accent-cyan); margin-bottom:1rem;">${wonCard.name} (${wonCard.rarity})</h3>
@@ -2083,9 +2088,7 @@
       showToast("تمت إضافة البطاقة إلى مجموعتك بنجاح!");
     }
 
-    /* ========================================================
-       19. SELLING CARDS FOR OFFICIAL ST CURRENCY
-       ======================================================== */
+    /* SELLING CARDS */
     window.openSellModal = (cardId) => {
       const card = window.AppState.cards.find(c => c.id === cardId);
       if (!card) return;
@@ -2145,13 +2148,11 @@
         closeModal("sellModal");
         showToast(`تم بيع البطاقة بنجاح! وحصلت على ${payout} ST`);
       } catch (e) {
-        showToast(e.message || "حدث خطأ أثناء إتمام عملية البيع", "error");
+        showToast(e.message || "حدث خطأ أثناء البيع", "error");
       }
     };
 
-    /* ========================================================
-       21. LEADERBOARD SYSTEM
-       ======================================================== */
+    /* LEADERBOARD */
     function renderLeaderboardMock() {
       const tbody = document.getElementById("leaderboardBody");
       const dummyLeaders = [
@@ -2169,7 +2170,7 @@
           <td class="font-num">${l.cards}</td>
           <td class="font-num" style="color:#fbbf24;">${l.st} ST</td>
           <td>
-            <button class="btn btn-secondary" style="padding:4px 10px; font-size:0.75rem;" onclick="showToast('عرض الملف الشخصي العام قريبًا')">
+            <button class="btn btn-secondary" style="padding:4px 10px; font-size:0.75rem;" onclick="showToast('عرض الملف متاح قريباً')">
               عرض الملف
             </button>
           </td>
@@ -2177,9 +2178,7 @@
       `).join('');
     }
 
-    /* ========================================================
-       22 & 23. PROFILE EDITING & CUSTOMIZATION
-       ======================================================== */
+    /* PROFILE EDIT (DIRECT HTTPS URLS ONLY) */
     window.openEditProfileModal = () => {
       const user = window.AppState.currentUser;
       if (!user) {
@@ -2197,13 +2196,22 @@
       const user = window.AppState.currentUser;
       if (!user) return;
 
-      const avatarUrl = document.getElementById("editAvatarUrl").value.trim();
-      const bannerUrl = document.getElementById("editBannerUrl").value.trim();
+      const avatarInput = document.getElementById("editAvatarUrl").value.trim();
+      const bannerInput = document.getElementById("editBannerUrl").value.trim();
       const bio = document.getElementById("editBio").value.trim();
 
+      if (avatarInput && !isValidImageUrl(avatarInput)) {
+        showToast("رابط الصورة الشخصية غير صالح! يجب أن يبدأ بـ https://", "error");
+        return;
+      }
+      if (bannerInput && !isValidImageUrl(bannerInput)) {
+        showToast("رابط صورة الغلاف غير صالح! يجب أن يبدأ بـ https://", "error");
+        return;
+      }
+
       if (!isFirebaseReady) {
-        if (avatarUrl) user.avatarUrl = avatarUrl;
-        if (bannerUrl) user.bannerUrl = bannerUrl;
+        if (avatarInput) user.avatarUrl = avatarInput;
+        if (bannerInput) user.bannerUrl = bannerInput;
         user.bio = bio;
         updatePlayerUI();
         closeModal("editProfileModal");
@@ -2212,20 +2220,23 @@
       }
 
       try {
-        await updateDoc(doc(db, "users", user.uid), {
-          avatarUrl: avatarUrl || user.avatarUrl,
-          bannerUrl: bannerUrl || user.bannerUrl,
+        const updateData = {
           bio: bio,
           updatedAt: serverTimestamp()
-        });
+        };
+        if (avatarInput) updateData.avatarUrl = avatarInput;
+        if (bannerInput) updateData.bannerUrl = bannerInput;
+
+        await updateDoc(doc(db, "users", user.uid), updateData);
         closeModal("editProfileModal");
         showToast("تم حفظ التغييرات بنجاح");
       } catch (err) {
+        console.error(err);
         showToast("فشل حفظ التعديلات", "error");
       }
     };
 
-    /* VIEW SWITCHING HELPER */
+    /* UTILITIES */
     window.switchView = (viewName) => {
       document.querySelectorAll(".view-section").forEach(sec => sec.classList.remove("active"));
       document.querySelectorAll(".nav-btn, .mobile-nav-btn").forEach(btn => {
@@ -2240,13 +2251,11 @@
       }
     };
 
-    /* MODAL CLOSE HELPER */
     window.closeModal = (modalId) => {
       const el = document.getElementById(modalId);
       if (el) el.classList.remove("active");
     };
 
-    /* TOAST HELPER */
     window.showToast = (msg, type = "success") => {
       const c = document.getElementById("toastContainer");
       const t = document.createElement("div");
@@ -2265,7 +2274,6 @@
       }, 3500);
     };
 
-    // Initialize Game Engine on DOM load
     window.addEventListener("DOMContentLoaded", () => {
       window.initGame();
     });
