@@ -341,6 +341,19 @@
       color: var(--accent-cyan);
     }
 
+    .daily-reward-banner {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(99, 102, 241, 0.15));
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
     .hero-banner {
       border-radius: var(--radius-lg);
       background: linear-gradient(135deg, rgba(30, 27, 75, 0.8), rgba(88, 28, 135, 0.4)), url('https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1600&q=80') center/cover;
@@ -422,6 +435,15 @@
     .btn-secondary:hover {
       background: rgba(255, 255, 255, 0.08);
       border-color: var(--border-hover);
+    }
+    .btn-market {
+      background: linear-gradient(135deg, #06b6d4, #0891b2);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(6, 182, 212, 0.35);
+    }
+    .btn-market:hover {
+      background: linear-gradient(135deg, #0891b2, #0e7490);
+      transform: translateY(-2px);
     }
     .btn:disabled {
       opacity: 0.5;
@@ -711,13 +733,6 @@
       font-weight: 800;
       margin-bottom: 4px;
     }
-    .pack-rates {
-      font-size: 0.75rem;
-      color: var(--text-dim);
-      margin: 8px 0 16px 0;
-      line-height: 1.4;
-      min-height: 38px;
-    }
     .pack-price {
       display: flex;
       align-items: center;
@@ -793,7 +808,7 @@
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
     .detail-row {
       display: flex;
@@ -802,11 +817,11 @@
       padding-bottom: 6px;
       font-size: 0.9rem;
     }
-    .detail-actions {
+    .detail-actions-trio {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 10px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 12px;
     }
 
     .pack-open-ceremony {
@@ -921,6 +936,35 @@
       min-width: 240px;
     }
 
+    .showcase-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+    .showcase-slot {
+      aspect-ratio: 3/4.4;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.02);
+      border: 2px dashed rgba(255, 255, 255, 0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: pointer;
+      transition: var(--transition);
+      overflow: hidden;
+    }
+    .showcase-slot:hover {
+      border-color: var(--accent-cyan);
+      background: rgba(6, 182, 212, 0.05);
+    }
+    .showcase-slot.filled {
+      border-style: solid;
+      border-color: var(--border-color);
+      background: var(--bg-surface);
+    }
+
     .toast-container {
       position: fixed;
       bottom: 24px;
@@ -977,6 +1021,7 @@
     @media (max-width: 1200px) {
       .streamer-grid { grid-template-columns: repeat(3, 1fr); }
       .packs-grid { grid-template-columns: repeat(2, 1fr); }
+      .showcase-container { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 900px) {
       .streamer-grid { grid-template-columns: repeat(2, 1fr); }
@@ -991,7 +1036,8 @@
       main.game-container { padding: 1rem; gap: 1.5rem; }
       .hero-banner { padding: 1.5rem; }
       .hero-content h2 { font-size: 1.6rem; }
-      .detail-actions { grid-template-columns: 1fr; }
+      .detail-actions-trio { grid-template-columns: 1fr; }
+      .showcase-container { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
@@ -1049,16 +1095,35 @@
 
     <!-- 1. HOME VIEW -->
     <section id="view-home" class="view-section active">
+      
+      <!-- DAILY REWARD BANNER -->
+      <div class="daily-reward-banner" id="dailyRewardBanner">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="background:rgba(245, 158, 11, 0.2); padding:10px; border-radius:12px; color:#fbbf24;">
+            <i data-lucide="calendar" size="28"></i>
+          </div>
+          <div>
+            <h3 style="font-size:1.1rem; font-weight:800; color:#fff;">مكافأة تسجيل الدخول اليومي</h3>
+            <p style="font-size:0.85rem; color:var(--text-muted);" id="dailyRewardStatusText">سجل دخولك يومياً واجمع 25 عملة ST لترقية حسابك!</p>
+          </div>
+        </div>
+        <div>
+          <button class="btn btn-st" id="claimDailyRewardBtn" onclick="claimDailyReward()">
+            <i data-lucide="gift"></i> جمع المكافأة (25 ST)
+          </button>
+        </div>
+      </div>
+
       <div class="hero-banner">
         <div class="hero-content">
           <h2>اجمع أندر بطاقات الستريمرز في الشرق الأوسط</h2>
-          <p>افتح بكجات حصرية، وتداول بطاقاتك النادرة، ونافس على قمة المتصدرين واكتشف مجموعات جديدة تتجدد في الوقت الفعلي.</p>
+          <p>افتح بكجات حصرية، تداول بطاقاتك مع اللاعبين بالسوق، استعرض تشكيلتك ونافس على قمة قائمة المتصدرين فوراً.</p>
           <div class="hero-actions">
             <button class="btn btn-st" onclick="switchView('market')">
               <i data-lucide="package-open"></i> فتح بكج
             </button>
-            <button class="btn btn-secondary" onclick="switchView('streamers')">
-              <i data-lucide="layers"></i> عرض المجموعات
+            <button class="btn btn-market" onclick="switchView('market')">
+              <i data-lucide="shopping-bag"></i> سوق اللاعبين
             </button>
             <button class="btn btn-secondary" onclick="switchView('inventory')">
               <i data-lucide="album"></i> بطاقاتي
@@ -1107,7 +1172,7 @@
       </div>
 
       <div class="filter-bar">
-        <input type="text" id="invSearch" class="input-field" placeholder="ابحث عن بطاقة..." oninput="filterInventory()" style="width: 200px;">
+        <input type="text" id="invSearch" class="input-field" placeholder="ابحث باسم البطاقة..." oninput="filterInventory()" style="width: 200px;">
         <select id="invRarityFilter" class="input-field" onchange="filterInventory()">
           <option value="ALL">جميع الندرات</option>
           <option value="COMMON">COMMON</option>
@@ -1130,13 +1195,35 @@
       <div class="section-head">
         <h2 class="section-title">بكجات البطاقات الرسمية</h2>
       </div>
-
       <div class="packs-grid" id="packsContainer"></div>
 
+      <!-- PLAYER MARKET -->
       <div class="section-head">
-        <h2 class="section-title">سوق اللاعبين</h2>
-        <button class="btn btn-secondary" onclick="showToast('السوق بين اللاعبين متاح قريباً')">+ عرض بطاقة للبيع</button>
+        <h2 class="section-title">سوق اللاعبين (تداول وبطاقات معروضة)</h2>
+        <button class="btn btn-st" onclick="openCreateListingModal()">
+          <i data-lucide="plus-circle"></i> + عرض بطاقة للبيع بالسوق
+        </button>
       </div>
+
+      <!-- MARKET SEARCH FILTER -->
+      <div class="filter-bar">
+        <input type="text" id="marketSearch" class="input-field" placeholder="بحث باسم البطاقة في السوق..." oninput="filterMarketListings()" style="width: 220px;">
+        <select id="marketRarityFilter" class="input-field" onchange="filterMarketListings()">
+          <option value="ALL">جميع الندرات</option>
+          <option value="COMMON">COMMON</option>
+          <option value="UNCOMMON">UNCOMMON</option>
+          <option value="RARE">RARE</option>
+          <option value="EPIC">EPIC</option>
+          <option value="LEGENDARY">LEGENDARY</option>
+          <option value="MYTHIC">MYTHIC</option>
+        </select>
+        <select id="marketSortFilter" class="input-field" onchange="filterMarketListings()">
+          <option value="newest">الأحدث</option>
+          <option value="price_asc">الأقل سعراً</option>
+          <option value="price_desc">الأعلى سعراً</option>
+        </select>
+      </div>
+
       <div class="cards-grid" id="marketCardsGrid"></div>
     </section>
 
@@ -1144,6 +1231,7 @@
     <section id="view-leaderboard" class="view-section">
       <div class="section-head">
         <h2 class="section-title">قائمة المتصدرين</h2>
+        <span style="color:var(--text-muted); font-size:0.85rem;">يتم تحديث الترتيب تلقائياً حسب المستوى بمجرد تسجيل اللاعبين</span>
       </div>
       <table class="leaderboard-table">
         <thead>
@@ -1151,9 +1239,8 @@
             <th>الترتيب</th>
             <th>اللاعب</th>
             <th>المستوى</th>
-            <th>البطاقات</th>
             <th>الرصيد ST</th>
-            <th>الملف</th>
+            <th>الملف واستعراض التشكيلة</th>
           </tr>
         </thead>
         <tbody id="leaderboardBody"></tbody>
@@ -1181,6 +1268,17 @@
       </div>
 
       <div id="profileSectionsContainer" style="display: flex; flex-direction: column; gap: 2rem;">
+        
+        <!-- SHOWCASE SECTION (MAX 4 CARDS) -->
+        <div class="profile-orderable-block" data-section-id="showcase">
+          <div class="section-head" style="margin-bottom:0.75rem;">
+            <h3 class="section-title">معرض البطاقات المميزة (تظهر للناس بالمتصدرين)</h3>
+            <span style="color:var(--text-dim); font-size:0.8rem;">الحد الأقصى 4 بطاقات</span>
+          </div>
+          <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:1rem;">اختر أندر 4 بطاقات تفخر بها لتظهر لكل من يزور ملفك من قائمة المتصدرين.</p>
+          <div class="showcase-container" id="profileShowcaseGrid"></div>
+        </div>
+
         <div class="profile-orderable-block" data-section-id="stats">
           <h3 class="section-title" style="margin-bottom: 1rem;">إحصائيات اللاعب</h3>
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
@@ -1226,6 +1324,10 @@
       <i data-lucide="shopping-bag" size="18"></i>
       <span>السوق</span>
     </button>
+    <button class="mobile-nav-btn" data-view="leaderboard" onclick="switchView('leaderboard')">
+      <i data-lucide="trophy" size="18"></i>
+      <span>المتصدرين</span>
+    </button>
     <button class="mobile-nav-btn" data-view="profile" onclick="switchView('profile')">
       <i data-lucide="user" size="18"></i>
       <span>ملفي</span>
@@ -1263,9 +1365,9 @@
     </div>
   </div>
 
-  <!-- CARD ENLARGEMENT MODAL -->
+  <!-- CARD ENLARGEMENT MODAL WITH 3 ACTION BUTTONS -->
   <div class="modal-backdrop" id="cardDetailModal">
-    <div class="modal-container" style="max-width: 480px;">
+    <div class="modal-container" style="max-width: 490px;">
       <div class="modal-header">
         <h3 id="detailCardTitle">معاينة البطاقة</h3>
         <i data-lucide="x" style="cursor:pointer;" onclick="closeModal('cardDetailModal')"></i>
@@ -1288,17 +1390,81 @@
             <strong class="font-num" id="detailCardNum"></strong>
           </div>
           <div class="detail-row">
-            <span style="color:var(--text-muted);">قيمة البيع الرسمية</span>
+            <span style="color:var(--text-muted);">قيمة البيع المباشر للنظام</span>
             <strong class="font-num" style="color:#fbbf24;" id="detailCardSellVal"></strong>
           </div>
           <div class="detail-row">
             <span style="color:var(--text-muted);">الكمية المملوكة لك</span>
             <strong class="font-num" id="detailCardQty"></strong>
           </div>
-          <p id="detailCardDesc" style="font-size:0.85rem; color:var(--text-muted); line-height:1.5; margin-top:6px;"></p>
+          <p id="detailCardDesc" style="font-size:0.85rem; color:var(--text-muted); line-height:1.5; margin-top:4px;"></p>
           
-          <div class="detail-actions" id="detailCardActions"></div>
+          <!-- 3 ACTION BUTTONS (DIRECT SELL, LIST IN MARKET, FAVORITE) -->
+          <div class="detail-actions-trio" id="detailCardActionsTrio"></div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MARKET LISTING MODAL -->
+  <div class="modal-backdrop" id="marketListingModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>عرض بطاقة للبيع في سوق اللاعبين</h3>
+        <i data-lucide="x" style="cursor:pointer;" onclick="closeModal('marketListingModal')"></i>
+      </div>
+      <div class="modal-body">
+        <form onsubmit="submitCardToListing(event)" style="display:flex; flex-direction:column; gap:1.2rem;">
+          <div>
+            <label style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:6px;">اختر البطاقة لعرضها:</label>
+            <select id="listingCardSelect" class="input-field" style="width:100%;" required></select>
+          </div>
+          <div>
+            <label style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:6px;">السعر المطلوب بعملة ST:</label>
+            <input type="number" id="listingPrice" class="input-field font-num" min="1" required placeholder="مثال: 50" style="width:100%;">
+          </div>
+          <button type="submit" class="btn btn-market" style="justify-content:center;">نشر في سوق اللاعبين</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHOWCASE SELECTION MODAL -->
+  <div class="modal-backdrop" id="showcaseSelectModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>اختر بطاقة لمعرض المتصدرين (1 من 4)</h3>
+        <i data-lucide="x" style="cursor:pointer;" onclick="closeModal('showcaseSelectModal')"></i>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">اختر إحدى البطاقات من مخزونك لتثبيتها في هذه الخانة:</p>
+        <div id="showcaseCardChoices" class="cards-grid" style="grid-template-columns: repeat(2, 1fr); max-height:400px; overflow-y:auto;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PUBLIC PLAYER PROFILE MODAL (FROM LEADERBOARD) -->
+  <div class="modal-backdrop" id="publicProfileModal">
+    <div class="modal-container" style="max-width: 580px;">
+      <div class="modal-header">
+        <h3 id="publicProfHeaderTitle">ملف اللاعب</h3>
+        <i data-lucide="x" style="cursor:pointer;" onclick="closeModal('publicProfileModal')"></i>
+      </div>
+      <div class="modal-body" style="padding:1rem;">
+        <div style="display:flex; align-items:center; gap:16px; margin-bottom:1.5rem; background:var(--bg-surface-elevated); padding:1rem; border-radius:var(--radius-md);">
+          <img id="publicProfAvatar" src="" class="profile-avatar-large" style="width:70px; height:70px;" onerror="this.onerror=null; this.src=getAvatarPlaceholder();">
+          <div>
+            <h3 id="publicProfUsername" style="font-weight:800; font-size:1.3rem;"></h3>
+            <p id="publicProfBio" style="font-size:0.85rem; color:var(--text-muted);"></p>
+            <div style="display:flex; gap:12px; margin-top:6px; font-size:0.8rem;">
+              <span>المستوى: <strong id="publicProfLevel" class="font-num" style="color:var(--accent-cyan);"></strong></span>
+              <span>الرصيد: <strong id="publicProfSt" class="font-num" style="color:#fbbf24;"></strong></span>
+            </div>
+          </div>
+        </div>
+        
+        <h4 class="section-title" style="font-size:1.1rem; margin-bottom:0.75rem;">بطاقات المعرض المعروضة للجميع</h4>
+        <div class="cards-grid" id="publicProfShowcaseGrid" style="grid-template-columns: repeat(4, 1fr);"></div>
       </div>
     </div>
   </div>
@@ -1314,13 +1480,13 @@
   <div class="modal-backdrop" id="sellModal">
     <div class="modal-container">
       <div class="modal-header">
-        <h3>تأكيد بيع البطاقة</h3>
+        <h3>تأكيد البيع المباشر للنظام</h3>
         <i data-lucide="x" style="cursor:pointer;" onclick="closeModal('sellModal')"></i>
       </div>
       <div class="modal-body" style="text-align:center;">
-        <p style="margin-bottom:1rem;">هل أنت متأكد من رغبتك في بيع هذه البطاقة للنظام؟</p>
+        <p style="margin-bottom:1rem;">هل أنت متأكد من بيع هذه البطاقة مباشرة للنظام والحصول على قيمتها الفورية؟</p>
         <div style="background:var(--bg-surface-elevated); padding:1rem; border-radius:var(--radius-sm); margin-bottom:1.5rem;">
-          <span>ستحصل فوريًا على:</span>
+          <span>ستحصل فوراً على:</span>
           <h2 style="color:#fbbf24; margin-top:4px;" class="font-num" id="sellPayoutAmount">0 ST</h2>
         </div>
         <div style="display:flex; gap:10px;">
@@ -1361,7 +1527,7 @@
   <!-- TOAST CONTAINER -->
   <div class="toast-container" id="toastContainer"></div>
 
-  <!-- FIREBASE CLIENT SDK -->
+  <!-- FIREBASE & CORE GAME ENGINE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
     import { 
@@ -1377,6 +1543,7 @@
       getDoc, 
       setDoc, 
       updateDoc, 
+      deleteDoc,
       collection, 
       query, 
       where, 
@@ -1385,7 +1552,8 @@
       runTransaction, 
       serverTimestamp, 
       increment,
-      limit
+      limit,
+      orderBy
     } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 
     /* FIREBASE CONFIGURATION */
@@ -1408,7 +1576,7 @@
       db = getFirestore(app);
       isFirebaseReady = true;
     } catch (e) {
-      console.warn("Firebase not configured. Running with mock preview data.", e);
+      console.warn("Firebase config fallback to local mock mode.", e);
     }
 
     /* APPLICATION STATE */
@@ -1418,6 +1586,9 @@
       streamers: [],
       cards: [],
       myCards: [],
+      marketListings: [],
+      allUsers: [],
+      selectedShowcaseSlotIndex: null,
       gameSettings: {
         packs: {
           COMMON: { price: 10, imageUrl: "", enabled: true },
@@ -1437,24 +1608,11 @@
       renderPacks();
 
       if (!isFirebaseReady) {
-        window.AppState.currentUser = {
-          uid: "demo_admin",
-          username: "اللاعب_الأول",
-          role: "admin",
-          st: 50,
-          level: 1,
-          avatarUrl: "",
-          bannerUrl: "",
-          bio: "لاعب جديد في بطاقات الستريمرز"
-        };
-        updatePlayerUI();
-        renderStreamersList();
-        renderMyCards();
-        renderLeaderboardMock();
+        initMockData();
         return;
       }
 
-      // Realtime Settings
+      // Realtime Global Settings
       onSnapshot(doc(db, "gameSettings", "global"), (snap) => {
         if (snap.exists()) {
           const data = snap.data();
@@ -1477,6 +1635,24 @@
         snap.forEach(d => list.push({ id: d.id, ...d.data() }));
         window.AppState.cards = list;
         renderMyCards();
+        renderMarketCards();
+      });
+
+      // Realtime Market Listings
+      onSnapshot(collection(db, "marketListings"), (snap) => {
+        const list = [];
+        snap.forEach(d => list.push({ id: d.id, ...d.data() }));
+        window.AppState.marketListings = list;
+        renderMarketCards();
+      });
+
+      // Realtime Leaderboard (Registered Users sorted by level)
+      const usersQuery = query(collection(db, "users"), orderBy("level", "desc"), limit(50));
+      onSnapshot(usersQuery, (snap) => {
+        const list = [];
+        snap.forEach(d => list.push({ uid: d.id, ...d.data() }));
+        window.AppState.allUsers = list;
+        renderLeaderboard();
       });
 
       // Auth Listener
@@ -1489,15 +1665,63 @@
           window.AppState.currentUser = null;
           window.AppState.myCards = [];
           updatePlayerUI();
+          renderDailyRewardStatus();
         }
       });
     };
+
+    function initMockData() {
+      window.AppState.streamers = [
+        { id: "s1", name: "AboFlah", imageUrl: "", coverImageUrl: "", description: "مجموعة ستريمر الألعاب الشهير" },
+        { id: "s2", name: "BanderitaX", imageUrl: "", coverImageUrl: "", description: "مجموعة التحديات والمرح" }
+      ];
+      window.AppState.cards = [
+        { id: "c1", streamerId: "s1", name: "درع المجد", rarity: "LEGENDARY", cardNumber: 1, sellValue: 150, imageUrl: "", description: "درع الأساطير الحصري" },
+        { id: "c2", streamerId: "s1", name: "سيف النصر", rarity: "EPIC", cardNumber: 2, sellValue: 60, imageUrl: "", description: "سيف حاد للمواقف الحاسمة" },
+        { id: "c3", streamerId: "s2", name: "الضحكة الذهبية", rarity: "RARE", cardNumber: 3, sellValue: 30, imageUrl: "", description: "بطاقة الحظ والسرور" },
+        { id: "c4", streamerId: "s2", name: "تميمة البداية", rarity: "COMMON", cardNumber: 4, sellValue: 10, imageUrl: "", description: "تميمة اللاعب المبتدئ" }
+      ];
+      window.AppState.marketListings = [
+        { id: "m1", sellerUid: "mock_player", sellerName: "Falcon", cardId: "c2", price: 80, createdAt: new Date().toISOString() }
+      ];
+      window.AppState.allUsers = [
+        { uid: "u1", username: "Legend_Killer", level: 12, st: 4500, showcaseCards: ["c1", "c2"] },
+        { uid: "u2", username: "GamerDZ", level: 8, st: 1800, showcaseCards: ["c3"] },
+        { uid: "demo_admin", username: "ممدوح_ستريمر", level: 4, st: 250, showcaseCards: ["c1"] }
+      ];
+      window.AppState.currentUser = {
+        uid: "demo_admin",
+        username: "ممدوح_ستريمر",
+        role: "admin",
+        st: 250,
+        level: 4,
+        xp: 120,
+        avatarUrl: "",
+        bannerUrl: "",
+        bio: "لاعب ستريمر محترف ومنافس قوي",
+        showcaseCards: ["c1"],
+        lastDailyClaim: null
+      };
+      window.AppState.myCards = [
+        { cardId: "c1", quantity: 1, favorite: true },
+        { cardId: "c3", quantity: 2, favorite: false }
+      ];
+      updatePlayerUI();
+      renderStreamersList();
+      renderMyCards();
+      renderMarketCards();
+      renderLeaderboard();
+      renderShowcaseSlots();
+      renderDailyRewardStatus();
+    }
 
     function listenToUserData(uid) {
       onSnapshot(doc(db, "users", uid), (snap) => {
         if (snap.exists()) {
           window.AppState.currentUser = { uid: snap.id, ...snap.data() };
           updatePlayerUI();
+          renderShowcaseSlots();
+          renderDailyRewardStatus();
         }
       });
     }
@@ -1509,8 +1733,107 @@
         snap.forEach(d => list.push({ id: d.id, ...d.data() }));
         window.AppState.myCards = list;
         renderMyCards();
+        renderShowcaseSlots();
       });
     }
+
+    /* DAILY LOGIN REWARD LOGIC */
+    function renderDailyRewardStatus() {
+      const user = window.AppState.currentUser;
+      const btn = document.getElementById("claimDailyRewardBtn");
+      const text = document.getElementById("dailyRewardStatusText");
+
+      if (!user) {
+        btn.disabled = false;
+        btn.innerHTML = `<i data-lucide="gift"></i> تسجيل الدخول للجمع`;
+        text.innerText = "سجل دخولك لجمع مكافأتك اليومية (25 ST + نقاط مستوى)!";
+        lucide.createIcons();
+        return;
+      }
+
+      const todayStr = new Date().toISOString().split('T')[0];
+      const claimedToday = user.lastDailyClaim === todayStr;
+
+      if (claimedToday) {
+        btn.disabled = true;
+        btn.classList.replace("btn-st", "btn-secondary");
+        btn.innerHTML = `<i data-lucide="check-circle-2"></i> تم الجمع اليوم`;
+        text.innerText = "لقد حصلت على مكافأة اليوم بالفعل! عد غداً للمزيد.";
+      } else {
+        btn.disabled = false;
+        btn.classList.replace("btn-secondary", "btn-st");
+        btn.innerHTML = `<i data-lucide="gift"></i> جمع المكافأة (25 ST)`;
+        text.innerText = "مكافأتك اليومية جاهزة ومتاحة الآن، اضغط لجمعها!";
+      }
+      lucide.createIcons();
+    }
+
+    window.claimDailyReward = async () => {
+      const user = window.AppState.currentUser;
+      if (!user) {
+        openAuthModal();
+        return;
+      }
+
+      const todayStr = new Date().toISOString().split('T')[0];
+      if (user.lastDailyClaim === todayStr) {
+        showToast("لقد قمت بجمع مكافأتك اليومية مسبقاً!", "error");
+        return;
+      }
+
+      const rewardST = 25;
+      const gainedXP = 50;
+
+      if (!isFirebaseReady) {
+        user.st = (user.st || 0) + rewardST;
+        user.xp = (user.xp || 0) + gainedXP;
+        if (user.xp >= (user.level || 1) * 100) {
+          user.level = (user.level || 1) + 1;
+          user.xp = 0;
+          showToast(`ارتقيت إلى المستوى ${user.level}! مبارك! 🎉`);
+        }
+        user.lastDailyClaim = todayStr;
+        updatePlayerUI();
+        renderDailyRewardStatus();
+        renderLeaderboard();
+        confetti({ particleCount: 80, spread: 70 });
+        showToast(`تم جمع مكافأة الدخول اليومي بنجاح (+${rewardST} ST)`);
+        return;
+      }
+
+      try {
+        const userRef = doc(db, "users", user.uid);
+        await runTransaction(db, async (t) => {
+          const uDoc = await t.get(userRef);
+          if (!uDoc.exists()) throw new Error("تعذر العثور على حسابك");
+          const uData = uDoc.data();
+          if (uData.lastDailyClaim === todayStr) {
+            throw new Error("لقد قمت بجمع مكافأة اليوم بالفعل.");
+          }
+
+          let newXp = (uData.xp || 0) + gainedXP;
+          let newLvl = uData.level || 1;
+          if (newXp >= newLvl * 100) {
+            newLvl += 1;
+            newXp = 0;
+          }
+
+          t.update(userRef, {
+            st: increment(rewardST),
+            xp: newXp,
+            level: newLvl,
+            lastDailyClaim: todayStr,
+            updatedAt: serverTimestamp()
+          });
+        });
+
+        confetti({ particleCount: 90, spread: 70 });
+        showToast(`تم جمع مكافأة الدخول اليومي بنجاح (+${rewardST} ST)`);
+      } catch (err) {
+        console.error(err);
+        showToast(err.message || "فشل جمع المكافأة", "error");
+      }
+    };
 
     /* AUTHENTICATION */
     let isRegisterMode = false;
@@ -1542,11 +1865,17 @@
           username: username,
           st: 50,
           level: 1,
+          xp: 0,
           role: "player",
           avatarUrl: "",
-          bannerUrl: ""
+          bannerUrl: "",
+          showcaseCards: [],
+          lastDailyClaim: null
         };
+        window.AppState.allUsers.push(window.AppState.currentUser);
         updatePlayerUI();
+        renderLeaderboard();
+        renderDailyRewardStatus();
         closeModal("authModal");
         showToast("تم تسجيل الدخول بنجاح");
         return;
@@ -1587,20 +1916,20 @@
             avatarUrl: "",
             bannerUrl: "",
             bio: "لاعب جديد في بطاقات الستريمرز",
-            profileTheme: "default",
-            profileLayout: ["stats", "favorites"],
+            showcaseCards: [],
+            lastDailyClaim: null,
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp()
           });
 
-          showToast(isFirstUser ? "تم إنشاء حساب الأدمن الأول بنجاح! رصيدك 50 ST" : "تم إنشاء حسابك بنجاح! رصيدك 50 ST");
+          showToast("تم إنشاء حسابك وتصدرك القائمة فوراً!");
         } else {
           await signInWithEmailAndPassword(auth, internalEmail, pass);
           showToast("تم تسجيل الدخول بنجاح");
         }
         closeModal("authModal");
       } catch (error) {
-        console.error("Firebase error:", error);
+        console.error("Auth error:", error);
         showToast("خطأ في تسجيل الدخول أو كلمة المرور", "error");
       }
     };
@@ -1610,6 +1939,7 @@
         if (isFirebaseReady) await signOut(auth);
         window.AppState.currentUser = null;
         updatePlayerUI();
+        renderDailyRewardStatus();
         showToast("تم تسجيل الخروج");
       } catch (error) {
         console.error("Logout error:", error);
@@ -1755,6 +2085,7 @@
       `;
     }
 
+    /* CARD DETAILS MODAL WITH 3 ACTIONS (SELL DIRECT, LIST IN MARKET, FAVORITE) */
     window.handleCardClick = (cardId, isOwned) => {
       const card = window.AppState.cards.find(c => c.id === cardId);
       if (!card) return;
@@ -1776,21 +2107,24 @@
 
       document.getElementById("largeCardFrame").className = `card-large-view rarity-${card.rarity}`;
 
-      const actionsDiv = document.getElementById("detailCardActions");
+      const trioContainer = document.getElementById("detailCardActionsTrio");
       if (isOwned && quantity > 0) {
-        actionsDiv.innerHTML = `
-          <button class="btn btn-st" onclick="openSellModal('${card.id}')">
-            <i data-lucide="coins"></i> بيع (${card.sellValue || 10} ST)
+        trioContainer.innerHTML = `
+          <button class="btn btn-st" onclick="openSellModal('${card.id}')" title="بيع فوري للنظام">
+            <i data-lucide="coins" size="16"></i> بيع مباشر
           </button>
-          <button class="btn btn-secondary" onclick="toggleFavoriteCard('${card.id}')">
-            <i data-lucide="heart" style="${inventoryItem?.favorite ? 'fill:#ef4444; color:#ef4444;' : ''}"></i> 
-            ${inventoryItem?.favorite ? 'إزالة المفضلة' : 'تفضيل'}
+          <button class="btn btn-market" onclick="openCreateListingForCard('${card.id}')" title="عرض في سوق اللاعبين">
+            <i data-lucide="store" size="16"></i> عرض بالسوق
+          </button>
+          <button class="btn btn-secondary" onclick="toggleFavoriteCard('${card.id}')" title="تفضيل البطاقة">
+            <i data-lucide="heart" size="16" style="${inventoryItem?.favorite ? 'fill:#ef4444; color:#ef4444;' : ''}"></i> 
+            ${inventoryItem?.favorite ? 'المفضلة' : 'مفضلة'}
           </button>
         `;
       } else {
-        actionsDiv.innerHTML = `
-          <button class="btn btn-primary" style="grid-column: span 2;" onclick="switchView('market'); closeModal('cardDetailModal');">
-            البحث عنها في السوق
+        trioContainer.innerHTML = `
+          <button class="btn btn-primary" style="grid-column: span 3; justify-content:center;" onclick="switchView('market'); closeModal('cardDetailModal');">
+            البحث عنها في سوق اللاعبين
           </button>
         `;
       }
@@ -1882,7 +2216,7 @@
       if (!isFirebaseReady) {
         item.favorite = newFav;
         renderMyCards();
-        closeModal("cardDetailModal");
+        handleCardClick(cardId, true);
         showToast(newFav ? "تمت إضافة البطاقة للمفضلة" : "تمت الإزالة من المفضلة");
         return;
       }
@@ -1897,7 +2231,7 @@
         if (!snap.empty) {
           await updateDoc(snap.docs[0].ref, { favorite: newFav });
           showToast(newFav ? "تمت إضافة البطاقة للمفضلة" : "تمت الإزالة من المفضلة");
-          closeModal("cardDetailModal");
+          handleCardClick(cardId, true);
         }
       } catch (error) {
         console.error(error);
@@ -1905,13 +2239,477 @@
       }
     };
 
+    /* PLAYER MARKET LOGIC (LISTING, BUYING, SEARCHING) */
+    window.openCreateListingModal = () => {
+      const user = window.AppState.currentUser;
+      if (!user) {
+        openAuthModal();
+        return;
+      }
+      const myCards = window.AppState.myCards;
+      const allCards = window.AppState.cards;
+      const select = document.getElementById("listingCardSelect");
+
+      if (!myCards.length) {
+        showToast("ليس لديك بطاقات لعرضها بالسوق!", "error");
+        return;
+      }
+
+      select.innerHTML = myCards.map(mc => {
+        const c = allCards.find(item => item.id === mc.cardId);
+        if (!c) return '';
+        return `<option value="${c.id}">${c.name} (${c.rarity}) - مملوك: ${mc.quantity || 1}</option>`;
+      }).join('');
+
+      document.getElementById("marketListingModal").classList.add("active");
+    };
+
+    window.openCreateListingForCard = (cardId) => {
+      closeModal("cardDetailModal");
+      openCreateListingModal();
+      const select = document.getElementById("listingCardSelect");
+      if (select) select.value = cardId;
+    };
+
+    window.submitCardToListing = async (e) => {
+      e.preventDefault();
+      const user = window.AppState.currentUser;
+      if (!user) return;
+
+      const cardId = document.getElementById("listingCardSelect").value;
+      const price = parseInt(document.getElementById("listingPrice").value, 10);
+
+      if (!cardId || isNaN(price) || price <= 0) {
+        showToast("يرجى إدخال سعر صحيح", "error");
+        return;
+      }
+
+      if (!isFirebaseReady) {
+        const owned = window.AppState.myCards.find(mc => mc.cardId === cardId);
+        if (!owned || owned.quantity <= 0) {
+          showToast("لا تملك هذه البطاقة!", "error");
+          return;
+        }
+        owned.quantity -= 1;
+        if (owned.quantity <= 0) {
+          window.AppState.myCards = window.AppState.myCards.filter(mc => mc.cardId !== cardId);
+        }
+        window.AppState.marketListings.unshift({
+          id: "listing_" + Date.now(),
+          sellerUid: user.uid,
+          sellerName: user.username,
+          cardId: cardId,
+          price: price,
+          createdAt: new Date().toISOString()
+        });
+        renderMyCards();
+        renderMarketCards();
+        closeModal("marketListingModal");
+        showToast(`تم عرض البطاقة بالسوق بنجاح مقابل ${price} ST`);
+        return;
+      }
+
+      try {
+        await runTransaction(db, async (t) => {
+          const pCardRef = doc(db, "playerCards", `${user.uid}_${cardId}`);
+          const pCardDoc = await t.get(pCardRef);
+
+          if (!pCardDoc.exists() || pCardDoc.data().quantity <= 0) {
+            throw new Error("لا تملك كمية كافية من هذه البطاقة لعرضها.");
+          }
+
+          const currentQty = pCardDoc.data().quantity;
+          if (currentQty > 1) {
+            t.update(pCardRef, { quantity: increment(-1) });
+          } else {
+            t.delete(pCardRef);
+          }
+
+          const newListingRef = doc(collection(db, "marketListings"));
+          t.set(newListingRef, {
+            sellerUid: user.uid,
+            sellerName: user.username,
+            cardId: cardId,
+            price: price,
+            createdAt: serverTimestamp()
+          });
+        });
+
+        closeModal("marketListingModal");
+        showToast(`تم عرض البطاقة بسوق اللاعبين بسعر ${price} ST`);
+      } catch (err) {
+        console.error(err);
+        showToast(err.message || "فشل عرض البطاقة بالسوق", "error");
+      }
+    };
+
+    window.buyMarketCard = async (listingId) => {
+      const user = window.AppState.currentUser;
+      if (!user) {
+        openAuthModal();
+        return;
+      }
+
+      const listing = window.AppState.marketListings.find(l => l.id === listingId);
+      if (!listing) return;
+
+      if (listing.sellerUid === user.uid) {
+        showToast("هذه بطاقتك المعروضة للبيع!", "error");
+        return;
+      }
+
+      if ((user.st || 0) < listing.price) {
+        showToast(`رصيدك غير كافٍ! تحتاج إلى ${listing.price} ST`, "error");
+        return;
+      }
+
+      if (!isFirebaseReady) {
+        user.st -= listing.price;
+        const seller = window.AppState.allUsers.find(u => u.uid === listing.sellerUid);
+        if (seller) seller.st = (seller.st || 0) + listing.price;
+
+        const owned = window.AppState.myCards.find(mc => mc.cardId === listing.cardId);
+        if (owned) owned.quantity += 1;
+        else window.AppState.myCards.push({ cardId: listing.cardId, quantity: 1, favorite: false });
+
+        window.AppState.marketListings = window.AppState.marketListings.filter(l => l.id !== listingId);
+        updatePlayerUI();
+        renderMyCards();
+        renderMarketCards();
+        confetti({ particleCount: 70, spread: 60 });
+        showToast(`مبروك! اشتريت البطاقة بنجاح مقابل ${listing.price} ST`);
+        return;
+      }
+
+      try {
+        await runTransaction(db, async (t) => {
+          const listingRef = doc(db, "marketListings", listingId);
+          const buyerRef = doc(db, "users", user.uid);
+          const sellerRef = doc(db, "users", listing.sellerUid);
+          const buyerCardRef = doc(db, "playerCards", `${user.uid}_${listing.cardId}`);
+
+          const listingDoc = await t.get(listingRef);
+          if (!listingDoc.exists()) throw new Error("تم بيع هذه البطاقة بالفعل أو حُذفت.");
+
+          const buyerDoc = await t.get(buyerRef);
+          if (!buyerDoc.exists()) throw new Error("المستخدم غير موجود.");
+
+          const currentST = buyerDoc.data().st || 0;
+          if (currentST < listing.price) throw new Error("رصيدك من ST لا يكفي لإتمام الشراء.");
+
+          const buyerCardDoc = await t.get(buyerCardRef);
+
+          // خصم من المشتري وإضافة للبائع
+          t.update(buyerRef, { st: currentST - listing.price });
+          t.update(sellerRef, { st: increment(listing.price) });
+
+          // إضافة البطاقة للمشتري
+          if (buyerCardDoc.exists()) {
+            t.update(buyerCardRef, { quantity: increment(1) });
+          } else {
+            t.set(buyerCardRef, {
+              uid: user.uid,
+              cardId: listing.cardId,
+              quantity: 1,
+              favorite: false,
+              obtainedAt: serverTimestamp()
+            });
+          }
+
+          // حذف العرض من السوق
+          t.delete(listingRef);
+        });
+
+        confetti({ particleCount: 90, spread: 60 });
+        showToast(`تم شراء البطاقة وإضافتها لمجموعتك بنجاح!`);
+      } catch (err) {
+        console.error(err);
+        showToast(err.message || "فشلت عملية الشراء", "error");
+      }
+    };
+
+    function renderMarketCards() {
+      const container = document.getElementById("marketCardsGrid");
+      if (!container) return;
+
+      const listings = window.AppState.marketListings;
+      const allCards = window.AppState.cards;
+      const user = window.AppState.currentUser;
+
+      if (!listings.length) {
+        container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:3rem; color:var(--text-muted);">لا توجد بطاقات معروضة في سوق اللاعبين حالياً. كن أول من يعرض بطاقته!</div>`;
+        return;
+      }
+
+      container.innerHTML = listings.map(l => {
+        const card = allCards.find(c => c.id === l.cardId);
+        if (!card) return '';
+        const cardImg = isValidImageUrl(card.imageUrl) ? card.imageUrl : getCardPlaceholder(card.name);
+        const isMine = user && user.uid === l.sellerUid;
+
+        return `
+          <div class="game-card rarity-${card.rarity}">
+            <div class="card-thumb" onclick="handleCardClick('${card.id}', false)">
+              <span class="card-badge-num font-num">#${card.cardNumber || '00'}</span>
+              <span class="card-badge-rarity">${card.rarity}</span>
+              <img src="${cardImg}" alt="${card.name}" onerror="this.onerror=null; this.src=getCardPlaceholder('بطاقة');">
+            </div>
+            <div class="card-meta">
+              <span class="card-title">${card.name}</span>
+              <div class="card-sub">
+                <span>البائع: <strong>${l.sellerName || 'لاعب'}</strong></span>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
+                <span class="font-num" style="color:#fbbf24; font-weight:800; font-size:1.1rem;">${l.price} ST</span>
+                ${isMine ? `
+                  <span style="font-size:0.75rem; color:var(--accent-cyan); font-weight:700;">بطاقتك المعروضة</span>
+                ` : `
+                  <button class="btn btn-st" style="padding:4px 12px; font-size:0.8rem;" onclick="buyMarketCard('${l.id}')">
+                    شراء
+                  </button>
+                `}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    window.filterMarketListings = () => {
+      const search = document.getElementById("marketSearch").value.toLowerCase();
+      const rarity = document.getElementById("marketRarityFilter").value;
+      const sort = document.getElementById("marketSortFilter").value;
+
+      const allCards = window.AppState.cards;
+      let list = [...window.AppState.marketListings];
+
+      list = list.filter(l => {
+        const card = allCards.find(c => c.id === l.cardId);
+        if (!card) return false;
+        const matchName = card.name.toLowerCase().includes(search);
+        const matchRarity = rarity === "ALL" || card.rarity === rarity;
+        return matchName && matchRarity;
+      });
+
+      if (sort === "price_asc") list.sort((a, b) => a.price - b.price);
+      else if (sort === "price_desc") list.sort((a, b) => b.price - a.price);
+
+      const container = document.getElementById("marketCardsGrid");
+      const user = window.AppState.currentUser;
+
+      if (!list.length) {
+        container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:2rem; color:var(--text-muted);">لا توجد بطاقات مطابقة لخيارات البحث.</div>`;
+        return;
+      }
+
+      container.innerHTML = list.map(l => {
+        const card = allCards.find(c => c.id === l.cardId);
+        if (!card) return '';
+        const cardImg = isValidImageUrl(card.imageUrl) ? card.imageUrl : getCardPlaceholder(card.name);
+        const isMine = user && user.uid === l.sellerUid;
+
+        return `
+          <div class="game-card rarity-${card.rarity}">
+            <div class="card-thumb" onclick="handleCardClick('${card.id}', false)">
+              <span class="card-badge-num font-num">#${card.cardNumber || '00'}</span>
+              <span class="card-badge-rarity">${card.rarity}</span>
+              <img src="${cardImg}" alt="${card.name}" onerror="this.onerror=null; this.src=getCardPlaceholder('بطاقة');">
+            </div>
+            <div class="card-meta">
+              <span class="card-title">${card.name}</span>
+              <div class="card-sub">
+                <span>البائع: <strong>${l.sellerName || 'لاعب'}</strong></span>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
+                <span class="font-num" style="color:#fbbf24; font-weight:800; font-size:1.1rem;">${l.price} ST</span>
+                ${isMine ? `
+                  <span style="font-size:0.75rem; color:var(--accent-cyan); font-weight:700;">بطاقتك المعروضة</span>
+                ` : `
+                  <button class="btn btn-st" style="padding:4px 12px; font-size:0.8rem;" onclick="buyMarketCard('${l.id}')">
+                    شراء
+                  </button>
+                `}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      lucide.createIcons();
+    };
+
+    /* LEADERBOARD (AUTOMATIC SORT BY LEVEL ON REGISTRATION) */
+    function renderLeaderboard() {
+      const tbody = document.getElementById("leaderboardBody");
+      if (!tbody) return;
+
+      const users = [...window.AppState.allUsers];
+      users.sort((a, b) => (b.level || 1) - (a.level || 1));
+
+      tbody.innerHTML = users.map((u, idx) => {
+        const rank = idx + 1;
+        const rankBadgeClass = rank <= 3 ? `rank-${rank}` : '';
+        return `
+          <tr>
+            <td><span class="rank-badge ${rankBadgeClass}">${rank}</span></td>
+            <td><strong>${u.username}</strong></td>
+            <td class="font-num" style="color:var(--accent-cyan); font-weight:800;">${u.level || 1}</td>
+            <td class="font-num" style="color:#fbbf24;">${Number(u.st || 0).toLocaleString()} ST</td>
+            <td>
+              <button class="btn btn-secondary" style="padding:4px 10px; font-size:0.75rem;" onclick="openPublicPlayerProfile('${u.uid}')">
+                <i data-lucide="eye" size="14"></i> استعراض التشكيلة
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+      lucide.createIcons();
+    }
+
+    /* PROFILE SHOWCASE LOGIC (MAX 4 CARDS) */
+    function renderShowcaseSlots() {
+      const container = document.getElementById("profileShowcaseGrid");
+      if (!container) return;
+
+      const user = window.AppState.currentUser;
+      const showcaseCards = (user && user.showcaseCards) ? user.showcaseCards : [];
+      const allCards = window.AppState.cards;
+
+      let slotsHTML = '';
+      for (let i = 0; i < 4; i++) {
+        const cardId = showcaseCards[i];
+        const card = cardId ? allCards.find(c => c.id === cardId) : null;
+
+        if (card) {
+          const cardImg = isValidImageUrl(card.imageUrl) ? card.imageUrl : getCardPlaceholder(card.name);
+          slotsHTML += `
+            <div class="showcase-slot filled rarity-${card.rarity}" onclick="handleShowcaseSlotClick(${i})">
+              <div class="card-thumb" style="width:100%; height:100%;">
+                <img src="${cardImg}" alt="${card.name}" onerror="this.onerror=null; this.src=getCardPlaceholder('بطاقة');">
+              </div>
+              <div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.7); padding:4px 6px; text-align:center;">
+                <span style="font-size:0.75rem; font-weight:700;">${card.name}</span>
+              </div>
+            </div>
+          `;
+        } else {
+          slotsHTML += `
+            <div class="showcase-slot" onclick="handleShowcaseSlotClick(${i})">
+              <i data-lucide="plus" size="28" style="color:var(--text-dim); margin-bottom:6px;"></i>
+              <span style="font-size:0.75rem; color:var(--text-dim);">خانة معرض ${i+1}</span>
+            </div>
+          `;
+        }
+      }
+      container.innerHTML = slotsHTML;
+      lucide.createIcons();
+    }
+
+    window.handleShowcaseSlotClick = (slotIndex) => {
+      const user = window.AppState.currentUser;
+      if (!user) {
+        openAuthModal();
+        return;
+      }
+      window.AppState.selectedShowcaseSlotIndex = slotIndex;
+      const myCards = window.AppState.myCards;
+      const allCards = window.AppState.cards;
+      const choicesContainer = document.getElementById("showcaseCardChoices");
+
+      if (!myCards.length) {
+        showToast("ليس لديك بطاقات لإضافتها للمعرض!", "error");
+        return;
+      }
+
+      choicesContainer.innerHTML = myCards.map(mc => {
+        const c = allCards.find(item => item.id === mc.cardId);
+        if (!c) return '';
+        const cImg = isValidImageUrl(c.imageUrl) ? c.imageUrl : getCardPlaceholder(c.name);
+        return `
+          <div class="game-card rarity-${c.rarity}" onclick="assignCardToShowcase('${c.id}')" style="aspect-ratio:3/4;">
+            <div class="card-thumb">
+              <img src="${cImg}" alt="${c.name}" onerror="this.onerror=null; this.src=getCardPlaceholder('بطاقة');">
+            </div>
+            <div class="card-meta">
+              <span class="card-title">${c.name}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById("showcaseSelectModal").classList.add("active");
+    };
+
+    window.assignCardToShowcase = async (cardId) => {
+      const user = window.AppState.currentUser;
+      if (!user) return;
+
+      const slotIdx = window.AppState.selectedShowcaseSlotIndex;
+      let currentShowcase = [...(user.showcaseCards || [])];
+
+      currentShowcase[slotIdx] = cardId;
+      // لا يتجاوز 4 بطاقات
+      currentShowcase = currentShowcase.slice(0, 4);
+
+      if (!isFirebaseReady) {
+        user.showcaseCards = currentShowcase;
+        renderShowcaseSlots();
+        closeModal("showcaseSelectModal");
+        showToast("تم تحديث بطاقة المعرض بنجاح");
+        return;
+      }
+
+      try {
+        await updateDoc(doc(db, "users", user.uid), {
+          showcaseCards: currentShowcase,
+          updatedAt: serverTimestamp()
+        });
+        closeModal("showcaseSelectModal");
+        showToast("تم تحديث معرض بطاقاتك المميزة بنجاح");
+      } catch (e) {
+        console.error(e);
+        showToast("فشل تحديث المعرض", "error");
+      }
+    };
+
+    /* PUBLIC PROFILE VIEWER FOR LEADERBOARD */
+    window.openPublicPlayerProfile = (uid) => {
+      const targetUser = window.AppState.allUsers.find(u => u.uid === uid);
+      if (!targetUser) return;
+
+      document.getElementById("publicProfHeaderTitle").innerText = `ملف اللاعب: ${targetUser.username}`;
+      document.getElementById("publicProfUsername").innerText = targetUser.username;
+      document.getElementById("publicProfBio").innerText = targetUser.bio || "لاعب بطاقات الستريمرز";
+      document.getElementById("publicProfLevel").innerText = targetUser.level || 1;
+      document.getElementById("publicProfSt").innerText = `${Number(targetUser.st || 0).toLocaleString()} ST`;
+      document.getElementById("publicProfAvatar").src = isValidImageUrl(targetUser.avatarUrl) ? targetUser.avatarUrl : getAvatarPlaceholder();
+
+      const showcaseGrid = document.getElementById("publicProfShowcaseGrid");
+      const showcaseIds = targetUser.showcaseCards || [];
+      const allCards = window.AppState.cards;
+
+      if (!showcaseIds.length) {
+        showcaseGrid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:1.5rem; color:var(--text-dim);">لم يقم اللاعب باختيار بطاقات لمعرضه بعد.</div>`;
+      } else {
+        showcaseGrid.innerHTML = showcaseIds.map(cId => {
+          const card = allCards.find(c => c.id === cId);
+          if (!card) return '';
+          return createCardElementHTML(card, true, 1);
+        }).join('');
+      }
+
+      document.getElementById("publicProfileModal").classList.add("active");
+      lucide.createIcons();
+    };
+
+    /* PACKS ENGINE */
     function renderPacks() {
       const packs = window.AppState.gameSettings?.packs || {};
       const container = document.getElementById("packsContainer");
       if (!container) return;
 
       const packTiers = ["COMMON", "RARE", "EPIC", "LEGENDARY"];
-      
       container.innerHTML = packTiers.map(tier => {
         const p = packs[tier] || {
           price: tier === 'COMMON' ? 10 : tier === 'RARE' ? 50 : tier === 'EPIC' ? 150 : 500,
@@ -1920,17 +2718,12 @@
         };
 
         if (p.enabled === false) return '';
-
         const directSrc = isValidImageUrl(p.imageUrl) ? p.imageUrl : getLocalPackPlaceholder(tier);
-        const fallbackSrc = getLocalPackPlaceholder(tier);
 
         return `
           <div class="pack-card pack-${tier}">
             <div class="pack-art" style="overflow:hidden; border-radius:8px;">
-              <img src="${directSrc}" 
-                   alt="${tier} PACK" 
-                   style="width:100%; height:100%; object-fit:cover;" 
-                   onerror="this.onerror=null; this.src='${fallbackSrc}';" />
+              <img src="${directSrc}" alt="${tier} PACK" style="width:100%; height:100%; object-fit:cover;" onerror="this.onerror=null; this.src='${getLocalPackPlaceholder(tier)}';" />
             </div>
             <h3 class="pack-name">بكج ${tier}</h3>
             <div class="pack-price">
@@ -1943,7 +2736,6 @@
           </div>
         `;
       }).join('');
-
       lucide.createIcons();
     }
 
@@ -2007,18 +2799,14 @@
           const playerCardDocId = `${window.AppState.currentUser.uid}_${wonCard.id}`;
           const playerCardRef = doc(db, "playerCards", playerCardDocId);
 
-          // 1. كل عمليات القراءة أولاً (Reads First)
           const userDoc = await transaction.get(userRef);
           if (!userDoc.exists()) throw new Error("المستخدم غير موجود");
 
           const currentST = userDoc.data().st || 0;
-          if (currentST < pack.price) {
-            throw new Error("رصيدك من ST غير كافٍ لفتح هذا البكج.");
-          }
+          if (currentST < pack.price) throw new Error("رصيدك من ST غير كافٍ لفتح هذا البكج.");
 
           const cardDoc = await transaction.get(playerCardRef);
 
-          // 2. كل عمليات الكتابة ثانياً (Writes Second)
           transaction.update(userRef, {
             st: currentST - pack.price,
             updatedAt: serverTimestamp()
@@ -2042,7 +2830,7 @@
 
         finalizePackOpeningCeremony(wonCard);
       } catch (err) {
-        console.error("PACK REWARD ERROR:", err);
+        console.error("PACK ERROR:", err);
         showToast(err.message || "حدث خطأ أثناء فتح البكج", "error");
         closeModal("packOpeningModal");
       }
@@ -2067,6 +2855,7 @@
       showToast("تمت إضافة البطاقة إلى مجموعتك بنجاح!");
     }
 
+    /* DIRECT SELL LOGIC */
     window.openSellModal = (cardId) => {
       const card = window.AppState.cards.find(c => c.id === cardId);
       if (!card) return;
@@ -2131,31 +2920,7 @@
       }
     };
 
-    function renderLeaderboardMock() {
-      const tbody = document.getElementById("leaderboardBody");
-      const dummyLeaders = [
-        { rank: 1, name: "Legend_Killer", level: 24, cards: 84, st: 4500 },
-        { rank: 2, name: "Falcon_Eye", level: 20, cards: 72, st: 3200 },
-        { rank: 3, name: "AboFlahFan", level: 18, cards: 65, st: 2150 },
-        { rank: 4, name: "GamerDZ", level: 15, cards: 45, st: 1800 }
-      ];
-
-      tbody.innerHTML = dummyLeaders.map(l => `
-        <tr>
-          <td><span class="rank-badge rank-${l.rank}">${l.rank}</span></td>
-          <td><strong>${l.name}</strong></td>
-          <td class="font-num">${l.level}</td>
-          <td class="font-num">${l.cards}</td>
-          <td class="font-num" style="color:#fbbf24;">${l.st} ST</td>
-          <td>
-            <button class="btn btn-secondary" style="padding:4px 10px; font-size:0.75rem;" onclick="showToast('عرض الملف متاح قريباً')">
-              عرض الملف
-            </button>
-          </td>
-        </tr>
-      `).join('');
-    }
-
+    /* PROFILE EDIT */
     window.openEditProfileModal = () => {
       const user = window.AppState.currentUser;
       if (!user) {
@@ -2213,6 +2978,7 @@
       }
     };
 
+    /* NAVIGATION */
     window.switchView = (viewName) => {
       document.querySelectorAll(".view-section").forEach(sec => sec.classList.remove("active"));
       document.querySelectorAll(".nav-btn, .mobile-nav-btn").forEach(btn => {
