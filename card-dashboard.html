@@ -24,6 +24,7 @@
       --danger: #ef4444;
       --success: #10b981;
       --warning: #f59e0b;
+      --accent-cyan: #06b6d4;
       --radius: 12px;
     }
 
@@ -252,6 +253,16 @@
       color: #fff;
     }
 
+    .btn-warning {
+      background: var(--warning);
+      color: #78350f;
+    }
+
+    .btn-cyan {
+      background: var(--accent-cyan);
+      color: #fff;
+    }
+
     .btn-block { width: 100%; }
 
     .stats-grid {
@@ -282,7 +293,6 @@
       color: var(--text-main);
     }
 
-    /* شبكة مصغرة بـ 5 عناصر في كل سطر للستريمرز والبطاقات */
     .compact-grid-5 {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
@@ -463,7 +473,6 @@
       position: relative;
     }
 
-    /* إطار RGB متحرك لبكج الحدث */
     .pack-config-card.rgb-pack {
       border: 2px solid transparent;
       background: linear-gradient(var(--bg-surface), var(--bg-surface)) padding-box,
@@ -495,6 +504,41 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+    }
+
+    /* صندوق بطاقة بيانات اللاعب في المخزون */
+    .player-info-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .player-info-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--bg-elevated);
+      object-fit: cover;
+      border: 2px solid var(--primary);
+    }
+
+    .action-panel-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
     }
 
     #toast-container {
@@ -609,7 +653,7 @@
           </div>
         </section>
 
-        <!-- قائمة الستريمرز في شبكة مدمجة 5 في كل سطر -->
+        <!-- قائمة الستريمرز -->
         <section id="view-streamers" class="dashboard-view" style="display: none;">
           <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
             <input type="text" id="streamers-search" class="form-control" style="width: 300px;" placeholder="بحث عن ستريمر...">
@@ -618,7 +662,7 @@
           <div class="compact-grid-5" id="streamers-grid"></div>
         </section>
 
-        <!-- قائمة البطاقات في شبكة مدمجة 5 في كل سطر -->
+        <!-- قائمة البطاقات -->
         <section id="view-cards" class="dashboard-view" style="display: none;">
           <div style="display: flex; gap: 12px; margin-bottom: 20px;">
             <input type="text" id="cards-search" class="form-control" style="width: 260px;" placeholder="بحث عن بطاقة...">
@@ -636,6 +680,7 @@
           <div class="compact-grid-5" id="cards-grid"></div>
         </section>
 
+        <!-- المجموعات -->
         <section id="view-collections" class="dashboard-view" style="display: none;">
           <div class="form-group" style="max-width: 300px;">
             <label>اختر الستريمر لعرض وإدارة بطاقاته:</label>
@@ -644,10 +689,28 @@
           <div class="compact-grid-5" id="collections-grid"></div>
         </section>
 
+        <!-- اللاعبين: مع خيار إضافة عملات لجميع اللاعبين -->
         <section id="view-players" class="dashboard-view" style="display: none;">
-          <div style="display: flex; gap: 12px; margin-bottom: 20px;">
-            <input type="text" id="players-search" class="form-control" style="width: 300px;" placeholder="بحث باسم المستخدم...">
+          <div class="action-panel-box">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <i class="fa-solid fa-coins" style="color: var(--warning); font-size: 24px;"></i>
+              <div>
+                <strong style="font-size: 15px; display: block;">توزيع عملات ST لجميع اللاعبين</strong>
+                <span style="font-size: 12px; color: var(--text-muted);">أدخل كمية العملات المراد إضافتها لرصيد كل لاعب مسجل بالنظام</span>
+              </div>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <input type="number" id="global-st-amount" class="form-control" style="width: 160px;" placeholder="المبلغ (مثلاً 50)" min="1">
+              <button class="btn btn-warning" onclick="giveSTToAllPlayers()">
+                <i class="fa-solid fa-gift"></i> إرسال للجميع
+              </button>
+            </div>
           </div>
+
+          <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+            <input type="text" id="players-search" class="form-control" style="width: 300px;" placeholder="بحث باسم المستخدم أو الاسم...">
+          </div>
+
           <div class="table-container">
             <table>
               <thead>
@@ -656,6 +719,7 @@
                   <th>الاسم المعروض</th>
                   <th>المستوى</th>
                   <th>رصيد ST</th>
+                  <th>الستريك 🔥</th>
                   <th>الدور</th>
                   <th>تاريخ الإنشاء</th>
                   <th>إجراءات</th>
@@ -666,30 +730,76 @@
           </div>
         </section>
 
+        <!-- المخزون: بحث بالاسم + استعراض بيانات + منح للاعب + منح للجميع -->
         <section id="view-inventory" class="dashboard-view" style="display: none;">
-          <div class="form-group" style="max-width: 400px; display: flex; gap: 10px;">
-            <input type="text" id="inventory-player-uid" class="form-control" placeholder="أدخل معرف اللاعب (UID)">
-            <button id="btn-load-inventory" class="btn btn-primary">جلب</button>
+          <div class="action-panel-box">
+            <div style="display:flex; gap:10px; align-items:center; flex:1; max-width:550px;">
+              <input type="text" id="inventory-player-search" class="form-control" placeholder="أدخل اسم مستخدم اللاعب (أو UID)...">
+              <button id="btn-load-inventory" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i> جلب</button>
+            </div>
+            <div style="display:flex; gap:10px;">
+              <button id="btn-grant-card" class="btn btn-secondary" disabled>
+                <i class="fa-solid fa-gift"></i> منح بطاقة للاعب الحالي
+              </button>
+              <button id="btn-grant-card-all" class="btn btn-cyan">
+                <i class="fa-solid fa-users"></i> إضافة بطاقة لجميع اللاعبين
+              </button>
+            </div>
           </div>
-          <div style="margin-bottom: 16px;">
-            <button id="btn-grant-card" class="btn btn-secondary"><i class="fa-solid fa-gift"></i> منح بطاقة للاعب</button>
+
+          <!-- تفاصيل اللاعب المستعلم عنه -->
+          <div id="selected-player-details" class="player-info-card" style="display: none;">
+            <img id="selected-player-avatar" src="" class="player-info-avatar" alt="Avatar">
+            <div style="flex:1;">
+              <h3 id="selected-player-username" style="font-size:16px; font-weight:800;"></h3>
+              <p id="selected-player-uid" style="font-size:12px; color:var(--text-muted);"></p>
+            </div>
+            <div style="display:flex; gap:20px; text-align:center;">
+              <div>
+                <span style="font-size:11px; color:var(--text-muted); display:block;">المستوى</span>
+                <strong id="selected-player-level" style="color:var(--accent-cyan); font-size:16px;">1</strong>
+              </div>
+              <div>
+                <span style="font-size:11px; color:var(--text-muted); display:block;">رصيد ST</span>
+                <strong id="selected-player-st" style="color:var(--warning); font-size:16px;">0 ST</strong>
+              </div>
+              <div>
+                <span style="font-size:11px; color:var(--text-muted); display:block;">الستريك</span>
+                <strong id="selected-player-streak" style="color:#ff4500; font-size:16px;">0 🔥</strong>
+              </div>
+              <div>
+                <span style="font-size:11px; color:var(--text-muted); display:block;">أنواع البطاقات</span>
+                <strong id="selected-player-cards-count" style="color:#fff; font-size:16px;">0</strong>
+              </div>
+            </div>
           </div>
+
           <div class="table-container">
             <table>
               <thead>
                 <tr>
-                  <th>معرف البطاقة</th>
+                  <th>معاينة</th>
+                  <th>اسم البطاقة</th>
+                  <th>الستريمر</th>
+                  <th>الندرة</th>
                   <th>الكمية</th>
                   <th>مفضلة؟</th>
                   <th>تاريخ الحصول</th>
                   <th>إجراءات</th>
                 </tr>
               </thead>
-              <tbody id="inventory-tbody"></tbody>
+              <tbody id="inventory-tbody">
+                <tr>
+                  <td colspan="8" style="text-align:center; color:var(--text-muted); padding:30px;">
+                    يرجى إدخال اسم مستخدم اللاعب والضغط على "جلب" لعرض بياناته ومخزونه.
+                  </td>
+                </tr>
+              </tbody>
             </table>
           </div>
         </section>
 
+        <!-- السوق -->
         <section id="view-market" class="dashboard-view" style="display: none;">
           <div style="display: flex; gap: 12px; margin-bottom: 20px;">
             <select id="market-filter-status" class="form-control" style="width: 200px;">
@@ -704,7 +814,7 @@
               <thead>
                 <tr>
                   <th>البائع</th>
-                  <th>معرف البطاقة</th>
+                  <th>البطاقة</th>
                   <th>الكمية</th>
                   <th>السعر (ST)</th>
                   <th>الحالة</th>
@@ -716,16 +826,14 @@
           </div>
         </section>
 
+        <!-- البكجات -->
         <section id="view-packs" class="dashboard-view" style="display: none;">
-          <div class="packs-grid" id="packs-container">
-            <!-- سيتم توليد كروت البكجات الأساسية وبكج الحدث ديناميكياً -->
-          </div>
+          <div class="packs-grid" id="packs-container"></div>
         </section>
 
-        <!-- اقتصاد اللعبة وتحديد القيمة ونسب السقوط -->
+        <!-- اقتصاد اللعبة -->
         <section id="view-economy" class="dashboard-view" style="display: none;">
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
-            
             <div class="auth-card" style="max-width: 100%;">
               <h3 style="margin-bottom: 20px;"><i class="fa-solid fa-coins" style="color:var(--primary);"></i> الرصيد الافتتاحي</h3>
               <form id="starting-st-form">
@@ -737,7 +845,6 @@
               </form>
             </div>
 
-            <!-- نطاق القيمة السوقية وقيمة البيع حسب الندرة -->
             <div class="auth-card" style="max-width: 100%;">
               <h3 style="margin-bottom: 20px;"><i class="fa-solid fa-scale-balanced" style="color:var(--primary);"></i> نطاق القيمة السوقية والبيع (ST)</h3>
               <form id="rarity-pricing-form">
@@ -756,6 +863,7 @@
           </div>
         </section>
 
+        <!-- الإعدادات -->
         <section id="view-settings" class="dashboard-view" style="display: none;">
           <div class="auth-card" style="max-width: 500px;">
             <h3>معلومات النظام</h3>
@@ -819,7 +927,7 @@
     </div>
   </div>
 
-  <!-- نافذة البطاقة (ترقيم تلقائي + تسعير تلقائي حسب الندرة) -->
+  <!-- نافذة البطاقة -->
   <div id="modal-card" class="modal-backdrop">
     <div class="modal-box">
       <div class="modal-header">
@@ -885,7 +993,7 @@
     </div>
   </div>
 
-  <!-- نافذة تعديل الرصيد -->
+  <!-- نافذة تعديل الرصيد الفردي -->
   <div id="modal-st" class="modal-backdrop">
     <div class="modal-box">
       <div class="modal-header">
@@ -899,6 +1007,56 @@
           <input type="number" id="adjust-st-amount" class="form-control" required>
         </div>
         <button type="submit" class="btn btn-primary btn-block">تطبيق التعديل</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- نافذة منح بطاقة للاعب محدد -->
+  <div id="modal-grant-card" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>منح بطاقة للاعب</h3>
+        <button class="close-btn" onclick="closeModal('modal-grant-card')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="form-grant-card">
+        <div class="form-group">
+          <label>اللاعب المستلم</label>
+          <input type="text" id="grant-player-display" class="form-control" readonly style="background:var(--bg-elevated); color:var(--accent-cyan); font-weight:700;">
+          <input type="hidden" id="grant-player-uid">
+        </div>
+        <div class="form-group">
+          <label>اختر البطاقة</label>
+          <select id="grant-card-select" class="form-control" required></select>
+        </div>
+        <div class="form-group">
+          <label>الكمية المراد إيداعها</label>
+          <input type="number" id="grant-card-qty" class="form-control" value="1" min="1" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">إيداع في المخزون فوراً</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- نافذة إضافة بطاقة لجميع اللاعبين -->
+  <div id="modal-grant-all" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 style="color:var(--accent-cyan);"><i class="fa-solid fa-users"></i> منح بطاقة لجميع اللاعبين</h3>
+        <button class="close-btn" onclick="closeModal('modal-grant-all')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="form-grant-all">
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">
+          سيتم إيداع هذه البطاقة في حساب كل لاعب مسجل بالنظام (باستثناء حسابات الأدمن).
+        </p>
+        <div class="form-group">
+          <label>اختر البطاقة</label>
+          <select id="grant-all-card-select" class="form-control" required></select>
+        </div>
+        <div class="form-group">
+          <label>الكمية لكل لاعب</label>
+          <input type="number" id="grant-all-qty" class="form-control" value="1" min="1" required>
+        </div>
+        <button type="submit" class="btn btn-cyan btn-block">توزيع البطاقة على الجميع الآن</button>
       </form>
     </div>
   </div>
@@ -927,7 +1085,9 @@
 
     let streamersCache = [];
     let cardsCache = [];
+    let usersCache = [];
     let globalSettingsCache = {};
+    let selectedPlayerObj = null;
 
     const rarities = ['COMMON', 'UNCOMMON', 'RARE', 'EPIC', 'LEGENDARY', 'MYTHIC'];
     const packNames = ['COMMON', 'RARE', 'EPIC', 'LEGENDARY', 'EVENT'];
@@ -941,9 +1101,6 @@
       MYTHIC: { min: 1000, max: 2500 }
     };
 
-    /* ==========================================================
-       أدوات المعاينة والروابط المباشرة
-       ========================================================== */
     function isValidImageUrl(url) {
       if (!url || typeof url !== "string") return false;
       try {
@@ -998,7 +1155,7 @@
     }
 
     /* ==========================================================
-       التحقق الصارم من رتبة الأدمن
+       التحقق من الأدمن
        ========================================================== */
     auth.onAuthStateChanged(async (user) => {
       if (user) {
@@ -1058,7 +1215,6 @@
        مزامنة البيانات الحية (Realtime Data)
        ========================================================== */
     function initRealtimeDashboard() {
-      // الستريمرز
       db.collection('streamers').onSnapshot(snap => {
         streamersCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         document.getElementById('stat-total-streamers').innerText = streamersCache.length;
@@ -1066,36 +1222,32 @@
         populateStreamerSelects();
       });
 
-      // البطاقات
       db.collection('cards').onSnapshot(snap => {
         cardsCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         document.getElementById('stat-total-cards').innerText = cardsCache.length;
         renderCardsGrid(cardsCache);
         renderCollectionsGrid();
+        populateCardSelects();
       });
 
-      // اللاعبين
       db.collection('users').onSnapshot(snap => {
-        const users = snap.docs.map(d => ({ uid: d.id, ...d.data() }));
-        document.getElementById('stat-total-players').innerText = users.length;
-        const totalST = users.reduce((acc, u) => acc + (u.st || 0), 0);
+        usersCache = snap.docs.map(d => ({ uid: d.id, ...d.data() }));
+        document.getElementById('stat-total-players').innerText = usersCache.length;
+        const totalST = usersCache.reduce((acc, u) => acc + (u.st || 0), 0);
         document.getElementById('stat-total-st').innerText = totalST.toLocaleString();
-        renderPlayersTable(users);
+        renderPlayersTable(usersCache);
       });
 
-      // بطاقات اللاعبين
       db.collection('playerCards').onSnapshot(snap => {
         let totalCards = 0;
         snap.forEach(doc => totalCards += (doc.data().quantity || 0));
         document.getElementById('stat-total-owned-cards').innerText = totalCards;
       });
 
-      // عروض السوق
       db.collection('marketListings').where('status', '==', 'active').onSnapshot(snap => {
         document.getElementById('stat-active-market').innerText = snap.size;
       });
 
-      // إعدادات اللعبة والبكجات والاقتصاد
       db.collection('gameSettings').doc('global').onSnapshot(doc => {
         if (doc.exists) {
           globalSettingsCache = doc.data();
@@ -1109,8 +1261,21 @@
       });
     }
 
+    function populateCardSelects() {
+      const grantSelect = document.getElementById('grant-card-select');
+      const grantAllSelect = document.getElementById('grant-all-card-select');
+      if (!grantSelect || !grantAllSelect) return;
+
+      const options = cardsCache.map(c => `
+        <option value="${c.id}">${c.name} (${c.rarity}) - #${c.cardNumber}</option>
+      `).join('');
+
+      grantSelect.innerHTML = options;
+      grantAllSelect.innerHTML = options;
+    }
+
     /* ==========================================================
-       إدارة الستريمرز (5 في السطر)
+       إدارة الستريمرز
        ========================================================== */
     attachLivePreview('streamer-image-url', 'streamer-preview-img', 'صورة الستريمر');
     attachLivePreview('streamer-cover-url', 'streamer-cover-preview-img', 'غلاف الستريمر');
@@ -1227,7 +1392,7 @@
     });
 
     /* ==========================================================
-       إدارة البطاقات (5 في السطر + ترقيم تلقائي + تسعير تلقائي)
+       إدارة البطاقات
        ========================================================== */
     attachLivePreview('card-image-url', 'card-preview-img', 'صورة البطاقة');
 
@@ -1382,7 +1547,7 @@
     });
 
     /* ==========================================================
-       إدارة المجموعات (5 في السطر)
+       إدارة المجموعات
        ========================================================== */
     function populateStreamerSelects() {
       const cSel = document.getElementById('card-streamer-select');
@@ -1426,7 +1591,383 @@
     }
 
     /* ==========================================================
-       إدارة البكجات وبكج الحدث (RGB)
+       إدارة اللاعبين + توزيع العملات لجميع اللاعبين
+       ========================================================== */
+    function renderPlayersTable(players) {
+      const tbody = document.getElementById('players-tbody');
+      tbody.innerHTML = '';
+      players.forEach(p => {
+        const tr = document.createElement('tr');
+        const createdDate = p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString('ar-SA') : 'N/A';
+        tr.innerHTML = `
+          <td><strong>@${p.username || 'unknown'}</strong></td>
+          <td>${p.displayName || 'لاعب'}</td>
+          <td><strong style="color:var(--accent-cyan);">${p.level || 1}</strong></td>
+          <td><strong style="color:var(--warning);">${(p.st || 0).toLocaleString()} ST</strong></td>
+          <td><strong style="color:#ff4500;">${p.streak || 0} 🔥</strong></td>
+          <td><span class="badge ${p.role === 'admin' ? 'badge-MYTHIC' : 'badge-COMMON'}">${p.role || 'player'}</span></td>
+          <td>${createdDate}</td>
+          <td>
+            <button class="btn btn-secondary" style="padding:4px 8px; font-size:12px;" onclick="openAdjustSTModal('${p.uid}')" title="تعديل ST"><i class="fa-solid fa-coins"></i></button>
+            <button class="btn btn-cyan" style="padding:4px 8px; font-size:12px;" onclick="inspectPlayerInventory('${p.username || p.uid}')" title="فحص المخزون"><i class="fa-solid fa-box-archive"></i></button>
+            <button class="btn btn-danger" style="padding:4px 8px; font-size:12px;" onclick="toggleBan('${p.uid}', ${!p.disabled})" title="تعطيل/تفعيل"><i class="fa-solid fa-ban"></i></button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    document.getElementById('players-search').addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      const filtered = usersCache.filter(u => 
+        (u.username && u.username.toLowerCase().includes(q)) || 
+        (u.displayName && u.displayName.toLowerCase().includes(q))
+      );
+      renderPlayersTable(filtered);
+    });
+
+    window.giveSTToAllPlayers = async () => {
+      const amount = Number(document.getElementById('global-st-amount').value);
+      if (isNaN(amount) || amount <= 0) {
+        return showToast('يرجى إدخال مبلغ صحيح أكبر من الصفر.', true);
+      }
+
+      if (!confirm(`هل أنت متأكد من رغبتك في إضافة ${amount} ST لجميع اللاعبين المسجلين؟`)) return;
+
+      try {
+        const usersSnap = await db.collection('users').get();
+        if (usersSnap.empty) return showToast('لا يوجد لاعبين مسجلين بالنظام.', true);
+
+        // تقسيم العمليات على مجموعات دفعات Firestore (Batches)
+        const batchArray = [];
+        let batch = db.batch();
+        let count = 0;
+
+        usersSnap.forEach(doc => {
+          batch.update(doc.ref, {
+            st: firebase.firestore.FieldValue.increment(amount),
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          count++;
+          if (count % 400 === 0) {
+            batchArray.push(batch.commit());
+            batch = db.batch();
+          }
+        });
+        batchArray.push(batch.commit());
+
+        await Promise.all(batchArray);
+        showToast(`تم توزيع ${amount} ST بنجاح على ${usersSnap.size} لاعب!`);
+        document.getElementById('global-st-amount').value = '';
+      } catch (err) {
+        console.error(err);
+        showToast('حدث خطأ أثناء التوزيع: ' + err.message, true);
+      }
+    };
+
+    window.openAdjustSTModal = (uid) => {
+      document.getElementById('adjust-st-uid').value = uid;
+      document.getElementById('adjust-st-amount').value = '';
+      openModal('modal-st');
+    };
+
+    document.getElementById('form-adjust-st').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const uid = document.getElementById('adjust-st-uid').value;
+      const amount = Number(document.getElementById('adjust-st-amount').value);
+
+      const userRef = db.collection("users").doc(uid);
+      try {
+        await db.runTransaction(async (t) => {
+          const doc = await t.get(userRef);
+          if (!doc.exists) throw new Error("اللاعب غير موجود.");
+          const newST = (doc.data().st || 0) + amount;
+          if (newST < 0) throw new Error("الرصيد لا يمكن أن يكون سالباً.");
+          t.update(userRef, { st: newST, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+        });
+        closeModal('modal-st');
+        showToast('تم تعديل رصيد ST بنجاح.');
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    });
+
+    window.toggleBan = async (uid, disabled) => {
+      if (!confirm(`هل أنت متأكد من تغيير حالة الحساب إلى ${disabled ? 'معطل' : 'نشط'}؟`)) return;
+      try {
+        await db.collection("users").doc(uid).update({
+          disabled: Boolean(disabled),
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        showToast('تم تحديث حالة الحساب.');
+      } catch (err) {
+        showToast('حدث خطأ، حاول مرة أخرى.', true);
+      }
+    };
+
+    /* ==========================================================
+       إدارة المخزون (بحث بالاسم + استعراض تفاصيل + منح للاعب / للجميع)
+       ========================================================== */
+    window.inspectPlayerInventory = (usernameOrUid) => {
+      document.querySelector('.nav-item[data-target="view-inventory"]').click();
+      document.getElementById('inventory-player-search').value = usernameOrUid;
+      document.getElementById('btn-load-inventory').click();
+    };
+
+    document.getElementById('btn-load-inventory').addEventListener('click', async () => {
+      const queryText = document.getElementById('inventory-player-search').value.trim().toLowerCase();
+      if (!queryText) return showToast('يرجى إدخال اسم مستخدم اللاعب أو الـ UID', true);
+
+      // البحث في كاش اللاعبين أو Firestore بالاسم أو الـ UID
+      let userObj = usersCache.find(u => 
+        (u.username && u.username.toLowerCase() === queryText) || 
+        u.uid === queryText
+      );
+
+      if (!userObj) {
+        const uSnap = await db.collection('users').where('username', '==', queryText).limit(1).get();
+        if (!uSnap.empty) {
+          userObj = { uid: uSnap.docs[0].id, ...uSnap.docs[0].data() };
+        } else {
+          const directDoc = await db.collection('users').doc(queryText).get();
+          if (directDoc.exists) {
+            userObj = { uid: directDoc.id, ...directDoc.data() };
+          }
+        }
+      }
+
+      if (!userObj) {
+        document.getElementById('selected-player-details').style.display = 'none';
+        document.getElementById('btn-grant-card').disabled = true;
+        selectedPlayerObj = null;
+        return showToast('لم يتم العثور على اللاعب! تأكد من اسم المستخدم.', true);
+      }
+
+      selectedPlayerObj = userObj;
+
+      // إظهار بطاقة بيانات اللاعب
+      document.getElementById('selected-player-details').style.display = 'flex';
+      document.getElementById('selected-player-avatar').src = (userObj.avatarUrl && isValidImageUrl(userObj.avatarUrl)) ? userObj.avatarUrl : getLocalImagePlaceholder('Avatar');
+      document.getElementById('selected-player-username').innerText = `@${userObj.username} (${userObj.displayName || 'لاعب'})`;
+      document.getElementById('selected-player-uid').innerText = `معرف اللاعب (UID): ${userObj.uid}`;
+      document.getElementById('selected-player-level').innerText = userObj.level || 1;
+      document.getElementById('selected-player-st').innerText = `${Number(userObj.st || 0).toLocaleString()} ST`;
+      document.getElementById('selected-player-streak').innerText = `${userObj.streak || 0} 🔥`;
+      document.getElementById('btn-grant-card').disabled = false;
+
+      // جلب مخزون بطاقات اللاعب
+      const snap = await db.collection('playerCards').where('uid', '==', userObj.uid).get();
+      const tbody = document.getElementById('inventory-tbody');
+      tbody.innerHTML = '';
+
+      document.getElementById('selected-player-cards-count').innerText = snap.size;
+
+      if (snap.empty) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" style="text-align:center; color:var(--text-muted); padding:30px;">
+              هذا اللاعب لا يمتلك أي بطاقات في مخزونه حالياً.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      snap.forEach(docSnap => {
+        const item = docSnap.data();
+        const cardInfo = cardsCache.find(c => c.id === item.cardId) || {};
+        const streamerInfo = streamersCache.find(s => s.id === cardInfo.streamerId) || {};
+
+        const thumb = (cardInfo.imageUrl && isValidImageUrl(cardInfo.imageUrl)) ? cardInfo.imageUrl : getLocalImagePlaceholder('Card');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>
+            <img src="${thumb}" style="width:36px; height:48px; border-radius:4px; object-fit:cover;" onerror="this.src='${getLocalImagePlaceholder('Card')}'">
+          </td>
+          <td><strong>${cardInfo.name || item.cardId}</strong></td>
+          <td>${streamerInfo.name || 'غير معروف'}</td>
+          <td><span class="badge badge-${cardInfo.rarity || 'COMMON'}">${cardInfo.rarity || 'N/A'}</span></td>
+          <td><strong style="color:var(--accent-cyan);">${item.quantity || 1}</strong></td>
+          <td>${item.favorite ? '<i class="fa-solid fa-heart" style="color:#ef4444;"></i>' : 'لا'}</td>
+          <td>${item.obtainedAt ? new Date(item.obtainedAt.toDate()).toLocaleDateString('ar-SA') : 'N/A'}</td>
+          <td>
+            <button class="btn btn-danger" style="padding:4px 8px; font-size:12px;" onclick="removeCardFromPlayer('${docSnap.id}')">
+              <i class="fa-solid fa-minus"></i> سحب
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    });
+
+    window.removeCardFromPlayer = async (docId) => {
+      if (!confirm('هل تريد حذف/سحب هذه البطاقة من مخزون اللاعب؟')) return;
+      try {
+        await db.collection('playerCards').doc(docId).delete();
+        showToast('تم سحب البطاقة من مخزون اللاعب.');
+        document.getElementById('btn-load-inventory').click();
+      } catch (err) {
+        showToast('حدث خطأ، حاول مرة أخرى.', true);
+      }
+    };
+
+    // فتح نافذة منح بطاقة للاعب الحالي
+    document.getElementById('btn-grant-card').addEventListener('click', () => {
+      if (!selectedPlayerObj) return;
+      document.getElementById('grant-player-display').value = `@${selectedPlayerObj.username}`;
+      document.getElementById('grant-player-uid').value = selectedPlayerObj.uid;
+      document.getElementById('grant-card-qty').value = 1;
+      openModal('modal-grant-card');
+    });
+
+    document.getElementById('form-grant-card').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const uid = document.getElementById('grant-player-uid').value;
+      const cardId = document.getElementById('grant-card-select').value;
+      const qty = parseInt(document.getElementById('grant-card-qty').value, 10);
+
+      if (!uid || !cardId || isNaN(qty) || qty <= 0) {
+        return showToast('يرجى تحديد جميع الحقول بشكل صحيح', true);
+      }
+
+      const playerCardRef = db.collection('playerCards').doc(`${uid}_${cardId}`);
+      try {
+        await db.runTransaction(async (t) => {
+          const doc = await t.get(playerCardRef);
+          if (doc.exists) {
+            t.update(playerCardRef, { quantity: (doc.data().quantity || 0) + qty });
+          } else {
+            t.set(playerCardRef, {
+              uid: uid,
+              cardId: cardId,
+              quantity: qty,
+              favorite: false,
+              obtainedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+          }
+        });
+        closeModal('modal-grant-card');
+        showToast('تم منح البطاقة بنجاح!');
+        document.getElementById('btn-load-inventory').click();
+      } catch (err) {
+        showToast('حدث خطأ: ' + err.message, true);
+      }
+    });
+
+    // فتح نافذة منح بطاقة لجميع اللاعبين
+    document.getElementById('btn-grant-card-all').addEventListener('click', () => {
+      document.getElementById('grant-all-qty').value = 1;
+      openModal('modal-grant-all');
+    });
+
+    document.getElementById('form-grant-all').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const cardId = document.getElementById('grant-all-card-select').value;
+      const qty = parseInt(document.getElementById('grant-all-qty').value, 10);
+
+      if (!cardId || isNaN(qty) || qty <= 0) {
+        return showToast('يرجى إدخال بيانات صحيحة', true);
+      }
+
+      const card = cardsCache.find(c => c.id === cardId);
+      const cardName = card ? card.name : cardId;
+
+      if (!confirm(`هل أنت متأكد من رغبتك في منح بطاقة (${cardName}) بعدد ${qty} لكل اللاعبين المسجلين؟`)) return;
+
+      try {
+        const usersSnap = await db.collection('users').get();
+        if (usersSnap.empty) return showToast('لا يوجد لاعبين مسجلين بالنظام.', true);
+
+        // تقسيم العمليات على دفعات لمنع تجاوز الحد
+        const batchArray = [];
+        let batch = db.batch();
+        let count = 0;
+
+        usersSnap.forEach(uDoc => {
+          const uId = uDoc.id;
+          const pCardRef = db.collection('playerCards').doc(`${uId}_${cardId}`);
+
+          batch.set(pCardRef, {
+            uid: uId,
+            cardId: cardId,
+            quantity: firebase.firestore.FieldValue.increment(qty),
+            favorite: false,
+            obtainedAt: firebase.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
+
+          count++;
+          if (count % 400 === 0) {
+            batchArray.push(batch.commit());
+            batch = db.batch();
+          }
+        });
+        batchArray.push(batch.commit());
+
+        await Promise.all(batchArray);
+        closeModal('modal-grant-all');
+        showToast(`تم توزيع البطاقة بنجاح على جميع اللاعبين (${usersSnap.size} لاعب)!`);
+
+        if (selectedPlayerObj) {
+          document.getElementById('btn-load-inventory').click();
+        }
+      } catch (err) {
+        console.error(err);
+        showToast('حدث خطأ أثناء التوزيع: ' + err.message, true);
+      }
+    });
+
+    /* ==========================================================
+       إدارة السوق
+       ========================================================== */
+    document.getElementById('market-filter-status').addEventListener('change', (e) => {
+      loadMarketListings(e.target.value);
+    });
+
+    async function loadMarketListings(statusFilter = '') {
+      let q = db.collection('marketListings');
+      if (statusFilter) {
+        q = q.where('status', '==', statusFilter);
+      }
+      const snap = await q.limit(50).get();
+      const tbody = document.getElementById('market-tbody');
+      tbody.innerHTML = '';
+
+      snap.forEach(doc => {
+        const m = doc.data();
+        const card = cardsCache.find(c => c.id === m.cardId);
+        const cardName = card ? `${card.name} (${card.rarity})` : m.cardId;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>@${m.sellerName || m.sellerUid}</td>
+          <td><strong>${cardName}</strong></td>
+          <td>${m.quantity || 1}</td>
+          <td><strong style="color:var(--warning);">${m.price} ST</strong></td>
+          <td><span class="badge ${m.status === 'active' ? 'badge-UNCOMMON' : 'badge-COMMON'}">${m.status}</span></td>
+          <td>
+            ${m.status === 'active' ? `<button class="btn btn-danger" style="padding:4px 8px; font-size:12px;" onclick="cancelListing('${doc.id}')">إلغاء العرض</button>` : '-'}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    window.cancelListing = async (listingId) => {
+      if (!confirm('هل تريد إلغاء هذا العرض؟')) return;
+      try {
+        await db.collection('marketListings').doc(listingId).update({
+          status: 'cancelled',
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        showToast('تم إلغاء العرض بنجاح.');
+        loadMarketListings();
+      } catch (err) {
+        showToast('حدث خطأ، حاول مرة أخرى.', true);
+      }
+    };
+
+    /* ==========================================================
+       إدارة البكجات
        ========================================================== */
     function renderPacksView(packsData) {
       const container = document.getElementById('packs-container');
@@ -1531,7 +2072,7 @@
     };
 
     /* ==========================================================
-       إدارة الاقتصاد (نطاق الأسعار حسب الندرة + نسب السقوط المئوية)
+       إدارة الاقتصاد (الأسعار ونسب السقوط)
        ========================================================== */
     function buildRarityPricingForm(pricing) {
       const container = document.getElementById('rarity-pricing-container');
@@ -1643,185 +2184,6 @@
         showToast('حدث خطأ، حاول مرة أخرى.', true);
       }
     });
-
-    /* ==========================================================
-       إدارة اللاعبين ورصيد ST
-       ========================================================== */
-    function renderPlayersTable(players) {
-      const tbody = document.getElementById('players-tbody');
-      tbody.innerHTML = '';
-      players.forEach(p => {
-        const tr = document.createElement('tr');
-        const createdDate = p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString('ar-SA') : 'N/A';
-        tr.innerHTML = `
-          <td>@${p.username || 'unknown'}</td>
-          <td>${p.displayName || 'لاعب'}</td>
-          <td>${p.level || 1}</td>
-          <td><strong style="color:var(--primary)">${p.st || 0} ST</strong></td>
-          <td><span class="badge ${p.role === 'admin' ? 'badge-MYTHIC' : 'badge-COMMON'}">${p.role || 'player'}</span></td>
-          <td>${createdDate}</td>
-          <td>
-            <button class="btn btn-secondary" style="padding:4px 8px; font-size:12px;" onclick="openAdjustSTModal('${p.uid}')" title="تعديل ST"><i class="fa-solid fa-coins"></i></button>
-            <button class="btn btn-danger" style="padding:4px 8px; font-size:12px;" onclick="toggleBan('${p.uid}', ${!p.disabled})" title="تعطيل/تفعيل"><i class="fa-solid fa-ban"></i></button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    window.openAdjustSTModal = (uid) => {
-      document.getElementById('adjust-st-uid').value = uid;
-      document.getElementById('adjust-st-amount').value = '';
-      openModal('modal-st');
-    };
-
-    document.getElementById('form-adjust-st').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const uid = document.getElementById('adjust-st-uid').value;
-      const amount = Number(document.getElementById('adjust-st-amount').value);
-
-      const userRef = db.collection("users").doc(uid);
-      try {
-        await db.runTransaction(async (t) => {
-          const doc = await t.get(userRef);
-          if (!doc.exists) throw new Error("اللاعب غير موجود.");
-          const newST = (doc.data().st || 0) + amount;
-          if (newST < 0) throw new Error("الرصيد لا يمكن أن يكون سالباً.");
-          t.update(userRef, { st: newST, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
-        });
-        closeModal('modal-st');
-        showToast('تم تعديل رصيد ST بنجاح.');
-      } catch (err) {
-        showToast(err.message, true);
-      }
-    });
-
-    window.toggleBan = async (uid, disabled) => {
-      if (!confirm(`هل أنت متأكد من تغيير حالة الحساب إلى ${disabled ? 'معطل' : 'نشط'}؟`)) return;
-      try {
-        await db.collection("users").doc(uid).update({
-          disabled: Boolean(disabled),
-          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        showToast('تم تحديث حالة الحساب.');
-      } catch (err) {
-        showToast('حدث خطأ، حاول مرة أخرى.', true);
-      }
-    };
-
-    /* ==========================================================
-       إدارة المخزون وعروض السوق
-       ========================================================== */
-    document.getElementById('btn-load-inventory').addEventListener('click', async () => {
-      const uid = document.getElementById('inventory-player-uid').value.trim();
-      if (!uid) return showToast('يرجى إدخال UID الخاص باللاعب', true);
-
-      const snap = await db.collection('playerCards').where('uid', '==', uid).get();
-      const tbody = document.getElementById('inventory-tbody');
-      tbody.innerHTML = '';
-
-      snap.forEach(doc => {
-        const item = doc.data();
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${item.cardId}</td>
-          <td>${item.quantity}</td>
-          <td>${item.favorite ? 'نعم' : 'لا'}</td>
-          <td>${item.obtainedAt ? new Date(item.obtainedAt.toDate()).toLocaleDateString('ar-SA') : 'N/A'}</td>
-          <td>
-            <button class="btn btn-danger" style="padding:4px 8px; font-size:12px;" onclick="removeCardFromPlayer('${doc.id}')"><i class="fa-solid fa-minus"></i> سحب</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    });
-
-    window.removeCardFromPlayer = async (docId) => {
-      if (!confirm('هل تريد حذف هذه البطاقة من مخزون اللاعب؟')) return;
-      try {
-        await db.collection('playerCards').doc(docId).delete();
-        showToast('تم حذف العنصر بنجاح.');
-        document.getElementById('btn-load-inventory').click();
-      } catch (err) {
-        showToast('حدث خطأ، حاول مرة أخرى.', true);
-      }
-    };
-
-    document.getElementById('btn-grant-card').addEventListener('click', async () => {
-      const uid = document.getElementById('inventory-player-uid').value.trim();
-      if (!uid) return showToast('حدد UID اللاعب أولاً في الحقل أعلاه.', true);
-
-      const cardId = prompt('أدخل معرّف البطاقة (Card ID):');
-      if (!cardId) return;
-      const qty = parseInt(prompt('أدخل الكمية المراد منحها:', '1'), 10);
-      if (isNaN(qty) || qty <= 0) return showToast('كمية غير صالحة', true);
-
-      const playerCardRef = db.collection('playerCards').doc(`${uid}_${cardId}`);
-      try {
-        await db.runTransaction(async (t) => {
-          const doc = await t.get(playerCardRef);
-          if (doc.exists) {
-            t.update(playerCardRef, { quantity: (doc.data().quantity || 0) + qty });
-          } else {
-            t.set(playerCardRef, {
-              uid: uid,
-              cardId: cardId,
-              quantity: qty,
-              favorite: false,
-              obtainedAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-          }
-        });
-        showToast('تم منح البطاقة للاعب بنجاح.');
-        document.getElementById('btn-load-inventory').click();
-      } catch (err) {
-        showToast('حدث خطأ: ' + err.message, true);
-      }
-    });
-
-    document.getElementById('market-filter-status').addEventListener('change', (e) => {
-      loadMarketListings(e.target.value);
-    });
-
-    async function loadMarketListings(statusFilter = '') {
-      let query = db.collection('marketListings');
-      if (statusFilter) {
-        query = query.where('status', '==', statusFilter);
-      }
-      const snap = await query.limit(50).get();
-      const tbody = document.getElementById('market-tbody');
-      tbody.innerHTML = '';
-
-      snap.forEach(doc => {
-        const m = doc.data();
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${m.sellerUid}</td>
-          <td>${m.cardId}</td>
-          <td>${m.quantity}</td>
-          <td>${m.price} ST</td>
-          <td><span class="badge ${m.status === 'active' ? 'badge-UNCOMMON' : 'badge-COMMON'}">${m.status}</span></td>
-          <td>
-            ${m.status === 'active' ? `<button class="btn btn-danger" style="padding:4px 8px; font-size:12px;" onclick="cancelListing('${doc.id}')">إلغاء العرض</button>` : '-'}
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    window.cancelListing = async (listingId) => {
-      if (!confirm('هل تريد إلغاء هذا العرض؟')) return;
-      try {
-        await db.collection('marketListings').doc(listingId).update({
-          status: 'cancelled',
-          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        showToast('تم إلغاء العرض بنجاح.');
-        loadMarketListings();
-      } catch (err) {
-        showToast('حدث خطأ، حاول مرة أخرى.', true);
-      }
-    };
   </script>
 </body>
 </html>
