@@ -5,18 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>بطاقات الستريمر | Streamer Cards</title>
 
-  <!-- Google Fonts: Cairo (Arabic) & Rajdhani (Gaming Digits) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
 
-  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-
-  <!-- Canvas Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-  <!-- GLOBAL PLACEHOLDERS -->
   <script>
     window.getCardPlaceholder = function(title) {
       var safeTitle = (title && typeof title === 'string') ? title : "CARD";
@@ -92,8 +87,8 @@
       --accent-st-glow: rgba(245, 158, 11, 0.35);
       --accent-primary: #6366f1;
       --accent-cyan: #06b6d4;
+      --accent-fire: #ff4500;
 
-      /* Rarities */
       --rarity-common: #94a3b8;
       --rarity-uncommon: #10b981;
       --rarity-rare: #3b82f6;
@@ -341,17 +336,59 @@
       color: var(--accent-cyan);
     }
 
+    /* DAILY REWARD STREAK BANNER */
     .daily-reward-banner {
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(99, 102, 241, 0.15));
-      border: 1px solid rgba(245, 158, 11, 0.3);
+      background: linear-gradient(135deg, rgba(255, 69, 0, 0.12), rgba(245, 158, 11, 0.15), rgba(99, 102, 241, 0.12));
+      border: 1px solid rgba(255, 69, 0, 0.35);
       border-radius: var(--radius-md);
-      padding: 1.25rem 1.5rem;
+      padding: 1.25rem 1.75rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1rem;
+      gap: 1.5rem;
       flex-wrap: wrap;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+      position: relative;
+      overflow: hidden;
+    }
+    .streak-badge-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .streak-fire-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #ff4500, #f59e0b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 1.75rem;
+      box-shadow: 0 0 20px rgba(255, 69, 0, 0.45);
+      animation: pulseFire 2s infinite alternate;
+    }
+    @keyframes pulseFire {
+      0% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 69, 0, 0.4); }
+      100% { transform: scale(1.08); box-shadow: 0 0 25px rgba(255, 69, 0, 0.7); }
+    }
+    .streak-info-text h3 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .streak-pill-tag {
+      background: rgba(255, 69, 0, 0.25);
+      border: 1px solid rgba(255, 69, 0, 0.5);
+      color: #ff7849;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-weight: 800;
     }
 
     .hero-banner {
@@ -425,6 +462,15 @@
     }
     .btn-st:hover {
       background: linear-gradient(135deg, #d97706, #b45309);
+      transform: translateY(-2px);
+    }
+    .btn-fire {
+      background: linear-gradient(135deg, #ff4500, #ea580c);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(255, 69, 0, 0.4);
+    }
+    .btn-fire:hover {
+      background: linear-gradient(135deg, #ea580c, #c2410c);
       transform: translateY(-2px);
     }
     .btn-secondary {
@@ -902,7 +948,7 @@
       background: var(--bg-surface);
       border: 1px solid var(--border-color);
       overflow: hidden;
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
     }
     .profile-cover {
       height: 180px;
@@ -936,16 +982,32 @@
       min-width: 240px;
     }
 
-    .showcase-container {
+    .profile-middle-grid {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    .profile-public-card-preview {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .showcase-container-mini {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
+      gap: 0.75rem;
     }
-    .showcase-slot {
+    .showcase-slot-mini {
       aspect-ratio: 3/4.4;
-      border-radius: var(--radius-md);
+      border-radius: var(--radius-sm);
       background: rgba(255, 255, 255, 0.02);
-      border: 2px dashed rgba(255, 255, 255, 0.15);
+      border: 1.5px dashed rgba(255, 255, 255, 0.15);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -955,14 +1017,15 @@
       transition: var(--transition);
       overflow: hidden;
     }
-    .showcase-slot:hover {
+    .showcase-slot-mini:hover {
       border-color: var(--accent-cyan);
       background: rgba(6, 182, 212, 0.05);
+      transform: translateY(-2px);
     }
-    .showcase-slot.filled {
+    .showcase-slot-mini.filled {
       border-style: solid;
       border-color: var(--border-color);
-      background: var(--bg-surface);
+      background: var(--bg-surface-elevated);
     }
 
     .toast-container {
@@ -1021,7 +1084,9 @@
     @media (max-width: 1200px) {
       .streamer-grid { grid-template-columns: repeat(3, 1fr); }
       .packs-grid { grid-template-columns: repeat(2, 1fr); }
-      .showcase-container { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 990px) {
+      .profile-middle-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 900px) {
       .streamer-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1037,13 +1102,12 @@
       .hero-banner { padding: 1.5rem; }
       .hero-content h2 { font-size: 1.6rem; }
       .detail-actions-trio { grid-template-columns: 1fr; }
-      .showcase-container { grid-template-columns: 1fr 1fr; }
+      .showcase-container-mini { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
 <body>
 
-  <!-- TOP GAME BAR -->
   <header class="game-header">
     <div class="brand" onclick="switchView('home')">
       <div class="brand-logo">
@@ -1055,7 +1119,6 @@
       </div>
     </div>
 
-    <!-- Desktop Navigation -->
     <nav class="desktop-nav">
       <button class="nav-btn active" data-view="home" onclick="switchView('home')">
         <i data-lucide="home" size="18"></i> الرئيسية
@@ -1077,7 +1140,6 @@
       </button>
     </nav>
 
-    <!-- Header Actions (ST Balance + User Button) -->
     <div class="header-actions">
       <div class="st-pill" title="رصيد عملات ST">
         <div class="st-coin-icon">ST</div>
@@ -1090,26 +1152,24 @@
     </div>
   </header>
 
-  <!-- MAIN CONTAINER -->
   <main class="game-container">
 
-    <!-- 1. HOME VIEW -->
     <section id="view-home" class="view-section active">
       
-      <!-- DAILY REWARD BANNER -->
       <div class="daily-reward-banner" id="dailyRewardBanner">
-        <div style="display:flex; align-items:center; gap:12px;">
-          <div style="background:rgba(245, 158, 11, 0.2); padding:10px; border-radius:12px; color:#fbbf24;">
-            <i data-lucide="calendar" size="28"></i>
-          </div>
-          <div>
-            <h3 style="font-size:1.1rem; font-weight:800; color:#fff;">مكافأة تسجيل الدخول اليومي</h3>
-            <p style="font-size:0.85rem; color:var(--text-muted);" id="dailyRewardStatusText">سجل دخولك يومياً واجمع 25 عملة ST لترقية حسابك!</p>
+        <div class="streak-badge-container">
+          <div class="streak-fire-icon" id="streakFireIcon">🔥</div>
+          <div class="streak-info-text">
+            <h3>
+              <span>ستريك تسجيل الدخول اليومي</span>
+              <span class="streak-pill-tag font-num" id="streakDaysBadge">ستريك: 0 أيام</span>
+            </h3>
+            <p style="font-size:0.85rem; color:var(--text-muted);" id="dailyRewardStatusText">سجل يومياً لزيادة مكافأتك المتتالية! انقطاع يوم واحد يعيد الستريك من جديد.</p>
           </div>
         </div>
         <div>
-          <button class="btn btn-st" id="claimDailyRewardBtn" onclick="claimDailyReward()">
-            <i data-lucide="gift"></i> جمع المكافأة (25 ST)
+          <button class="btn btn-fire" id="claimDailyRewardBtn" onclick="claimDailyReward()">
+            <i data-lucide="gift"></i> جمع المكافأة (<span id="dailyRewardBtnST">25</span> ST)
           </button>
         </div>
       </div>
@@ -1141,7 +1201,6 @@
       </div>
     </section>
 
-    <!-- 2. STREAMERS VIEW -->
     <section id="view-streamers" class="view-section">
       <div class="section-head">
         <h2 class="section-title">جميع مجموعات الستريمرز</h2>
@@ -1149,7 +1208,6 @@
       <div class="streamer-grid" id="allStreamersGrid"></div>
     </section>
 
-    <!-- 3. STREAMER DETAIL COLLECTION VIEW -->
     <section id="view-streamer-detail" class="view-section">
       <div style="margin-bottom: 1.5rem;">
         <button class="btn btn-secondary" onclick="switchView('streamers')">
@@ -1164,7 +1222,6 @@
       <div class="cards-grid" id="streamerCardsGrid"></div>
     </section>
 
-    <!-- 4. MY CARDS (INVENTORY) -->
     <section id="view-inventory" class="view-section">
       <div class="section-head">
         <h2 class="section-title">بطاقاتي المملوكة</h2>
@@ -1190,14 +1247,12 @@
       <div class="cards-grid" id="myCardsGrid"></div>
     </section>
 
-    <!-- 5. MARKET & PACKS -->
     <section id="view-market" class="view-section">
       <div class="section-head">
         <h2 class="section-title">بكجات البطاقات الرسمية</h2>
       </div>
       <div class="packs-grid" id="packsContainer"></div>
 
-      <!-- PLAYER MARKET -->
       <div class="section-head">
         <h2 class="section-title">سوق اللاعبين (تداول وبطاقات معروضة)</h2>
         <button class="btn btn-st" onclick="openCreateListingModal()">
@@ -1205,7 +1260,6 @@
         </button>
       </div>
 
-      <!-- MARKET SEARCH FILTER -->
       <div class="filter-bar">
         <input type="text" id="marketSearch" class="input-field" placeholder="بحث باسم البطاقة في السوق..." oninput="filterMarketListings()" style="width: 220px;">
         <select id="marketRarityFilter" class="input-field" onchange="filterMarketListings()">
@@ -1227,11 +1281,10 @@
       <div class="cards-grid" id="marketCardsGrid"></div>
     </section>
 
-    <!-- 6. LEADERBOARD -->
     <section id="view-leaderboard" class="view-section">
       <div class="section-head">
         <h2 class="section-title">قائمة المتصدرين</h2>
-        <span style="color:var(--text-muted); font-size:0.85rem;">يتم تحديث الترتيب تلقائياً حسب المستوى بمجرد تسجيل اللاعبين</span>
+        <span style="color:var(--text-muted); font-size:0.85rem;">يتم ترتيب اللاعبين فقط حسب المستوى تلقائياً فور التسجيل</span>
       </div>
       <table class="leaderboard-table">
         <thead>
@@ -1247,8 +1300,8 @@
       </table>
     </section>
 
-    <!-- 7. PLAYER PROFILE -->
     <section id="view-profile" class="view-section">
+      
       <div class="profile-hero">
         <div class="profile-cover">
           <img id="profBannerImg" src="" alt="Banner" onerror="this.onerror=null; this.src=getBannerPlaceholder();">
@@ -1267,18 +1320,8 @@
         </div>
       </div>
 
-      <div id="profileSectionsContainer" style="display: flex; flex-direction: column; gap: 2rem;">
+      <div style="display: flex; flex-direction: column; gap: 2.2rem;">
         
-        <!-- SHOWCASE SECTION (MAX 4 CARDS) -->
-        <div class="profile-orderable-block" data-section-id="showcase">
-          <div class="section-head" style="margin-bottom:0.75rem;">
-            <h3 class="section-title">معرض البطاقات المميزة (تظهر للناس بالمتصدرين)</h3>
-            <span style="color:var(--text-dim); font-size:0.8rem;">الحد الأقصى 4 بطاقات</span>
-          </div>
-          <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:1rem;">اختر أندر 4 بطاقات تفخر بها لتظهر لكل من يزور ملفك من قائمة المتصدرين.</p>
-          <div class="showcase-container" id="profileShowcaseGrid"></div>
-        </div>
-
         <div class="profile-orderable-block" data-section-id="stats">
           <h3 class="section-title" style="margin-bottom: 1rem;">إحصائيات اللاعب</h3>
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
@@ -1294,19 +1337,60 @@
               <span style="color:var(--text-muted); font-size:0.85rem;">الرصيد</span>
               <h3 id="profStTotal" class="font-num" style="font-size:1.8rem; color:#fbbf24;">0 ST</h3>
             </div>
+            <div style="background:var(--bg-surface); padding: 1.25rem; border-radius:var(--radius-sm); border:1px solid var(--border-color);">
+              <span style="color:var(--text-muted); font-size:0.85rem;">الستريك المتتالي</span>
+              <h3 id="profStreakCount" class="font-num" style="font-size:1.8rem; color:#ff4500;">0 🔥</h3>
+            </div>
           </div>
         </div>
 
-        <div class="profile-orderable-block" data-section-id="favorites">
-          <h3 class="section-title" style="margin-bottom: 1rem;">البطاقات المفضلة</h3>
-          <div class="cards-grid" id="profFavoritesGrid"></div>
+        <div class="profile-middle-grid">
+          
+          <div class="profile-public-card-preview">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-color); padding-bottom:8px;">
+              <span style="font-size:0.85rem; font-weight:700; color:var(--accent-cyan); display:flex; align-items:center; gap:6px;">
+                <i data-lucide="eye" size="16"></i> شكل ملفك أمام الآخرين
+              </span>
+              <span style="font-size:0.75rem; color:var(--text-dim);">بطاقة المتصدرين</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <img id="previewPubAvatar" src="" class="profile-avatar-large" style="width:60px; height:60px;" onerror="this.onerror=null; this.src=getAvatarPlaceholder();">
+              <div>
+                <h4 id="previewPubUsername" style="font-size:1.1rem; font-weight:800;"></h4>
+                <div style="font-size:0.8rem; color:var(--text-muted); display:flex; gap:10px; margin-top:3px;">
+                  <span>المستوى: <strong id="previewPubLevel" class="font-num" style="color:var(--accent-cyan);">1</strong></span>
+                  <span>الرصيد: <strong id="previewPubST" class="font-num" style="color:#fbbf24;">0 ST</strong></span>
+                </div>
+              </div>
+            </div>
+            <p id="previewPubBio" style="font-size:0.8rem; color:var(--text-muted); line-height:1.4; background:var(--bg-surface-elevated); padding:8px 10px; border-radius:6px; margin:0;"></p>
+          </div>
+
+          <div>
+            <div class="section-head" style="margin-bottom:0.75rem;">
+              <h3 class="section-title" style="font-size:1.25rem;">معرض البطاقات المعروضة للناس (حد أقصى 4)</h3>
+              <span style="color:var(--text-dim); font-size:0.8rem;">انقر لتغيير البطاقة</span>
+            </div>
+            <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:1rem;">البطاقات التي تضعها هنا ستظهر مباشرة في ملفك أمام جميع اللاعبين عند تصفح المتصدرين.</p>
+            <div class="showcase-container-mini" id="profileShowcaseGrid"></div>
+          </div>
+
         </div>
+
+        <div class="profile-orderable-block" data-section-id="all-cards">
+          <div class="section-head">
+            <h3 class="section-title">جميع البطاقات التي حصلت عليها</h3>
+            <span id="profTotalCardsSub" style="color:var(--text-muted); font-size:0.85rem;"></span>
+          </div>
+          <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:1.2rem;">اضغط على أي بطاقة لعرض تفاصيلها والتحكم بها (بيع مباشر، عرض بالسوق، تفضيل).</p>
+          <div class="cards-grid" id="profAllObtainedCardsGrid"></div>
+        </div>
+
       </div>
     </section>
 
   </main>
 
-  <!-- MOBILE BOTTOM NAVIGATION -->
   <div class="mobile-nav">
     <button class="mobile-nav-btn active" data-view="home" onclick="switchView('home')">
       <i data-lucide="home" size="18"></i>
@@ -1334,7 +1418,6 @@
     </button>
   </div>
 
-  <!-- AUTH MODAL -->
   <div class="modal-backdrop" id="authModal">
     <div class="modal-container">
       <div class="modal-header">
@@ -1365,7 +1448,6 @@
     </div>
   </div>
 
-  <!-- CARD ENLARGEMENT MODAL WITH 3 ACTION BUTTONS -->
   <div class="modal-backdrop" id="cardDetailModal">
     <div class="modal-container" style="max-width: 490px;">
       <div class="modal-header">
@@ -1399,14 +1481,12 @@
           </div>
           <p id="detailCardDesc" style="font-size:0.85rem; color:var(--text-muted); line-height:1.5; margin-top:4px;"></p>
           
-          <!-- 3 ACTION BUTTONS (DIRECT SELL, LIST IN MARKET, FAVORITE) -->
           <div class="detail-actions-trio" id="detailCardActionsTrio"></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- MARKET LISTING MODAL -->
   <div class="modal-backdrop" id="marketListingModal">
     <div class="modal-container">
       <div class="modal-header">
@@ -1429,7 +1509,6 @@
     </div>
   </div>
 
-  <!-- SHOWCASE SELECTION MODAL -->
   <div class="modal-backdrop" id="showcaseSelectModal">
     <div class="modal-container">
       <div class="modal-header">
@@ -1443,7 +1522,6 @@
     </div>
   </div>
 
-  <!-- PUBLIC PLAYER PROFILE MODAL (FROM LEADERBOARD) -->
   <div class="modal-backdrop" id="publicProfileModal">
     <div class="modal-container" style="max-width: 580px;">
       <div class="modal-header">
@@ -1459,6 +1537,7 @@
             <div style="display:flex; gap:12px; margin-top:6px; font-size:0.8rem;">
               <span>المستوى: <strong id="publicProfLevel" class="font-num" style="color:var(--accent-cyan);"></strong></span>
               <span>الرصيد: <strong id="publicProfSt" class="font-num" style="color:#fbbf24;"></strong></span>
+              <span>الستريك: <strong id="publicProfStreak" class="font-num" style="color:#ff4500;"></strong></span>
             </div>
           </div>
         </div>
@@ -1469,14 +1548,12 @@
     </div>
   </div>
 
-  <!-- PACK OPENING MODAL -->
   <div class="modal-backdrop" id="packOpeningModal">
     <div class="modal-container" style="background:transparent; border:none; box-shadow:none; max-width:400px;">
       <div class="pack-open-ceremony" id="packCeremonyStage"></div>
     </div>
   </div>
 
-  <!-- SELL MODAL -->
   <div class="modal-backdrop" id="sellModal">
     <div class="modal-container">
       <div class="modal-header">
@@ -1497,7 +1574,6 @@
     </div>
   </div>
 
-  <!-- PROFILE EDIT MODAL -->
   <div class="modal-backdrop" id="editProfileModal">
     <div class="modal-container">
       <div class="modal-header">
@@ -1524,10 +1600,7 @@
     </div>
   </div>
 
-  <!-- TOAST CONTAINER -->
   <div class="toast-container" id="toastContainer"></div>
-
-  <!-- FIREBASE & CORE GAME ENGINE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
     import { 
@@ -1556,7 +1629,6 @@
       orderBy
     } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 
-    /* FIREBASE CONFIGURATION */
     const firebaseConfig = {
       apiKey: "AIzaSyB7gc9F2AZ2C9ND7BnzTbEy6VaEt3egLkc",
       authDomain: "streamer-cards.firebaseapp.com",
@@ -1576,10 +1648,26 @@
       db = getFirestore(app);
       isFirebaseReady = true;
     } catch (e) {
-      console.warn("Firebase config fallback to local mock mode.", e);
+      console.warn("Firebase fallback to preview mode.", e);
     }
 
-    /* APPLICATION STATE */
+    // جدول نقاط الخبرة حسب البكج وندرة البطاقة
+    const PACK_BASE_XP = {
+      COMMON: 15,
+      RARE: 45,
+      EPIC: 120,
+      LEGENDARY: 350
+    };
+
+    const CARD_RARITY_XP = {
+      COMMON: 10,
+      UNCOMMON: 25,
+      RARE: 60,
+      EPIC: 150,
+      LEGENDARY: 400,
+      MYTHIC: 1000
+    };
+
     window.AppState = {
       currentUser: null,
       authUid: null,
@@ -1602,7 +1690,6 @@
       favFilterActive: false
     };
 
-    /* INITIALIZATION & LISTENERS */
     window.initGame = function() {
       lucide.createIcons();
       renderPacks();
@@ -1612,7 +1699,6 @@
         return;
       }
 
-      // Realtime Global Settings
       onSnapshot(doc(db, "gameSettings", "global"), (snap) => {
         if (snap.exists()) {
           const data = snap.data();
@@ -1621,7 +1707,6 @@
         }
       });
 
-      // Realtime Streamers
       onSnapshot(collection(db, "streamers"), (snap) => {
         const list = [];
         snap.forEach(d => list.push({ id: d.id, ...d.data() }));
@@ -1629,7 +1714,6 @@
         renderStreamersList();
       });
 
-      // Realtime Cards
       onSnapshot(collection(db, "cards"), (snap) => {
         const list = [];
         snap.forEach(d => list.push({ id: d.id, ...d.data() }));
@@ -1638,7 +1722,6 @@
         renderMarketCards();
       });
 
-      // Realtime Market Listings
       onSnapshot(collection(db, "marketListings"), (snap) => {
         const list = [];
         snap.forEach(d => list.push({ id: d.id, ...d.data() }));
@@ -1646,8 +1729,7 @@
         renderMarketCards();
       });
 
-      // Realtime Leaderboard (Registered Users sorted by level)
-      const usersQuery = query(collection(db, "users"), orderBy("level", "desc"), limit(50));
+      const usersQuery = query(collection(db, "users"), orderBy("level", "desc"), limit(60));
       onSnapshot(usersQuery, (snap) => {
         const list = [];
         snap.forEach(d => list.push({ uid: d.id, ...d.data() }));
@@ -1655,7 +1737,6 @@
         renderLeaderboard();
       });
 
-      // Auth Listener
       onAuthStateChanged(auth, (user) => {
         if (user) {
           window.AppState.authUid = user.uid;
@@ -1665,7 +1746,7 @@
           window.AppState.currentUser = null;
           window.AppState.myCards = [];
           updatePlayerUI();
-          renderDailyRewardStatus();
+          renderDailyStreakStatus();
         }
       });
     };
@@ -1685,25 +1766,27 @@
         { id: "m1", sellerUid: "mock_player", sellerName: "Falcon", cardId: "c2", price: 80, createdAt: new Date().toISOString() }
       ];
       window.AppState.allUsers = [
-        { uid: "u1", username: "Legend_Killer", level: 12, st: 4500, showcaseCards: ["c1", "c2"] },
-        { uid: "u2", username: "GamerDZ", level: 8, st: 1800, showcaseCards: ["c3"] },
-        { uid: "demo_admin", username: "ممدوح_ستريمر", level: 4, st: 250, showcaseCards: ["c1"] }
+        { uid: "admin_1", username: "مسؤول_النظام", role: "admin", level: 99, st: 99999, showcaseCards: [] },
+        { uid: "u1", username: "Legend_Killer", role: "player", level: 12, st: 4500, streak: 5, showcaseCards: ["c1", "c2"] },
+        { uid: "u2", username: "GamerDZ", role: "player", level: 8, st: 1800, streak: 2, showcaseCards: ["c3"] }
       ];
       window.AppState.currentUser = {
-        uid: "demo_admin",
+        uid: "demo_user",
         username: "ممدوح_ستريمر",
-        role: "admin",
+        role: "player",
         st: 250,
         level: 4,
         xp: 120,
+        streak: 3,
+        lastDailyClaimDate: null,
         avatarUrl: "",
         bannerUrl: "",
-        bio: "لاعب ستريمر محترف ومنافس قوي",
-        showcaseCards: ["c1"],
-        lastDailyClaim: null
+        bio: "لاعب ستريمر محترف ومنافس قوي في تجميع البطاقات النادرة!",
+        showcaseCards: ["c1"]
       };
       window.AppState.myCards = [
         { cardId: "c1", quantity: 1, favorite: true },
+        { cardId: "c2", quantity: 1, favorite: false },
         { cardId: "c3", quantity: 2, favorite: false }
       ];
       updatePlayerUI();
@@ -1712,7 +1795,7 @@
       renderMarketCards();
       renderLeaderboard();
       renderShowcaseSlots();
-      renderDailyRewardStatus();
+      renderDailyStreakStatus();
     }
 
     function listenToUserData(uid) {
@@ -1721,7 +1804,7 @@
           window.AppState.currentUser = { uid: snap.id, ...snap.data() };
           updatePlayerUI();
           renderShowcaseSlots();
-          renderDailyRewardStatus();
+          renderDailyStreakStatus();
         }
       });
     }
@@ -1737,33 +1820,75 @@
       });
     }
 
-    /* DAILY LOGIN REWARD LOGIC */
-    function renderDailyRewardStatus() {
+    function getTodayString() {
+      return new Date().toISOString().split('T')[0];
+    }
+
+    function getYesterdayString() {
+      const d = new Date();
+      d.setDate(d.getDate() - 1);
+      return d.toISOString().split('T')[0];
+    }
+
+    function calculateCurrentStreakState(user) {
+      if (!user) return { streak: 0, canClaim: false, isClaimedToday: false, rewardST: 25 };
+      const today = getTodayString();
+      const yesterday = getYesterdayString();
+      const lastClaim = user.lastDailyClaimDate;
+
+      let currentStreak = user.streak || 0;
+      let canClaim = true;
+      let isClaimedToday = false;
+
+      if (lastClaim === today) {
+        canClaim = false;
+        isClaimedToday = true;
+      } else if (lastClaim === yesterday) {
+        canClaim = true;
+      } else if (lastClaim) {
+        currentStreak = 0;
+        canClaim = true;
+      }
+
+      const nextStreakDay = isClaimedToday ? currentStreak : currentStreak + 1;
+      const rewardST = 25 + (Math.max(0, nextStreakDay - 1) * 10);
+
+      return { streak: currentStreak, canClaim, isClaimedToday, rewardST, nextStreakDay };
+    }
+
+    function renderDailyStreakStatus() {
       const user = window.AppState.currentUser;
       const btn = document.getElementById("claimDailyRewardBtn");
-      const text = document.getElementById("dailyRewardStatusText");
+      const badge = document.getElementById("streakDaysBadge");
+      const stSpan = document.getElementById("dailyRewardBtnST");
+      const statusText = document.getElementById("dailyRewardStatusText");
 
       if (!user) {
         btn.disabled = false;
-        btn.innerHTML = `<i data-lucide="gift"></i> تسجيل الدخول للجمع`;
-        text.innerText = "سجل دخولك لجمع مكافأتك اليومية (25 ST + نقاط مستوى)!";
-        lucide.createIcons();
+        badge.innerText = "ستريك: 0 أيام";
+        stSpan.innerText = "25";
+        statusText.innerText = "سجل دخولك لبدء سلسلة الأيام المتتالية (الستريك 🔥) ومضاعفة المكافأة!";
         return;
       }
 
-      const todayStr = new Date().toISOString().split('T')[0];
-      const claimedToday = user.lastDailyClaim === todayStr;
+      const info = calculateCurrentStreakState(user);
+      stSpan.innerText = info.rewardST;
+      badge.innerText = `ستريك: ${info.streak} ${info.streak === 1 ? 'يوم' : 'أيام'} 🔥`;
 
-      if (claimedToday) {
+      if (info.isClaimedToday) {
         btn.disabled = true;
-        btn.classList.replace("btn-st", "btn-secondary");
-        btn.innerHTML = `<i data-lucide="check-circle-2"></i> تم الجمع اليوم`;
-        text.innerText = "لقد حصلت على مكافأة اليوم بالفعل! عد غداً للمزيد.";
+        btn.className = "btn btn-secondary";
+        btn.innerHTML = `<i data-lucide="check-circle-2"></i> تم جمع مكافأة اليوم (${info.streak} 🔥)`;
+        statusText.innerText = `أحسنت! حافظت على ستريك ${info.streak} أيام متتالية. عد غداً لتحصل على مكافأة أعلى!`;
       } else {
         btn.disabled = false;
-        btn.classList.replace("btn-secondary", "btn-st");
-        btn.innerHTML = `<i data-lucide="gift"></i> جمع المكافأة (25 ST)`;
-        text.innerText = "مكافأتك اليومية جاهزة ومتاحة الآن، اضغط لجمعها!";
+        btn.className = "btn btn-fire";
+        btn.innerHTML = `<i data-lucide="gift"></i> جمع المكافأة (${info.rewardST} ST)`;
+        if (info.streak > 0) {
+          statusText.innerText = `سلسلتك مشتعلة! ستريك ${info.streak} أيام مستمر، اجمع مكافأة اليوم لتصل إلى ${info.nextStreakDay} أيام متتالية!`;
+        } else {
+          statusText.innerText = `ابدأ ستريك جديد اليوم واجمع المكافأة (+25 ST). حافظ على الدخول يومياً لتزيد أرباحك!`;
+        }
       }
       lucide.createIcons();
     }
@@ -1775,29 +1900,42 @@
         return;
       }
 
-      const todayStr = new Date().toISOString().split('T')[0];
-      if (user.lastDailyClaim === todayStr) {
-        showToast("لقد قمت بجمع مكافأتك اليومية مسبقاً!", "error");
+      const today = getTodayString();
+      const yesterday = getYesterdayString();
+      const info = calculateCurrentStreakState(user);
+
+      if (info.isClaimedToday) {
+        showToast("لقد قمت بجمع مكافأة اليوم بالفعل!", "error");
         return;
       }
 
-      const rewardST = 25;
-      const gainedXP = 50;
+      let newStreak = 1;
+      if (user.lastDailyClaimDate === yesterday) {
+        newStreak = (user.streak || 0) + 1;
+      } else {
+        newStreak = 1;
+      }
+
+      const payoutST = 25 + ((newStreak - 1) * 10);
+      const gainedXP = 50 + ((newStreak - 1) * 20);
 
       if (!isFirebaseReady) {
-        user.st = (user.st || 0) + rewardST;
+        user.st = (user.st || 0) + payoutST;
         user.xp = (user.xp || 0) + gainedXP;
+        user.streak = newStreak;
+        user.lastDailyClaimDate = today;
+
         if (user.xp >= (user.level || 1) * 100) {
           user.level = (user.level || 1) + 1;
           user.xp = 0;
-          showToast(`ارتقيت إلى المستوى ${user.level}! مبارك! 🎉`);
+          showToast(`ارتقيت إلى المستوى ${user.level}! 🔥`);
         }
-        user.lastDailyClaim = todayStr;
+
         updatePlayerUI();
-        renderDailyRewardStatus();
+        renderDailyStreakStatus();
         renderLeaderboard();
-        confetti({ particleCount: 80, spread: 70 });
-        showToast(`تم جمع مكافأة الدخول اليومي بنجاح (+${rewardST} ST)`);
+        confetti({ particleCount: 90, spread: 70 });
+        showToast(`تم جمع مكافأة الستريك 🔥 (${newStreak} أيام) +${payoutST} ST!`);
         return;
       }
 
@@ -1805,13 +1943,24 @@
         const userRef = doc(db, "users", user.uid);
         await runTransaction(db, async (t) => {
           const uDoc = await t.get(userRef);
-          if (!uDoc.exists()) throw new Error("تعذر العثور على حسابك");
+          if (!uDoc.exists()) throw new Error("المستخدم غير مسجل");
           const uData = uDoc.data();
-          if (uData.lastDailyClaim === todayStr) {
+
+          if (uData.lastDailyClaimDate === today) {
             throw new Error("لقد قمت بجمع مكافأة اليوم بالفعل.");
           }
 
-          let newXp = (uData.xp || 0) + gainedXP;
+          let dbStreak = 1;
+          if (uData.lastDailyClaimDate === yesterday) {
+            dbStreak = (uData.streak || 0) + 1;
+          } else {
+            dbStreak = 1;
+          }
+
+          const dbPayoutST = 25 + ((dbStreak - 1) * 10);
+          const dbGainedXP = 50 + ((dbStreak - 1) * 20);
+
+          let newXp = (uData.xp || 0) + dbGainedXP;
           let newLvl = uData.level || 1;
           if (newXp >= newLvl * 100) {
             newLvl += 1;
@@ -1819,23 +1968,23 @@
           }
 
           t.update(userRef, {
-            st: increment(rewardST),
+            st: increment(dbPayoutST),
             xp: newXp,
             level: newLvl,
-            lastDailyClaim: todayStr,
+            streak: dbStreak,
+            lastDailyClaimDate: today,
             updatedAt: serverTimestamp()
           });
         });
 
-        confetti({ particleCount: 90, spread: 70 });
-        showToast(`تم جمع مكافأة الدخول اليومي بنجاح (+${rewardST} ST)`);
+        confetti({ particleCount: 100, spread: 80 });
+        showToast(`تم جمع مكافأة الستريك 🔥 بنجاح! +${payoutST} ST`);
       } catch (err) {
         console.error(err);
-        showToast(err.message || "فشل جمع المكافأة", "error");
+        showToast(err.message || "تعذر جمع المكافأة", "error");
       }
     };
 
-    /* AUTHENTICATION */
     let isRegisterMode = false;
     window.openAuthModal = () => document.getElementById("authModal").classList.add("active");
 
@@ -1867,15 +2016,16 @@
           level: 1,
           xp: 0,
           role: "player",
+          streak: 0,
+          lastDailyClaimDate: null,
           avatarUrl: "",
           bannerUrl: "",
-          showcaseCards: [],
-          lastDailyClaim: null
+          showcaseCards: []
         };
         window.AppState.allUsers.push(window.AppState.currentUser);
         updatePlayerUI();
         renderLeaderboard();
-        renderDailyRewardStatus();
+        renderDailyStreakStatus();
         closeModal("authModal");
         showToast("تم تسجيل الدخول بنجاح");
         return;
@@ -1913,16 +2063,17 @@
             role: isFirstUser ? "admin" : "player",
             level: 1,
             xp: 0,
+            streak: 0,
+            lastDailyClaimDate: null,
             avatarUrl: "",
             bannerUrl: "",
             bio: "لاعب جديد في بطاقات الستريمرز",
             showcaseCards: [],
-            lastDailyClaim: null,
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp()
           });
 
-          showToast("تم إنشاء حسابك وتصدرك القائمة فوراً!");
+          showToast("تم إنشاء حسابك بنجاح!");
         } else {
           await signInWithEmailAndPassword(auth, internalEmail, pass);
           showToast("تم تسجيل الدخول بنجاح");
@@ -1939,7 +2090,7 @@
         if (isFirebaseReady) await signOut(auth);
         window.AppState.currentUser = null;
         updatePlayerUI();
-        renderDailyRewardStatus();
+        renderDailyStreakStatus();
         showToast("تم تسجيل الخروج");
       } catch (error) {
         console.error("Logout error:", error);
@@ -1968,6 +2119,13 @@
         document.getElementById("profBannerImg").src = isValidImageUrl(user.bannerUrl) ? user.bannerUrl : getBannerPlaceholder();
         document.getElementById("profLevel").innerText = user.level || 1;
         document.getElementById("profStTotal").innerText = `${Number(user.st || 0).toLocaleString()} ST`;
+        document.getElementById("profStreakCount").innerText = `${user.streak || 0} 🔥`;
+
+        document.getElementById("previewPubAvatar").src = avatarSrc;
+        document.getElementById("previewPubUsername").innerText = user.username;
+        document.getElementById("previewPubBio").innerText = user.bio || "لا توجد نبذة حالياً";
+        document.getElementById("previewPubLevel").innerText = user.level || 1;
+        document.getElementById("previewPubST").innerText = `${Number(user.st || 0).toLocaleString()} ST`;
       } else {
         headerSt.innerText = "0";
         authContainer.innerHTML = `<button class="btn btn-primary" onclick="openAuthModal()">تسجيل الدخول</button>`;
@@ -2085,7 +2243,6 @@
       `;
     }
 
-    /* CARD DETAILS MODAL WITH 3 ACTIONS (SELL DIRECT, LIST IN MARKET, FAVORITE) */
     window.handleCardClick = (cardId, isOwned) => {
       const card = window.AppState.cards.find(c => c.id === cardId);
       if (!card) return;
@@ -2137,37 +2294,36 @@
       const myCards = window.AppState.myCards;
       const allCards = window.AppState.cards;
       const grid = document.getElementById("myCardsGrid");
-      const profFavGrid = document.getElementById("profFavoritesGrid");
+      const profAllCardsGrid = document.getElementById("profAllObtainedCardsGrid");
       const totalLabel = document.getElementById("totalOwnedCardsLabel");
       const profCount = document.getElementById("profCardCount");
+      const profTotalCardsSub = document.getElementById("profTotalCardsSub");
 
       let totalCount = 0;
       const cardsToRender = [];
-      const favCards = [];
 
       myCards.forEach(item => {
         const cardData = allCards.find(c => c.id === item.cardId);
         if (cardData) {
           totalCount += (item.quantity || 1);
           cardsToRender.push({ ...cardData, ...item });
-          if (item.favorite) favCards.push({ ...cardData, ...item });
         }
       });
 
       if (totalLabel) totalLabel.innerText = `${totalCount} بطاقة`;
       if (profCount) profCount.innerText = totalCount;
+      if (profTotalCardsSub) profTotalCardsSub.innerText = `${cardsToRender.length} أنواع بطاقات فريدة (${totalCount} إجمالي)`;
 
       if (!cardsToRender.length) {
-        grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:3rem; color:var(--text-muted);">لا توجد لديك بطاقات بعد. توجه إلى السوق وافتح أول بكج لك!</div>`;
+        const emptyMsg = `<div style="grid-column: 1/-1; text-align:center; padding:3rem; color:var(--text-muted);">لا توجد لديك بطاقات بعد. توجه إلى السوق وافتح أول بكج لك!</div>`;
+        if (grid) grid.innerHTML = emptyMsg;
+        if (profAllCardsGrid) profAllCardsGrid.innerHTML = emptyMsg;
       } else {
-        grid.innerHTML = cardsToRender.map(c => createCardElementHTML(c, true, c.quantity)).join('');
+        const html = cardsToRender.map(c => createCardElementHTML(c, true, c.quantity)).join('');
+        if (grid) grid.innerHTML = html;
+        if (profAllCardsGrid) profAllCardsGrid.innerHTML = html;
       }
 
-      if (profFavGrid) {
-        profFavGrid.innerHTML = favCards.length 
-          ? favCards.map(c => createCardElementHTML(c, true, c.quantity)).join('')
-          : `<span style="color:var(--text-dim); font-size:0.85rem;">لم تقم بتفضيل أي بطاقة بعد.</span>`;
-      }
       lucide.createIcons();
     }
 
@@ -2239,7 +2395,6 @@
       }
     };
 
-    /* PLAYER MARKET LOGIC (LISTING, BUYING, SEARCHING) */
     window.openCreateListingModal = () => {
       const user = window.AppState.currentUser;
       if (!user) {
@@ -2399,11 +2554,9 @@
 
           const buyerCardDoc = await t.get(buyerCardRef);
 
-          // خصم من المشتري وإضافة للبائع
           t.update(buyerRef, { st: currentST - listing.price });
           t.update(sellerRef, { st: increment(listing.price) });
 
-          // إضافة البطاقة للمشتري
           if (buyerCardDoc.exists()) {
             t.update(buyerCardRef, { quantity: increment(1) });
           } else {
@@ -2416,7 +2569,6 @@
             });
           }
 
-          // حذف العرض من السوق
           t.delete(listingRef);
         });
 
@@ -2539,15 +2691,14 @@
       lucide.createIcons();
     };
 
-    /* LEADERBOARD (AUTOMATIC SORT BY LEVEL ON REGISTRATION) */
     function renderLeaderboard() {
       const tbody = document.getElementById("leaderboardBody");
       if (!tbody) return;
 
-      const users = [...window.AppState.allUsers];
-      users.sort((a, b) => (b.level || 1) - (a.level || 1));
+      const regularPlayers = window.AppState.allUsers.filter(u => u.role !== 'admin');
+      regularPlayers.sort((a, b) => (b.level || 1) - (a.level || 1));
 
-      tbody.innerHTML = users.map((u, idx) => {
+      tbody.innerHTML = regularPlayers.map((u, idx) => {
         const rank = idx + 1;
         const rankBadgeClass = rank <= 3 ? `rank-${rank}` : '';
         return `
@@ -2567,7 +2718,6 @@
       lucide.createIcons();
     }
 
-    /* PROFILE SHOWCASE LOGIC (MAX 4 CARDS) */
     function renderShowcaseSlots() {
       const container = document.getElementById("profileShowcaseGrid");
       if (!container) return;
@@ -2584,20 +2734,20 @@
         if (card) {
           const cardImg = isValidImageUrl(card.imageUrl) ? card.imageUrl : getCardPlaceholder(card.name);
           slotsHTML += `
-            <div class="showcase-slot filled rarity-${card.rarity}" onclick="handleShowcaseSlotClick(${i})">
+            <div class="showcase-slot-mini filled rarity-${card.rarity}" onclick="handleShowcaseSlotClick(${i})" title="${card.name}">
               <div class="card-thumb" style="width:100%; height:100%;">
                 <img src="${cardImg}" alt="${card.name}" onerror="this.onerror=null; this.src=getCardPlaceholder('بطاقة');">
               </div>
-              <div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.7); padding:4px 6px; text-align:center;">
-                <span style="font-size:0.75rem; font-weight:700;">${card.name}</span>
+              <div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.75); padding:2px 4px; text-align:center;">
+                <span style="font-size:0.65rem; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block;">${card.name}</span>
               </div>
             </div>
           `;
         } else {
           slotsHTML += `
-            <div class="showcase-slot" onclick="handleShowcaseSlotClick(${i})">
-              <i data-lucide="plus" size="28" style="color:var(--text-dim); margin-bottom:6px;"></i>
-              <span style="font-size:0.75rem; color:var(--text-dim);">خانة معرض ${i+1}</span>
+            <div class="showcase-slot-mini" onclick="handleShowcaseSlotClick(${i})" title="إضافة بطاقة">
+              <i data-lucide="plus" size="20" style="color:var(--text-dim); margin-bottom:4px;"></i>
+              <span style="font-size:0.65rem; color:var(--text-dim);">خانة ${i+1}</span>
             </div>
           `;
         }
@@ -2649,7 +2799,6 @@
       let currentShowcase = [...(user.showcaseCards || [])];
 
       currentShowcase[slotIdx] = cardId;
-      // لا يتجاوز 4 بطاقات
       currentShowcase = currentShowcase.slice(0, 4);
 
       if (!isFirebaseReady) {
@@ -2666,14 +2815,13 @@
           updatedAt: serverTimestamp()
         });
         closeModal("showcaseSelectModal");
-        showToast("تم تحديث معرض بطاقاتك المميزة بنجاح");
+        showToast("تم تحديث معرض بطاقاتك بنجاح");
       } catch (e) {
         console.error(e);
         showToast("فشل تحديث المعرض", "error");
       }
     };
 
-    /* PUBLIC PROFILE VIEWER FOR LEADERBOARD */
     window.openPublicPlayerProfile = (uid) => {
       const targetUser = window.AppState.allUsers.find(u => u.uid === uid);
       if (!targetUser) return;
@@ -2683,6 +2831,7 @@
       document.getElementById("publicProfBio").innerText = targetUser.bio || "لاعب بطاقات الستريمرز";
       document.getElementById("publicProfLevel").innerText = targetUser.level || 1;
       document.getElementById("publicProfSt").innerText = `${Number(targetUser.st || 0).toLocaleString()} ST`;
+      document.getElementById("publicProfStreak").innerText = `${targetUser.streak || 0} 🔥`;
       document.getElementById("publicProfAvatar").src = isValidImageUrl(targetUser.avatarUrl) ? targetUser.avatarUrl : getAvatarPlaceholder();
 
       const showcaseGrid = document.getElementById("publicProfShowcaseGrid");
@@ -2703,7 +2852,6 @@
       lucide.createIcons();
     };
 
-    /* PACKS ENGINE */
     function renderPacks() {
       const packs = window.AppState.gameSettings?.packs || {};
       const container = document.getElementById("packsContainer");
@@ -2781,19 +2929,38 @@
       if (!matchingCards.length) matchingCards = availableCards;
       const wonCard = matchingCards[Math.floor(Math.random() * matchingCards.length)];
 
+      const earnedXP = (PACK_BASE_XP[packType] || 20) + (CARD_RARITY_XP[wonCard.rarity] || 20);
+
       if (!isFirebaseReady) {
         window.AppState.currentUser.st -= pack.price;
         const existing = window.AppState.myCards.find(mc => mc.cardId === wonCard.id);
         if (existing) existing.quantity = (existing.quantity || 1) + 1;
         else window.AppState.myCards.push({ cardId: wonCard.id, quantity: 1, favorite: false });
-        
-        finalizePackOpeningCeremony(wonCard);
+
+        let currentXp = (window.AppState.currentUser.xp || 0) + earnedXP;
+        let currentLvl = window.AppState.currentUser.level || 1;
+        let leveledUp = false;
+
+        while (currentXp >= currentLvl * 100) {
+          currentXp -= currentLvl * 100;
+          currentLvl += 1;
+          leveledUp = true;
+        }
+
+        window.AppState.currentUser.xp = currentXp;
+        window.AppState.currentUser.level = currentLvl;
+
+        finalizePackOpeningCeremony(wonCard, earnedXP, leveledUp, currentLvl);
         updatePlayerUI();
         renderMyCards();
+        renderLeaderboard();
         return;
       }
 
       try {
+        let leveledUp = false;
+        let newLevel = 1;
+
         await runTransaction(db, async (transaction) => {
           const userRef = doc(db, "users", window.AppState.currentUser.uid);
           const playerCardDocId = `${window.AppState.currentUser.uid}_${wonCard.id}`;
@@ -2807,8 +2974,19 @@
 
           const cardDoc = await transaction.get(playerCardRef);
 
+          let currentXp = (userDoc.data().xp || 0) + earnedXP;
+          newLevel = userDoc.data().level || 1;
+
+          while (currentXp >= newLevel * 100) {
+            currentXp -= newLevel * 100;
+            newLevel += 1;
+            leveledUp = true;
+          }
+
           transaction.update(userRef, {
             st: currentST - pack.price,
+            xp: currentXp,
+            level: newLevel,
             updatedAt: serverTimestamp()
           });
 
@@ -2828,7 +3006,7 @@
           }
         });
 
-        finalizePackOpeningCeremony(wonCard);
+        finalizePackOpeningCeremony(wonCard, earnedXP, leveledUp, newLevel);
       } catch (err) {
         console.error("PACK ERROR:", err);
         showToast(err.message || "حدث خطأ أثناء فتح البكج", "error");
@@ -2836,26 +3014,40 @@
       }
     };
 
-    function finalizePackOpeningCeremony(wonCard) {
+    function finalizePackOpeningCeremony(wonCard, earnedXP, leveledUp, newLevel) {
       confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
       const cImg = isValidImageUrl(wonCard.imageUrl) ? wonCard.imageUrl : getCardPlaceholder(wonCard.name);
       const stage = document.getElementById("packCeremonyStage");
+
       stage.innerHTML = `
         <div style="animation: modalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
-          <div class="card-large-view rarity-${wonCard.rarity}" style="margin: 0 auto 1.5rem auto;">
+          <div class="card-large-view rarity-${wonCard.rarity}" style="margin: 0 auto 1.25rem auto;">
             <img src="${cImg}" alt="${wonCard.name}" onerror="this.onerror=null; this.src=getCardPlaceholder('بطاقة');">
           </div>
           <h2 style="color:#fff; font-weight:900;">تهانينا! حصلت على بطاقة</h2>
-          <h3 style="color:var(--accent-cyan); margin-bottom:1rem;">${wonCard.name} (${wonCard.rarity})</h3>
-          <button class="btn btn-primary" onclick="closeModal('packOpeningModal');">
-            إضافة إلى مجموعتي
-          </button>
+          <h3 style="color:var(--accent-cyan); margin-bottom:0.75rem;">${wonCard.name} (${wonCard.rarity})</h3>
+          
+          <div style="background:rgba(255,255,255,0.05); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:8px 16px; margin-bottom:1.25rem; display:inline-flex; align-items:center; gap:8px;">
+            <span style="color:#fbbf24; font-weight:800;" class="font-num">+${earnedXP} XP</span>
+            <span style="font-size:0.8rem; color:var(--text-muted);">(بكج + ندرة البطاقة)</span>
+          </div>
+
+          ${leveledUp ? `
+            <div style="color:#10b981; font-weight:800; font-size:1.1rem; margin-bottom:1rem; animation: pulseFire 1s infinite alternate;">
+              🎉 ترقية للمستوى ${newLevel}! مبارك!
+            </div>
+          ` : ''}
+
+          <div>
+            <button class="btn btn-primary" onclick="closeModal('packOpeningModal');">
+              إضافة إلى مجموعتي
+            </button>
+          </div>
         </div>
       `;
-      showToast("تمت إضافة البطاقة إلى مجموعتك بنجاح!");
+      showToast(`تمت إضافة البطاقة (+${earnedXP} XP)`);
     }
 
-    /* DIRECT SELL LOGIC */
     window.openSellModal = (cardId) => {
       const card = window.AppState.cards.find(c => c.id === cardId);
       if (!card) return;
@@ -2920,7 +3112,6 @@
       }
     };
 
-    /* PROFILE EDIT */
     window.openEditProfileModal = () => {
       const user = window.AppState.currentUser;
       if (!user) {
@@ -2978,7 +3169,6 @@
       }
     };
 
-    /* NAVIGATION */
     window.switchView = (viewName) => {
       document.querySelectorAll(".view-section").forEach(sec => sec.classList.remove("active"));
       document.querySelectorAll(".nav-btn, .mobile-nav-btn").forEach(btn => {
